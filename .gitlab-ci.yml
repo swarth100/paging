@@ -3,13 +3,9 @@
 # https://hub.docker.com/r/library/node/tags/
 image: node:latest
 
-
 #Before script
 before_script:
-  - sudo apt-get install npm
-  - npm -g install npm --silent
-  - npm set progress=false
-  - npm install --silent
+  - sudo apt-get install -y nodejs
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
