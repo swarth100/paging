@@ -5,6 +5,7 @@ image: node:latest
 
 #Before script
 before_script:
+  - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
   - sudo apt-get install -y nodejs
 
 # Pick zero or more services to be used on all builds.
