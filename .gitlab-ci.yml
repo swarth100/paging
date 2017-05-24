@@ -5,8 +5,8 @@ image: node:latest
 
 #Before script
 before_script:
-  - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-  - sudo apt-get install -y nodejs
+  # - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+  # - sudo apt-get install -y nodejs
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
@@ -24,8 +24,8 @@ cache:
 
 test_async:
   script:
-   - node ./specs/start.js ./specs/async.spec.js
+   - node ./specs/start.js
 
 test_db:
   script:
-   - node ./specs/start.js ./specs/db-postgres.spec.js
+   - node ./specs/start.js
