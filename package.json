@@ -1,0 +1,23 @@
+{
+  "name": "P.A.G.I.N.G.",
+  "version": "1.0.0",
+  "description": "Pinpointing Activities Given Insight Not Guesses",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "build": "browserify index.js > myproject.min.js",
+    "lint": "jshint **.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.doc.ic.ac.uk/lab1617_summer/webapps_29.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^14.3.0",
+    "jshint": "^2.9.4",
+    "mocha": "^3.4.2"
+  }
+}
