@@ -1,0 +1,19 @@
+{
+  "name": "webapps_29",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.doc.ic.ac.uk/lab1617_summer/webapps_29.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mocha": "^3.4.2"
+  }
+}
