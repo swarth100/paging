@@ -7,7 +7,7 @@ image: node:latest
 before_script:
   # - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
   # - sudo apt-get install -y nodejs
-  - npm install
+  - npm install --silent
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
@@ -19,14 +19,14 @@ cache:
   paths:
   - node_modules/
 
-test_lint:
+run_lint:
   script:
    - npm run lint
 
-test_build:
+run_build:
   script:
    - npm run build
 
-test_sample:
+run_tests:
   script:
    - npm test
