@@ -20,6 +20,7 @@
   "dependencies": {
     "browserify": "^14.3.0",
     "jshint": "^2.9.4",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "mongoose": "^4.10.2"
   }
 }
