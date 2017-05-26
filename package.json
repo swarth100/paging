@@ -6,7 +6,9 @@
   "scripts": {
     "test": "mocha",
     "build": "browserify index.js > myproject.min.js",
-    "lint": "jshint **.js"
+    "lint": "jshint **.js",
+    "prestart": "mongod",
+    "start": "node index"
   },
   "repository": {
     "type": "git",
