@@ -1,7 +1,10 @@
 console.log("Hello");
 
-var mongoose = require('./server/mongoose/index');
+var mongooseEntry = require('./server/mongoose/entry');
+var mongooseUser = require('./server/mongoose/user');
 
-var entry = mongoose.createNewEntry('Bob', 'London');
+var user = mongooseUser.createNewUser('Bob', 'EXAMPLE@example.com', '1234');
 
-console.log(entry.doSomething());
+console.log(user.debugPrinting());
+console.log(user.name);
+console.log(user.email);
