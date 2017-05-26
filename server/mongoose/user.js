@@ -69,7 +69,8 @@ userSchema.methods.debugPrinting = function() {
  *   none */
 userSchema.methods.saveUser = function () {
     this.save(function (err) {
-        console.log(err);
+        if (err) console.log('Error while saving.');
+        else console.log('Success while saving.');
     });
 }
 
