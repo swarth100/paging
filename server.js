@@ -26,9 +26,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/server/public')));
 
 app.use(session({
-   secret: 'secrettobechanged',
-   saveUninitialized: true,
-   resave: true
+  secret: 'secrettobechanged',
+  saveUninitialized: true,
+  resave: true
 }));
 
 app.use(passport.initialize());
@@ -36,9 +36,8 @@ app.use(passport.session());
 
 app.use(expressValidator({
   errorFormatter: function(param, msg, value) {
-      var namespace = param.split('.')
-      , root    = namespace.shift()
-      , formParam = root;
+    let namespace = param.split('.');
+    let formParam =  namespace.shift();
 
     while(namespace.length) {
       formParam += '[' + namespace.shift() + ']';
@@ -54,10 +53,10 @@ app.use(expressValidator({
 app.use(flash());
 
 app.use((req, res, next)=> {
-    res.locals.success_msg = req.flash('success_msg');
-    res.locals.error_msg = req.flash('error_msg');
-    res.locals.error = req.flash('error');
-    next();
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
+  next();
 });
 
 /* Set the URI here */
@@ -67,5 +66,5 @@ app.use('/users', users);
 /* Set the port here */
 app.set('port', (process.env.PORT || 3000));
 app.listen(app.get('port'), ()=> {
-    console.log('started server on port ' + app.get('port'));
+  console.log('started server on port ' + app.get('port'));
 });
