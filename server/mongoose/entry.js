@@ -1,16 +1,20 @@
 var mongoose = require('mongoose');
 
 /* Connect to mongoDB entry database */
-var entryDB = '/entries';
-mongoose.createConnection('mongodb://cloud-vm-45-124.doc.ic.ac.uk:27017' + entryDB);
+
+var Schema = mongoose.Schema;
+var entryDBName = '/entries';
+mongoose.Promise = global.Promise;
+var entryDB = mongoose.createConnection('mongodb://cloud-vm-45-124.doc.ic.ac.uk:27017' + entryDBName);
 
 // TODO: Add validation
 
 /* Handling connection errors */
 var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-
-var Schema = mongoose.Schema;
+entryDB.on('error', console.error.bind(console, 'connection error:'));
+entryDB.once('open', function() {
+    console.log('Entry DB Active');
+});
 
 // Initialise the exported modules
 var exports = module.exports = {};
@@ -18,7 +22,7 @@ var exports = module.exports = {};
 var entrySchema = new Schema({
     name: String,
     city: String,
-    // updated: { type: Date, default: Date.now },
+    updated: { type: Date, default: Date.now },
     coordinates : { latitude: Number, longitude: Number}
 });
 
@@ -27,9 +31,7 @@ entrySchema.methods.debugPrinting = function() {
     return 'name: ' + this.name + ', city: ' + this.city;
 };
 
-
-
-var Entry = mongoose.model('Entry', entrySchema);
+var Entry = entryDB.model('Entry', entrySchema);
 
 /* Creates and returns a new database entry */
 exports.createNewEntry = function (a, b) {
