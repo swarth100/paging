@@ -1,7 +1,12 @@
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://cloud-vm-45-124.doc.ic.ac.uk:27017');
+/* Connect to mongoDB entry database */
+var entryDB = '/entries';
+mongoose.createConnection('mongodb://cloud-vm-45-124.doc.ic.ac.uk:27017' + entryDB);
 
+// TODO: Add validation
+
+/* Handling connection errors */
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
@@ -17,7 +22,7 @@ var entrySchema = new Schema({
     coordinates : { latitude: Number, longitude: Number}
 });
 
-// Helper methods on entrySchema
+/* Helper methods on entrySchema */
 entrySchema.methods.debugPrinting = function() {
     return 'name: ' + this.name + ', city: ' + this.city;
 };
@@ -26,10 +31,13 @@ entrySchema.methods.debugPrinting = function() {
 
 var Entry = mongoose.model('Entry', entrySchema);
 
+/* Creates and returns a new database entry */
 exports.createNewEntry = function (a, b) {
     return new Entry({
         name : a,
         city : b
     });
 };
+
+/* Saves a new database entry */
 
