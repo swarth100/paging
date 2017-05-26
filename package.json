@@ -2,10 +2,10 @@
   "name": "P.A.G.I.N.G.",
   "version": "1.0.0",
   "description": "Pinpointing Activities Given Insight Not Guesses",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "build": "browserify index.js > myproject.min.js",
+    "build": "browserify server.js > myproject.min.js",
     "lint": "jshint **.js",
     "prestart": "mongod",
     "start": "node server"
