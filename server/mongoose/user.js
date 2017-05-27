@@ -71,61 +71,6 @@ userSchema.methods.debugPrinting = function() {
         ', time: ' + this.time + ', username ' + this.username;
 };
 
-/* Saves the current User onto the DB
- * Parameters:
- *   none
- * Returns:
- *   Promise */
-userSchema.methods.saveUser = function () {
-    return this.save(function (err) {
-        if (err) console.log('Error while saving.');
-        else console.log('Success while saving.');
-    });
-};
-
-/* Retrieves one User from the DB
- * Parameters:
- *   Search parameters : { name : 'Anne' }
- * Returns:
- *   Promise */
-userSchema.methods.find = function (p) {
-    return User.findOne(p, function(err,obj) {
-        if (err) console.log('Error while finding.');
-        else console.log('Success while finding.');
-    });
-};
-
-/* Retrieves multiple Users from the DB
- * Parameters:
- *   Search parameters : { name : 'Anne' }
- * Returns:
- *   Promise */
-userSchema.methods.findMultiple = function (p) {
-    return User.find(p, function(err,obj) {
-        if (err) console.log('Error while finding');
-        return obj;
-    }).then(function (users) {
-        if (!users.length) throw new Error('Error while finding');
-        else return users;
-    });
-};
-
-userSchema.methods.removeUser = function (p) {
-    return User.find(p, function(err,obj) {
-        if (err) console.log('Error while finding (upon removing)');
-        return obj;
-    }).then(function (users) {
-        if (users.length) {
-            return User.remove(users, function (err, obj) {
-                if (err) console.log('Error while removing (upon finding)');
-                return obj;
-            }).then();
-        }
-        else throw new Error('Error while removing');
-    });
-};
-
-
 /* Pre save function [AUTORUN]
  * Used to initialise fields upon saving
  * */
@@ -155,6 +100,65 @@ exports.createNewUser = function (n, e, p, u) {
         email : e,
         password : p,
         username: u
+    });
+};
+
+/* Saves the current User onto the DB
+ * Parameters:
+ *   none
+ * Returns:
+ *   Promise */
+exports.saveUser = function (user) {
+    return user.save(function (err) {
+        if (err) console.log('Error while saving.');
+        else console.log('Success while saving.');
+    });
+};
+
+/* Retrieves one User from the DB
+ * Parameters:
+ *   Search parameters : { name : 'Anne' }
+ * Returns:
+ *   Promise */
+exports.find = function (p) {
+    return User.findOne(p, function(err,obj) {
+        if (err) console.log('Error while finding.');
+        else console.log('Success while finding.');
+    });
+};
+
+/* Retrieves multiple Users from the DB
+ * Parameters:
+ *   Search parameters : { name : 'Anne' }
+ * Returns:
+ *   Promise */
+exports.findMultiple = function (p) {
+    return User.find(p, function(err,obj) {
+        if (err) console.log('Error while finding');
+        return obj;
+    }).then(function (users) {
+        if (!users.length) throw new Error('Error while finding');
+        else return users;
+    });
+};
+
+/* Removes a single User from the DB
+ * Parameters:
+ *   Search parameters : { name : 'Anne' }
+ * Returns:
+ *   Promise */
+exports.removeUser = function (p) {
+    return User.find(p, function(err,obj) {
+        if (err) console.log('Error while finding (upon removing)');
+        return obj;
+    }).then(function (users) {
+        if (users.length) {
+            return User.remove(users, function (err, obj) {
+                if (err) console.log('Error while removing (upon finding)');
+                return obj;
+            }).then();
+        }
+        else throw new Error('Error while removing');
     });
 };
 
