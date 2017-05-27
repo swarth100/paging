@@ -13,7 +13,6 @@ var Schema = mongoose.Schema;
 var userDBName = '/users';
 mongoose.Promise = global.Promise;
 var userDB = mongoose.createConnection('mongodb://cloud-vm-45-124.doc.ic.ac.uk:27017' + userDBName);
-// var userDB = mongoose.createConnection('mongodb://localhost:27017' + userDBName);
 
 // TODO: Add validation
 
@@ -21,7 +20,7 @@ var userDB = mongoose.createConnection('mongodb://cloud-vm-45-124.doc.ic.ac.uk:2
 
 userDB.on('error', console.error.bind(console, 'Cannot connect to userDB:'));
 userDB.once('open', function() {
-    console.log('User DB Active');
+    console.log('Users DB Active');
 });
 
 /* ------------------------------------------------------------------------------------------------------------------ */
