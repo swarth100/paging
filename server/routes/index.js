@@ -1,15 +1,8 @@
 const express = require('express');
+const authentication = require('../authentication/authentication');
 const router = express.Router();
 
-let ensureAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect('/users/login');
-}
-
-
-router.get('/', ensureAuthenticated, (req, res)=> {
+router.get('/', authentication.ensureAuthenticated, (req, res)=> {
     res.render('index');
 });
 
