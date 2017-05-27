@@ -7,7 +7,7 @@ var helper = require('./mongoose');
 
 var uniqueValidator = require('mongoose-unique-validator');
 
-/* Connect to mongoDB entry database */
+/* Connect to mongoDB location database */
 
 var Schema = mongoose.Schema;
 var locationsDBName = '/locations';
@@ -19,10 +19,10 @@ var locationsDB = mongoose.createConnection('mongodb://cloud-vm-45-124.doc.ic.ac
 /* Handling connection errors */
 locationsDB.on('error', console.error.bind(console, 'Cannot connect to entryDB:'));
 locationsDB.once('open', function() {
-    console.log('Entry DB Active');
+    console.log('Locations DB Active');
 });
 
-// Initialise the exported modules
+/* Initialise the exported modules */
 var exports = module.exports = {};
 
 var locationsSchema = new Schema({
@@ -123,7 +123,7 @@ exports.findMultiple = function (p) {
  *   Search parameters : { id : 34 }
  * Returns:
  *   Promise */
-exports.removeUser = function (p) {
+exports.removeLocation = function (p) {
     return helper.removeElem(Location, p);
 };
 
