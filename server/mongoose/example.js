@@ -17,7 +17,7 @@ console.log(user.email);
 console.log(user.debugPrinting());
 
 /* Save the user to the database */
-var savePromise = user.saveUser();
+var savePromise = mongooseUser.saveUser(user);
 savePromise
     .then(function (user) {
         console.log(user.debugPrinting());
@@ -27,7 +27,7 @@ savePromise
     });
 
 /* Retrieve 1 user from the database */
-var findPromise1 = user.find({name : 'Anne'});
+var findPromise1 = mongooseUser.find({name : 'Anne'});
 findPromise1
     .then(function (user) {
         console.log(user.debugPrinting());
@@ -37,7 +37,7 @@ findPromise1
     });
 
 /* Retrieve 1 user from the database with multiple search criteria */
-var findPromise2 = user.find({name : 'Anne', email: 'example@example.com'});
+var findPromise2 = mongooseUser.find({name : 'Anne', email: 'example@example.com'});
 findPromise2
     .then(function (user) {
         console.log(user.debugPrinting());
@@ -47,7 +47,7 @@ findPromise2
     });
 
 /* Retrieve multiple users from the database with multiple search criteria */
-var findPromise3 = user.findMultiple({name : 'Anne', email: 'example@example.com'});
+var findPromise3 = mongooseUser.findMultiple({name : 'Anne', email: 'example@example.com'});
 findPromise3
     .then(function (users) {
         for (var i = 0; i < users.length; i++) {
@@ -59,7 +59,7 @@ findPromise3
     });
 
 /* Retrieve multiple users from the database with multiple search criteria. Throws error */
-var findPromise4 = user.findMultiple({name : 'Anne', email: 'invalid@example.com'});
+var findPromise4 = mongooseUser.findMultiple({name : 'Anne', email: 'invalid@example.com'});
 findPromise4
     .then(function (users) {
         for (var i = 0; i < users.length; i++) {
@@ -68,4 +68,14 @@ findPromise4
     })
     .catch(function (err) {
         console.log('No element in the database meets the search criteria');
+    });
+
+/* Remove the first entry from the database matching the search criteria */
+var removePromise = mongooseUser.removeUser({name : 'Anne'});
+removePromise
+    .then(function () {
+        console.log('User removed');
+    })
+    .catch(function (err) {
+        console.log('No element in the database meets the deletion criteria');
     });
