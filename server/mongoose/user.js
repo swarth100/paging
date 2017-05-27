@@ -110,12 +110,19 @@ userSchema.methods.findMultiple = function (p) {
     });
 };
 
-userSchema.methods.removeUser = function (user) {
-    return User.remove(user, function(err, obj) {
-        console.log(user);
-        if (err) console.log('Error while removing.');
-        else console.log('Success while removing.');
-    })
+userSchema.methods.removeUser = function (p) {
+    return User.find(p, function(err,obj) {
+        if (err) console.log('Error while finding (upon removing)');
+        return obj;
+    }).then(function (users) {
+        if (users.length) {
+            return User.remove(users, function (err, obj) {
+                if (err) console.log('Error while removing (upon finding)');
+                return obj;
+            }).then();
+        }
+        else throw new Error('Error while removing');
+    });
 };
 
 
