@@ -26,7 +26,7 @@ savePromise
         console.log(user.debugPrinting());
     })
     .catch(function (err) {
-        console.log('Error occurred while calling save');
+        console.log('Error occurred while saving to the database');
     });
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -84,7 +84,7 @@ findPromise4
 
 /* Remove the first entry from the database matching the search criteria */
 var removePromise1 = mongooseUser.removeUser({name : 'Anne'});
-removePromise
+removePromise1
     .then(function () {
         console.log('User removed');
     })
