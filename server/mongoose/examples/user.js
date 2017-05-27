@@ -84,7 +84,7 @@ findPromise4
 
 /* Remove the first entry from the database matching the search criteria */
 var removePromise1 = mongooseUser.removeUser({name : 'Anne'});
-removePromise
+removePromise1
     .then(function () {
         console.log('User removed');
     })
