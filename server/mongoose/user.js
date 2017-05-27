@@ -1,33 +1,4 @@
-/* EXAMPLE USER CODE
-
-var mongooseUser = require('./server/mongoose/user');
-
-// Create a new user with the following fields //
-var user = mongooseUser.createNewUser('Anne', 'EXAMPLE@example.com', '12345', '1234');
-
-// Fields of the user can be accessed directly //
-console.log(user.debugPrinting());
-console.log(user.name);
-console.log(user.email);
-
-// Save the user to the database. Returns a Promise to handle success/failure //
-var promise = user.saveUser();
-
-// promise.then() for success
-// promise.then.catch() for failure
-promise
-    .then(function (user) {
-        console.log(user.name);
-        console.log('Promise saved with success');
-    })
-    .catch(function (err) {
-        console.log('Promise returned an error');
-    });
-
-// Users can also be saved without accessing promises
-var user2 = mongooseUser.createNewUser('Bobby', 'EXAMPLE@example.com', 'abcdef', 'admin');
-user2.saveUser();
-*/
+// TODO: Add description
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
@@ -96,18 +67,46 @@ userSchema.plugin(uniqueValidator);
 * Returns:
 *   none */
 userSchema.methods.debugPrinting = function() {
-    return 'name: ' + this.name + ', email: ' + this.email + ', password: ' + this.password;
+    return 'name: ' + this.name + ', email: ' + this.email + ', password: ' + this.password +
+        ', time: ' + this.time + ', username ' + this.username;
 };
 
 /* Saves the current User onto the DB
  * Parameters:
  *   none
  * Returns:
- *   none */
+ *   Promise */
 userSchema.methods.saveUser = function () {
     return this.save(function (err) {
         if (err) console.log('Error while saving.');
         else console.log('Success while saving.');
+    });
+};
+
+/* Retrieves one User from the DB
+ * Parameters:
+ *   Search parameters : { name : 'Anne' }
+ * Returns:
+ *   Promise */
+userSchema.methods.find = function (p) {
+    return User.findOne(p, function(err,obj) {
+        if (err) console.log('Error while finding.');
+        else console.log('Success while finding.');
+    });
+};
+
+/* Retrieves multiple Users from the DB
+ * Parameters:
+ *   Search parameters : { name : 'Anne' }
+ * Returns:
+ *   Promise */
+userSchema.methods.findMultiple = function (p) {
+    return User.find(p, function(err,obj) {
+        if (err) return new Error('Error while finding');
+        return obj;
+    }).then(function (users) {
+        if (!users.length) return;
+        else return users;
     });
 };
 
