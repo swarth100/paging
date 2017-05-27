@@ -162,5 +162,28 @@ exports.removeUser = function (p) {
     });
 };
 
+/* Removes multiple Users from the DB
+ * Parameters:
+ *   Search parameters : { name : 'Anne' }
+ * Returns:
+ *   Promise */
+exports.removeMultiple = function (p) {
+    return User.find(p, function(err,obj) {
+        if (err) console.log('Error while finding (upon removing)');
+        return obj;
+    }).then(function (users) {
+        if (users.length) {
+            for (var i = 0; i < users.length; i++) {
+                User.remove(users[i], function (err, obj) {
+                    if (err) console.log('Error while removing (upon finding)');
+                    return obj;
+                }).then();
+            }
+        }
+        else throw new Error('Error while removing');
+    });
+};
+
+/* Export the User model */
 exports.userModel = User;
 
