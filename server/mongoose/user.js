@@ -3,6 +3,8 @@
 /* ------------------------------------------------------------------------------------------------------------------ */
 
 var mongoose = require('mongoose');
+var helper = require('./mongoose');
+
 var uniqueValidator = require('mongoose-unique-validator');
 
 /* Connect to mongoDB users database */
@@ -109,10 +111,7 @@ exports.createNewUser = function (n, e, p, u) {
  * Returns:
  *   Promise */
 exports.saveUser = function (user) {
-    return user.save(function (err) {
-        if (err) console.log('Error while saving.');
-        else console.log('Success while saving.');
-    });
+    return helper.saveHelper(user);
 };
 
 /* Retrieves one User from the DB
@@ -121,10 +120,7 @@ exports.saveUser = function (user) {
  * Returns:
  *   Promise */
 exports.find = function (p) {
-    return User.findOne(p, function(err,obj) {
-        if (err) console.log('Error while finding.');
-        else console.log('Success while finding.');
-    });
+    return helper.findHelper(User, p);
 };
 
 /* Retrieves multiple Users from the DB
@@ -133,13 +129,7 @@ exports.find = function (p) {
  * Returns:
  *   Promise */
 exports.findMultiple = function (p) {
-    return User.find(p, function(err,obj) {
-        if (err) console.log('Error while finding');
-        return obj;
-    }).then(function (users) {
-        if (!users.length) throw new Error('Error while finding');
-        else return users;
-    });
+    return helper.findMultipleHelper(User, p);
 };
 
 /* Removes a single User from the DB
@@ -148,18 +138,7 @@ exports.findMultiple = function (p) {
  * Returns:
  *   Promise */
 exports.removeUser = function (p) {
-    return User.find(p, function(err,obj) {
-        if (err) console.log('Error while finding (upon removing)');
-        return obj;
-    }).then(function (users) {
-        if (users.length) {
-            return User.remove(users[0], function (err, obj) {
-                if (err) console.log('Error while removing (upon finding)');
-                return obj;
-            }).then();
-        }
-        else throw new Error('Error while removing');
-    });
+    return helper.removeElem(User, p);
 };
 
 /* Removes multiple Users from the DB
@@ -168,20 +147,7 @@ exports.removeUser = function (p) {
  * Returns:
  *   Promise */
 exports.removeMultiple = function (p) {
-    return User.find(p, function(err,obj) {
-        if (err) console.log('Error while finding (upon removing)');
-        return obj;
-    }).then(function (users) {
-        if (users.length) {
-            for (var i = 0; i < users.length; i++) {
-                User.remove(users[i], function (err, obj) {
-                    if (err) console.log('Error while removing (upon finding)');
-                    return obj;
-                }).then();
-            }
-        }
-        else throw new Error('Error while removing');
-    });
+    return helper.removeMultipleHelper(User, p);
 };
 
 /* Export the User model */
