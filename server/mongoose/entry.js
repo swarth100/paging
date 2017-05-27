@@ -11,7 +11,7 @@ var entryDB = mongoose.createConnection('mongodb://cloud-vm-45-124.doc.ic.ac.uk:
 
 /* Handling connection errors */
 var db = mongoose.connection;
-entryDB.on('error', console.error.bind(console, 'connection error:'));
+entryDB.on('error', console.error.bind(console, 'Cannot connect to entryDB:'));
 entryDB.once('open', function() {
     console.log('Entry DB Active');
 });
