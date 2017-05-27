@@ -37,9 +37,12 @@ exports.findMultipleHelper = function (DB, p) {
         if (err) console.log('[Database] find : error');
         return obj;
     }).then(function (elems) {
-        if (!elems.length) throw new Error('Error while finding within database. Possibly entry not present.');
+        if (!elems.length) {
+            console.log('[Database] find : error');
+            throw new Error('Error while finding within database. Possibly entry not present.');
+        }
         else {
-            console.log('[Database] find : success')
+            console.log('[Database] find : success');
             return elems;
         }
     });
@@ -52,19 +55,22 @@ exports.findMultipleHelper = function (DB, p) {
  *   Promise */
 exports.removeElem = function (DB, p) {
     return DB.find(p, function(err,obj) {
-        if (err) console.log('[Database] remove : error')
+        if (err) console.log('[Database] remove : error');
         return obj;
     }).then(function (elems) {
         if (elems.length) {
             return DB.remove(elems[0], function (err, obj) {
-                if (err) console.log('[Database] remove : error')
+                if (err) console.log('[Database] remove : error');
                 else {
-                    console.log('[Database] remove : success')
+                    console.log('[Database] remove : success');
                     return obj;
                 }
             }).then();
         }
-        else throw new Error('Error while removing from database. Possibly entry not present');
+        else {
+            console.log('[Database] remove : error');
+            throw new Error('Error while removing from database. Possibly entry not present');
+        }
     });
 };
 
@@ -75,13 +81,13 @@ exports.removeElem = function (DB, p) {
  *   Promise */
 exports.removeMultipleHelper = function (DB, p) {
     return DB.find(p, function(err,obj) {
-        if (err) console.log('[Database] remove : error')
+        if (err) console.log('[Database] remove : error');
         return obj;
     }).then(function (elems) {
         if (elems.length) {
             for (var i = 0; i < elems.length; i++) {
                 DB.remove(elems[i], function (err, obj) {
-                    if (err) console.log('[Database] remove : error')
+                    if (err) console.log('[Database] remove : error');
                     else {
                         console.log('[Database] remove : success');
                         return obj;
@@ -89,6 +95,9 @@ exports.removeMultipleHelper = function (DB, p) {
                 }).then();
             }
         }
-        else throw new Error('Error while removing from database. Possibly entry not present');
+        else {
+            console.log('[Database] remove : error');
+            throw new Error('Error while removing from database. Possibly entry not present');
+        }
     });
 };
