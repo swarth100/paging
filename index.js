@@ -1,15 +1,15 @@
-console.log("Hello");
-
 var mongooseUser = require('./server/mongoose/user');
 var mongooseEntry = require('./server/mongoose/entry');
 
-var user = mongooseUser.createNewUser('Anne 10', 'EXAMPLE@example.com', '12345', 'admin 10000000');
+var user = mongooseUser.createNewUser('Anne', 'EXAMPLE@example.com', '12345', 'unique 7');
 
-console.log(user.debugPrinting());
-console.log(user.name);
-console.log(user.email);
+var promise = user.saveUser();
 
-user.saveUser();
-
-var user2 = mongooseUser.createNewUser('Anne 4', 'EXAMPLE@example.com', '12345', 'admin');
-user2.saveUser();
+promise
+    .then(function (user) {
+    console.log(user.time);
+    console.log('Promise saved with success');
+})
+    .catch(function (err) {
+    console.log('Promise returned an error');
+});
