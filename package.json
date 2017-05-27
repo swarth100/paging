@@ -2,13 +2,12 @@
   "name": "P.A.G.I.N.G.",
   "version": "1.0.0",
   "description": "Pinpointing Activities Given Insight Not Guesses",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "build": "browserify index.js > myproject.min.js",
+    "build": "browserify server.js > myproject.min.js",
     "lint": "jshint **.js",
-    "prestart": "mongod",
-    "start": "node index"
+    "start": "node server"
   },
   "repository": {
     "type": "git",
@@ -18,10 +17,23 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.17.2",
     "browserify": "^14.3.0",
+    "chai": "^4.0.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.3",
+    "express-handlebars": "^3.0.0",
+    "express-messages": "^1.0.1",
+    "express-session": "^1.15.3",
+    "express-validator": "^3.2.0",
     "jshint": "^2.9.4",
     "mocha": "^3.4.2",
     "mongoose": "^4.10.2",
-    "mongoose-unique-validator": "^1.0.5"
+    "mongoose-unique-validator": "^1.0.5",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
+    "passport-local": "^1.0.0"
   }
 }
