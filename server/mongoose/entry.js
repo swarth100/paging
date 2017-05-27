@@ -20,10 +20,28 @@ entryDB.once('open', function() {
 var exports = module.exports = {};
 
 var entrySchema = new Schema({
-    name: String,
-    city: String,
-    updated: { type: Date, default: Date.now },
-    coordinates : { latitude: Number, longitude: Number}
+    id : {
+        type : Number,
+        unique : true,
+        required : true
+    },
+    avgtime : {
+        type : Number,
+        required : true
+    },
+    feedbackcount : {
+        type : Number,
+        required : true,
+        default : 1
+    },
+    latitude : {
+        type : Number,
+        required : true
+    },
+    longitude : {
+        type : Number,
+        required : true
+    }
 });
 
 /* Helper methods on entrySchema */
