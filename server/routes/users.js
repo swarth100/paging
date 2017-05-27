@@ -13,31 +13,38 @@ passport.use(new LocalStrategy(
     (username, password, done) => {
         /* get the user using username */
         /* get the user hash */
-        let user = 'user';
-        let hash = 'hash';
-        bcrypt.compare(password, hash, (err, isMatch) => {
-            if (err) {
-                throw err;
-            }
-            if (isMatch) {
-                return done(null, user);
-            }
-            return done(null, false);
-        });
+        let promisedUser = userDB.find({ username: username });
+        promisedUser
+            .then((user) => {
+                bcyrpt.compare(password, user.password, (err, isMatch) => {
+                    if (isMatch) {
+                        return done(null, user);
+                    } else {
+                        return done(null, false);
+                    }
+                });
+            })
+            .catch((err) => {
+                console.log('No element in the database meets the search criteria');
+            });
     }
 ));
 
 passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user.username);
 });
 
-passport.deserializeUser((id, done) => {
-    /* find user */
-    // User.getUserById(id, function(err, user) {
-    //   done(err, user);
-    // });
+passport.deserializeUser((username, done) => {
+    let promisedUser = userDB.find({ username: username });
+    promisedUser
+        .then((user) => {
+            done(null, user);
+        })
+        .catch((err) => {
+            console.log('No element in the database meets the search criteria');
+            done(err, null);
+        });
 });
-
 
 router.get('/register', (req, res) => {
     res.render('register');
@@ -58,14 +65,15 @@ router.post('/register', (req, res) => {
         res.render('register');
     } else {
         /* TODO send confirmation email */
-        console.log('creating the new user');
+        console.log('creating the new user' + req.body.password);
         bcyrpt.hash(req.body.password, saltRounds, (err, hash) => {
             if (err) {
                 console.log('failed to create hashed password!');
                 throw (err);
             } else {
-                console.log(hash);
-                let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username).saveUser();
+                console.log('hashed password' + hash);
+                let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username);
+                userDB.saveUser(user);
                 /* redirect to the index page */
                 res.render('index');
             }
