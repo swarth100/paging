@@ -105,7 +105,7 @@ exports.createNewUser = function (n, e, p, u) {
 
 /* Saves the current User onto the DB
  * Parameters:
- *   none
+ *   user
  * Returns:
  *   Promise */
 exports.saveUser = function (user) {
@@ -153,7 +153,7 @@ exports.removeUser = function (p) {
         return obj;
     }).then(function (users) {
         if (users.length) {
-            return User.remove(users, function (err, obj) {
+            return User.remove(users[0], function (err, obj) {
                 if (err) console.log('Error while removing (upon finding)');
                 return obj;
             }).then();
