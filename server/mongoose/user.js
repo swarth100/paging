@@ -102,13 +102,22 @@ userSchema.methods.find = function (p) {
  *   Promise */
 userSchema.methods.findMultiple = function (p) {
     return User.find(p, function(err,obj) {
-        if (err) return new Error('Error while finding');
+        if (err) console.log('Error while finding');
         return obj;
     }).then(function (users) {
-        if (!users.length) return;
+        if (!users.length) throw new Error('Error while finding');
         else return users;
     });
 };
+
+userSchema.methods.removeUser = function (user) {
+    return User.remove(user, function(err, obj) {
+        console.log(user);
+        if (err) console.log('Error while removing.');
+        else console.log('Success while removing.');
+    })
+};
+
 
 /* Pre save function [AUTORUN]
  * Used to initialise fields upon saving
