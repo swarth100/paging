@@ -4,7 +4,10 @@
   "description": "Pinpointing Activities Given Insight Not Guesses",
   "main": "server.js",
   "lint-staged": {
-    "*.js": ["eslint --fix", "git add"]
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "scripts": {
     "precommit": "lint-staged",
@@ -24,6 +27,7 @@
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
     "browserify": "^14.3.0",
+    "config": "^1.26.1",
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.3",
