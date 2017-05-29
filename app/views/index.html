@@ -3,16 +3,54 @@
 <head>
     <meta charset="utf-8"/>
     <title>Learn AngularJS - Instant Search</title>
+
     <!-- Include AngularJS from Google's CDN -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="script.js"></script>
 </head>
 
-<body ng-app="nomeACaso">
+<body ng-app="googleMaps">
 
-<div ng-controller="ngAppDemoController">
-    I can add: {{a}} + {{b}} =  {{ a+b }}
+<div ng-controller="postLocation">
+    Attempting to post location
 </div>
+
+<div id="map" style="height: 400px; width: 100%;"></div>
+
+<script>
+    // let socket = io();
+
+    /*
+
+    function initMap(location, results) {
+        let map = new google.maps.Map(document.getElementById('map'), {
+            center: location,
+            zoom: 14,
+        });
+
+        let marker = new google.maps.Marker({
+            position: location,
+            map: map,
+        });
+
+        // response.json.result[index].geometry.location.{lat/lng};
+        for (let i = 0; i < results.json.results.length; i++) {
+            let marker = new google.maps.Marker({
+                position: results.json.results[i].geometry.location,
+                map: map,
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 10,
+                }
+            })
+        }
+    } */
+</script>
+
+<!--
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8">
+</script> -->
 
 </body>
 </html>
