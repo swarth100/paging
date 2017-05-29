@@ -1,6 +1,6 @@
 const authentication = require('../authentication/authentication');
 const express = require('express');
-const router = express.Router();
+const router = new express.Router();
 
 router.get('/register', (req, res) => {
     res.render('register');
@@ -14,8 +14,7 @@ router.post('/register', (req, res) => {
             res.render('register');
         } else {
             /* TODO send confirmation email */
-            console.log('creating the new user' + req.body.password);
-            authentication.addUser(req, res);
+           authentication.addUser(req, res);
         }
     });
 });
@@ -25,7 +24,7 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login',
-    authentication.passport.authenticate('local', { failureRedirect: '/users/login' }),
+    authentication.passport.authenticate('local', {failureRedirect: '/users/login'}),
     (req, res) => {
         res.redirect('/');
     }
