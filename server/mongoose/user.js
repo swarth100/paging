@@ -2,17 +2,23 @@
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-var mongoose = require('mongoose');
-var helper = require('./mongoose');
+let mongoose = require('mongoose');
+let helper = require('./mongoose');
 
-var uniqueValidator = require('mongoose-unique-validator');
+/* Load the database address from the config file
+ * Removesthe double quotation mark using replace function
+ */
+let config = require('config');
+let dbConfig = JSON.stringify(config.get('dbConfig').host).replace(/\"/g, '');
+
+let uniqueValidator = require('mongoose-unique-validator');
 
 /* Connect to mongoDB users database */
 
-var Schema = mongoose.Schema;
-var userDBName = '/users';
+let Schema = mongoose.Schema;
+let userDBName = '/users';
 mongoose.Promise = global.Promise;
-var userDB = mongoose.createConnection('mongodb://cloud-vm-45-124.doc.ic.ac.uk:27017' + userDBName);
+let userDB = mongoose.createConnection(dbConfig + userDBName);
 
 // TODO: Add validation
 
@@ -24,37 +30,34 @@ userDB.once('open', function() {
 });
 
 /* ------------------------------------------------------------------------------------------------------------------ */
-/* Initialise the exported modules */
-
-var exports = module.exports = {};
 
 /* Setters for the fields */
 
-function toLower (v) {
+function toLower(v) {
     return v.toLowerCase();
 }
 
-var userSchema = new Schema({
+let userSchema = new Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     username: {
-        type : String ,
-        unique : true,
-        required : true
+        type: String,
+        unique: true,
+        required: true,
     },
     email: {
         type: String,
-        set: toLower
+        set: toLower,
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
     time: {
-        type: Date
-    }
+        type: Date,
+    },
 });
 
 /* Plugin that validates unique entries */
@@ -86,7 +89,7 @@ userSchema.pre('save', function(next) {
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-var User = userDB.model('User', userSchema);
+let User = userDB.model('User', userSchema);
 
 /* Creates and returns a new database entry
 * Parameters:
@@ -95,12 +98,12 @@ var User = userDB.model('User', userSchema);
 *   p = password
 * Returns:
 *   new User instance */
-exports.createNewUser = function (n, e, p, u) {
+exports.createNewUser = function(n, e, p, u) {
     return new User({
-        name : n,
-        email : e,
-        password : p,
-        username: u
+        name: n,
+        email: e,
+        password: p,
+        username: u,
     });
 };
 
@@ -109,7 +112,7 @@ exports.createNewUser = function (n, e, p, u) {
  *   user
  * Returns:
  *   Promise */
-exports.saveUser = function (user) {
+exports.saveUser = function(user) {
     return helper.saveHelper(user);
 };
 
@@ -118,7 +121,7 @@ exports.saveUser = function (user) {
  *   Search parameters : { name : 'Anne' }
  * Returns:
  *   Promise */
-exports.find = function (p) {
+exports.find = function(p) {
     return helper.findHelper(User, p);
 };
 
@@ -127,7 +130,7 @@ exports.find = function (p) {
  *   Search parameters : { name : 'Anne' }
  * Returns:
  *   Promise */
-exports.findMultiple = function (p) {
+exports.findMultiple = function(p) {
     return helper.findMultipleHelper(User, p);
 };
 
@@ -136,7 +139,7 @@ exports.findMultiple = function (p) {
  *   Search parameters : { name : 'Anne' }
  * Returns:
  *   Promise */
-exports.removeUser = function (p) {
+exports.removeUser = function(p) {
     return helper.removeElem(User, p);
 };
 
@@ -145,7 +148,7 @@ exports.removeUser = function (p) {
  *   Search parameters : { name : 'Anne' }
  * Returns:
  *   Promise */
-exports.removeMultiple = function (p) {
+exports.removeMultiple = function(p) {
     return helper.removeMultipleHelper(User, p);
 };
 

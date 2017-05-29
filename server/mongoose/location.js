@@ -2,17 +2,23 @@
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-var mongoose = require('mongoose');
-var helper = require('./mongoose');
+let mongoose = require('mongoose');
+let helper = require('./mongoose');
 
-var uniqueValidator = require('mongoose-unique-validator');
+/* Load the database address from the config file
+ * Removesthe double quotation mark using replace function
+ */
+let config = require('config');
+let dbConfig = JSON.stringify(config.get('dbConfig').host).replace(/\"/g, '');
+
+let uniqueValidator = require('mongoose-unique-validator');
 
 /* Connect to mongoDB location database */
 
-var Schema = mongoose.Schema;
-var locationsDBName = '/locations';
+let Schema = mongoose.Schema;
+let locationsDBName = '/locations';
 mongoose.Promise = global.Promise;
-var locationsDB = mongoose.createConnection('mongodb://cloud-vm-45-124.doc.ic.ac.uk:27017' + locationsDBName);
+let locationsDB = mongoose.createConnection(dbConfig + locationsDBName);
 
 // TODO: Add validation
 
@@ -22,32 +28,29 @@ locationsDB.once('open', function() {
     console.log('Locations DB Active');
 });
 
-/* Initialise the exported modules */
-var exports = module.exports = {};
-
-var locationsSchema = new Schema({
-    id : {
-        type : Number,
-        unique : true,
-        required : true
+let locationsSchema = new Schema({
+    id: {
+        type: Number,
+        unique: true,
+        required: true,
     },
-    avgtime : {
-        type : Number,
-        required : true
+    avgtime: {
+        type: Number,
+        required: true,
     },
-    feedbackcount : {
-        type : Number,
-        required : true,
-        default : 1
+    feedbackcount: {
+        type: Number,
+        required: true,
+        default: 1,
     },
-    latitude : {
-        type : Number,
-        required : true
+    latitude: {
+        type: Number,
+        required: true,
     },
-    longitude : {
-        type : Number,
-        required : true
-    }
+    longitude: {
+        type: Number,
+        required: true,
+    },
 });
 
 /* Plugin that validates unique entries */
@@ -72,7 +75,7 @@ locationsSchema.pre('save', function(next) {
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-var Location = locationsDB.model('Location', locationsSchema);
+let Location = locationsDB.model('Location', locationsSchema);
 
 /* Creates and returns a new database entry
  * Parameters:
@@ -82,12 +85,12 @@ var Location = locationsDB.model('Location', locationsSchema);
  *   d = longitude
  * Returns:
  *   new Location instance */
-exports.createNewLocation = function (a, b, c, d) {
+exports.createNewLocation = function(a, b, c, d) {
     return new Location({
-        id : a,
-        avgtime : b,
-        latitude : c,
-        longitude : d
+        id: a,
+        avgtime: b,
+        latitude: c,
+        longitude: d,
     });
 };
 
@@ -96,7 +99,7 @@ exports.createNewLocation = function (a, b, c, d) {
  *   user
  * Returns:
  *   Promise */
-exports.saveLocation = function (loc) {
+exports.saveLocation = function(loc) {
     return helper.saveHelper(loc);
 };
 
@@ -105,7 +108,7 @@ exports.saveLocation = function (loc) {
  *   Search parameters : { id : 34 }
  * Returns:
  *   Promise */
-exports.find = function (p) {
+exports.find = function(p) {
     return helper.findHelper(Location, p);
 };
 
@@ -114,7 +117,7 @@ exports.find = function (p) {
  *   Search parameters : { id : 34 }
  * Returns:
  *   Promise */
-exports.findMultiple = function (p) {
+exports.findMultiple = function(p) {
     return helper.findMultipleHelper(Location, p);
 };
 
@@ -123,7 +126,7 @@ exports.findMultiple = function (p) {
  *   Search parameters : { id : 34 }
  * Returns:
  *   Promise */
-exports.removeLocation = function (p) {
+exports.removeLocation = function(p) {
     return helper.removeElem(Location, p);
 };
 
@@ -132,7 +135,7 @@ exports.removeLocation = function (p) {
  *   Search parameters : { id : 34 }
  * Returns:
  *   Promise */
-exports.removeMultiple = function (p) {
+exports.removeMultiple = function(p) {
     return helper.removeMultipleHelper(Location, p);
 };
 

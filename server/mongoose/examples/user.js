@@ -4,10 +4,10 @@
 /* user.js -- general*/
 
 /* Require the module */
-var mongooseUser = require('./server/mongoose/user');
+let mongooseUser = require('./server/mongoose/user');
 
 /* Create a new user */
-var user = mongooseUser.createNewUser('Anne', 'EXAMPLE@example.com', '12345', 'anne123');
+let user = mongooseUser.createNewUser('Anne', 'EXAMPLE@example.com', '12345', 'anne123');
 
 /* Print the fields of the newly created user */
 console.log(user.name);
@@ -20,12 +20,12 @@ console.log(user.debugPrinting());
 /* user.js -- mongooseUser.saveUser */
 
 /* Save the user to the database */
-var savePromise = mongooseUser.saveUser(user);
+let savePromise = mongooseUser.saveUser(user);
 savePromise
-    .then(function (user) {
+    .then(function(user) {
         console.log(user.debugPrinting());
     })
-    .catch(function (err) {
+    .catch(function(err) {
         console.log('Error occurred while saving to the database');
     });
 
@@ -33,22 +33,22 @@ savePromise
 /* user.js -- mongooseUser.find */
 
 /* Retrieve 1 user from the database */
-var findPromise1 = mongooseUser.find({name : 'Anne'});
+let findPromise1 = mongooseUser.find({name: 'Anne'});
 findPromise1
-    .then(function (user) {
+    .then(function(user) {
         console.log(user.debugPrinting());
     })
-    .catch(function (err) {
+    .catch(function(err) {
         console.log('No element in the database meets the search criteria');
     });
 
 /* Retrieve 1 user from the database with multiple search criteria */
-var findPromise2 = mongooseUser.find({name : 'Anne', email: 'example@example.com'});
+let findPromise2 = mongooseUser.find({name: 'Anne', email: 'example@example.com'});
 findPromise2
-    .then(function (user) {
+    .then(function(user) {
         console.log(user.debugPrinting());
     })
-    .catch(function (err) {
+    .catch(function(err) {
         console.log('No element in the database meets the search criteria');
     });
 
@@ -56,26 +56,26 @@ findPromise2
 /* user.js -- mongooseUser.findMultiple */
 
 /* Retrieve multiple users from the database with multiple search criteria */
-var findPromise3 = mongooseUser.findMultiple({name : 'Anne', email: 'example@example.com'});
+let findPromise3 = mongooseUser.findMultiple({name: 'Anne', email: 'example@example.com'});
 findPromise3
-    .then(function (users) {
-        for (var i = 0; i < users.length; i++) {
+    .then(function(users) {
+        for (let i = 0; i < users.length; i++) {
             console.log(users[i].debugPrinting());
         }
     })
-    .catch(function (err) {
+    .catch(function(err) {
         console.log('No element in the database meets the search criteria');
     });
 
 /* Retrieve multiple users from the database with multiple search criteria. Throws error */
-var findPromise4 = mongooseUser.findMultiple({name : 'Anne', email: 'invalid@example.com'});
+let findPromise4 = mongooseUser.findMultiple({name: 'Anne', email: 'invalid@example.com'});
 findPromise4
-    .then(function (users) {
-        for (var i = 0; i < users.length; i++) {
+    .then(function(users) {
+        for (let i = 0; i < users.length; i++) {
             console.log(users[i].debugPrinting());
         }
     })
-    .catch(function (err) {
+    .catch(function(err) {
         console.log('No element in the database meets the search criteria');
     });
 
@@ -83,12 +83,12 @@ findPromise4
 /* user.js -- mongooseUser.removeUser */
 
 /* Remove the first entry from the database matching the search criteria */
-var removePromise1 = mongooseUser.removeUser({name : 'Anne'});
+let removePromise1 = mongooseUser.removeUser({name: 'Anne'});
 removePromise1
-    .then(function () {
+    .then(function() {
         console.log('User removed');
     })
-    .catch(function (err) {
+    .catch(function(err) {
         console.log('No element in the database meets the deletion criteria');
     });
 
@@ -96,21 +96,21 @@ removePromise1
 /* user.js -- mongooseUser.removeMultiple */
 
 /* Removes all entries from the database matching the search criteria */
-var removePromise2 = mongooseUser.removeMultiple({name : 'Bobby'});
+let removePromise2 = mongooseUser.removeMultiple({name: 'Bobby'});
 removePromise2
-    .then(function () {
+    .then(function() {
         console.log('Users removed');
     })
-    .catch(function (err) {
+    .catch(function(err) {
         console.log('No element in the database meets the deletion criteria');
     });
 
 /* Clears the database */
-var removePromise3 = mongooseUser.removeMultiple({});
+let removePromise3 = mongooseUser.removeMultiple({});
 removePromise3
-    .then(function () {
+    .then(function() {
         console.log('Database cleared');
     })
-    .catch(function (err) {
+    .catch(function(err) {
         console.log('No element in the database meets the deletion criteria');
     });

@@ -1,0 +1,5 @@
+{
+    "dbConfig" : {
+        "host": "mongodb://cloud-vm-45-124.doc.ic.ac.uk:27017"
+    }
+}
