@@ -1,9 +1,10 @@
-var exports = module.exports = {};
 const userDB = require('../mongoose/user');
 const bodyParser = require('body-parser');
 const bcyrpt = require('bcrypt');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const expressValidator = require('express-validator');
+const session = require('express-session');
 
 const saltRounds = 10;
 
@@ -12,7 +13,7 @@ passport.use(new LocalStrategy(
     (username, password, done) => {
         /* get the user using username */
         /* get the user hash */
-        let promisedUser = userDB.find({ username: username });
+        let promisedUser = userDB.find({username: username});
         promisedUser
             .then((user) => {
                 bcyrpt.compare(password, user.password, (err, isMatch) => {
@@ -34,7 +35,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((username, done) => {
-    let promisedUser = userDB.find({ username: username });
+    let promisedUser = userDB.find({username: username});
     promisedUser
         .then((user) => {
             done(null, user);
@@ -45,10 +46,40 @@ passport.deserializeUser((username, done) => {
         });
 });
 
-/* set up the passport */
+/* Setup express to enable login session.
+ * The callback function should only have paramenter app (configed express)
+ */
+exports.setup = (app, callback) => {
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(expressValidator({
+        errorFormatter: function(param, msg, value) {
+            let namespace = param.split('.');
+            let formParam = namespace.shift();
+
+            while (namespace.length) {
+                formParam += '[' + namespace.shift() + ']';
+            }
+            return {
+                param: formParam,
+                msg: msg,
+                value: value,
+            };
+        },
+    }));
+    app.use(session({
+        secret: 'secrettobechanged',
+        saveUninitialized: true,
+        resave: true,
+    }));
+    app.use(passport.initialize());
+    app.use(passport.session());
+    callback(app);
+};
+
 /* Checks the registration fields
  * Param: req from post method
- *        callback function should accept boolean 
+ *        callback function should accept boolean
  */
 exports.checkRegisterFields = (req, callback) => {
     req.checkBody('name', 'name is required').notEmpty();
@@ -60,13 +91,12 @@ exports.checkRegisterFields = (req, callback) => {
     callback(req.validationErrors());
 };
 
-exports.addUser= (req, res) => {
+exports.addUser = (req, res) => {
     bcyrpt.hash(req.body.password, saltRounds, (err, hash) => {
         if (err) {
             console.log('failed to create hashed password!');
             throw (err);
         } else {
-            console.log('hashed password' + hash);
             let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username);
             userDB.saveUser(user);
             /* redirect to the index page */
@@ -75,12 +105,15 @@ exports.addUser= (req, res) => {
     });
 };
 
+/* Pass this function inside router.get to redirect the user to login screen
+ * if they are not logged in already
+ */
 exports.ensureAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  /* force the user to login before accessing this page */
-  res.redirect('/users/login');
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    /* force the user to login before accessing this page */
+    res.redirect('/users/login');
 };
 
 

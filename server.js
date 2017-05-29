@@ -1,58 +1,28 @@
 const express = require('express');
 const path = require('path');
-const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
-const expressValidator = require('express-validator');
-const session = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-let routes = require('./server/routes/index');
-let users = require('./server/routes/users');
+const authentication = require('./server/authentication/authentication');
+const routes = require('./server/routes/index');
+const users = require('./server/routes/users');
 
 let app = express();
 
 app.set('views', path.join(__dirname, '/server/views'));
 app.engine('handlebars', exphbs({
   defaultLayout: 'layout',
-  layoutsDir: './server/views/layouts/'}));
+  layoutsDir: './server/views/layouts/',
+}));
 app.set('view engine', 'handlebars');
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-
 app.use(express.static(path.join(__dirname, '/server/public')));
 
-app.use(session({
-  secret: 'secrettobechanged',
-  saveUninitialized: true,
-  resave: true
-}));
+authentication.setup(app, (app) => {
+  /* Set the URI here */
+  app.use('/', routes);
+  app.use('/users', users);
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(expressValidator({
-  errorFormatter: function(param, msg, value) {
-    let namespace = param.split('.');
-    let formParam =  namespace.shift();
-
-    while(namespace.length) {
-      formParam += '[' + namespace.shift() + ']';
-    }
-    return {
-      param : formParam,
-      msg   : msg,
-      value : value
-    };
-  }
-}));
-
-/* Set the URI here */
-app.use('/', routes);
-app.use('/users', users);
-
-/* Set the port here */
-app.set('port', (process.env.PORT || 3000));
-app.listen(app.get('port'), ()=> {
-  console.log('started server on port ' + app.get('port'));
+  /* Set the port here */
+  app.set('port', (3000));
+  app.listen(app.get('port'), () => {
+    console.log('started server on port ' + app.get('port'));
+  });
 });
