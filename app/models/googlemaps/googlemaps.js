@@ -151,5 +151,5 @@ function saveInDatabase(finalPlaces, randomPlaces, randomPlace, cb) {
         });
 }
 
-module.exports = {searchAroundLocation};
+module.exports = {searchAroundLocation, convertFormat, avgTimes, chooseRandomPlaces};
 
