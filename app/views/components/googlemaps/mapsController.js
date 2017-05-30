@@ -22,7 +22,7 @@ angular.module('paging').controller('PostLocation', function($scope, $http) {
             /* Angular HTTP post
              * Given a URL and a JSON (location), issues a post request on the given URL.
              * Returns a Promise, thus the .then() function */
-            $http.post(url, location)
+            $http.post(url, fields)
                 .then(function(response) {
                     /* Data is packaged into a nasty JSON format.
                      * To access it first one must retrieve the *.data part to distinguish from header */
