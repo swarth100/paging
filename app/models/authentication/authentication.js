@@ -100,7 +100,7 @@ exports.addUser = (req, res) => {
             let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username);
             userDB.saveUser(user);
             /* redirect to the index page */
-            res.render('index');
+            res.redirect('/');
         }
     });
 };
