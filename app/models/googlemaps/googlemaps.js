@@ -8,15 +8,21 @@ function searchAroundLocation(queryData, cb) {
         key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
     });
 
+    let temporaryQueryData = {
+        location: JSON.parse(queryData.location),
+        radius: queryData.radius,
+        type: queryData.type,
+    };
+
     /* Place the radar and return the result to the callback function */
-    googleMapsClient.placesRadar(queryData, function (err, response) {
+    googleMapsClient.placesRadar(temporaryQueryData, function (err, response) {
         if (err) {
             console.log(err);
         } else {
             // Location can be found in
             // response.json.result[index].geometry.location.{lat/lng};
 
-            let randomPlaces = chooseRandomPlaces(response, queryData.type);
+            let randomPlaces = chooseRandomPlaces(response, temporaryQueryData.type);
 
             findInDatabase(randomPlaces, cb);
         }
