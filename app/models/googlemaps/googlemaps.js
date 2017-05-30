@@ -2,7 +2,6 @@
  * Performs a radar search via the Google API around the given location.
  * On return calls the callback function */
 function searchAroundLocation(location, cb) {
-
     let googleMapsClient = require('@google/maps').createClient({
         key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
     });
@@ -15,7 +14,7 @@ function searchAroundLocation(location, cb) {
     };
 
     /* Place the radar and return the result to the callback function */
-    googleMapsClient.placesRadar(query, function (err, response) {
+    googleMapsClient.placesRadar(query, function(err, response) {
         if (err) {
             console.log(err);
         } else {
