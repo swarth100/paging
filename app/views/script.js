@@ -1,6 +1,6 @@
-angular.module('paging', []).controller('MainController', function($scope) {
+angular.module('paging', []).controller('MainController', function($scope, $filter) {
     $scope.location = 'Current Location';
-    $scope.datetime = '';
-    $scope.duration = 1;
-    $scope.radius = 3;
+    $scope.datetime = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm'); ;
+    $scope.duration = 60;
+    $scope.radius = 1000;
 });
