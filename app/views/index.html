@@ -4,41 +4,30 @@
         <meta charset="utf-8"/>
         <title>LoginApp</title>
 
+        <!-- Bootstrap
+             Please DO NOT MODIFY. This is utter magic and must remain as such -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
         <!-- Include AngularJS from Google's CDN -->
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
 
-<<<<<<< HEAD
-    <!-- Include our own Angular script -->
-    <script src="script.js"></script>
-    <script src="components/home/home.js"></script>
-    <script src="components/login/login.js"></script>
-    <script src="components/register/register.js"></script>
+        <!-- Include our own Angular script -->
+        <script src="script.js"></script>
+        <script src="components/home/home.js"></script>
+        <script src="components/login/login.js"></script>
+        <script src="components/register/register.js"></script>
 
-    <!-- Controllers -->
-    <script src="./components/googlemaps/mapsController.js"></script>
-
-</head>
+    </head>
 
 <!-- Bind the following body to the googleMaps model -->
-<body ng-app="paging" ng-controller="MainController">
-
-    <!-- The following is the controller for the post location -->
-    <div id="map" style="height: 400px; width: 100%;" ng-controller="PostLocation"></div>
-
-    <!-- Google script. Might have been a problem with asynchroniousity -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8">
-    </script>
+<body ng-app="paging">
 
     <!-- The following view will be replaced by dynamically chosen content -->
     <div ng-view>Loading ...</div>
 
-    <form ng-submit="submitFields()">
-        Location: <input type="text" name="location" ng-model="location" autocomplete="on">
-        Date and Time: <input type="datetime" name="datetime" ng-model="datetime">
-        Duration: <input type="number" name="duration" ng-model="duration">
-        Radius: <input type="number" name="radius" ng-model="radius">
-        Search: <input type="submit">
-    </form>
+    <!-- Google script. Might have been a problem with asynchroniousity -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8">
+    </script>
 
     </body>
 </html>
