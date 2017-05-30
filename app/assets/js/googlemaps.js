@@ -1,11 +1,12 @@
-function searchAroundLocation(location, socket, fn) {
+function searchAroundLocation(location, cb) {
+
     let googleMapsClient = require('@google/maps').createClient({
         key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
     });
 
     let query = {
         location: location,
-        radius: 1000,
+        radius: 2000,
         type: 'museum',
     };
 
@@ -15,7 +16,7 @@ function searchAroundLocation(location, socket, fn) {
         } else {
             // Location can be found in
             // response.json.result[index].geometry.location.{lat/lng};
-            fn(location, response);
+            cb(response);
         }
     });
 }
