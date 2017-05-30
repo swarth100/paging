@@ -1,8 +1,11 @@
 const express = require('express');
 const authentication = require('./app/models/authentication/authentication');
-const routes = require('./app/routes/index');
+const indexRoute = require('./app/routes/index');
+const loginRoute = require('./app/routes/login');
+const registerRoute = require('./app/routes/register');
 const path = require('path');
 const bodyParser = require('body-parser');
+const expressValidator = require('express-validator');
 
 /* Defines the application */
 let app = express();
@@ -13,10 +16,13 @@ authentication.setup(app, (app) => {
      * Access the variable via the *.body field */
     app.use(bodyParser.urlencoded({extended: false}));
     app.use(bodyParser.json());
+    app.use(expressValidator());
 
     /* Set the URI here */
     app.use(express.static(path.join(__dirname, '/app/views')));
-    app.use(routes);
+    app.use(indexRoute);
+    app.use(loginRoute);
+    app.use(registerRoute);
 
     /* Sets the server to port 3000.
      * Openes port 3000 to listen for connections */

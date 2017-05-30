@@ -1,8 +1,12 @@
+<!-- Include the shared layout navbar -->
+<div ng-include="'../shared/layout.html'"></div>
+
+<!-- Login form handled by controller in login.js -->
 <h2 class="page-header">Login</h2>
-<form method="post" action="/users/login">
+<form ng-controller="loginFormCtrl">
     <label>Username</label>
-    <input type="text" class="form-control" placeholder="Username" name="username">
+    <input type="text" class="form-control" placeholder="Username" name="username" ng-model="username">
     <label>Password</label>
-    <input type="password" class="form-control" placeholder="Password" name="password">
-    <button type="submit" class="btn btn-default">Login</button>
+    <input type="password" class="form-control" placeholder="Password" name="password" ng-model="password">
+    <button type="submit" class="btn btn-default" ng-click="submit()">Login</button>
 </form>

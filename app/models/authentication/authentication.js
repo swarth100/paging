@@ -100,7 +100,7 @@ exports.addUser = (req, res) => {
             let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username);
             userDB.saveUser(user);
             /* redirect to the index page */
-            res.render('index');
+            res.send(JSON.stringify({'url': '/login'}));
         }
     });
 };
@@ -109,11 +109,9 @@ exports.addUser = (req, res) => {
  * if they are not logged in already
  */
 exports.ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
+    if (!req.isAuthenticated()) {
         return next();
     }
-    /* force the user to login before accessing this page */
-    res.redirect('/users/login');
 };
 
 

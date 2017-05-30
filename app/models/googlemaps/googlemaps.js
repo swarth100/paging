@@ -15,7 +15,7 @@ function searchAroundLocation(queryData, cb) {
     };
 
     /* Place the radar and return the result to the callback function */
-    googleMapsClient.placesRadar(temporaryQueryData, function (err, response) {
+    googleMapsClient.placesRadar(temporaryQueryData, function(err, response) {
         if (err) {
             console.log(err);
         } else {
@@ -26,7 +26,7 @@ function searchAroundLocation(queryData, cb) {
 
             findInDatabase(randomPlaces, cb);
         }
-    })
+    });
 }
 
 const avgTimes = {
@@ -66,7 +66,7 @@ function cleanLocationDatabase() {
         });
 }
 
-/**
+/*
  * Given a result returned by Google, converts it to a format usable by our
  * database.
  */
@@ -79,7 +79,7 @@ function convertFormat(searchResult, type) {
     return mongooseLocation.createNewLocation(id, avgtime, latitude, longitude);
 }
 
-/**
+/*
  * Chooses random places from the results returned by Google.
  * Returns them formatted in a way that can be used by the database.
  */
@@ -96,12 +96,12 @@ function chooseRandomPlaces(response, type) {
     return randomPlaces;
 }
 
-/**
+/*
  * Tries to locate the chosen random places in the database. Ends up
  * returning the results to the user.
  */
 function findInDatabase(randomPlaces, cb) {
-    let promises = randomPlaces.map(function (entry) {
+    let promises = randomPlaces.map(function(entry) {
         return mongooseLocation.find({id: entry.id});
     });
 
@@ -109,19 +109,19 @@ function findInDatabase(randomPlaces, cb) {
 
     for (let i = 0; i < randomPlaces.length; i++) {
         promises[i]
-            .then(function (result) {
+            .then(function(result) {
                 finalPlaces.push(result);
                 if (finalPlaces.length === randomPlaces.length) {
                     cb(finalPlaces);
                 }
             })
-            .catch(function (err) {
+            .catch(function(err) {
                 saveInDatabase(finalPlaces, randomPlaces, randomPlaces[i], cb);
             });
     }
 }
 
-/**
+/*
  * If a location is not found in the database this function tries to insert
  * it. If the insertion fails, then something has gone horribly wrong.
  */
@@ -129,13 +129,13 @@ function saveInDatabase(finalPlaces, randomPlaces, randomPlace, cb) {
     let promise = mongooseLocation.saveLocation(randomPlace);
 
     promise
-        .then(function (result) {
+        .then(function(result) {
             finalPlaces.push(result);
             if (finalPlaces.length === randomPlaces.length) {
                 cb(finalPlaces);
             }
         })
-        .catch(function (err) {
+        .catch(function(err) {
             console.log(randomPlace);
             console.log('Something has gone horribly wrong');
         });
