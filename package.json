@@ -10,10 +10,12 @@
     ]
   },
   "scripts": {
-    "prepush": "lint-staged",
+    "precommit": "lint-staged",
+    "pretest": "./setup_scripts/database_start.sh",
     "test": "./node_modules/.bin/mocha",
     "lint": "./node_modules/.bin/eslint .",
     "build": "echo \"no build\"",
+    "prestart": "./setup_scripts/database_start.sh",
     "start": "node server"
   },
   "repository": {
@@ -39,11 +41,14 @@
     "socket.io": "^2.0.1"
   },
   "devDependencies": {
-    "mocha": "^3.4.2",
     "chai": "^4.0.0",
     "eslint": "^3.19.0",
     "eslint-config-google": "^0.7.1",
     "husky": "^0.13.4",
-    "lint-staged": "^3.5.0"
+    "lint-staged": "^3.5.0",
+    "mocha": "^3.4.2",
+    "request": "^2.81.0",
+    "supertest": "^3.0.0",
+    "sinon": "^2.3.2"
   }
 }
