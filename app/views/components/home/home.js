@@ -5,14 +5,10 @@
 app.controller('postLocation', function($scope, $http) {
     /* Post requests for googlemaps go to the following URL */
     let url = '/googlemaps';
-
-    console.log('Got here');
-
     /* DO NOT use firefox browser.
-     * Geolocalisation seems to not be supported :/ */
+     * Geolocalisation seems to not be supported :confused: */
     $scope.$on('submit', function() {
         if (navigator.geolocation) {
-            console.log('Submit pressed');
             navigator.geolocation.getCurrentPosition(postFields);
         } else {
             /* Muhahahaha someone used Firefox */
@@ -22,10 +18,12 @@ app.controller('postLocation', function($scope, $http) {
 
     /* Initialise the client-sided rendering of the map */
     function initMap(location, results) {
+        console.log(location);
+        console.log(results);
         /* Initialise the map via the Google API */
         let map = new google.maps.Map(document.getElementById('map'), {
             center: location,
-            zoom: 14,
+                zoom: 14,
         });
 
         /* Initialise the marker */
@@ -34,25 +32,34 @@ app.controller('postLocation', function($scope, $http) {
             map: map,
         });
 
+        /* Initialise the radius */
+        let radius = new google.maps.Circle({
+            strokeColor: '#FF0000 ',
+        strokeOpacity: 0.1,
+            strokeWeight: 1,
+            fillColor: '#FF0000 ',
+        fillOpacity: 0.1,
+            map: map,
+            center: location,
+            radius: $scope.radius,
+    });
 
         /* Responses, returned by the googlemaps.js (assets/js) are packaged as follow:
          * response.json.result[index].geometry.location.{lat/lng}.
          * This code iterates through all returned positions, setting them up on the map */
-        for (let i = 0; i < results.json.results.length; i++) {
+        for (let i = 0; i < results.length; i++) {
             let marker = new google.maps.Marker({
-                position: results.json.results[i].geometry.location,
+                position: {lat: results[i].latitude, lng: results[i].longitude},
                 map: map,
                 icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    scale: 10,
+                    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                    scale: 3,
                 },
             });
         }
     }
 
     function postFields(position) {
-        console.log('Post Fields called');
-
         /* Initialise the location JSON */
         let location = {
             lat: position.coords.latitude,
@@ -65,7 +72,7 @@ app.controller('postLocation', function($scope, $http) {
             avgtime: $scope.duration,
             radius: $scope.radius,
             type: 'museum',
-        });
+    });
 
         /* Angular HTTP post
          * Given a URL and a JSON (location), issues a post request on the given URL.
@@ -74,7 +81,6 @@ app.controller('postLocation', function($scope, $http) {
             .then(function(response) {
                 /* Data is packaged into a nasty JSON format.
                  * To access it first one must retrieve the *.data part to distinguish from header */
-                console.log('Attempting to initMap');
                 initMap(location, response.data);
             }, function(response) {
                 console.log('Failure when accessing googleMaps');
