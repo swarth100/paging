@@ -10,10 +10,11 @@
     ]
   },
   "scripts": {
-    "prepush": "lint-staged",
+    "precommit": "lint-staged",
     "test": "./node_modules/.bin/mocha",
     "lint": "./node_modules/.bin/eslint .",
     "build": "echo \"no build\"",
+    "prestart": "./setup_scripts/database_start.sh",
     "start": "node server"
   },
   "repository": {
@@ -36,7 +37,8 @@
     "mongoose-unique-validator": "^1.0.5",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
-    "socket.io": "^2.0.1"
+    "socket.io": "^2.0.1",
+    "supertest": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^4.0.0",
