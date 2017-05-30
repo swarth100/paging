@@ -60,4 +60,3 @@ angular.module('googleMaps', []).controller('postLocation', function($scope, $ht
         }
     }
 });
-
