@@ -1,14 +1,18 @@
+<!-- Include the shared layout navbar -->
+<div ng-include="'../shared/layout.html'"></div>
+
+<!-- Registration form handled by controller in register.js -->
 <h2 class="page-header">Register</h2>
-<form method="post" action="/users/register">
+<form ng-controller="registerFormCtrl">
     <label>Name</label>
-    <input type="text" class="form-control" placeholder="Name" name="name">
+    <input type="text" class="form-control" placeholder="Name" name="name" ng-model="name">
     <label>Username</label>
-    <input type="text" class="form-control" placeholder="Username" name="username">
+    <input type="text" class="form-control" placeholder="Username" name="username" ng-model="username">
     <label>Email</label>
-    <input type="email" class="form-control" placeholder="Email" name="email">
+    <input type="email" class="form-control" placeholder="Email" name="email" ng-model="email">
     <label>Password</label>
-    <input type="password" class="form-control" placeholder="Password" name="password">
+    <input type="password" class="form-control" placeholder="Password" name="password" ng-model="password">
     <label>Confirm Password</label>
-    <input type="password" class="form-control" placeholder="Password" name="password2">
-    <button type="submit" class="btn btn-default">Submit</button>
+    <input type="password" class="form-control" placeholder="Password" name="password2" ng-model="password2">
+    <button type="submit" class="btn btn-default" ng-click="submit()">Submit</button>
 </form>
