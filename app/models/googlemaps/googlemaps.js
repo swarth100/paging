@@ -124,7 +124,6 @@ function saveInDatabase(finalPlaces, randomPlaces, randomPlace, cb) {
 
     promise
         .then(function (result) {
-            console.log('Saving entry to database');
             finalPlaces.push(result);
             if (finalPlaces.length === randomPlaces.length) {
                 cb(finalPlaces);
