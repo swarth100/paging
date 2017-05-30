@@ -4,6 +4,6 @@ angular.module('paging', []).controller('MainController', function($scope, $filt
     $scope.duration = 60;
     $scope.radius = 1000;
     $scope.submitFields = () => {
-        alert('Hello');
-     };
+        $scope.$broadcast('submit');
+    };
 });
