@@ -11,14 +11,15 @@
     <script src="script.js"></script>
     <!-- Controllers -->
     <script src="./components/app/formController.js"></script>
+    <script src="./components/googlemaps/mapsController.js"></script>
 
 </head>
 
 <!-- Bind the following body to the googleMaps model -->
-<body ng-app="googleMaps">
+<body ng-app="paging">
 
 <!-- The following is the controller for the post location -->
-<div id="map" style="height: 400px; width: 100%;" ng-controller="postLocation"></div>
+<div id="map" style="height: 400px; width: 100%;" ng-controller="PostLocation"></div>
 
 <!-- Google script. Might have been a problem with asynchroniousity -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8">
