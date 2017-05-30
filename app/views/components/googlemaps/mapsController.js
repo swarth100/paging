@@ -3,12 +3,14 @@ angular.module('paging').controller('PostLocation', function($scope, $http) {
     let url = '/googlemaps';
     /* DO NOT use firefox browser.
      * Geolocalisation seems to not be supported :/ */
-    if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(postFields);
-        } else {
-        /* Muhahahaha someone used Firefox */
-        console.log('GeoLoc not supported by browser');
-    }
+    $scope.$on('submit', function() {
+        if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(postFields);
+            } else {
+            /* Muhahahaha someone used Firefox */
+            console.log('GeoLoc not supported by browser');
+        }
+    });
 
     /* Initialise the client-sided rendering of the map */
     function initMap(location, results) {
@@ -53,18 +55,18 @@ angular.module('paging').controller('PostLocation', function($scope, $http) {
             avgtime: $scope.duration,
             radius: $scope.radius,
             type: 'museum',
- });
+        });
 
-            /* Angular HTTP post
-             * Given a URL and a JSON (location), issues a post request on the given URL.
-             * Returns a Promise, thus the .then() function */
-            $http.post(url, fields)
-                .then(function(response) {
-                    /* Data is packaged into a nasty JSON format.
-                     * To access it first one must retrieve the *.data part to distinguish from header */
-                    initMap(location, response.data);
-                }, function(response) {
-                    console.log('Failure when accessing googleMaps');
-                });
+        /* Angular HTTP post
+         * Given a URL and a JSON (location), issues a post request on the given URL.
+         * Returns a Promise, thus the .then() function */
+        $http.post(url, fields)
+            .then(function(response) {
+                /* Data is packaged into a nasty JSON format.
+                 * To access it first one must retrieve the *.data part to distinguish from header */
+                initMap(location, response.data);
+            }, function(response) {
+                console.log('Failure when accessing googleMaps');
+            });
         };
 });
