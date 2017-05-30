@@ -3,16 +3,23 @@
 <head>
     <meta charset="utf-8"/>
     <title>Learn AngularJS - Instant Search</title>
+
     <!-- Include AngularJS from Google's CDN -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+
+    <!-- Include our own Angular script -->
     <script src="script.js"></script>
 </head>
 
-<body ng-app="nomeACaso">
+<!-- Bind the following body to the googleMaps model -->
+<body ng-app="googleMaps">
 
-<div ng-controller="ngAppDemoController">
-    I can add: {{a}} + {{b}} =  {{ a+b }}
-</div>
+<!-- The following is the controller for the post location -->
+<div id="map" style="height: 400px; width: 100%;" ng-controller="postLocation"></div>
+
+<!-- Google script. Might have been a problem with asynchroniousity -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8">
+</script>
 
 </body>
 </html>
