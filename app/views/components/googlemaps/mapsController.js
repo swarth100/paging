@@ -26,17 +26,28 @@ angular.module('paging').controller('PostLocation', function($scope, $http) {
             map: map,
         });
 
+        /* Initialise the radius */
+        let radius = new google.maps.Circle({
+            strokeColor: '#FF0000',
+            strokeOpacity: 0.1,
+            strokeWeight: 1,
+            fillColor: '#FF0000',
+            fillOpacity: 0.1,
+            map: map,
+            center: location,
+            radius: $scope.radius,
+        });
 
         /* Responses, returned by the googlemaps.js (assets/js) are packaged as follow:
          * response.json.result[index].geometry.location.{lat/lng}.
          * This code iterates through all returned positions, setting them up on the map */
-        for (let i = 0; i < results.json.results.length; i++) {
+        for (let i = 0; i < results.length; i++) {
             let marker = new google.maps.Marker({
-                position: results.json.results[i].geometry.location,
+                position: {lat: results[i].latitude, lng: results[i].longitude},
                 map: map,
                 icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    scale: 10,
+                    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                    scale: 3,
                 },
             });
         }

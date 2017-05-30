@@ -30,7 +30,7 @@ locationsDB.once('open', function() {
 
 let locationsSchema = new Schema({
     id: {
-        type: Number,
+        type: String,
         unique: true,
         required: true,
     },
@@ -65,7 +65,7 @@ locationsSchema.methods.debugPrinting = function() {
  * Used to initialise fields upon saving
  * */
 locationsSchema.pre('save', function(next) {
-    this.time = Date.now();
+    this.feedbackcount = 1;
 
     // TODO: Handle checks before invoking next
     // Next can be invoked with an error to make it cascade through
