@@ -21,7 +21,15 @@ exports.saveHelper = function(elem) {
 exports.findHelper = function(DB, p) {
     return DB.findOne(p, function(err, obj) {
         if (err) console.log('[Database] find : error');
-        else console.log('[Database] find : success');
+        return obj;
+    }).then(function(elem) {
+        if (!elem) {
+            console.log('[Database] find : error');
+            throw new Error('Error while finding within database. Possibly entry not present.');
+        } else {
+            console.log('[Database] find : success');
+            return elem;
+        }
     });
 };
 
