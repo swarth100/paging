@@ -1,7 +1,6 @@
 angular.module('paging').controller('PostLocation', function($scope, $http) {
     /* Post requests for googlemaps go to the following URL */
     let url = '/googlemaps';
-
     /* DO NOT use firefox browser.
      * Geolocalisation seems to not be supported :/ */
     if (navigator.geolocation) {
@@ -11,6 +10,14 @@ angular.module('paging').controller('PostLocation', function($scope, $http) {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude,
             };
+
+            let fields = JSON.stringify({
+                location: JSON.stringify(location),
+                datetime: $scope.datetime,
+                duration: $scope.duration,
+                radius: $scope.radius,
+                tags: 'museum',
+            });
 
             /* Angular HTTP post
              * Given a URL and a JSON (location), issues a post request on the given URL.
