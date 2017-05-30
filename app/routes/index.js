@@ -2,7 +2,7 @@
 
 const express = require('express');
 const path = require('path');
-const googlemaps = require('./../assets/js/googlemaps');
+const googlemaps = require('../models/googlemaps/googlemaps');
 const router = new express.Router();
 
 /* TODO: Look into redirect AND sending file */
