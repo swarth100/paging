@@ -1,7 +1,14 @@
 <!-- Bind the following body to the googleMaps model -->
 <body ng-app="app">
 
+<!-- Include the shared layout navbar -->
 <div ng-include="'../shared/layout.html'"></div>
+
+<!-- Handle entry redirection -->
+<!-- TODO: Avoid flashing this request. Actually switch on variables -->
+<div ng-controller="entryRedirect"></div>
 
 <!-- The following is the controller for the post location -->
 <div id="map" style="height: 400px; width: 100%;" ng-controller="postLocation"></div>
+
+</body>
