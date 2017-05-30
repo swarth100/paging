@@ -1,4 +1,4 @@
-angular.module('paging', []).controller('FormController', ['$scope', function($scope) {
+angular.module('paging').controller('FormController', ['$scope', function($scope) {
   $scope.location = 'Current Location';
   $scope.datetime = '';
   $scope.duration = 1;
