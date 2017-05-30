@@ -9,17 +9,29 @@
 
     <!-- Include our own Angular script -->
     <script src="script.js"></script>
+    <!-- Controllers -->
+    <script src="./components/app/formController.js"></script>
+    <script src="./components/googlemaps/mapsController.js"></script>
+
 </head>
 
 <!-- Bind the following body to the googleMaps model -->
-<body ng-app="googleMaps">
+<body ng-app="paging" ng-controller="MainController">
 
 <!-- The following is the controller for the post location -->
-<div id="map" style="height: 400px; width: 100%;" ng-controller="postLocation"></div>
+<div id="map" style="height: 400px; width: 100%;" ng-controller="PostLocation"></div>
 
 <!-- Google script. Might have been a problem with asynchroniousity -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8">
 </script>
+
+<form ng-controller="FormController" ng-submit="submitFields()">
+    Location: <input type="text" name="location" ng-model="location">
+    Date and Time: <input type="datetime" name="datetime" ng-model="datetime">
+    Duration: <input type="number" name="duration" ng-model="duration">
+    Radius: <input type="number" name="radius" ng-model="radius">
+    Search: <input type="submit">
+</form>
 
 </body>
 </html>
