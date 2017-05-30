@@ -9,7 +9,7 @@ function searchAroundLocation(location, cb) {
     /* Package a JSON format query for the radar */
     let query = {
         location: location,
-        radius: 2000,
+        radius: 1000,
         type: 'museum',
     };
 
