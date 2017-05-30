@@ -4,34 +4,8 @@ angular.module('paging').controller('PostLocation', function($scope, $http) {
     /* DO NOT use firefox browser.
      * Geolocalisation seems to not be supported :/ */
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            /* Initialise the location JSON */
-            let location = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-            };
-
-            let fields = JSON.stringify({
-                location: JSON.stringify(location),
-                datetime: $scope.datetime,
-                duration: $scope.duration,
-                radius: $scope.radius,
-                tags: 'museum',
-            });
-
-            /* Angular HTTP post
-             * Given a URL and a JSON (location), issues a post request on the given URL.
-             * Returns a Promise, thus the .then() function */
-            $http.post(url, fields)
-                .then(function(response) {
-                    /* Data is packaged into a nasty JSON format.
-                     * To access it first one must retrieve the *.data part to distinguish from header */
-                    initMap(location, response.data);
-                }, function(response) {
-                    console.log('Failure when accessing googleMaps');
-                });
-        });
-    } else {
+            navigator.geolocation.getCurrentPosition(postFields);
+        } else {
         /* Muhahahaha someone used Firefox */
         console.log('GeoLoc not supported by browser');
     }
@@ -50,6 +24,7 @@ angular.module('paging').controller('PostLocation', function($scope, $http) {
             map: map,
         });
 
+
         /* Responses, returned by the googlemaps.js (assets/js) are packaged as follow:
          * response.json.result[index].geometry.location.{lat/lng}.
          * This code iterates through all returned positions, setting them up on the map */
@@ -64,4 +39,32 @@ angular.module('paging').controller('PostLocation', function($scope, $http) {
             });
         }
     }
+
+    function postFields(position) {
+        /* Initialise the location JSON */
+        let location = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+        };
+
+        let fields = JSON.stringify({
+            location: JSON.stringify(location),
+            datetime: $scope.datetime,
+            avgtime: $scope.duration,
+            radius: $scope.radius,
+            type: 'museum',
+ });
+
+            /* Angular HTTP post
+             * Given a URL and a JSON (location), issues a post request on the given URL.
+             * Returns a Promise, thus the .then() function */
+            $http.post(url, fields)
+                .then(function(response) {
+                    /* Data is packaged into a nasty JSON format.
+                     * To access it first one must retrieve the *.data part to distinguish from header */
+                    initMap(location, response.data);
+                }, function(response) {
+                    console.log('Failure when accessing googleMaps');
+                });
+        };
 });
