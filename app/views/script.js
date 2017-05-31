@@ -6,7 +6,15 @@ app.config(function($routeProvider, $locationProvider) {
     $routeProvider
         .when('/',
             {
+                templateUrl: 'components/index/index.html',
+            })
+        .when('/home',
+            {
                 templateUrl: 'components/home/home.html',
+            })
+        .when('/app',
+            {
+                templateUrl: 'components/app/app.html',
             })
         .when('/login',
             {
@@ -20,4 +28,14 @@ app.config(function($routeProvider, $locationProvider) {
 
     /* TODO: Handle default redirection */
     // .otherwise( {redirectTo: '/'} );
+});
+
+app.factory('Search', function() {
+    return {
+        location: '',
+        datetime: '',
+        duration: '',
+        radius: '',
+        type: '',
+    };
 });
