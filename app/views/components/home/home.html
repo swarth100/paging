@@ -4,22 +4,68 @@
 <div ng-controller="homeController">
 
     <div class="row" style="margin-top: 60vh;">
-        <div class="col-md-10 col-md-offset-1">
-            <form class="form-horizontal" ng-submit="submitFields()" >
-                <div class="input-group">
-                    <span class="input-group-addon" id="location-addon">Location</span>
-                    <input type="text" class="form-control" aria-describedby="location-addon" ng-model="homeSearch.location" autocomplete="on"> 
-                    <span class="input-group-addon" id="datetime-addon">Date and Time</span>
-                    <input type="datetime" class="form-control" aria-describedby="datetime-addon" ng-model="homeSearch.datetime"> 
-                    <span class="input-group-addon" id="duration-addon">Duration</span>
-                    <input type="number" class="form-control" aria-describedby="duration-addon" ng-model="homeSearch.duration"> 
-                    <span class="input-group-addon" id="radius-addon">Radius</span>
-                    <input type="number" class="form-control" aria-describedby="radius-addon" ng-model="homeSearch.radius"> 
-                    <span class="input-group-addon" id="submit-addon">Search</span>
-                    <input type="submit" class="form-control" aria-describedby="submit-addon"> 
+        <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1">
+            <form class="form" ng-submit="submitFields()">
+                <div class="row">
+                    <div class="col-sm-12 col-md-3" style="padding-right:0;padding-left:0;">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">@</span>
+                            <input type="text" class="form-control" aria-describedby="basic-addon1" ng-model="homeSearch.location" autocomplete="on">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3" style="padding-right:0;padding-left:0;">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon2">@</span>
+                            <input type="datetime" class="form-control" aria-describedby="basic-addon2" ng-model="homeSearch.datetime">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-2" style="padding-right:0;padding-left:0;">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon3">@</span>
+                            <input type="number" class="form-control" aria-describedby="basic-addon3" ng-model="homeSearch.duration">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-2" style="padding-right:0;padding-left:0;">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon4">@</span>
+                            <input type="number" class="form-control" aria-describedby="basic-addon4" ng-model="homeSearch.radius">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-2" style="padding-right:0;padding-left:0;">
+                        <div>
+                            <p><button type="submit" class="btn btn-success btn-block">Submit</button></p>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+
+    <!---
+
+    <div class="row" style="margin-top: 60vh;">
+        <div class="col-md-10 col-md-offset-1">
+            <form class="form-horizontal" ng-submit="submitFields()" >
+                <div class="input-group">
+                    <span class="input-group-addon" id="location-addon">Location</span>
+                    <input type="text" class="form-control" aria-describedby="location-addon" ng-model="homeSearch.location" autocomplete="on">
+                    <span class="input-group-addon" id="datetime-addon">Date and Time</span>
+                    <input type="datetime" class="form-control" aria-describedby="datetime-addon" ng-model="homeSearch.datetime">
+                    <span class="input-group-addon" id="duration-addon">Duration</span>
+                    <input type="number" class="form-control" aria-describedby="duration-addon" ng-model="homeSearch.duration">
+                    <span class="input-group-addon" id="radius-addon">Radius</span>
+                    <input type="number" class="form-control" aria-describedby="radius-addon" ng-model="homeSearch.radius">
+                    <span class="input-group-addon" id="submit-addon">Search</span>
+                    <input type="submit" class="form-control" aria-describedby="submit-addon">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    -->
 
 </div>
