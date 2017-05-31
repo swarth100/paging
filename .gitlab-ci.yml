@@ -1,8 +1,11 @@
+stages:
+  - test
+  - deploy
+
 #Before script
-before_script:
+#before_script:
   # - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
   # - sudo apt-get install -y nodejs
-  - npm install --silent -q
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
@@ -17,17 +20,19 @@ cache:
 run_tests:
   stage: test
   script:
-   - npm run lint
-   - npm test
+    - npm install --silent -q
+    - npm run lint
+    - npm test
 
-run_deploy:
+deploy_project:
   stage: deploy
   script:
-    - ls && cd .. && tar -cvf webapps_29.tar ./webapps_29
+    - cd .. && tar -cf webapps_29.tar ./webapps_29
     - scp webapps_29.tar rm3115@146.169.45.133:/home/rm3115/webapps_29.tar
     - ssh -K rm3115@146.169.45.133
-    - pm2 stop all
-    - cd /home/rm3115 && rm -rf webapps_29 && tar -xvf webapps_29.tar
-    - cd webapps_29 && npm install && pm2 start server.js
+    - sudo npm install -g pm2
+    - pm2 delete all
+    - rm -rf webapps_29 && tar -xf webapps_29.tar && rm webapps_29.tar
+    - cd webapps_29 && npm install && /usr/bin/pm2 start server.js
   only:
     - master
