@@ -9,7 +9,7 @@
             <form ng-submit="submitFields()">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12" style="padding-right:0;">
-                        <div class="input-group row-no-padding">
+                        <div class="input-group">
                             <span class="input-group-addon" id="basic-addon1">@</span>
                             <input type="text" class="form-control" aria-describedby="basic-addon1" name="location" ng-model="appSearch.location" autocomplete="on">
                         </div>
@@ -36,6 +36,7 @@
                         </div>
                     </div>
 
+                    <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1" />
                 </div>
             </form>
 
