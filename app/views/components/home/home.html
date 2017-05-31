@@ -3,9 +3,9 @@
 
 <div ng-controller="homeController">
 
-    <div class="row">
+    <div class="row" style="margin-top: 60vh;">
         <div class="col-md-10 col-md-offset-1">
-            <div class="input-group">
+            <form class="form-horizontal" ng-submit="submitFields()" >
                 <div class="input-group">
                     <span class="input-group-addon" id="location-addon">Location</span>
                     <input type="text" class="form-control" aria-describedby="location-addon" ng-model="homeSearch.location" autocomplete="on"> 
@@ -16,9 +16,9 @@
                     <span class="input-group-addon" id="radius-addon">Radius</span>
                     <input type="number" class="form-control" aria-describedby="radius-addon" ng-model="homeSearch.radius"> 
                     <span class="input-group-addon" id="submit-addon">Search</span>
-                    <input type="submit" class="form-control" aria-describedby="submit-addon" ng-click="submitFields()"> 
+                    <input type="submit" class="form-control" aria-describedby="submit-addon"> 
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
