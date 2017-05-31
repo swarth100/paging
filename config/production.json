@@ -1,5 +1,5 @@
 {
     "dbConfig" : {
-        "host": "mongodb://cloud-vm-45-124.doc.ic.ac.uk:27017"
+        "host": "mongodb://heroku_fzbb2zqp:l405k9kisf00im6dae9qqojvs5@ds157521.mlab.com:57521/heroku_fzbb2zqp"
     }
 }
