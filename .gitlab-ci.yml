@@ -28,6 +28,8 @@ run_tests:
 run_deploy:
   stage: deploy
   script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - cd .. && tar -cvf webapps_29.tar ./webapps_29
     - scp webapps_29.tar rm3115@146.169.45.133:/home/rm3115/webapps_29.tar
