@@ -1,13 +1,57 @@
+<!--
+
+    DESKTOP VIEW:
+
+    Location
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    |         Location         |                                                                                |
+    +--------+--------+--------+                                                                                |
+    |      Date and Time       |                                                                                |
+    +--------+--------+--------+                                                                                |
+    |       Time spend         |                                   GOOGLE                                       |
+    +--------+--------+--------+                                    MAPS                                        |
+    |          Radius          |                                                                                |
+    +--------+--------+--------+                                                                                |
+                 3             |                                                                                |
+                               +                                                                                |
+                               |                                                                                |
+                               +--------+--------+--------+--------+--------+--------+--------+--------+--------+
+                                                                       9
+
+
+    MOBILE VIEW:
+
+    Location
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    |             Location              |                                                                       |
+    +--------+--------+--------+--------+                                                                       |
+    |           Date and Time           |                                                                       |
+    +--------+--------+--------+--------+                                                                       |
+    |            Time spend             |                                GOOGLE                                 |
+    +--------+--------+--------+--------+                                 MAPS                                  |
+    |              Radius               |                                                                       |
+    +--------+--------+--------+--------+                                                                       |
+                      4                 |                                                                       |
+                                        +                                                                       |
+                                        |                                                                       |
+                                        +--------+--------+--------+--------+--------+--------+--------+--------+
+                                                                            8
+
+ -->
+
 <div ng-controller="appController">
 
-    <!--
-    Bootstrap assigning a left column for the buttons,
-    right column for the map
-    -->
+    <!-- ROW div for the search bar -->
     <div class="row" style="margin-left: 0px; margin-right: 0px;">
+
+        <!-- Left search bar holder -->
         <div class="col-xs-6 col-sm-4 col-md-3" style="padding-right:0;padding-left:0;">
             <form ng-submit="submitFields()">
+
+                <!-- ROW div for the left search bar -->
                 <div class="row">
+
+                    <!-- Location input field -->
                     <div class="col-xs-12 col-sm-12 col-md-12" style="padding-right:0;">
                         <div class="input-group">
                             <span class="input-group-addon glyphicon glyphicon-pushpin" style="top: 0px;"></span>
@@ -15,6 +59,7 @@
                         </div>
                     </div>
 
+                    <!-- Date and Time input field -->
                     <div class="col-xs-12 col-sm-12 col-md-12" style="padding-right:0;">
                         <div class="input-group">
                             <span class="input-group-addon glyphicon glyphicon-calendar" style="top: 0px;"></span>
@@ -22,6 +67,7 @@
                         </div>
                     </div>
 
+                    <!-- Duration input field -->
                     <div class="col-xs-12 col-sm-12 col-md-12" style="padding-right:0;">
                         <div class="input-group">
                             <span class="input-group-addon glyphicon glyphicon-time" style="top: 0px;"></span>
@@ -29,6 +75,7 @@
                         </div>
                     </div>
 
+                    <!-- Radius input field -->
                     <div class="col-xs-12 col-sm-12 col-md-12" style="padding-right:0;">
                         <div class="input-group">
                             <span class="input-group-addon glyphicon glyphicon-record" style="top: 0px;"></span>
@@ -36,36 +83,16 @@
                         </div>
                     </div>
 
+                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
                     <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;" tabindex="-1" />
                 </div>
             </form>
-
         </div>
+
+        <!-- Right Google Maps holder -->
         <div class="col-xs-6 col-sm-8 col-md-9" style="padding-right:0;">
             <!-- The following is the controller for the post location -->
             <div id="map" style="height: calc(100vh - 55px); width: 100%;" ng-controller="postLocation"></div>
         </div>
     </div>
-
-    <!--
-        <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <form class="form-horizontal" ng-submit="submitFields()">
-                <div class="input-group">
-                    <span class="input-group-addon" id="location-addon">Location</span>
-                    <input type="text" class="form-control" aria-describedby="location-addon" ng-model="homeSearch.location" autocomplete="on">
-                    <span class="input-group-addon" id="datetime-addon">Date and Time</span>
-                    <input type="datetime" class="form-control" aria-describedby="datetime-addon" ng-model="homeSearch.datetime">
-                    <span class="input-group-addon" id="duration-addon">Duration</span>
-                    <input type="number" class="form-control" aria-describedby="duration-addon" ng-model="homeSearch.duration">
-                    <span class="input-group-addon" id="radius-addon">Radius</span>
-                    <input type="number" class="form-control" aria-describedby="radius-addon" ng-model="homeSearch.radius">
-                    <span class="input-group-addon" id="submit-addon">Search</span>
-                    <input type="submit" class="form-control" aria-describedby="submit-addon">
-                </div>
-            </form>
-        </div>
-    </div>
-    -->
-
 </div>
