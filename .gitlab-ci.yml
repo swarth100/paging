@@ -20,12 +20,11 @@ cache:
 run_tests:
   stage: test
   script:
-    #- npm install --silent -q
-    #- npm run lint
-    #- npm test
-    - echo 'hello'
+    - npm install --silent -q
+    - npm run lint
+    - npm test
 
-run_deploy:
+deploy_project:
   stage: deploy
   script:
     - cd .. && tar -cf webapps_29.tar ./webapps_29
