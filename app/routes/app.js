@@ -4,10 +4,6 @@ const express = require('express');
 const googlemaps = require('../models/googlemaps/googlemaps');
 const router = new express.Router();
 
-router.get('/app', (req, res) => {
-
-});
-
 /* Post handler for /googlemaps */
 router.post('/googlemaps', function(req, res) {
     console.log('[index.html] : POST request to /googlemaps');

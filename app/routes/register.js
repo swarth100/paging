@@ -1,16 +1,8 @@
 /* */
 
-const userDB = require('../models/mongoose/user.js');
 const express = require('express');
-const bcyrpt = require('bcrypt');
 const passport = require('../models/authentication/authentication.js');
 const router = new express.Router();
-
-const saltRounds = 10;
-
-router.get('/register', (req, res) => {
-
-});
 
 /* Handle post requests on /users/register
  * Explicitally handles form submission for register credentials */
@@ -25,12 +17,12 @@ router.post('/users/register', (req, res) => {
     let error = req.validationErrors();
     if (error) {
         /* TODO send the error message down */
-        console.log('Failed to create a new user');
+        console.log('[Auth] user creation : failure');
         console.log(error);
         res.send(JSON.stringify({'url': '/register'}));
     } else {
         /* TODO send confirmation email */
-        console.log('creating the new user');
+        console.log('[Auth] user creation : success');
         passport.addUser(req, res);
     }
 });
