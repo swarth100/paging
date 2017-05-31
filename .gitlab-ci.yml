@@ -37,7 +37,7 @@ deploy_project:
     # - cd webapps_29 && npm install && /usr/bin/pm2 start server.js
     - git remote remove heroku
     - git remote add heroku https://heroku:d0650977-2a8e-411e-a104-11a1226ab042@git.heroku.com/webapps-paging.git
-    - git checkout -b master
+    - git checkout master || true
     - git push --force heroku master
   only:
     - master
