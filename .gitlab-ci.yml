@@ -27,12 +27,15 @@ run_tests:
 deploy_project:
   stage: deploy
   script:
-    - cd .. && tar -cf webapps_29.tar ./webapps_29
-    - scp webapps_29.tar rm3115@146.169.45.133:/home/rm3115/webapps_29.tar
-    - ssh -K rm3115@146.169.45.133
-    - sudo npm install -g pm2
-    - pm2 delete all || true
-    - rm -rf webapps_29 && tar -xf webapps_29.tar && rm webapps_29.tar
-    - cd webapps_29 && npm install && /usr/bin/pm2 start server.js
+    # - cd .. && tar -cf webapps_29.tar ./webapps_29
+    # - scp webapps_29.tar rm3115@146.169.45.133:/home/rm3115/webapps_29.tar
+    # - ssh -K rm3115@146.169.45.133
+    # - sudo npm install -g pm2
+    # - pm2 delete all || true
+    # - rm -rf webapps_29 && tar -xf webapps_29.tar && rm webapps_29.tar
+    # - cd webapps_29 && npm install && /usr/bin/pm2 start server.js
+    - git remote add heroku https://heroku:d0650977-2a8e-411e-a104-11a1226ab042@git.heroku.com/webapps-paging.git
+    - git push -f heroku master
   only:
     - master
+    - heroku
