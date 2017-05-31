@@ -31,8 +31,9 @@ authentication.setup(app, (app) => {
     app.use(indexRoute);
 
     /* Sets the server to port 3000.
-     * Openes port 3000 to listen for connections */
-    app.set('port', (3000));
+     * Opens port 3000 to listen for connections
+     * Otherwise use heroku provided port */
+    app.set('port', (3000 || process.env.PORT));
     app.listen(app.get('port'), () => {
         console.log('[Server] : open on port ' + app.get('port'));
     });
