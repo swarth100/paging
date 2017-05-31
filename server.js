@@ -22,11 +22,13 @@ authentication.setup(app, (app) => {
 
     /* Set the URI here */
     app.use(express.static(path.join(__dirname, '/app/views')));
-    app.use(indexRoute);
     app.use(loginRoute);
     app.use(registerRoute);
     app.use(homeRoute);
     app.use(appRoute);
+
+    /* Default routing. Keep at the end */
+    app.use(indexRoute);
 
     /* Sets the server to port 3000.
      * Openes port 3000 to listen for connections */

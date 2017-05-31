@@ -5,11 +5,6 @@ const path = require('path');
 const googlemaps = require('../models/googlemaps/googlemaps');
 const router = new express.Router();
 
-/* TODO: Look into redirect AND sending file */
-router.get('/', (req, res)=> {
-    res.sendFile(path.join(__dirname + '/../views/index.html'));
-});
-
 router.get('/users/index', (req, res)=> {
     res.send(JSON.stringify({'url': '/home'}));
 });
@@ -25,6 +20,12 @@ router.post('/googlemaps', function(req, res) {
         // res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(result));
     });
+});
+
+/* DEFAULT ROUTING
+ * Leave at end of index.js */
+router.get('*', (req, res)=> {
+    res.sendFile(path.join(__dirname + '/../views/index.html'));
 });
 
 module.exports = router;
