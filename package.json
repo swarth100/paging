@@ -11,11 +11,9 @@
   },
   "scripts": {
     "precommit": "lint-staged",
-    "pretest": "./setup_scripts/database_start.sh",
     "test": "./node_modules/.bin/mocha",
     "lint": "./node_modules/.bin/eslint .",
     "build": "echo \"no build\"",
-    "prestart": "./setup_scripts/database_start.sh",
     "start": "node server"
   },
   "repository": {
