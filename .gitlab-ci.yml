@@ -36,7 +36,7 @@ deploy_project:
     # - rm -rf webapps_29 && tar -xf webapps_29.tar && rm webapps_29.tar
     # - cd webapps_29 && npm install && /usr/bin/pm2 start server.js
     - git checkout master
-    - git pull master
+    - git pull
     - git push --force https://heroku:d0650977-2a8e-411e-a104-11a1226ab042@git.heroku.com/webapps-paging.git master
   only:
     - master
