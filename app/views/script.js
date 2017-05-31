@@ -24,7 +24,10 @@ app.config(function($routeProvider, $locationProvider) {
             {
                 templateUrl: 'components/register/register.html',
             })
-        .otherwise( );
+        .otherwise(
+            {
+                templateUrl: 'components/error/error.html',
+            });
 
     /* TODO: Handle default redirection */
     // .otherwise( {redirectTo: '/'} );
