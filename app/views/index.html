@@ -13,6 +13,8 @@
 
         <!-- Include our own Angular script -->
         <script src="script.js"></script>
+        <script src="components/index/index.js"></script>
+        <script src="components/app/app.js"></script>
         <script src="components/home/home.js"></script>
         <script src="components/login/login.js"></script>
         <script src="components/register/register.js"></script>
@@ -21,6 +23,9 @@
 
 <!-- Bind the following body to the googleMaps model -->
 <body ng-app="paging">
+
+    <!-- Include the shared layout navbar -->
+    <div ng-include="'../shared/layout.html'"></div>
 
     <!-- The following view will be replaced by dynamically chosen content -->
     <div ng-view>Loading ...</div>
