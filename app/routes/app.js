@@ -1,17 +1,11 @@
-/* Routing for index.html file */
+/* Routing for app.html file */
 
 const express = require('express');
-const path = require('path');
 const googlemaps = require('../models/googlemaps/googlemaps');
 const router = new express.Router();
 
-/* TODO: Look into redirect AND sending file */
-router.get('/', (req, res)=> {
-    res.sendFile(path.join(__dirname + '/../views/index.html'));
-});
+router.get('/app', (req, res) => {
 
-router.get('/users/index', (req, res)=> {
-    res.send(JSON.stringify({'url': '/home'}));
 });
 
 /* Post handler for /googlemaps */

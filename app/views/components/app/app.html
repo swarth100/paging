@@ -1,0 +1,14 @@
+<div ng-controller="appController">
+
+    <!-- The following is the controller for the post location -->
+    <div id="map" style="height: 400px; width: 100%;" ng-controller="postLocation"></div>
+
+    <form ng-submit="submitFields()">
+        Location: <input type="text" name="location" ng-model="appSearch.location" autocomplete="on">
+        Date and Time: <input type="datetime" name="datetime" ng-model="appSearch.datetime">
+        Duration: <input type="number" name="duration" ng-model="appSearch.duration">
+        Radius: <input type="number" name="radius" ng-model="appSearch.radius">
+        Search: <input type="submit">
+    </form>
+
+</div>
