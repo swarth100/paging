@@ -4,8 +4,8 @@
     Bootstrap assigning a left column for the buttons,
     right column for the map
     -->
-    <div class="row">
-        <div class="col-xs-6 col-sm-4 col-md-3" style="padding-right:0;">
+    <div class="row" style="margin-left: 0px; margin-right: 0px;">
+        <div class="col-xs-6 col-sm-4 col-md-3" style="padding-right:0;padding-left:0;">
             <form ng-submit="submitFields()">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12" style="padding-right:0;">
@@ -41,9 +41,9 @@
             </form>
 
         </div>
-        <div class="col-xs-6 col-sm-8 col-md-9 nopadding">
+        <div class="col-xs-6 col-sm-8 col-md-9" style="padding-right:0;">
             <!-- The following is the controller for the post location -->
-            <div id="map" style="height: 90vh; width: 100%;" ng-controller="postLocation"></div>
+            <div id="map" style="height: calc(100vh - 55px); width: 100%;" ng-controller="postLocation"></div>
         </div>
     </div>
 
