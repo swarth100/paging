@@ -3,7 +3,6 @@
 const express = require('express');
 const path = require('path');
 const googlemaps = require('../models/googlemaps/googlemaps');
-const authentication = require('../models/authentication/authentication.js');
 const router = new express.Router();
 
 /* TODO: Look into redirect AND sending file */
@@ -11,8 +10,8 @@ router.get('/', (req, res)=> {
     res.sendFile(path.join(__dirname + '/../views/index.html'));
 });
 
-router.get('/users/index', authentication.ensureAuthenticated, (req, res)=> {
-    res.send(JSON.stringify({'url': '/login'}));
+router.get('/users/index', (req, res)=> {
+    res.send(JSON.stringify({'url': '/home'}));
 });
 
 /* Post handler for /googlemaps */
