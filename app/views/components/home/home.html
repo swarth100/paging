@@ -1,20 +1,13 @@
-<!-- Include the shared layout navbar -->
-<div ng-include="'../shared/layout.html'"></div>
-
 <!-- Handle entry redirection -->
-<!-- TODO: Avoid flashing this request. Actually switch on variables -->
-<div ng-controller="entryRedirect"></div>
+<div ng-controller="homeRedirect"></div>
 
-<div ng-controller="mainController">
-
-    <!-- The following is the controller for the post location -->
-    <div id="map" style="height: 400px; width: 100%;" ng-controller="postLocation"></div>
+<div ng-controller="homeController">
 
     <form ng-submit="submitFields()">
-        Location: <input type="text" name="location" ng-model="location" autocomplete="on">
-        Date and Time: <input type="datetime" name="datetime" ng-model="datetime">
-        Duration: <input type="number" name="duration" ng-model="duration">
-        Radius: <input type="number" name="radius" ng-model="radius">
+        Location: <input type="text" name="location" ng-model="homeSearch.location" autocomplete="on">
+        Date and Time: <input type="datetime" name="datetime" ng-model="homeSearch.datetime">
+        Duration: <input type="number" name="duration" ng-model="homeSearch.duration">
+        Radius: <input type="number" name="radius" ng-model="homeSearch.radius">
         Search: <input type="submit">
     </form>
 
