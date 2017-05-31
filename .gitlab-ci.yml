@@ -37,6 +37,7 @@ deploy_project:
     # - cd webapps_29 && npm install && /usr/bin/pm2 start server.js
     - cd ..
     - ls
+    - rm -rf webapps_29
     - git clone https://gitlab.doc.ic.ac.uk/lab1617_summer/webapps_29.git
     - cd webapps_29
     - ls
