@@ -2,6 +2,8 @@ const express = require('express');
 const authentication = require('./app/models/authentication/authentication');
 const indexRoute = require('./app/routes/index');
 const loginRoute = require('./app/routes/login');
+const homeRoute = require('./app/routes/home');
+const appRoute = require('./app/routes/app');
 const registerRoute = require('./app/routes/register');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -23,6 +25,8 @@ authentication.setup(app, (app) => {
     app.use(indexRoute);
     app.use(loginRoute);
     app.use(registerRoute);
+    app.use(homeRoute);
+    app.use(appRoute);
 
     /* Sets the server to port 3000.
      * Openes port 3000 to listen for connections */
