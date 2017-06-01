@@ -93,11 +93,28 @@ exports.setup = (app, callback) => {
     callback(app);
 };
 
+exports.addUserToDb = (req, res) => {
+    bcyrpt.hash(req.body.password, saltRounds, (err, hash) => {
+        let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username);
+        let savePromise = userDB.saveUser(user);
+        savePromise
+            .then(function(user) {
+                /* return success */
+                res.status(200).end();
+            })
+            .catch(function(err) {
+                res.status(401).send([{param: 'username', msg: 'username is not unique', value: undefined}]);
+            });
+    });
+};
+
+exports.failToValidateUser = (errors, req, res) => {
+    res.status(401).send(JSON.stringify(errors));
+};
+
 /* Checks the registration fields
- * Param: req from post method
- *        callback function should accept boolean
  */
-exports.checkRegisterFields = (req, res) => {
+exports.checkRegisterFields = (req, res, successCallback, failCallback) => {
     req.checkBody('name', 'name is required').notEmpty();
     req.checkBody('email', 'email is required').notEmpty();
     req.checkBody('email', 'email is not valid').isEmail();
@@ -107,22 +124,11 @@ exports.checkRegisterFields = (req, res) => {
     req.checkBody('password2', 'passwords does not match').equals(req.body.password);
     req.asyncValidationErrors()
         .then(function() {
-            bcyrpt.hash(req.body.password, saltRounds, (err, hash) => {
-                let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username);
-                let savePromise = userDB.saveUser(user);
-                savePromise
-                    .then(function(user) {
-                        /* return success */
-                        res.status(200).end();
-                    })
-                    .catch(function(err) {
-                        res.status(401).send([{param: 'username', msg: 'username is not unique', value: undefined}]);
-                    });
-            });
+            successCallback(req, res);
         })
         .catch(function(errors) {
-            res.status(401).send(JSON.stringify(errors));
-    });
+            failCallback(errors, req, res);
+        });
 };
 
 /* Pass this function inside router.get to redirect the user to login screen
