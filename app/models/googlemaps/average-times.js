@@ -1,0 +1,25 @@
+const avgTimes = {
+    amusement_park: 180,
+    aquarium: 100,
+    art_gallery: 90,
+    bakery: 20,
+    bar: 60,
+    book_store: 15,
+    bowling_alley: 90,
+    cafe: 40,
+    casino: 120,
+    gym: 60,
+    library: 45,
+    meal_takeaway: 15,
+    movie_theater: 150,
+    museum: 150,
+    night_club: 240,
+    park: 90,
+    restaurant: 90,
+    shopping_mall: 60,
+    spa: 60,
+    stadium: 120,
+    zoo: 180,
+};
+
+module.exports = {avgTimes};
