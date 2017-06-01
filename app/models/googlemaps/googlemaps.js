@@ -29,8 +29,6 @@ function searchAroundLocation(queryData, cb) {
     });
 }
 
-const numberOfResults = 5;
-
 function cleanDatabase(cleanFunction) {
     let cleanDatabase = cleanFunction();
     cleanDatabase
@@ -55,6 +53,8 @@ function convertFormat(searchResult, type) {
     return mongooseLocation.createNewLocation(id, avgtime, latitude, longitude);
 }
 
+const numberOfResults = 5;
+
 /*
  * Chooses random places from the results returned by Google.
  * Returns them formatted in a way that can be used by the database.
@@ -62,10 +62,10 @@ function convertFormat(searchResult, type) {
 function chooseRandomPlaces(results) {
     let randomPlaces = [];
 
-    let loopCeiling = Math.min(numberOfResults, places.length);
+    let loopCeiling = Math.min(numberOfResults, results.length);
 
     for (let i = 0; i < loopCeiling; i++) {
-        let randomIndex = Math.floor(Math.random() * (loopCeiling - 1));
+        let randomIndex = Math.floor(Math.random() * (results.length - 1));
         let randomElementArray = results.splice(randomIndex, 1);
         randomPlaces.push(randomElementArray[0]);
     }
@@ -96,6 +96,8 @@ function extractQueryData(queryData) {
  * returning the results to the user.
  */
 function findInDatabase(randomPlaces, cb) {
+    // console.log(randomPlaces);
+
     let promises = randomPlaces.map(function(entry) {
         return mongooseLocation.find({id: entry.id});
     });
@@ -111,6 +113,10 @@ function findInDatabase(randomPlaces, cb) {
                 }
             })
             .catch(function(err) {
+                console.log();
+                console.log(err);
+                console.log(i);
+                console.log();
                 saveInDatabase(finalPlaces, randomPlaces, randomPlaces[i], cb);
             });
     }
@@ -135,7 +141,7 @@ function saveInDatabase(finalPlaces, randomPlaces, randomPlace, cb) {
             }
         })
         .catch(function(err) {
-            console.log(randomPlace);
+            // console.log(randomPlace);
             console.log('Something has gone horribly wrong');
         });
 }
