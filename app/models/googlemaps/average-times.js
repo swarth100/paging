@@ -22,4 +22,4 @@ const avgTimes = {
     zoo: 180,
 };
 
-module.exports = {avgTimes};
+module.exports = avgTimes;
