@@ -1,11 +1,13 @@
 let mongooseLocation = require('../mongoose/location');
 let avgTimes = require('./average-times');
 
+let googleMapsClient;
+
 /* Given a location JSON and a callback function,
  * Performs a radar search via the Google API around the given location.
  * On return calls the callback function. */
 function searchAroundLocation(queryData, cb) {
-    let googleMapsClient = require('@google/maps').createClient({
+    googleMapsClient = require('@google/maps').createClient({
         key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
     });
 
@@ -109,14 +111,11 @@ function findInDatabase(randomPlaces, cb) {
             .then(function(result) {
                 finalPlaces.push(result);
                 if (finalPlaces.length === randomPlaces.length) {
-                    cb(finalPlaces);
+                    addNames(finalPlaces, cb);
+                    // cb(finalPlaces);
                 }
             })
             .catch(function(err) {
-                console.log();
-                console.log(err);
-                console.log(i);
-                console.log();
                 saveInDatabase(finalPlaces, randomPlaces, randomPlaces[i], cb);
             });
     }
@@ -137,13 +136,41 @@ function saveInDatabase(finalPlaces, randomPlaces, randomPlace, cb) {
         .then(function(result) {
             finalPlaces.push(result);
             if (finalPlaces.length === randomPlaces.length) {
-                cb(finalPlaces);
+                addNames(finalPlaces, cb);
+                // cb(finalPlaces);
             }
         })
         .catch(function(err) {
-            // console.log(randomPlace);
+            console.log(err);
             console.log('Something has gone horribly wrong');
         });
+}
+
+function addNames(finalPlaces, cb) {
+    let finalFinalPlaces = [];
+
+    for (let i = 0; i < finalPlaces.length; i++) {
+        let newPlace = {
+            id: finalPlaces[i].id,
+            avgtime: finalPlaces[i].avgtime,
+            feedbackcount: finalPlaces[i].feedbackcount,
+            latitude: finalPlaces[i].latitude,
+            longitude: finalPlaces[i].longitude,
+        };
+
+        googleMapsClient.place({placeid: newPlace.id}, function(err, response) {
+            if (err) {
+                console.log('Could not find name');
+            } else {
+                console.log(response);
+                newPlace['name'] = response.json.result.name;
+                finalFinalPlaces.push(newPlace);
+                if (finalFinalPlaces.length === finalPlaces.length) {
+                    cb(finalFinalPlaces);
+                }
+            }
+        });
+    }
 }
 
 module.exports = {
