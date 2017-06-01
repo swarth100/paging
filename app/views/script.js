@@ -1,7 +1,10 @@
-let app = angular.module('paging', []);
+let app = angular.module('paging', ['ui.bootstrap', 'ngRoute']);
 
 app.config(function($routeProvider, $locationProvider) {
-    $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false,
+    });
 
     $routeProvider
         .when('/',

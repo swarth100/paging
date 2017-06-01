@@ -6,14 +6,25 @@ app.controller('loginFormCtrl', function($scope, $location, $http) {
     /* For default text */
     $scope.master = {};
 
+    $scope.alerts = [];
+
+    /* Closes the alert */
+    $scope.closeAlert = function() {
+        $scope.alerts.splice(0, 1);
+    };
+
+    $scope.register = function() {
+        $location.url('/register');
+    };
+
     $scope.submit = function() {
         $http.post('/users/login', {username: $scope.username, password: $scope.password})
             .then(function(response) {
                 /* Data is packaged into a nasty JSON format.
                  * To access it first one must retrieve the *.data part to distinguish from header */
-                $location.url(response.data.url);
+                $location.url('/');
             }, function(response) {
-                console.log('Failure when accessing /users/login');
+                $scope.alerts[0] = ({msg: 'Invalid username or password'});
             });
     };
 });
