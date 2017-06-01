@@ -26,6 +26,7 @@ passport.use(new LocalStrategy(
             })
             .catch((err) => {
                 console.log('No element in the database meets the search criteria');
+                return done(null, false);
             });
     }
 ));
@@ -99,8 +100,9 @@ exports.addUser = (req, res) => {
         } else {
             let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username);
             userDB.saveUser(user);
-            /* redirect to the index page */
-            res.send(JSON.stringify({'url': '/login'}));
+            /* return success */
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            return res.end();
         }
     });
 };
@@ -113,6 +115,5 @@ exports.ensureAuthenticated = (req, res, next) => {
         return next();
     }
 };
-
 
 exports.passport = passport;
