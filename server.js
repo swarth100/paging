@@ -18,7 +18,6 @@ authentication.setup(app, (app) => {
      * Access the variable via the *.body field */
     app.use(bodyParser.urlencoded({extended: false}));
     app.use(bodyParser.json());
-    app.use(expressValidator());
 
     /* Set the URI here */
     app.use(express.static(path.join(__dirname, '/app/views')));
