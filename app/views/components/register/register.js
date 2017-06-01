@@ -6,7 +6,14 @@ app.controller('registerFormCtrl', function($scope, $location, $http) {
     /* For default text */
     $scope.master = {};
 
+    $scope.alerts = [];
+
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
+    };
+
     $scope.submit = function() {
+        $scope.alerts = [];
         $http.post('/users/register', {
             name: $scope.name,
             username: $scope.username,
@@ -18,8 +25,12 @@ app.controller('registerFormCtrl', function($scope, $location, $http) {
                  * To access it first one must retrieve the *.data part to distinguish from header */
                 $location.url('/login');
             }, function(response) {
-                console.log('Failure when accessing /users/register');
-                $location.url('/register');
+                $scope.password = '';
+                $scope.password2 = '';
+
+                for (let i = 0; i < response.data.length; i ++) {
+                    $scope.alerts.push(response.data[i]);
+                }
             });
     };
 });
