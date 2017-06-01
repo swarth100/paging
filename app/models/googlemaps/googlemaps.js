@@ -14,7 +14,7 @@ function searchAroundLocation(queryData, cb) {
     let query = extractQueryData(queryData);
 
     /* Place the radar and return the result to the callback function */
-    googleMapsClient.placesRadar(query, function(err, response) {
+    googleMapsClient.placesNearby(query, function(err, response) {
         if (err) {
             console.log(err);
         } else {
@@ -22,9 +22,12 @@ function searchAroundLocation(queryData, cb) {
             // response.json.result[index].geometry.location.{lat/lng};
 
             let results = response.json.results;
+
+            console.log(results);
+
             let randomPlaces = chooseRandomPlaces(results);
 
-            let convertedPlaces = convertFormatOfPlaces(randomPlaces, query.type);
+            let convertedPlaces = convertFormatOfPlaces(randomPlaces, queryData.type);
 
             findInDatabase(convertedPlaces, cb);
         }
@@ -62,6 +65,8 @@ const numberOfResults = 5;
  * Returns them formatted in a way that can be used by the database.
  */
 function chooseRandomPlaces(results) {
+    return results;
+
     let randomPlaces = [];
 
     let loopCeiling = Math.min(numberOfResults, results.length);
@@ -89,7 +94,9 @@ function extractQueryData(queryData) {
     return {
         location: JSON.parse(queryData.location),
         radius: queryData.radius,
-        type: queryData.type,
+        // type: queryData.type,
+        // keyword: queryData.type,
+        name: queryData.type,
     };
 }
 
@@ -162,7 +169,7 @@ function addNames(finalPlaces, cb) {
             if (err) {
                 console.log('Could not find name');
             } else {
-                console.log(response);
+                // console.log(response);
                 newPlace['name'] = response.json.result.name;
                 finalFinalPlaces.push(newPlace);
                 if (finalFinalPlaces.length === finalPlaces.length) {
