@@ -33,7 +33,7 @@ authentication.setup(app, (app) => {
     /* Sets the server to port 3000.
      * Opens port 3000 to listen for connections
      * Otherwise use heroku provided port */
-    app.set('port', (3000 || process.env.PORT));
+    app.set('port', (process.env.PORT || 3000));
     app.listen(app.get('port'), () => {
         console.log('[Server] : open on port ' + app.get('port'));
     });
