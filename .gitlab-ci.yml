@@ -2,46 +2,55 @@ stages:
   - test
   - deploy
 
-#Before script
-#before_script:
-  # - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-  # - sudo apt-get install -y nodejs
+    #Before script
+    #before_script:
+    # - curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    # - sudo apt-get install -y nodejs
 
-# Pick zero or more services to be used on all builds.
-# Only needed when using a docker container to run your tests in.
-# Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-service
+    # Pick zero or more services to be used on all builds.
+    # Only needed when using a docker container to run your tests in.
+    # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-service
 
-# This folder is cached between builds
-# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
-cache:
-  paths:
-  - node_modules/
+    # This folder is cached between builds
+    # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
+    cache:
+      paths:
+        - node_modules/
 
-run_tests:
-  stage: test
-  script:
-    # - npm install --silent -q
-    # - npm run lint
-    # - npm test
-    - echo 'hi heroku'
+    run_tests:
+      stage: test
+    script:
+      # - npm install --silent -q
+      # - npm run lint
+      # - npm test
+      - echo 'hi heroku'
 
-deploy_project:
-  stage: deploy
-  script:
-    # - cd .. && tar -cf webapps_29.tar ./webapps_29
-    # - scp webapps_29.tar rm3115@146.169.45.133:/home/rm3115/webapps_29.tar
-    # - ssh -K rm3115@146.169.45.133
-    # - sudo npm install -g pm2
-    # - pm2 delete all || true
-    # - rm -rf webapps_29 && tar -xf webapps_29.tar && rm webapps_29.tar
-    # - cd webapps_29 && npm install && /usr/bin/pm2 start server.js
-    - cd ..
-    - ls
-    - rm -rf webapps_29
-    - git clone https://gitlab.doc.ic.ac.uk/lab1617_summer/webapps_29.git
-    - cd webapps_29
-    - ls
-    - git push --force https://heroku:d0650977-2a8e-411e-a104-11a1226ab042@git.heroku.com/webapps-paging.git master
-  only:
-    - master
-    - heroku
+    deploy_project:
+      stage: deploy
+    ##script:
+    ##  # - cd .. && tar -cf webapps_29.tar ./webapps_29
+    ##  # - scp webapps_29.tar rm3115@146.169.45.133:/home/rm3115/webapps_29.tar
+    ##  # - ssh -K rm3115@146.169.45.133
+    ##  # - sudo npm install -g pm2
+    ##  # - pm2 delete all || true
+    ##  # - rm -rf webapps_29 && tar -xf webapps_29.tar && rm webapps_29.tar
+    ##  # - cd webapps_29 && npm install && /usr/bin/pm2 start server.js
+    ##  - cd ..
+    ##  - ls
+    ##  - rm -rf webapps_29
+    ##  - git clone https://gitlab.doc.ic.ac.uk/lab1617_summer/webapps_29.git
+    ##  - cd webapps_29
+    ##  - ls
+    ##  - git push --force https://heroku:d0650977-2a8e-411e-a104-11a1226ab042@git.heroku.com/webapps-paging.git master
+    variables:
+      # I need to control which Git branch I'm on in order to push to Heroku
+      publication_branch_name: "publish-to-heroku"
+
+    script:
+      - git checkout -b $publication_branch_name
+      - git commit --allow-empty -m "Publish to Heroku at $(date)"
+      - git push --force https://heroku:$HEROKU_API_KEY@git.heroku.com/arbitrary-jekyll-site.git $publication_branch_name:master
+      - git push --force https://heroku:d0650977-2a8e-411e-a104-11a1226ab042@git.heroku.com/webapps-paging.git $publication_branch_name:master
+    only:
+      - master
+      - heroku
