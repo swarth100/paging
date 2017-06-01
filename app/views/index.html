@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Paging</title>
+
+        <!-- Bootstrap
+             Please DO NOT MODIFY. This is utter magic and must remain as such -->
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="./assets/css/custom.css">
+
+        <!-- Include AngularJS from Google's CDN -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+
+        <!-- Include our own Angular script -->
+        <script src="script.js"></script>
+        <script src="components/index/index.js"></script>
+        <script src="components/app/app.js"></script>
+        <script src="components/home/home.js"></script>
+        <script src="components/error/error.js"></script>
+        <script src="components/login/login.js"></script>
+        <script src="components/register/register.js"></script>
+
+    </head>
+
+<!-- Bind the following body to the googleMaps model -->
+<body ng-app="paging" style="background:url(./assets/images/background.jpg) no-repeat center center fixed;
+    background-size: cover;">
+
+    <!-- Include the shared layout navbar  -->
+    <div ng-include="'components/shared/layout.html'"></div>
+
+    <!-- The following view will be replaced by dynamically chosen content -->
+    <div ng-view>Loading ...</div>
+
+    <!-- Google script. Might have been a problem with asynchroniousity -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8">
+    </script>
+
+    </body>
+</html>

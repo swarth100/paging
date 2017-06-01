@@ -1,0 +1,24 @@
+stages:
+  - test
+  - deploy
+cache:
+  paths:
+    - node_modules/
+run_tests:
+  stage: test
+  script:
+    - npm install --silent -q
+    - npm run lint
+    - npm test
+
+deploy_project:
+  stage: deploy
+  variables:
+    publication_branch_name: "publish-to-heroku"
+  script:
+    - git checkout -b $publication_branch_name
+    - git commit --allow-empty -m "Publish to Heroku at $(date)"
+    - git push --force https://heroku:d0650977-2a8e-411e-a104-11a1226ab042@git.heroku.com/webapps-paging.git $publication_branch_name:master
+    - git branch -d $publication_branch_name
+  only:
+    - master

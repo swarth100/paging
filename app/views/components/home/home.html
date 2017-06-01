@@ -1,0 +1,101 @@
+<!-- Handle entry redirection -->
+<div ng-controller="homeRedirect"></div>
+
+<!--
+
+    DESKTOP VIEW:
+
+    Location                   Date                       Time spent        Radius
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    |         Location         |           Date           |   Time spent    |     Radius      |     SEARCH      |
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+                 3
+                                         3                      2                 2                 2
+
+    MOBILE VIEW:
+
+    Location
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    |                                                  Location                                                 |
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    Date
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    |                                                   Date                                                    |
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    Time spent
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    |                                                Time spent                                                 |
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    Radius
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    |                                                  Radius                                                   |
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    |                                                  SEARCH                                                   |
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
+                                                          12
+
+ -->
+
+<div ng-controller="homeController">
+    <!-- ROW div for the search bar -->
+    <div class="row" style="margin-top: 55vh; margin-left: 0; margin-right: 0;">
+
+        <!-- External padding for the search BAR. 1 column offset -->
+        <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1">
+
+            <!-- Submission form for SEARCH query -->
+            <form class="form" ng-submit="submitFields()">
+
+                <!-- ROW div for INNER search bar -->
+                <div class="row" style="margin-bottom:0;">
+
+                    <!-- LOCATION field holder -->
+                    <div class="col-sm-12 col-md-3" style="padding-right:0;padding-left:0;">
+                        <p style="color: #ffffff; margin: 0; padding: 0;">Location:</p>
+                        <div class="input-group">
+                            <span class="input-group-addon glyphicon glyphicon-pushpin input-group-addon-square" style="top: 0px;"></span>
+                            <input type="text" class="form-control form-control-square" ng-model="homeSearch.location" autocomplete="on">
+                        </div>
+                    </div>
+
+                    <!-- DATETIME field holder -->
+                    <div class="col-sm-12 col-md-3" style="padding-right:0;padding-left:0;">
+                        <p style="color: #ffffff; margin: 0; padding: 0;">Date and Time:</p>
+                        <div class="input-group">
+                            <span class="input-group-addon input-group-addon-square glyphicon glyphicon-calendar" style="top: 0px;"></span>
+                            <input type="datetime" class="form-control form-control-square" ng-model="homeSearch.datetime">
+                        </div>
+                    </div>
+
+                    <!-- DURATION field holder -->
+                    <div class="col-sm-12 col-md-2" style="padding-right:0;padding-left:0;">
+                        <p style="color: #ffffff; margin: 0; padding: 0;">Duration:</p>
+                        <div class="input-group">
+                            <span class="input-group-addon input-group-addon-square glyphicon glyphicon-time" style="top: 0px;"></span>
+                            <input type="number" class="form-control form-control-square" ng-model="homeSearch.duration">
+                        </div>
+                    </div>
+
+                    <!-- RADIUS field holder -->
+                    <div class="col-sm-12 col-md-2" style="padding-right:0;padding-left:0;">
+                        <p style="color: #ffffff; margin: 0; padding: 0;">Radius:</p>
+                        <div class="input-group">
+                            <span class="input-group-addon input-group-addon-square glyphicon glyphicon-record" style="top: 0px;"></span>
+                            <input type="number" class="form-control form-control-square" ng-model="homeSearch.radius">
+                        </div>
+                    </div>
+
+                    <!-- SEARCH button holder -->
+                    <div class="col-sm-12 col-md-2" style="padding-right:0;padding-left:0;">
+                        <p style="color: #ffffff; margin: 0; padding: 0;"><br></p>
+                        <div>
+                            <p><button type="submit" class="btn btn-success btn-block btn-square">Submit</button></p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
