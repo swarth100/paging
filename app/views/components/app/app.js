@@ -49,6 +49,12 @@ app.controller('postLocation', function($scope, $http) {
          * response.json.result[index].geometry.location.{lat/lng}.
          * This code iterates through all returned positions, setting them up on the map */
         for (let i = 0; i < results.length; i++) {
+            let infowindow = new google.maps.InfoWindow({
+                content: results[i].avgtime.toString(),
+            });
+
+            console.log(results[i].avgtime.toString());
+
             let marker = new google.maps.Marker({
                 position: {lat: results[i].latitude, lng: results[i].longitude},
                 map: map,
@@ -56,6 +62,14 @@ app.controller('postLocation', function($scope, $http) {
                     path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
                     scale: 3,
                 },
+            });
+
+            marker.addListener('mouseover', function() {
+                infowindow.open(map, marker);
+            });
+
+            marker.addListener('mouseout', function() {
+                infowindow.close(map, marker);
             });
         }
     }
