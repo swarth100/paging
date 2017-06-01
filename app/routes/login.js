@@ -12,15 +12,17 @@ router.post('/users/login', function(req, res, next) {
       return next(err);
     }
     if (!user) {
-      res.writeHead(401, {'Content-Type': 'application/json'});
-      return res.end();
+      console.log('no user found');
+      return res.status(401).end();
     }
     req.logIn(user, function(err) {
       if (err) {
         return next(err);
       }
-      res.writeHead(200, {'Content-Type': 'application/json'});
-      return res.status(200).end();
+      console.log('user found');
+      // res.writeHead(200, {'Content-Type': 'application/json'});
+      // return res.end();
+     return res.status(200).end();
     });
   })(req, res, next);
 });

@@ -13,13 +13,13 @@ app.controller('registerFormCtrl', function($scope, $location, $http) {
             email: $scope.email,
             password: $scope.password,
             password2: $scope.password2,
-        })
-            .then(function(response) {
+        }).then(function(response) {
                 /* Data is packaged into a nasty JSON format.
                  * To access it first one must retrieve the *.data part to distinguish from header */
-                $location.url(response.data.url);
+                $location.url('/login');
             }, function(response) {
                 console.log('Failure when accessing /users/register');
+                $location.url('/register');
             });
     };
 });
