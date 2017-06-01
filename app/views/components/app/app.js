@@ -50,10 +50,10 @@ app.controller('postLocation', function($scope, $http) {
          * This code iterates through all returned positions, setting them up on the map */
         for (let i = 0; i < results.length; i++) {
             let infowindow = new google.maps.InfoWindow({
-                content: results[i].avgtime.toString(),
+                content: // '<p>Name: ' + results[i].name + '</p>' +
+                    '<p>Average time spent: ' +
+                    results[i].avgtime.toString() + ' minutes.</p>',
             });
-
-            console.log(results[i].avgtime.toString());
 
             let marker = new google.maps.Marker({
                 position: {lat: results[i].latitude, lng: results[i].longitude},
