@@ -1,15 +1,15 @@
-.input-group-addon{
+.input-group-addon-square{
     border-radius: 0px;
 }
 
-.form-control{
+.form-control-square{
     border-radius: 0px;
 }
 
-.btn{
+.btn-square{
     border-radius: 0px;
 }
 
-.navbar{
+.navbar-square{
     border-radius: 0px;
 }
