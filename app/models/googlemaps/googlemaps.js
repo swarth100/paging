@@ -1,64 +1,40 @@
 let mongooseLocation = require('../mongoose/location');
+let avgTimes = require('./average-times');
+
+let googleMapsClient;
 
 /* Given a location JSON and a callback function,
  * Performs a radar search via the Google API around the given location.
  * On return calls the callback function. */
 function searchAroundLocation(queryData, cb) {
-    let googleMapsClient = require('@google/maps').createClient({
+    googleMapsClient = require('@google/maps').createClient({
         key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
     });
 
-    let temporaryQueryData = {
-        location: JSON.parse(queryData.location),
-        radius: queryData.radius,
-        type: queryData.type,
-    };
+    let query = extractQueryData(queryData);
 
     /* Place the radar and return the result to the callback function */
-    googleMapsClient.placesRadar(temporaryQueryData, function(err, response) {
+    googleMapsClient.placesRadar(query, function(err, response) {
         if (err) {
             console.log(err);
         } else {
             // Location can be found in
             // response.json.result[index].geometry.location.{lat/lng};
 
-            let randomPlaces = chooseRandomPlaces(response, temporaryQueryData.type);
+            let results = response.json.results;
+            let randomPlaces = chooseRandomPlaces(results);
 
-            findInDatabase(randomPlaces, cb);
+            let convertedPlaces = convertFormatOfPlaces(randomPlaces, query.type);
+
+            findInDatabase(convertedPlaces, cb);
         }
     });
 }
 
-const avgTimes = {
-    amusement_park: 180,
-    aquarium: 100,
-    art_gallery: 90,
-    bakery: 20,
-    bar: 60,
-    book_store: 15,
-    bowling_alley: 90,
-    cafe: 40,
-    casino: 120,
-    gym: 60,
-    library: 45,
-    meal_takeaway: 15,
-    movie_theater: 150,
-    museum: 150,
-    night_club: 240,
-    park: 90,
-    restaurant: 90,
-    shopping_mall: 60,
-    spa: 60,
-    stadium: 120,
-    zoo: 180,
-};
-
-const numberOfResults = 5;
-
-function cleanLocationDatabase() {
-    let cleanDatabase = mongooseLocation.removeMultiple({});
+function cleanDatabase(cleanFunction) {
+    let cleanDatabase = cleanFunction();
     cleanDatabase
-        .then(function() {
+        .then(function(resolveData) {
             console.log('Database cleared');
         })
         .catch(function(err) {
@@ -79,27 +55,42 @@ function convertFormat(searchResult, type) {
     return mongooseLocation.createNewLocation(id, avgtime, latitude, longitude);
 }
 
+const numberOfResults = 5;
+
 /*
  * Chooses random places from the results returned by Google.
  * Returns them formatted in a way that can be used by the database.
  */
-function chooseRandomPlaces(response, type) {
-    let places = response.json.results;
+function chooseRandomPlaces(results) {
     let randomPlaces = [];
 
-    let loopCount = Math.min(numberOfResults, places.length);
+    let loopCeiling = Math.min(numberOfResults, results.length);
 
-    console.log(loopCount);
-    console.log(places.length);
-
-    for (let i = 0; i < loopCount; i++) {
-        let randomIndex = Math.floor((Math.random() * loopCount));
-        console.log(places[randomIndex]);
-        randomPlaces.push(convertFormat(places[randomIndex], type));
-        places.splice(randomIndex, 1);
+    for (let i = 0; i < loopCeiling; i++) {
+        let randomIndex = Math.floor(Math.random() * (results.length - 1));
+        let randomElementArray = results.splice(randomIndex, 1);
+        randomPlaces.push(randomElementArray[0]);
     }
 
     return randomPlaces;
+}
+
+function convertFormatOfPlaces(randomPlaces, type) {
+    let convertedPlaces = [];
+
+    for (let i = 0; i < randomPlaces.length; i++) {
+        convertedPlaces.push(convertFormat(randomPlaces[i], type));
+    }
+
+    return convertedPlaces;
+}
+
+function extractQueryData(queryData) {
+    return {
+        location: JSON.parse(queryData.location),
+        radius: queryData.radius,
+        type: queryData.type,
+    };
 }
 
 /*
@@ -107,6 +98,8 @@ function chooseRandomPlaces(response, type) {
  * returning the results to the user.
  */
 function findInDatabase(randomPlaces, cb) {
+    // console.log(randomPlaces);
+
     let promises = randomPlaces.map(function(entry) {
         return mongooseLocation.find({id: entry.id});
     });
@@ -118,7 +111,8 @@ function findInDatabase(randomPlaces, cb) {
             .then(function(result) {
                 finalPlaces.push(result);
                 if (finalPlaces.length === randomPlaces.length) {
-                    cb(finalPlaces);
+                    addNames(finalPlaces, cb);
+                    // cb(finalPlaces);
                 }
             })
             .catch(function(err) {
@@ -142,14 +136,49 @@ function saveInDatabase(finalPlaces, randomPlaces, randomPlace, cb) {
         .then(function(result) {
             finalPlaces.push(result);
             if (finalPlaces.length === randomPlaces.length) {
-                cb(finalPlaces);
+                addNames(finalPlaces, cb);
+                // cb(finalPlaces);
             }
         })
         .catch(function(err) {
-            console.log(randomPlace);
+            console.log(err);
             console.log('Something has gone horribly wrong');
         });
 }
 
-module.exports = {searchAroundLocation};
+function addNames(finalPlaces, cb) {
+    let finalFinalPlaces = [];
+
+    for (let i = 0; i < finalPlaces.length; i++) {
+        let newPlace = {
+            id: finalPlaces[i].id,
+            avgtime: finalPlaces[i].avgtime,
+            feedbackcount: finalPlaces[i].feedbackcount,
+            latitude: finalPlaces[i].latitude,
+            longitude: finalPlaces[i].longitude,
+        };
+
+        googleMapsClient.place({placeid: newPlace.id}, function(err, response) {
+            if (err) {
+                console.log('Could not find name');
+            } else {
+                console.log(response);
+                newPlace['name'] = response.json.result.name;
+                finalFinalPlaces.push(newPlace);
+                if (finalFinalPlaces.length === finalPlaces.length) {
+                    cb(finalFinalPlaces);
+                }
+            }
+        });
+    }
+}
+
+module.exports = {
+    searchAroundLocation,
+    cleanDatabase,
+    convertFormat,
+    chooseRandomPlaces,
+    convertFormatOfPlaces,
+    extractQueryData,
+};
 
