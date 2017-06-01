@@ -87,9 +87,15 @@ function chooseRandomPlaces(response, type) {
     let places = response.json.results;
     let randomPlaces = [];
 
-    for (let i = 0; i < numberOfResults; i++) {
-        let randomIndex = Math.floor(Math.random() * places.length);
-        randomPlaces.push(convertFormat(places[i], type));
+    let loopCount = Math.min(numberOfResults, places.length);
+
+    console.log(loopCount);
+    console.log(places.length);
+
+    for (let i = 0; i < loopCount; i++) {
+        let randomIndex = Math.floor((Math.random() * loopCount));
+        console.log(places[randomIndex]);
+        randomPlaces.push(convertFormat(places[randomIndex], type));
         places.splice(randomIndex, 1);
     }
 
@@ -118,6 +124,10 @@ function findInDatabase(randomPlaces, cb) {
             .catch(function(err) {
                 saveInDatabase(finalPlaces, randomPlaces, randomPlaces[i], cb);
             });
+    }
+
+    if (!randomPlaces.length) {
+        cb({});
     }
 }
 
