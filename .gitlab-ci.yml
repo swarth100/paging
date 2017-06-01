@@ -7,7 +7,9 @@ cache:
 run_tests:
   stage: test
   script:
-    - echo 'hi heroku'
+    - npm install --silent -q
+    - npm run lint
+    - npm test
 
 deploy_project:
   stage: deploy
