@@ -20,4 +20,3 @@ deploy_project:
     - git branch -d $publication_branch_name
   only:
     - master
-    - heroku
