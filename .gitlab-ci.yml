@@ -17,6 +17,7 @@ deploy_project:
     - git checkout -b $publication_branch_name
     - git commit --allow-empty -m "Publish to Heroku at $(date)"
     - git push --force https://heroku:d0650977-2a8e-411e-a104-11a1226ab042@git.heroku.com/webapps-paging.git $publication_branch_name:master
+    - git branch -d $publication_branch_name
   only:
     - master
     - heroku
