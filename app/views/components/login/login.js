@@ -6,6 +6,17 @@ app.controller('loginFormCtrl', function($scope, $location, $http) {
     /* For default text */
     $scope.master = {};
 
+    $scope.alerts = [];
+
+    /* Closes the alert */
+    $scope.closeAlert = function() {
+        $scope.alerts.splice(0, 1);
+    };
+
+    $scope.register = function() {
+        $location.url('/register');
+    };
+
     $scope.submit = function() {
         $http.post('/users/login', {username: $scope.username, password: $scope.password})
             .then(function(response) {
@@ -13,7 +24,7 @@ app.controller('loginFormCtrl', function($scope, $location, $http) {
                  * To access it first one must retrieve the *.data part to distinguish from header */
                 $location.url('/');
             }, function(response) {
-                $location.url('/login');
+                $scope.alerts[0] = ({msg: 'Invalid username or password'});
             });
     };
 });

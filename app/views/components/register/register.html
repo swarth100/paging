@@ -9,15 +9,24 @@
                 <form ng-controller="registerFormCtrl">
                     <label>Name</label>
                     <input type="text" class="form-control square" placeholder="Name" name="name" ng-model="name">
+                    <br>
+                    <div uib-alert ng-repeat="alert in alerts" ng-if="alert.param=='name'" ng-class="'alert-danger'" close="closeAlert($index)">{{alert.msg}}</div>
                     <label>Username</label>
                     <input type="text" class="form-control square" placeholder="Username" name="username" ng-model="username">
+                    <br>
+                    <div uib-alert ng-repeat="alert in alerts" ng-if="alert.param=='username'" ng-class="'alert-danger'" close="closeAlert($index)">{{alert.msg}}</div>
                     <label>Email</label>
                     <input type="email" class="form-control square" placeholder="Email" name="email" ng-model="email">
+                    <br>
+                    <div uib-alert ng-repeat="alert in alerts" ng-if="alert.param=='email'" ng-class="'alert-danger'" close="closeAlert($index)">{{alert.msg}}</div>
                     <label>Password</label>
                     <input type="password" class="form-control square" placeholder="Password" name="password" ng-model="password">
+                    <br>
+                    <div uib-alert ng-repeat="alert in alerts" ng-if="alert.param=='password'" ng-class="'alert-danger'" close="closeAlert($index)">{{alert.msg}}</div>
                     <label>Confirm Password</label>
                     <input type="password" class="form-control square" placeholder="Password" name="password2" ng-model="password2">
                     <br>
+                    <div uib-alert ng-repeat="alert in alerts" ng-if="alert.param=='password2'" ng-class="'alert-danger'" close="closeAlert($index)">{{alert.msg}}</div>
                     <button type="submit" class="btn btn-default square" ng-click="submit()">Submit</button>
                 </form>
             </div>
