@@ -1,4 +1,7 @@
 const request = require('supertest');
+const chai = require('chai');
+const assert = chai.assert;
+const expect = chai.expect;
 const app = require('../server');
 
 describe('Routing Test', () => {
@@ -11,5 +14,13 @@ describe('Routing Test', () => {
         request(app).get('/hello')
             .expect('Content-Type', /html/)
             .expect(404, done);
+    });
+    it('GET /user/index returns url for home', (done) => {
+        request(app).get('/users/index')
+            .expect(200)
+            .then((response) => {
+                expect(response.text).to.deep.equal('{"url":"/home"}');
+                done();
+            });
     });
 });
