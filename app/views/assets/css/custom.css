@@ -1,15 +1,51 @@
-.input-group-addon-square{
-    border-radius: 0px;
+.square{
+    border-radius: 0;
 }
 
-.form-control-square{
-    border-radius: 0px;
+.no-margin{
+    margin-left: 0;
+    margin-right: 0;
 }
 
-.btn-square{
-    border-radius: 0px;
+.no-bot-margin{
+    margin-bottom:0;
 }
 
-.navbar-square{
-    border-radius: 0px;
+.no-padding{
+    padding-right:0;
+    padding-left:0;
+}
+
+.no-padding-right{
+    padding-right:0;
+}
+
+.search-top-offset{
+    margin-top: 55vh;
+}
+
+.panel-top-offset{
+    margin-top: 10vh;
+}
+
+.white-input{
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+.no-top{
+    top: 0;
+}
+
+.hide-left{
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+}
+
+.map-dimensions{
+    height: calc(100vh - 55px);
+    width: 100%;
 }
