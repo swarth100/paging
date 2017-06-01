@@ -3,6 +3,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const app = require('../server');
+const userDB = require('../app/models/mongoose/user');
 
 describe('Routing Test', () => {
     it('Root page gives html file with status 200', (done) => {
@@ -26,7 +27,7 @@ describe('Routing Test', () => {
             });
     });
 
-    it('POST /users/register registers new user', (done) => {
+    it('POST /users/register registers new user and POST /users/login succeeds with valid data', (done) => {
         request(app).post('/users/register')
             .send({
                 name: 'abc',
@@ -35,7 +36,14 @@ describe('Routing Test', () => {
                 password: 'abc',
                 password2: 'abc',
             })
-            .expect(200, done);
+            .expect(200, () => {
+            request(app).post('/users/login')
+                .send({
+                    username: 'test_account_abc',
+                    password: 'abc',
+                })
+                .expect(200, done);
+            });
     });
 
     it('POST /users/login fails with invalid data', (done) => {
@@ -45,14 +53,5 @@ describe('Routing Test', () => {
                 password: 'LAVSzDAzhLiHFVBkxWtWmjjc39AWa44XnVo1JWOU',
             })
             .expect(401, done);
-    });
-
-    it('POST /users/login succeeds with valid data', (done) => {
-        request(app).post('/users/login')
-            .send({
-                username: 'test_account_abc',
-                password: 'abc',
-            })
-            .expect(200, done);
     });
 });
