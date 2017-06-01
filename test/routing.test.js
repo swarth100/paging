@@ -27,6 +27,25 @@ describe('Routing Test', () => {
             });
     });
 
+    it('POST /users/register registers new user and POST /users/login succeeds with valid data', (done) => {
+        request(app).post('/users/register')
+            .send({
+                name: 'abc',
+                username: 'test_account_abc',
+                email: 'abc@mail.com',
+                password: 'abc',
+                password2: 'abc',
+            })
+            .expect(200, () => {
+            request(app).post('/users/login')
+                .send({
+                    username: 'test_account_abc',
+                    password: 'abc',
+                })
+                .expect(200, done);
+            });
+    });
+
     it('POST /users/login fails with invalid data', (done) => {
         request(app).post('/users/login')
             .send({

@@ -7,7 +7,7 @@ const router = new express.Router();
 /* Handle post requests on /users/register
  * Explicitally handles form submission for register credentials */
 router.post('/users/register', (req, res) => {
-    passport.checkRegisterFields((error) => {
+    passport.checkRegisterFields(req, (error) => {
         if (error) {
             /* TODO send the error message down */
             console.log('[Auth] user creation : failure');

@@ -20,8 +20,6 @@ router.post('/users/login', function(req, res, next) {
         return next(err);
       }
       console.log('user found');
-      // res.writeHead(200, {'Content-Type': 'application/json'});
-      // return res.end();
      return res.status(200).end();
     });
   })(req, res, next);
