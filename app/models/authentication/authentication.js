@@ -107,16 +107,18 @@ exports.checkRegisterFields = (req, res) => {
     req.checkBody('password2', 'passwords does not match').equals(req.body.password);
     req.asyncValidationErrors()
         .then(function() {
-            let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username);
-            let savePromise = userDB.saveUser(user);
-            savePromise
-                .then(function(user) {
-                    /* return success */
-                    res.status(200).end();
-                })
-                .catch(function(err) {
-                    res.status(401).send([{param: 'username', msg: 'username is not unique', value: undefined}]);
-                });
+            bcyrpt.hash(req.body.password, saltRounds, (err, hash) => {
+                let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username);
+                let savePromise = userDB.saveUser(user);
+                savePromise
+                    .then(function(user) {
+                        /* return success */
+                        res.status(200).end();
+                    })
+                    .catch(function(err) {
+                        res.status(401).send([{param: 'username', msg: 'username is not unique', value: undefined}]);
+                    });
+            });
         })
         .catch(function(errors) {
             res.status(401).send(JSON.stringify(errors));
