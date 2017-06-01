@@ -67,6 +67,20 @@ exports.setup = (app, callback) => {
                 value: value,
             };
         },
+        customValidators: {
+            isUnique: function(username) {
+                return new Promise((resolve, reject) => {
+                    let findPromise = userDB.find({username: username});
+                    findPromise
+                        .then(function(user) {
+                            reject();
+                        })
+                        .catch(function(err) {
+                            resolve();
+                        });
+                });
+            },
+        },
     }));
     app.use(session({
         secret: 'secrettobechanged',
@@ -75,6 +89,7 @@ exports.setup = (app, callback) => {
     }));
     app.use(passport.initialize());
     app.use(passport.session());
+
     callback(app);
 };
 
@@ -82,28 +97,29 @@ exports.setup = (app, callback) => {
  * Param: req from post method
  *        callback function should accept boolean
  */
-exports.checkRegisterFields = (req, callback) => {
+exports.checkRegisterFields = (req, res) => {
     req.checkBody('name', 'name is required').notEmpty();
     req.checkBody('email', 'email is required').notEmpty();
     req.checkBody('email', 'email is not valid').isEmail();
     req.checkBody('username', 'username is required').notEmpty();
+    req.checkBody('username', 'username is not unique').isUnique();
     req.checkBody('password', 'password is required').notEmpty();
     req.checkBody('password2', 'passwords does not match').equals(req.body.password);
-    callback(req.validationErrors());
-};
-
-exports.addUser = (req, res) => {
-    bcyrpt.hash(req.body.password, saltRounds, (err, hash) => {
-        if (err) {
-            console.log('failed to create hashed password!');
-            throw (err);
-        } else {
+    req.asyncValidationErrors()
+        .then(function() {
             let user = userDB.createNewUser(req.body.name, req.body.email, hash, req.body.username);
-            userDB.saveUser(user);
-            /* return success */
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            return res.end();
-        }
+            let savePromise = userDB.saveUser(user);
+            savePromise
+                .then(function(user) {
+                    /* return success */
+                    res.status(200).end();
+                })
+                .catch(function(err) {
+                    res.status(401).send([{param: 'username', msg: 'username is not unique', value: undefined}]);
+                });
+        })
+        .catch(function(errors) {
+            res.status(401).send(JSON.stringify(errors));
     });
 };
 
