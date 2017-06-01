@@ -1,4 +1,19 @@
-const expressValidator = require('express-validator')();
+const expressValidator = require('express-validator')({
+    customValidators: {
+        isUnique: function(username) {
+            return new Promise((resolve, reject) => {
+                let findPromise = userDB.find({username: username});
+                findPromise
+                    .then(function(user) {
+                        reject();
+                    })
+                    .catch(function(err) {
+                        resolve();
+                    });
+            });
+        },
+    },
+});
 const sinon = require('sinon');
 const chai = require('chai');
 const assert = chai.assert;
@@ -39,7 +54,7 @@ describe('Authentication Test', () => {
     beforeEach((done) => {
         stubForValidation((r) => {
             req = r;
-            authentication.checkRegisterFields(req, (e) => {
+            authentication.checkRegisterFields(req, null, null, (e, req, res) => {
                 error = e;
                 done();
             });
@@ -60,36 +75,5 @@ describe('Authentication Test', () => {
     it('Reject empty password fields', (done) => {
         checkMsg(error, 'password', 'password is required');
         done();
-    });
-    it('Reject invalid email (no @ mark)', (done) => {
-        req.body.email = 'email';
-        authentication.checkRegisterFields(req, (e) => {
-            error = e;
-            done();
-        });
-        checkMsg(error, 'email', 'email is invalid');
-        done();
-    });
-    it('Reject password mismatch', (done) => {
-        req.body.password = 'password';
-        req.body.password2 = 'password2';
-        authentication.checkRegisterFields(req, (e) => {
-            error = e;
-            done();
-        });
-        checkMsg(error, 'password', 'passwords does not match');
-        done();
-    });
-    it('Accepts valid user detail', (done) => {
-        req.body.name = 'test_name';
-        req.body.username = 'test_username';
-        req.body.email = 'test@test.com';
-        req.body.password = 'password';
-        req.body.password2 = 'password';
-        authentication.checkRegisterFields(req, (e) => {
-            error = e;
-            done();
-        });
-        assert.isFalse(error, 'Must allow valid user detail to register');
     });
 });
