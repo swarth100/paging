@@ -1,4 +1,5 @@
 let mongooseLocation = require('../mongoose/location');
+let avgTimes = require('./average-times');
 
 /* Given a location JSON and a callback function,
  * Performs a radar search via the Google API around the given location.
@@ -8,57 +9,32 @@ function searchAroundLocation(queryData, cb) {
         key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
     });
 
-    let temporaryQueryData = {
-        location: JSON.parse(queryData.location),
-        radius: queryData.radius,
-        type: queryData.type,
-    };
+    let query = extractQueryData(queryData);
 
     /* Place the radar and return the result to the callback function */
-    googleMapsClient.placesRadar(temporaryQueryData, function(err, response) {
+    googleMapsClient.placesRadar(query, function(err, response) {
         if (err) {
             console.log(err);
         } else {
             // Location can be found in
             // response.json.result[index].geometry.location.{lat/lng};
 
-            let randomPlaces = chooseRandomPlaces(response, temporaryQueryData.type);
+            let results = response.json.results;
+            let randomPlaces = chooseRandomPlaces(results);
 
-            findInDatabase(randomPlaces, cb);
+            let convertedPlaces = convertFormatOfPlaces(randomPlaces, query.type);
+
+            findInDatabase(convertedPlaces, cb);
         }
     });
 }
 
-const avgTimes = {
-    amusement_park: 180,
-    aquarium: 100,
-    art_gallery: 90,
-    bakery: 20,
-    bar: 60,
-    book_store: 15,
-    bowling_alley: 90,
-    cafe: 40,
-    casino: 120,
-    gym: 60,
-    library: 45,
-    meal_takeaway: 15,
-    movie_theater: 150,
-    museum: 150,
-    night_club: 240,
-    park: 90,
-    restaurant: 90,
-    shopping_mall: 60,
-    spa: 60,
-    stadium: 120,
-    zoo: 180,
-};
-
 const numberOfResults = 5;
 
-function cleanLocationDatabase() {
-    let cleanDatabase = mongooseLocation.removeMultiple({});
+function cleanDatabase(cleanFunction) {
+    let cleanDatabase = cleanFunction();
     cleanDatabase
-        .then(function() {
+        .then(function(resolveData) {
             console.log('Database cleared');
         })
         .catch(function(err) {
@@ -83,23 +59,36 @@ function convertFormat(searchResult, type) {
  * Chooses random places from the results returned by Google.
  * Returns them formatted in a way that can be used by the database.
  */
-function chooseRandomPlaces(response, type) {
-    let places = response.json.results;
+function chooseRandomPlaces(results) {
     let randomPlaces = [];
 
-    let loopCount = Math.min(numberOfResults, places.length);
+    let loopCeiling = Math.min(numberOfResults, places.length);
 
-    console.log(loopCount);
-    console.log(places.length);
-
-    for (let i = 0; i < loopCount; i++) {
-        let randomIndex = Math.floor((Math.random() * loopCount));
-        console.log(places[randomIndex]);
-        randomPlaces.push(convertFormat(places[randomIndex], type));
-        places.splice(randomIndex, 1);
+    for (let i = 0; i < loopCeiling; i++) {
+        let randomIndex = Math.floor(Math.random() * (loopCeiling - 1));
+        let randomElementArray = results.splice(randomIndex, 1);
+        randomPlaces.push(randomElementArray[0]);
     }
 
     return randomPlaces;
+}
+
+function convertFormatOfPlaces(randomPlaces, type) {
+    let convertedPlaces = [];
+
+    for (let i = 0; i < randomPlaces.length; i++) {
+        convertedPlaces.push(convertFormat(randomPlaces[i], type));
+    }
+
+    return convertedPlaces;
+}
+
+function extractQueryData(queryData) {
+    return {
+        location: JSON.parse(queryData.location),
+        radius: queryData.radius,
+        type: queryData.type,
+    };
 }
 
 /*
@@ -151,5 +140,12 @@ function saveInDatabase(finalPlaces, randomPlaces, randomPlace, cb) {
         });
 }
 
-module.exports = {searchAroundLocation, convertFormat, avgTimes, chooseRandomPlaces};
+module.exports = {
+    searchAroundLocation,
+    cleanDatabase,
+    convertFormat,
+    chooseRandomPlaces,
+    convertFormatOfPlaces,
+    extractQueryData,
+};
 
