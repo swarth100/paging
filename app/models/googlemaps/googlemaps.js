@@ -2,6 +2,9 @@ let mongooseLocation = require('../mongoose/location');
 let avgTimes = require('./average-times');
 
 let googleMapsClient;
+let location;
+let radius;
+let type;
 
 /* Given a location JSON and a callback function,
  * Performs a radar search via the Google API around the given location.
@@ -9,6 +12,7 @@ let googleMapsClient;
 function searchAroundLocation(queryData, cb) {
     googleMapsClient = require('@google/maps').createClient({
         key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
+        Promise: Promise,
     });
 
     let query = extractQueryData(queryData);
@@ -23,15 +27,30 @@ function searchAroundLocation(queryData, cb) {
 
             let results = response.json.results;
 
-            console.log(results);
+            // console.log(results);
 
-            let randomPlaces = chooseRandomPlaces(results);
+            let prunedResults = pruneResults(results, queryData, cb);
 
-            let convertedPlaces = convertFormatOfPlaces(randomPlaces, queryData.type);
+            console.log(prunedResults);
 
-            findInDatabase(convertedPlaces, cb);
+            // let randomPlaces = chooseRandomPlaces(prunedResults);
+            //
+            // let convertedPlaces = convertFormatOfPlaces(randomPlaces, queryData.type);
+            //
+            // findInDatabase(convertedPlaces, cb);
         }
     });
+}
+
+function secondPart(prunedResults, queryData, cb) {
+    console.log('In here!');
+    console.log(prunedResults);
+
+    let randomPlaces = chooseRandomPlaces(prunedResults);
+
+    let convertedPlaces = convertFormatOfPlaces(randomPlaces, queryData.type);
+
+    findInDatabase(convertedPlaces, cb);
 }
 
 function cleanDatabase(cleanFunction) {
@@ -65,11 +84,12 @@ const numberOfResults = 5;
  * Returns them formatted in a way that can be used by the database.
  */
 function chooseRandomPlaces(results) {
-    return results;
-
     let randomPlaces = [];
 
-    let loopCeiling = Math.min(numberOfResults, results.length);
+    // let loopCeiling = Math.min(numberOfResults, results.length);
+    let loopCeiling = results.length;
+
+    console.log(loopCeiling);
 
     for (let i = 0; i < loopCeiling; i++) {
         let randomIndex = Math.floor(Math.random() * (results.length - 1));
@@ -78,6 +98,73 @@ function chooseRandomPlaces(results) {
     }
 
     return randomPlaces;
+}
+
+// function pruneResults(results, queryData, cb) {
+//     let prunedResults = [];
+//
+//     for (let i = 0; i < results.length; i++) {
+//         console.log('IN HERE');
+//
+//         googleMapsClient.distanceMatrix({
+//             origins: [location],
+//             destinations: [results[i].geometry.location],
+//         }).asPromise()
+//             .then(function (response) {
+//                 // console.log(response.json.rows[0].elements[0].distance.value);
+//                 let distance = response.json.rows[0].elements[0].distance.value;
+//                 if (distance <= radius) {
+//
+//                     console.log('Kill me please');
+//
+//                     prunedResults.push(results[i]);
+//
+//                     // If the counter has reached the maximum and the length
+//                     // of the results is not the expected one, then pick
+//                     // results until you find the correct ones.
+//                     if (i === (results.length - 1)) {
+//                         console.log('Why are you not going on?');
+//                         // return prunedResults;
+//                         secondPart(prunedResults, queryData, cb);
+//                     }
+//                 }
+//             })
+//             .catch(function (error) {
+//                 console.log('Error');
+//                 console.log(error);
+//             });
+//     }
+// }
+
+function pruneResults(results, queryData, cb) {
+    let prunedResults = [];
+
+    let arrayLocation = [];
+
+    for (let i = 0; i < results.length; i++) {
+        arrayLocation.push(results[i].geometry.location);
+    }
+
+    googleMapsClient.distanceMatrix({
+        origins: [location],
+        destinations: arrayLocation,
+    }).asPromise()
+        .then(function(response) {
+            // console.log(response.json.rows[0].elements[0].distance.value);
+            let elements = response.json.rows[0].elements;
+
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].distance.value <= radius) {
+                    prunedResults.push(results[i]);
+                }
+            }
+
+            secondPart(prunedResults, queryData, cb);
+        })
+        .catch(function(error) {
+            console.log('Error');
+            console.log(error);
+        });
 }
 
 function convertFormatOfPlaces(randomPlaces, type) {
@@ -91,6 +178,9 @@ function convertFormatOfPlaces(randomPlaces, type) {
 }
 
 function extractQueryData(queryData) {
+    location = JSON.parse(queryData.location);
+    radius = queryData.radius;
+
     return {
         location: JSON.parse(queryData.location),
         radius: queryData.radius,
