@@ -72,8 +72,13 @@
                                     <button class="btn btn-default dropdown-toggle dropdown-button square" type="button" data-toggle="dropdown">
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-right" style="margin: 0; padding: 0;" role="menu">
+                                    <ul class="dropdown-menu dropdown-menu-right custom-dropdown" ng-click="$event.stopPropagation();" role="menu">
                                         <div uib-datepicker ng-model="tmpDate" ng-click="setDate()" class="well well-sm no-margin" datepicker-options="options"></div>
+                                        <div class="row">
+                                            <div class="col-sm-8 col-sm-offset-2 no-padding">
+                                                <div uib-timepicker ng-model="tmpTime" ng-change="changed()" ng-click="setDate()" show-meridian="ismeridian"></div>
+                                            </div>
+                                        </div>
                                     </ul>
                                 </div>
                             </div>
