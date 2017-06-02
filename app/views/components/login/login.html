@@ -15,8 +15,8 @@
                     <input type="password" class="form-control square" placeholder="Password" name="password" ng-model="password">
                     <br>
                     <div uib-alert ng-repeat="alert in alerts" class="square" ng-class="'alert-danger'" close="closeAlert()">{{alert.msg}}</div>
-                    <button type="submit" class="btn btn-default square" ng-click="submit()">Login</button>
-                    <button type="submit" class="btn btn-info square pull-right" ng-click="register()">Register</button>
+                    <button type="submit" class="btn btn-info square pull-right" ng-click="submit()">Login</button>
+                    <button type="submit" class="btn btn-default square" ng-click="register()">Register</button>
                 </form>
             </div>
         </div>
