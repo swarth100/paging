@@ -2,11 +2,12 @@
     border-radius: 0!important;
 }
 
-.group-cream{
+.input-group-cream{
     width: calc(100% + 15px);
 }
 
-.cream{
+.text-cream{
+    @extend square;
     background-color: #fff5e6;
     font-variant: small-caps;
     border-color: #995c00;
@@ -14,7 +15,9 @@
     margin-left: -12px;
 }
 
-.cream-glyphicon{
+.glyphicon-cream{
+    @extend square;
+    @extend no-top;
     background-color: #fff5e6;
     color: #000000;
     border-color: #995c00;
@@ -22,7 +25,8 @@
     font-size: 25px;
 }
 
-.cream-dark{
+.btn-light-cream{
+    @extend square;
     background-color: #ffcc80;
     font-variant: small-caps;
     border-color: #995c00;
@@ -31,12 +35,23 @@
     margin-right: 12px;
 }
 
-.orange-btn{
+.btn-light-cream:hover, .btn-light-cream:focus, .btn-light-cream:active{
+    @extend square;
+    border-color: #995c00;
+}
+
+.btn-dark-orange{
+    @extend square;
     background-color: #ffa31a;
     text-transform: uppercase;
     font-weight: bold;
     border-color: #995c00;
     color: #995c00;
+}
+
+.btn-dark-orange:hover, .btn-dark-orange:focus, .btn-dark-orange:active{
+    @extend square;
+    background-color: #ffd699;
 }
 
 .no-margin{
