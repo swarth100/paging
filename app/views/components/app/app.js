@@ -56,7 +56,7 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
             });
 
             let marker = new google.maps.Marker({
-                position: {lat: results[i].latitude, lng: results[i].longitude},
+                position: results[i].location,
                 map: map,
                 icon: {
                     path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
