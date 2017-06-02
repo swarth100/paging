@@ -5,9 +5,11 @@ let googleMapsClient;
 let location;
 let radius;
 
-/* Given a location JSON and a callback function,
- * Performs a radar search via the Google API around the given location.
- * On return calls the callback function. */
+/*
+ * Given a location JSON and a callback function,
+ * Performs a radar search via the Google API, updates the database and
+ * returns the necessary information.
+ */
 function searchAroundLocation(queryData, cb) {
     googleMapsClient = require('@google/maps').createClient({
         key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
@@ -16,7 +18,6 @@ function searchAroundLocation(queryData, cb) {
 
     let query = extractQueryData(queryData);
 
-    /* Place the radar and return the result to the callback function */
     googleMapsClient.placesNearby(query).asPromise()
         .then(function(response) {
             let results = response.json.results;
@@ -66,7 +67,6 @@ const numberOfResults = 5;
 
 /*
  * Chooses random places from the results returned by Google.
- * Returns them formatted in a way that can be used by the database.
  */
 function chooseRandomPlaces(results) {
     let randomPlaces = [];
@@ -83,6 +83,9 @@ function chooseRandomPlaces(results) {
     return randomPlaces;
 }
 
+/*
+ * This function is not tested.
+ */
 function findDistances(results) {
     let arrayLocation = [];
 
@@ -96,6 +99,9 @@ function findDistances(results) {
     }).asPromise();
 }
 
+/*
+ * This function is not tested.
+ */
 function pruneResults(results, response) {
     let elements = response.json.rows[0].elements;
 
@@ -110,6 +116,10 @@ function pruneResults(results, response) {
     return prunedResults;
 }
 
+/*
+ * Converts a list of results returned by Google to a list of results that
+ * we can use in our database.
+ */
 function convertFormatOfPlaces(randomPlaces, type) {
     let convertedPlaces = [];
 
@@ -132,8 +142,11 @@ function extractQueryData(queryData) {
 }
 
 /*
- * Tries to locate the chosen random places in the database. Ends up
- * returning the results to the user.
+ * This function is not tested.
+ */
+/*
+ * Tries to locate the chosen random places in the database. If a place is
+ * not located it tries to save it to the database.
  */
 function findInDatabase(randomPlaces, cb) {
     let promises = randomPlaces.map(function(entry) {
@@ -161,6 +174,9 @@ function findInDatabase(randomPlaces, cb) {
 }
 
 /*
+ * This function is not tested.
+ */
+/*
  * If a location is not found in the database this function tries to insert
  * it. If the insertion fails, then something has gone horribly wrong.
  */
@@ -180,6 +196,13 @@ function saveInDatabase(unnamedPlaces, randomPlaces, randomPlace, cb) {
         });
 }
 
+/*
+ * This function is not tested.
+ */
+/*
+ * Given a list of unnamed places, this function will try to find their
+ * respective names and return all information to the user.
+ */
 function addNames(unnamedPlaces, cb) {
     let finalPlaces = [];
 
