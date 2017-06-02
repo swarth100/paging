@@ -38,60 +38,52 @@
                                                                             8
 
  -->
-
-<div ng-controller="appController">
-
-    <!-- ROW div for the search bar -->
-    <div class="row no-margin">
-
+<div class="container-fluid no-padding">
+    <div ng-controller="appController">
+        <!-- ROW div for the search bar -->
         <!-- Left search bar holder -->
-        <div class="col-xs-6 col-sm-4 col-md-3 no-padding">
+        <div class="col-sm-2 sidenav no-padding">
             <form ng-submit="submitFields()">
-
                 <!-- ROW div for the left search bar -->
-                <div class="row">
-
-                    <!-- Location input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 no-padding-right">
-                        <div class="input-group">
-                            <span class="input-group-addon  square glyphicon glyphicon-pushpin no-top"></span>
-                            <input type="text" class="form-control square" ng-model="appSearch.location" autocomplete="on">
-                        </div>
+                <!-- Location input field -->
+                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                    <div class="input-group">
+                        <span class="input-group-addon  square glyphicon glyphicon-pushpin no-top"></span>
+                        <input type="text" class="form-control square" ng-model="appSearch.location" autocomplete="on">
                     </div>
-
-                    <!-- Date and Time input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 no-padding-right">
-                        <div class="input-group">
-                            <span class="input-group-addon square glyphicon glyphicon-calendar no-top"></span>
-                            <input type="datetime" class="form-control square" ng-model="appSearch.datetime">
-                        </div>
-                    </div>
-
-                    <!-- Duration input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 no-padding-right">
-                        <div class="input-group">
-                            <span class="input-group-addon square glyphicon glyphicon-time no-top"></span>
-                            <input type="number" class="form-control square" ng-model="appSearch.duration">
-                        </div>
-                    </div>
-
-                    <!-- Radius input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 no-padding-right">
-                        <div class="input-group">
-                            <span class="input-group-addon square glyphicon glyphicon-record no-top"></span>
-                            <input type="number" class="form-control square" ng-model="appSearch.radius">
-                        </div>
-                    </div>
-
-                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                    <input type="submit" class="hide-left" tabindex="-1" />
                 </div>
+
+                <!-- Date and Time input field -->
+                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                    <div class="input-group">
+                        <span class="input-group-addon square glyphicon glyphicon-calendar no-top"></span>
+                        <input type="datetime" class="form-control square" ng-model="appSearch.datetime">
+                    </div>
+                </div>
+
+                <!-- Duration input field -->
+                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                    <div class="input-group">
+                        <span class="input-group-addon square glyphicon glyphicon-time no-top"></span>
+                        <input type="number" class="form-control square" ng-model="appSearch.duration">
+                    </div>
+                </div>
+
+                <!-- Radius input field -->
+                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                    <div class="input-group">
+                        <span class="input-group-addon square glyphicon glyphicon-record no-top"></span>
+                        <input type="number" class="form-control square" ng-model="appSearch.radius">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field-button">
+                    <button type="submit" class="btn btn-default square">Search</button>
+                </div>
+                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                <!-- <input type="submit" class="hide-left" tabindex="-1" /> -->
             </form>
         </div>
-
-        <!-- Right Google Maps holder -->
-        <div class="col-xs-6 col-sm-8 col-md-9 no-padding-right">
-
+        <div class="col-sm-10 no-padding">
             <!-- The following is the controller for the post location -->
             <div id="map" class="map-dimensions" ng-controller="postLocation"></div>
         </div>
