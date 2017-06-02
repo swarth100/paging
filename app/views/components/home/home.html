@@ -67,6 +67,16 @@
                         <div class="input-group">
                             <span class="input-group-addon square glyphicon glyphicon-calendar no-top"></span>
                             <input type="datetime" class="form-control square" ng-model="homeSearch.datetime">
+                            <div class="input-group-btn square">
+                                <div class="btn-group square">
+                                    <button class="btn btn-default dropdown-toggle dropdown-button square" type="button" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" style="margin: 0; padding: 0;" role="menu">
+                                        <div uib-datepicker ng-model="tmpDate" ng-click="setDate()" class="well well-sm no-margin" datepicker-options="options"></div>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
