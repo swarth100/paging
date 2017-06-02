@@ -1,5 +1,42 @@
 .square{
-    border-radius: 0;
+    border-radius: 0!important;
+}
+
+.group-cream{
+    width: calc(100% + 15px);
+}
+
+.cream{
+    background-color: #fff5e6;
+    font-variant: small-caps;
+    border-color: #995c00;
+    border-left: none;
+    margin-left: -12px;
+}
+
+.cream-glyphicon{
+    background-color: #fff5e6;
+    color: #000000;
+    border-color: #995c00;
+    border-right: none;
+    font-size: 25px;
+}
+
+.cream-dark{
+    background-color: #ffcc80;
+    font-variant: small-caps;
+    border-color: #995c00;
+    border-left: none;
+    margin-left: -12px;
+    margin-right: 12px;
+}
+
+.orange-btn{
+    background-color: #ffa31a;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-color: #995c00;
+    color: #995c00;
 }
 
 .no-margin{
@@ -40,8 +77,10 @@
 
 .white-input{
     color: #ffffff;
+    font-variant: small-caps;
     margin: 0;
     padding: 0;
+    font-size: 20px;
 }
 
 .no-top{
