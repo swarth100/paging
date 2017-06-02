@@ -72,6 +72,7 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
         }
     };
 
+
     $scope.types = [
         {
             name: 'Amusment Park',
