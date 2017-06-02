@@ -25,19 +25,19 @@
 
     </head>
 
-<!-- Bind the following body to the googleMaps model -->
-<body ng-app="paging" style="background:url(./assets/images/background.jpg) no-repeat center center fixed;
-    background-size: cover;">
+    <!-- Bind the following body to the googleMaps model -->
+    <body ng-app="paging" style="background: url(./assets/images/background-dark.jpg) no-repeat center center fixed;
+        background-size: cover;">
 
-    <!-- Include the shared layout navbar  -->
-    <div ng-include="'components/shared/layout.html'"></div>
+        <!-- Include the shared layout navbar  -->
+        <div ng-include="'components/shared/layout.html'"></div>
 
-    <!-- The following view will be replaced by dynamically chosen content -->
-    <div ng-view>Loading ...</div>
+        <!-- The following view will be replaced by dynamically chosen content -->
+        <div ng-view>Loading ...</div>
 
-    <!-- Google script. Might have been a problem with asynchroniousity -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8">
-    </script>
+        <!-- Google script. Might have been a problem with asynchroniousity -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8">
+        </script>
 
     </body>
 </html>
