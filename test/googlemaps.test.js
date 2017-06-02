@@ -75,7 +75,7 @@ describe('GoogleMaps', function() {
             dummyResult.should.have.properties({
                 location: dummyLocation,
                 radius: dummyRandom,
-                type: dummyRandom,
+                name: dummyRandom,
             });
         });
     });
