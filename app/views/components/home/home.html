@@ -82,7 +82,7 @@
                     </div>
 
                     <!-- DURATION field holder -->
-                    <div class="col-sm-12 col-md-2 no-padding">
+                    <div class="col-sm-12 col-md-1 no-padding">
                         <p class="white-input">Duration:</p>
                         <div class="input-group input-group-cream">
                             <span class="input-group-addon square glyphicon glyphicon-time glyphicon-cream"></span>
@@ -100,11 +100,22 @@
                     </div>
 
                     <!-- Options field holder -->
-                    <div class="col-sm-12 col-md-1 no-padding">
+                    <div class="col-sm-12 col-md-2 no-padding">
                         <p class="white-input">Advanced:</p>
                         <div class="input-group">
                             <span class="input-group-addon square glyphicon glyphicon-plus no-top"></span>
-                            <input type="button" class="form-control square" value="Options" ng-click="go('/options')">
+                            <div class="input-group-btn square">
+                                <div class="btn-group square full-width">
+                                    <button class="btn btn-default btn-block dropdown-toggle dropdown-button square" type="button" data-toggle="dropdown">
+                                        Options
+                                        <span class="caret"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right full-width">
+
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
