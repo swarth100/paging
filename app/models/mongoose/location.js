@@ -43,14 +43,18 @@ let locationsSchema = new Schema({
         required: true,
         default: 1,
     },
-    latitude: {
-        type: Number,
+    location: {
+        type: Object,
         required: true,
     },
-    longitude: {
-        type: Number,
-        required: true,
-    },
+    // latitude: {
+    //     type: Number,
+    //     required: true,
+    // },
+    // longitude: {
+    //     type: Number,
+    //     required: true,
+    // },
 });
 
 /* Plugin that validates unique entries */
@@ -85,12 +89,19 @@ let Location = locationsDB.model('Location', locationsSchema);
  *   d = longitude
  * Returns:
  *   new Location instance */
-exports.createNewLocation = function(a, b, c, d) {
+// exports.createNewLocation = function(a, b, c, d) {
+//     return new Location({
+//         id: a,
+//         avgtime: b,
+//         latitude: c,
+//         longitude: d,
+//     });
+// };
+exports.createNewLocation = function(a, b, c) {
     return new Location({
         id: a,
         avgtime: b,
-        latitude: c,
-        longitude: d,
+        location: c,
     });
 };
 
