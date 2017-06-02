@@ -131,6 +131,11 @@ exports.checkRegisterFields = (req, res, successCallback, failCallback) => {
         });
 };
 
+/* example
+ *  router.get('/users/home', authentication.ensureAuthenticated, (req, res)=> {
+ *      res.status(200).end();
+ *  });
+ */
 /* Pass this function inside router.get to redirect the user to login screen
  * if they are not logged in already
  */

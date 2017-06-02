@@ -5,10 +5,6 @@ const path = require('path');
 const googlemaps = require('../models/googlemaps/googlemaps');
 const router = new express.Router();
 
-router.get('/users/index', (req, res)=> {
-    res.send(JSON.stringify({'url': '/home'}));
-});
-
 /* Post handler for /googlemaps */
 router.post('/googlemaps', function(req, res) {
     console.log('[index.html] : POST request to /googlemaps');
@@ -24,12 +20,8 @@ router.post('/googlemaps', function(req, res) {
 
 /* DEFAULT ROUTING
  * Leave at end of index.js */
-router.get('/', (req, res)=> {
-    res.sendFile(path.join(__dirname + '/../views/index.html'));
-});
-
 router.get('/*', (req, res)=> {
-    res.status(404).sendFile(path.join(__dirname + '/../views/index.html'));
+    res.sendFile(path.join(__dirname + '/../views/index.html'));
 });
 
 module.exports = router;

@@ -2,7 +2,7 @@
 
 /* The following controller is used to submit the loginForm to /users/login
  * The returned address is used to redirect to the correct failure/passing page */
-app.controller('loginFormCtrl', function($scope, $location, $http) {
+app.controller('loginFormCtrl', function($scope, $location, $http, LoginData) {
     /* For default text */
     $scope.master = {};
 
@@ -20,11 +20,15 @@ app.controller('loginFormCtrl', function($scope, $location, $http) {
     $scope.submit = function() {
         $http.post('/users/login', {username: $scope.username, password: $scope.password})
             .then(function(response) {
-                /* Data is packaged into a nasty JSON format.
-                 * To access it first one must retrieve the *.data part to distinguish from header */
+                $scope.loginData.isLoggedIn = true;
+                $scope.loginData.username = $scope.username;
+                $scope.loginData.name = response.data.name;
+                $scope.loginData.email = response.data.email;
                 $location.url('/');
             }, function(response) {
                 $scope.alerts[0] = ({msg: 'Invalid username or password'});
             });
     };
+    /* add access to the loginData */
+    $scope.loginData = LoginData;
 });
