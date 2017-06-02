@@ -12,19 +12,10 @@ describe('Routing Test', () => {
             .expect(200, done);
     });
 
-    it('Error when accessing non-root url', (done) => {
+    it('Redirect if accessing invalid url', (done) => {
         request(app).get('/hello')
             .expect('Content-Type', /html/)
-            .expect(404, done);
-    });
-
-    it('GET /user/index returns url for home', (done) => {
-        request(app).get('/users/index')
-            .expect(200)
-            .then((response) => {
-                expect(response.text).to.deep.equal('{"url":"/home"}');
-                done();
-            });
+            .expect(200, done);
     });
 
     it('POST /users/register registers new user and POST /users/login succeeds with valid data', (done) => {

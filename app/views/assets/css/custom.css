@@ -89,3 +89,28 @@
 .navbar-brand {
     color: black !important;
 }
+
+#login-dp{
+    min-width: 250px;
+    padding: 14px 14px 0;
+    overflow:hidden;
+    background: rgba(226,221,214,0.9);
+}
+
+#login-dp .bottom{
+    background-color: #E2DDD6;
+    border-top:1px solid #ddd;
+    clear:both;
+    padding:14px;
+}
+
+@media(max-width:768px){
+    #login-dp{
+        background-color: inherit;
+        color: #fff;
+    }
+    #login-dp .bottom{
+        background-color: inherit;
+        border-top:0 none;
+    }
+}
