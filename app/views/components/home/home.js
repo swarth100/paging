@@ -4,12 +4,18 @@
 app.controller('homeController', function($scope, $filter, $http, $location, Search) {
     $scope.homeSearch = Search;
 
+    $scope.tmpDate = '';
+
     /* Initiaalises the following fields to the following default values */
     $scope.homeSearch.location = 'Current Location';
     $scope.homeSearch.datetime = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm');
     $scope.homeSearch.duration = 60;
     $scope.homeSearch.radius = 1000;
     $scope.homeSearch.type = 'cafe';
+
+    $scope.setDate = function() {
+        $scope.homeSearch.datetime = $filter('date')($scope.tmpDate, 'yyyy-MM-dd HH:mm');
+    };
 
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
