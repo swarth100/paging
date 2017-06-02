@@ -50,7 +50,6 @@ let locationsSchema = new Schema({
     name: {
         type: String,
         required: true,
-        default: 'random_string_number_two',
     },
 });
 
