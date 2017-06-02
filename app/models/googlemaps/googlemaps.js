@@ -86,8 +86,8 @@ const numberOfResults = 5;
 function chooseRandomPlaces(results) {
     let randomPlaces = [];
 
-    // let loopCeiling = Math.min(numberOfResults, results.length);
-    let loopCeiling = results.length;
+    let loopCeiling = Math.min(numberOfResults, results.length);
+    // let loopCeiling = results.length;
 
     console.log(loopCeiling);
 
