@@ -1,6 +1,6 @@
 /* postLocation controller for the googleMaps module
  * Handles communication between client sided rendering and server sided location analysis */
-app.controller('postLocation', function($scope, $http) {
+app.controller('postLocation', function($scope, $http, $sessionStorage) {
     /* Post requests for googlemaps go to the following URL */
     let url = '/googlemaps';
 
@@ -83,10 +83,10 @@ app.controller('postLocation', function($scope, $http) {
 
         let fields = JSON.stringify({
             location: JSON.stringify(location),
-            datetime: $scope.appSearch.datetime,
-            avgtime: $scope.appSearch.duration,
-            radius: $scope.appSearch.radius,
-            type: $scope.appSearch.type,
+            datetime: $sessionStorage.appSearch.datetime,
+            avgtime: $sessionStorage.appSearch.duration,
+            radius: $sessionStorage.appSearch.radius,
+            type: $sessionStorage.appSearch.type,
         });
 
         /* Angular HTTP post
@@ -103,9 +103,11 @@ app.controller('postLocation', function($scope, $http) {
     };
 });
 
-app.controller('appController', function($scope, $filter, Search) {
-    $scope.appSearch = Search;
-
+app.controller('appController', function($scope, $sessionStorage) {
+    $scope.appSearch = $sessionStorage.queryData;
+    $scope.handleClick = () => {
+        $sessionStorage.queryData = $scope.appSearch;
+    };
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
     };
