@@ -1,7 +1,10 @@
 let mongooseLocation = require('../mongoose/location');
 let avgTimes = require('./average-times');
 
-let googleMapsClient;
+let googleMapsClient = require('@google/maps').createClient({
+    key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
+    Promise: Promise,
+});
 let location;
 let radius;
 
@@ -11,34 +14,33 @@ let radius;
  * returns the necessary information.
  */
 function searchAroundLocation(queryData, cb) {
-    googleMapsClient = require('@google/maps').createClient({
-        key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
-        Promise: Promise,
-    });
-
     let query = extractQueryData(queryData);
+
+    let results;
 
     googleMapsClient.placesNearby(query).asPromise()
         .then(function(response) {
-            let results = response.json.results;
+            results = response.json.results;
 
-            let distances = findDistances(results);
+            return findDistances(results);
+        })
+        .then(function(response) {
+            let prunedResults = pruneResults(results, response);
 
-            distances.then(function(response) {
-                let prunedResults = pruneResults(results, response);
+            let randomPlaces = chooseRandomPlaces(prunedResults);
 
-                let randomPlaces = chooseRandomPlaces(prunedResults);
+            let convertedPlaces = convertFormatOfPlaces(randomPlaces, queryData.type);
 
-                let convertedPlaces = convertFormatOfPlaces(randomPlaces, queryData.type);
-
-                findInDatabase(convertedPlaces, cb);
-            });
+            findInDatabase(convertedPlaces, cb);
         })
         .catch(function(error) {
             console.log(error);
         });
 }
 
+/*
+ * This function appears to be unsafe. Drop the database through mongo.
+ */
 function cleanDatabase(cleanFunction) {
     let cleanDatabase = cleanFunction({});
     cleanDatabase
@@ -58,7 +60,7 @@ function convertFormat(searchResult, type) {
     let id = searchResult.place_id;
     let avgtime = avgTimes[type];
     let location = searchResult.geometry.location;
-    let name = 'random string';
+    let name = 'easy_to_trace_string';
 
     return mongooseLocation.createNewLocation(id, avgtime, location, name);
 }
@@ -153,19 +155,18 @@ function findInDatabase(randomPlaces, cb) {
         return mongooseLocation.find({id: entry.id});
     });
 
-    let unnamedPlaces = [];
+    let finalPlaces = [];
 
     for (let i = 0; i < randomPlaces.length; i++) {
         promises[i]
             .then(function(result) {
-                unnamedPlaces.push(result);
-                if (unnamedPlaces.length === randomPlaces.length) {
-                    // addNames(unnamedPlaces, cb);
-                    cb(unnamedPlaces);
+                finalPlaces.push(result);
+                if (finalPlaces.length === randomPlaces.length) {
+                    cb(finalPlaces);
                 }
             })
             .catch(function(err) {
-                saveInDatabase(unnamedPlaces, randomPlaces, randomPlaces[i], cb);
+                saveInDatabase(finalPlaces, randomPlaces, randomPlaces[i], cb);
             });
     }
 
@@ -181,86 +182,28 @@ function findInDatabase(randomPlaces, cb) {
  * If a location is not found in the database this function tries to insert
  * it. If the insertion fails, then something has gone horribly wrong.
  */
-// function saveInDatabase(unnamedPlaces, randomPlaces, randomPlace, cb) {
-//     let promise = mongooseLocation.saveLocation(randomPlace);
-//
-//     promise
-//         .then(function(result) {
-//             unnamedPlaces.push(result);
-//             if (unnamedPlaces.length === randomPlaces.length) {
-//                 addNames(unnamedPlaces, cb);
-//             }
-//         })
-//         .catch(function(err) {
-//             console.log(err);
-//             console.log('Something has gone horribly wrong');
-//         });
-// }
-
-function saveInDatabase(unnamedPlaces, randomPlaces, randomPlace, cb) {
-    console.log('in here');
-
+function saveInDatabase(finalPlaces, randomPlaces, randomPlace, cb) {
     let promiseOfName = findName(randomPlace);
 
     promiseOfName.then(function(response) {
-        let name = response.json.result.name;
-
-        randomPlace['name'] = name;
-
-        console.log(randomPlace);
-
-        let promiseOfSave = mongooseLocation.saveLocation(randomPlace);
-
-        promiseOfSave.then(function(response) {
-            unnamedPlaces.push(response);
-            if (unnamedPlaces.length === randomPlaces.length) {
-                cb(unnamedPlaces);
-            }
-        });
-    })
-        .catch(function(error) {
-            console.log(error);
-            console.log('Something has gone horribly wrong');
-        });
-}
-
-function findName(unnamedPlace) {
-    return googleMapsClient.place({placeid: unnamedPlace.id}).asPromise();
+        randomPlace['name'] = response.json.result.name;
+        return mongooseLocation.saveLocation(randomPlace);
+    }).then(function(response) {
+        finalPlaces.push(response);
+        if (finalPlaces.length === randomPlaces.length) {
+            cb(finalPlaces);
+        }
+    }).catch(function(error) {
+        console.log(error);
+        console.log('Something has gone horribly wrong');
+    });
 }
 
 /*
  * This function is not tested.
  */
-/*
- * Given a list of unnamed places, this function will try to find their
- * respective names and return all information to the user.
- */
-function addNames(unnamedPlaces, cb) {
-    let finalPlaces = [];
-
-    for (let i = 0; i < unnamedPlaces.length; i++) {
-        let finalPlace = {
-            id: unnamedPlaces[i].id,
-            avgtime: unnamedPlaces[i].avgtime,
-            feedbackcount: unnamedPlaces[i].feedbackcount,
-            // latitude: unnamedPlaces[i].latitude,
-            // longitude: unnamedPlaces[i].longitude,
-            location: unnamedPlaces[i].location,
-        };
-
-        googleMapsClient.place({placeid: finalPlace.id}).asPromise()
-            .then(function(response) {
-                finalPlace['name'] = response.json.result.name;
-                finalPlaces.push(finalPlace);
-                if (finalPlaces.length === unnamedPlaces.length) {
-                    console.log(finalPlaces);
-                    cb(finalPlaces);
-                }
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-    }
+function findName(unnamedPlace) {
+    return googleMapsClient.place({placeid: unnamedPlace.id}).asPromise();
 }
 
 module.exports = {
