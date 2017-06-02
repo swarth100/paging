@@ -9,7 +9,7 @@ app.controller('homeController', function($scope, $filter, $http, $location, Sea
     $scope.homeSearch.datetime = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm');
     $scope.homeSearch.duration = 60;
     $scope.homeSearch.radius = 1000;
-    $scope.homeSearch.type = 'museum';
+    $scope.homeSearch.type = 'cafe';
 
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
