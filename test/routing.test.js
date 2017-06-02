@@ -12,10 +12,10 @@ describe('Routing Test', () => {
             .expect(200, done);
     });
 
-    it('Error when accessing non-root url', (done) => {
+    it('Redirect if accessing invalid url', (done) => {
         request(app).get('/hello')
             .expect('Content-Type', /html/)
-            .expect(404, done);
+            .expect(200, done);
     });
 
     it('GET /user/index returns url for home', (done) => {
