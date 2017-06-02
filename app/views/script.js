@@ -45,3 +45,10 @@ app.factory('Search', function() {
         type: '',
     };
 });
+
+app.factory('LoginData', function() {
+    return {
+        username: '',
+        isLoggedIn: false,
+    };
+});
