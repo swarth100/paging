@@ -117,7 +117,7 @@
     background-size: 100px 100px;
 }
 .sidenav {
-    background-color: #E2DDD6;
+    background-color: #ffcc80;
     height: calc(100vh - 52px);
 }
 
@@ -133,8 +133,14 @@
 }
 
 .navbar-default {
-    background: rgba(226,221,214,0.85);
+    background: rgba(255, 204, 128,0.85);
+    border-width: 0;
 }
+
+.navbar-default .navbar-nav > li > a{
+    color: #995c00;
+}
+
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
     color: black;
