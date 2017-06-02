@@ -1,4 +1,4 @@
-let app = angular.module('paging', ['ui.bootstrap', 'ngRoute']);
+let app = angular.module('paging', ['ui.bootstrap', 'ngRoute', 'ngStorage']);
 
 app.config(function($routeProvider, $locationProvider) {
     $locationProvider.html5Mode({
@@ -8,49 +8,30 @@ app.config(function($routeProvider, $locationProvider) {
 
     $routeProvider
         .when('/',
-            {
-                templateUrl: 'components/index/index.html',
-            })
+        {
+            templateUrl: 'components/index/index.html',
+        })
         .when('/home',
-            {
-                templateUrl: 'components/home/home.html',
-            })
+        {
+            templateUrl: 'components/home/home.html',
+        })
         .when('/app',
-            {
-                templateUrl: 'components/app/app.html',
-            })
+        {
+            templateUrl: 'components/app/app.html',
+        })
         .when('/login',
-            {
-                templateUrl: 'components/login/login.html',
-            })
+        {
+            templateUrl: 'components/login/login.html',
+        })
         .when('/register',
-            {
-                templateUrl: 'components/register/register.html',
-            })
+        {
+            templateUrl: 'components/register/register.html',
+        })
         .otherwise(
-            {
-                templateUrl: 'components/error/error.html',
-            });
+        {
+            templateUrl: 'components/error/error.html',
+        });
 
     /* TODO: Handle default redirection */
     // .otherwise( {redirectTo: '/'} );
-});
-
-app.factory('Search', function() {
-    return {
-        location: '',
-        datetime: '',
-        duration: '',
-        radius: '',
-        type: '',
-    };
-});
-
-app.factory('LoginData', function() {
-    return {
-        name: '',
-        username: '',
-        email: '',
-        isLoggedIn: false,
-    };
 });

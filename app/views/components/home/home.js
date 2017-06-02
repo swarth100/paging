@@ -1,18 +1,18 @@
 /* */
 
 /* Controller to handle the search bar on the home screen */
-app.controller('homeController', function($scope, $filter, $http, $location, Search) {
-    $scope.homeSearch = Search;
+app.controller('homeController', function($scope, $filter, $http, $location, $sessionStorage) {
+    $scope.homeSearch = {
+        location: 'Current Location',
+        datetime: '',
+        duration: 60,
+        radius: 1000,
+        type: 'cafe',
+    };
 
     $scope.tmpDate = new Date();
     $scope.tmpTime = new Date();
-
     /* Initiaalises the following fields to the following default values */
-    $scope.homeSearch.location = 'Current Location';
-    $scope.homeSearch.datetime = '';
-    $scope.homeSearch.duration = 60;
-    $scope.homeSearch.radius = 1000;
-    $scope.homeSearch.type = 'cafe';
 
     $scope.setDate = function() {
         $scope.homeSearch.datetime = $filter('date')(new Date(
@@ -25,9 +25,13 @@ app.controller('homeController', function($scope, $filter, $http, $location, Sea
     };
 
     $scope.setDate();
+    $sessionStorage.queryData = $scope.homeSearch;
 
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
         $location.url('/app');
+    };
+    $scope.handleClick = () => {
+        $sessionStorage.queryData = $scope.homeSearch;
     };
 });
