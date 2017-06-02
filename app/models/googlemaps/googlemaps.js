@@ -100,42 +100,6 @@ function chooseRandomPlaces(results) {
     return randomPlaces;
 }
 
-// function pruneResults(results, queryData, cb) {
-//     let prunedResults = [];
-//
-//     for (let i = 0; i < results.length; i++) {
-//         console.log('IN HERE');
-//
-//         googleMapsClient.distanceMatrix({
-//             origins: [location],
-//             destinations: [results[i].geometry.location],
-//         }).asPromise()
-//             .then(function (response) {
-//                 // console.log(response.json.rows[0].elements[0].distance.value);
-//                 let distance = response.json.rows[0].elements[0].distance.value;
-//                 if (distance <= radius) {
-//
-//                     console.log('Kill me please');
-//
-//                     prunedResults.push(results[i]);
-//
-//                     // If the counter has reached the maximum and the length
-//                     // of the results is not the expected one, then pick
-//                     // results until you find the correct ones.
-//                     if (i === (results.length - 1)) {
-//                         console.log('Why are you not going on?');
-//                         // return prunedResults;
-//                         secondPart(prunedResults, queryData, cb);
-//                     }
-//                 }
-//             })
-//             .catch(function (error) {
-//                 console.log('Error');
-//                 console.log(error);
-//             });
-//     }
-// }
-
 function pruneResults(results, queryData, cb) {
     let prunedResults = [];
 
