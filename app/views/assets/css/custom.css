@@ -46,7 +46,39 @@
 }
 
 .map-dimensions{
-    height: calc(100vh - 55px);
+    overflow: hidden;
+    height: calc(100vh - 52px);
     width: 100%;
-    background: #ffffff url(../images/loading.gif) no-repeat center center;
+    background: url(../images/loading.gif) no-repeat center center;
+    background-size: 100px 100px;
+}
+.sidenav {
+    padding-top: 20px;
+    padding-right:0;
+    padding-left:0;
+    background-color: #E2DDD6;
+    height: calc(100vh - 52px);
+}
+
+.left-bar-field {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.left-bar-field-button {
+    padding-top: 10px;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.navbar-default {
+    background: rgba(226,221,214,0.85);
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: black;
+}
+
+.navbar-brand {
+    color: black !important;
 }
