@@ -53,9 +53,6 @@
     background-size: 100px 100px;
 }
 .sidenav {
-    padding-top: 20px;
-    padding-right:0;
-    padding-left:0;
     background-color: #E2DDD6;
     height: calc(100vh - 52px);
 }
