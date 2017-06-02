@@ -57,17 +57,10 @@ function cleanDatabase(cleanFunction) {
 function convertFormat(searchResult, type) {
     let id = searchResult.place_id;
     let avgtime = avgTimes[type];
-    // let latitude = searchResult.geometry.location.lat;
-    // let longitude = searchResult.geometry.location.lng;
-
-    console.log(searchResult.geometry.location);
-
     let location = searchResult.geometry.location;
+    let name = 'random string';
 
-    console.log(location);
-
-    // return mongooseLocation.createNewLocation(id, avgtime, latitude, longitude);
-    return mongooseLocation.createNewLocation(id, avgtime, location);
+    return mongooseLocation.createNewLocation(id, avgtime, location, name);
 }
 
 const numberOfResults = 5;
@@ -167,7 +160,8 @@ function findInDatabase(randomPlaces, cb) {
             .then(function(result) {
                 unnamedPlaces.push(result);
                 if (unnamedPlaces.length === randomPlaces.length) {
-                    addNames(unnamedPlaces, cb);
+                    // addNames(unnamedPlaces, cb);
+                    cb(unnamedPlaces);
                 }
             })
             .catch(function(err) {
@@ -187,20 +181,51 @@ function findInDatabase(randomPlaces, cb) {
  * If a location is not found in the database this function tries to insert
  * it. If the insertion fails, then something has gone horribly wrong.
  */
-function saveInDatabase(unnamedPlaces, randomPlaces, randomPlace, cb) {
-    let promise = mongooseLocation.saveLocation(randomPlace);
+// function saveInDatabase(unnamedPlaces, randomPlaces, randomPlace, cb) {
+//     let promise = mongooseLocation.saveLocation(randomPlace);
+//
+//     promise
+//         .then(function(result) {
+//             unnamedPlaces.push(result);
+//             if (unnamedPlaces.length === randomPlaces.length) {
+//                 addNames(unnamedPlaces, cb);
+//             }
+//         })
+//         .catch(function(err) {
+//             console.log(err);
+//             console.log('Something has gone horribly wrong');
+//         });
+// }
 
-    promise
-        .then(function(result) {
-            unnamedPlaces.push(result);
+function saveInDatabase(unnamedPlaces, randomPlaces, randomPlace, cb) {
+    console.log('in here');
+
+    let promiseOfName = findName(randomPlace);
+
+    promiseOfName.then(function(response) {
+        let name = response.json.result.name;
+
+        randomPlace['name'] = name;
+
+        console.log(randomPlace);
+
+        let promiseOfSave = mongooseLocation.saveLocation(randomPlace);
+
+        promiseOfSave.then(function(response) {
+            unnamedPlaces.push(response);
             if (unnamedPlaces.length === randomPlaces.length) {
-                addNames(unnamedPlaces, cb);
+                cb(unnamedPlaces);
             }
-        })
-        .catch(function(err) {
-            console.log(err);
+        });
+    })
+        .catch(function(error) {
+            console.log(error);
             console.log('Something has gone horribly wrong');
         });
+}
+
+function findName(unnamedPlace) {
+    return googleMapsClient.place({placeid: unnamedPlace.id}).asPromise();
 }
 
 /*
