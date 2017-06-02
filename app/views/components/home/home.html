@@ -44,7 +44,7 @@
         <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1">
 
             <!-- Submission form for SEARCH query -->
-            <form class="form" ng-submit="submitFields()">
+            <form class="form-group-lg" ng-submit="submitFields()">
 
                 <!-- ROW div for INNER search bar -->
                 <div class="row no-bot-margin">
@@ -52,22 +52,21 @@
                     <!-- LOCATION field holder -->
                     <div class="col-sm-12 col-md-3 no-padding">
                         <p class="white-input">Location:</p>
-                        <div class="input-group">
-                            <span class="input-group-addon glyphicon glyphicon-pushpin square no-top"></span>
-                            <input type="text" class="form-control square" ng-model="homeSearch.location" autocomplete="on">
+                        <div class="input-group input-group-cream">
+                            <span class="input-group-addon glyphicon glyphicon-pushpin glyphicon-cream"></span>
+                            <input type="text" class="form-control square text-cream" ng-model="homeSearch.location" autocomplete="on">
                         </div>
                     </div>
 
                     <!-- DATETIME field holder -->
                     <div class="col-sm-12 col-md-3 no-padding">
                         <p class="white-input">Date and Time:</p>
-                        <div class="input-group">
-                            <span class="input-group-addon square glyphicon glyphicon-calendar no-top"></span>
-                            <input type="datetime" class="form-control square" ng-model="homeSearch.datetime">
+                        <div class="input-group input-group-cream">
+                            <span class="input-group-addon square glyphicon glyphicon-calendar glyphicon-cream"></span>
+                            <input type="datetime" class="form-control text-cream" ng-model="homeSearch.datetime">
                             <div class="input-group-btn square">
-                                <div class="btn-group square">
-                                    <button class="btn btn-default dropdown-toggle dropdown-button square" type="button" data-toggle="dropdown">
-                                        <span class="caret"></span>
+                                <div class="btn-group-lg square">
+                                    <button class="btn dropdown-toggle dropdown-button glyphicon glyphicon-chevron-down square btn-light-cream" type="button" data-toggle="dropdown">
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right custom-dropdown" ng-click="$event.stopPropagation();" role="menu">
                                         <div uib-datepicker ng-model="tmpDate" ng-click="setDate()" class="well well-sm no-margin" datepicker-options="options"></div>
@@ -85,18 +84,18 @@
                     <!-- DURATION field holder -->
                     <div class="col-sm-12 col-md-2 no-padding">
                         <p class="white-input">Duration:</p>
-                        <div class="input-group">
-                            <span class="input-group-addon square glyphicon glyphicon-time no-top"></span>
-                            <input type="number" class="form-control square" ng-model="homeSearch.duration">
+                        <div class="input-group input-group-cream">
+                            <span class="input-group-addon square glyphicon glyphicon-time glyphicon-cream"></span>
+                            <input type="number" class="form-control square text-cream" ng-model="homeSearch.duration">
                         </div>
                     </div>
 
                     <!-- RADIUS field holder -->
                     <div class="col-sm-12 col-md-2 no-padding">
                         <p class="white-input">Radius:</p>
-                        <div class="input-group">
-                            <span class="input-group-addon square glyphicon glyphicon-record no-top"></span>
-                            <input type="number" class="form-control square" ng-model="homeSearch.radius">
+                        <div class="input-group input-group-cream">
+                            <span class="input-group-addon square glyphicon glyphicon-record glyphicon-cream"></span>
+                            <input type="number" class="form-control square text-cream" ng-model="homeSearch.radius">
                         </div>
                     </div>
 
@@ -104,7 +103,7 @@
                     <div class="col-sm-12 col-md-2 no-padding">
                         <p class="white-input"><br></p>
                         <div>
-                            <p><button type="submit" class="btn btn-success btn-block square">Submit</button></p>
+                            <p><button type="submit" class="btn-lg btn-block square btn-dark-orange">Search</button></p>
                         </div>
                     </div>
                 </div>

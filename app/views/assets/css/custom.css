@@ -1,5 +1,57 @@
 .square{
-    border-radius: 0;
+    border-radius: 0!important;
+}
+
+.input-group-cream{
+    width: calc(100% + 15px);
+}
+
+.text-cream{
+    @extend square;
+    background-color: #fff5e6;
+    font-variant: small-caps;
+    border-color: #995c00;
+    border-left: none;
+    margin-left: -12px;
+}
+
+.glyphicon-cream{
+    @extend square;
+    @extend no-top;
+    background-color: #fff5e6;
+    color: #000000;
+    border-color: #995c00;
+    border-right: none;
+    font-size: 25px;
+}
+
+.btn-light-cream{
+    @extend square;
+    background-color: #ffcc80;
+    font-variant: small-caps;
+    border-color: #995c00;
+    border-left: none;
+    margin-left: -12px;
+    margin-right: 12px;
+}
+
+.btn-light-cream:hover, .btn-light-cream:focus, .btn-light-cream:active{
+    @extend square;
+    border-color: #995c00;
+}
+
+.btn-dark-orange{
+    @extend square;
+    background-color: #ffa31a;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-color: #995c00;
+    color: #995c00;
+}
+
+.btn-dark-orange:hover, .btn-dark-orange:focus, .btn-dark-orange:active{
+    @extend square;
+    background-color: #ffd699;
 }
 
 .no-margin{
@@ -40,8 +92,10 @@
 
 .white-input{
     color: #ffffff;
+    font-variant: small-caps;
     margin: 0;
     padding: 0;
+    font-size: 20px;
 }
 
 .no-top{
@@ -63,7 +117,7 @@
     background-size: 100px 100px;
 }
 .sidenav {
-    background-color: #E2DDD6;
+    background-color: #ffcc80;
     height: calc(100vh - 52px);
 }
 
@@ -79,8 +133,14 @@
 }
 
 .navbar-default {
-    background: rgba(226,221,214,0.85);
+    background: rgba(255, 204, 128,0.85);
+    border-width: 0;
 }
+
+.navbar-default .navbar-nav > li > a{
+    color: #995c00;
+}
+
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
     color: black;
