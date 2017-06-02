@@ -40,7 +40,7 @@ function searchAroundLocation(queryData, cb) {
 }
 
 function cleanDatabase(cleanFunction) {
-    let cleanDatabase = cleanFunction();
+    let cleanDatabase = cleanFunction({});
     cleanDatabase
         .then(function(resolveData) {
             console.log('Database cleared');
@@ -57,10 +57,17 @@ function cleanDatabase(cleanFunction) {
 function convertFormat(searchResult, type) {
     let id = searchResult.place_id;
     let avgtime = avgTimes[type];
-    let latitude = searchResult.geometry.location.lat;
-    let longitude = searchResult.geometry.location.lng;
+    // let latitude = searchResult.geometry.location.lat;
+    // let longitude = searchResult.geometry.location.lng;
 
-    return mongooseLocation.createNewLocation(id, avgtime, latitude, longitude);
+    console.log(searchResult.geometry.location);
+
+    let location = searchResult.geometry.location;
+
+    console.log(location);
+
+    // return mongooseLocation.createNewLocation(id, avgtime, latitude, longitude);
+    return mongooseLocation.createNewLocation(id, avgtime, location);
 }
 
 const numberOfResults = 5;
@@ -211,8 +218,9 @@ function addNames(unnamedPlaces, cb) {
             id: unnamedPlaces[i].id,
             avgtime: unnamedPlaces[i].avgtime,
             feedbackcount: unnamedPlaces[i].feedbackcount,
-            latitude: unnamedPlaces[i].latitude,
-            longitude: unnamedPlaces[i].longitude,
+            // latitude: unnamedPlaces[i].latitude,
+            // longitude: unnamedPlaces[i].longitude,
+            location: unnamedPlaces[i].location,
         };
 
         googleMapsClient.place({placeid: finalPlace.id}).asPromise()
@@ -220,6 +228,7 @@ function addNames(unnamedPlaces, cb) {
                 finalPlace['name'] = response.json.result.name;
                 finalPlaces.push(finalPlace);
                 if (finalPlaces.length === unnamedPlaces.length) {
+                    console.log(finalPlaces);
                     cb(finalPlaces);
                 }
             })
