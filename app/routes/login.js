@@ -24,5 +24,13 @@ router.post('/users/login', function(req, res, next) {
         });
     })(req, res, next);
 });
+/* Handle post requests on /users/signout
+ * Destroy's the current session */
+router.get('/users/logout', function(req, res) {
+   req.session.destroy(function(err) {
+       return res.status(200).end();
+    });
+});
+
 
 module.exports = router;
