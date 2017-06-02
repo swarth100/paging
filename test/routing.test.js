@@ -18,15 +18,6 @@ describe('Routing Test', () => {
             .expect(200, done);
     });
 
-    it('GET /user/index returns url for home', (done) => {
-        request(app).get('/users/index')
-            .expect(200)
-            .then((response) => {
-                expect(response.text).to.deep.equal('{"url":"/home"}');
-                done();
-            });
-    });
-
     it('POST /users/register registers new user and POST /users/login succeeds with valid data', (done) => {
         request(app).post('/users/register')
             .send({
