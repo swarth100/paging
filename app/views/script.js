@@ -48,7 +48,9 @@ app.factory('Search', function() {
 
 app.factory('LoginData', function() {
     return {
+        name: '',
         username: '',
+        email: '',
         isLoggedIn: false,
     };
 });
