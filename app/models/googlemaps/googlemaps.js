@@ -19,10 +19,6 @@ function searchAroundLocation(queryData, cb) {
 
     let results;
 
-    // cleanDatabase(mongooseLocation.removeMultiple);
-    //
-    // return;
-
     googleMapsClient.placesNearby(query).asPromise()
         .then(function(response) {
             results = response.json.results;
@@ -36,37 +32,15 @@ function searchAroundLocation(queryData, cb) {
 
             let convertedPlaces = convertFormatOfPlaces(randomPlaces, queryData.type);
 
-            // return findInDatabase(convertedPlaces, cb);
-            // let arrayOfPromisesOfFinalPlaces =
-
-            // console.log(arrayOfPromisesOfFinalPlaces);
-
-            console.log(convertedPlaces);
-
             return Promise.all(convertedPlaces.map(function(convertedPlace) {
                 return findInDatabase(convertedPlace);
             }));
         })
         .then(function(responses) {
-            // console.log(responses);
             cb(responses);
         })
         .catch(function(error) {
             console.log(error);
-        });
-}
-
-/*
- * This function appears to be unsafe. Drop the database through mongo.
- */
-function cleanDatabase(cleanFunction) {
-    let cleanDatabase = cleanFunction({});
-    cleanDatabase
-        .then(function(resolveData) {
-            console.log('Database cleared');
-        })
-        .catch(function(err) {
-            console.log('No element in the database meets the deletion criteria');
         });
 }
 
@@ -168,40 +142,11 @@ function extractQueryData(queryData) {
  * Tries to locate the chosen random places in the database. If a place is
  * not located it tries to save it to the database.
  */
-// function findInDatabase(randomPlaces, cb) {
-//     let promises = randomPlaces.map(function(entry) {
-//         return mongooseLocation.find({id: entry.id});
-//     });
-//
-//     let finalPlaces = [];
-//
-//     for (let i = 0; i < randomPlaces.length; i++) {
-//         promises[i]
-//             .then(function(result) {
-//                 finalPlaces.push(result);
-//                 if (finalPlaces.length === randomPlaces.length) {
-//                     return new Promise(function (resolve, reject) {
-//                         resolve(finalPlaces);
-//                     });
-//                 }
-//             })
-//             .catch(function(err) {
-//                 return saveInDatabase(finalPlaces, randomPlaces, randomPlaces[i], cb);
-//             });
-//     }
-//
-//     if (!randomPlaces.length) {
-//         cb({});
-//     }
-// }
 function findInDatabase(randomPlace) {
     let promiseOfLocation = mongooseLocation.find({id: randomPlace.id});
 
     return promiseOfLocation
         .then(function(result) {
-            let temporaryVariable = Promise.resolve(result);
-            // console.log(temporaryVariable);
-            // return Promise.resolve(result);
             return result;
         })
         .catch(function(err) {
@@ -212,40 +157,12 @@ function findInDatabase(randomPlace) {
 /*
  * This function is not tested.
  */
-/*
- * If a location is not found in the database this function tries to insert
- * it. If the insertion fails, then something has gone horribly wrong.
- */
-// function saveInDatabase(finalPlaces, randomPlaces, randomPlace, cb) {
-//     let promiseOfName = findName(randomPlace);
-//
-//     promiseOfName.then(function(response) {
-//         randomPlace['name'] = response.json.result.name;
-//         return mongooseLocation.saveLocation(randomPlace);
-//     }).then(function(response) {
-//         finalPlaces.push(response);
-//         if (finalPlaces.length === randomPlaces.length) {
-//             return new Promise(function (resolve, reject) {
-//                 resolve(finalPlaces);
-//             });
-//         }
-//     }).catch(function(error) {
-//         console.log(error);
-//         console.log('Something has gone horribly wrong');
-//     });
-// }
-
 function saveInDatabase(randomPlace) {
     let promiseOfName = findName(randomPlace);
 
-    promiseOfName.then(function(response) {
+    return promiseOfName.then(function(response) {
         randomPlace['name'] = response.json.result.name;
         return mongooseLocation.saveLocation(randomPlace);
-    // }).then(function(response) {
-    //     return Promise.resolve(response);
-    // }).catch(function(error) {
-        // console.log(error);
-        // console.log('Something has gone horribly wrong');
     });
 }
 
