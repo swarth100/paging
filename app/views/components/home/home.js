@@ -24,7 +24,9 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
         $scope.tmpDate = new Date();
         $scope.tmpTime = new Date();
         $scope.setDate();
-    } else {
+
+        $sessionStorage.queryData = $scope.homeSearch;
+   } else {
         $scope.homeSearch = $sessionStorage.queryData;
     }
     $scope.submitFields = () => {
