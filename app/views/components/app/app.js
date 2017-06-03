@@ -80,13 +80,12 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
         };
-
         let fields = JSON.stringify({
             location: JSON.stringify(location),
-            datetime: $sessionStorage.appSearch.datetime,
-            avgtime: $sessionStorage.appSearch.duration,
-            radius: $sessionStorage.appSearch.radius,
-            type: $sessionStorage.appSearch.type,
+            datetime: $sessionStorage.queryData.datetime,
+            avgtime: $sessionStorage.queryData.duration,
+            radius: $sessionStorage.queryData.radius,
+            type: $sessionStorage.queryData.type,
         });
 
         /* Angular HTTP post
