@@ -33,8 +33,30 @@ authentication.setup(app, (app) => {
      * Opens port 3000 to listen for connections
      * Otherwise use heroku provided port */
     app.set('port', (process.env.PORT || 3000));
-    app.listen(app.get('port'), () => {
+    let server = app.listen(app.get('port'), () => {
         console.log('[Server] : open on port ' + app.get('port'));
+    });
+    let io = require('socket.io').listen(server);
+    let room = 'hello-world';
+    io.on('connection', function(socket) {
+        console.log('a user connected');
+        socket.on('hello', (data) => {
+            console.log(data);
+            socket.emit('messages', 'Hi there');
+        });
+        socket.on('join', (data) => {
+            socket.join(data);
+            console.log('joining ' + data);
+            socket.emit('messages', 'thank you for joining');
+        });
+        socket.on('leave', (data) => {
+            socket.leave(data);
+            console.log('leaving ' + data);
+        });
+        socket.on('broadcast', (data) => {
+            socket.broadcast.to(data.room).emit(data.eventName, data.data);
+            console.log(data);
+        });
     });
 });
 
