@@ -39,7 +39,7 @@
     "passport-local": "^1.0.0",
     "should": "^11.2.1",
     "sinon": "^2.3.2",
-    "socket.io": "^2.0.1"
+    "socket.io": "^2.0.2"
   },
   "devDependencies": {
     "chai": "^4.0.0",
