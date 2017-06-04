@@ -28,6 +28,7 @@
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
     "chai": "^4.0.1",
+    "co": "^4.6.0",
     "config": "^1.26.1",
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
@@ -39,7 +40,8 @@
     "passport-local": "^1.0.0",
     "should": "^11.2.1",
     "sinon": "^2.3.2",
-    "socket.io": "^2.0.2"
+    "socket.io": "^2.0.2",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "chai": "^4.0.0",
