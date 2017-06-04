@@ -1,5 +1,3 @@
-let _ = require('underscore');
-/* Add friend to the friendlist. Callback should accept boolean */
 const userDB = require('../mongoose/user');
 
 module.exports = {
@@ -11,6 +9,11 @@ module.exports = {
     acceptFriendReq: (username, friendUsername, callback) => {
         userDB.acceptFriendReq(username, friendUsername).then((res, msg) => {
             callback(res, msg);
+        });
+    },
+    getFriendUsernames: (username, callback) => {
+        userDB.getFriendUsernames(username).then((res) => {
+           callback(res);
         });
     },
 };
