@@ -215,6 +215,20 @@ exports.acceptFriendReq = co.wrap(function* (username, friendUsername) {
     User.update({_id: f._id}, {$addToSet: {friends: u._id}}).exec();
     return (true, 'success');
 });
+
+exports.getFriendUsernames = co.wrap(function* (username) {
+    let u = User.findOne({username: username}).exec();
+    u = yield u;
+    let friends = [];
+    u.friends.forEach((e) => {
+        friends.push(User.findOne({_id: e}).exec());
+    });
+    friends = yield friends;
+    let friendUsernames = friends.map((e) => {
+        return e.username;
+    });
+    return friendUsernames;
+});
 /* Export the User model *
 exports.userModel = User;
 */
