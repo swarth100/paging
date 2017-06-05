@@ -7,7 +7,8 @@ let googleMapsClient = require('@google/maps').createClient({
     Promise: Promise,
 });
 let location;
-let radius;
+
+const numberOfResults = 5;
 
 /*
  * Given a location JSON and a callback function,
@@ -26,7 +27,7 @@ function searchAroundLocation(queryData, cb) {
             return findDistances(results);
         })
         .then(function(response) {
-            let prunedResults = pruneResults(results, response);
+            let prunedResults = pruneResults(results, response, queryData.radius);
 
             let randomPlaces = chooseRandomPlaces(prunedResults);
 
@@ -44,37 +45,14 @@ function searchAroundLocation(queryData, cb) {
         });
 }
 
-/*
- * Given a result returned by Google, converts it to a format usable by our
- * database.
- */
-function convertFormat(searchResult, type) {
-    let id = searchResult.place_id;
-    let avgtime = avgTimes[type];
-    let location = searchResult.geometry.location;
-    let name = 'easy_to_trace_string';
+function extractQueryData(queryData) {
+    location = JSON.parse(queryData.location);
 
-    return mongooseLocation.createNewLocation(id, avgtime, location, name);
-}
-
-const numberOfResults = 5;
-
-/*
- * Chooses random places from the results returned by Google.
- */
-function chooseRandomPlaces(results) {
-    let randomPlaces = [];
-
-    let loopCeiling = Math.min(numberOfResults, results.length);
-    // let loopCeiling = results.length;
-
-    for (let i = 0; i < loopCeiling; i++) {
-        let randomIndex = Math.floor(Math.random() * (results.length - 1));
-        let randomElementArray = results.splice(randomIndex, 1);
-        randomPlaces.push(randomElementArray[0]);
-    }
-
-    return randomPlaces;
+    return {
+        location: JSON.parse(queryData.location),
+        radius: queryData.radius,
+        name: queryData.type,
+    };
 }
 
 /*
@@ -93,10 +71,7 @@ function findDistances(results) {
     }).asPromise();
 }
 
-/*
- * This function is not tested.
- */
-function pruneResults(results, response) {
+function pruneResults(results, response, radius) {
     let elements = response.json.rows[0].elements;
 
     let prunedResults = [];
@@ -111,6 +86,37 @@ function pruneResults(results, response) {
 }
 
 /*
+ * Chooses random places from the results returned by Google.
+ */
+function chooseRandomPlaces(results) {
+    let randomPlaces = [];
+
+    // let loopCeiling = Math.min(numberOfResults, results.length);
+    let loopCeiling = results.length;
+
+    for (let i = 0; i < loopCeiling; i++) {
+        let randomIndex = Math.floor(Math.random() * (results.length - 1));
+        let randomElementArray = results.splice(randomIndex, 1);
+        randomPlaces.push(randomElementArray[0]);
+    }
+
+    return randomPlaces;
+}
+
+/*
+ * Given a result returned by Google, converts it to a format usable by our
+ * database.
+ */
+function convertFormat(searchResult, type) {
+    let id = searchResult.place_id;
+    let avgtime = avgTimes[type];
+    let location = searchResult.geometry.location;
+    let name = 'easy_to_trace_string';
+
+    return mongooseLocation.createNewLocation(id, avgtime, location, name);
+}
+
+/*
  * Converts a list of results returned by Google to a list of results that
  * we can use in our database.
  */
@@ -122,17 +128,6 @@ function convertFormatOfPlaces(randomPlaces, type) {
     }
 
     return convertedPlaces;
-}
-
-function extractQueryData(queryData) {
-    location = JSON.parse(queryData.location);
-    radius = queryData.radius;
-
-    return {
-        location: JSON.parse(queryData.location),
-        radius: queryData.radius,
-        name: queryData.type,
-    };
 }
 
 /*
@@ -175,10 +170,14 @@ function findName(unnamedPlace) {
 
 module.exports = {
     searchAroundLocation,
-    cleanDatabase,
-    convertFormat,
-    chooseRandomPlaces,
-    convertFormatOfPlaces,
     extractQueryData,
+    findDistances,
+    pruneResults,
+    chooseRandomPlaces,
+    convertFormat,
+    convertFormatOfPlaces,
+    findInDatabase,
+    saveInDatabase,
+    findName,
 };
 
