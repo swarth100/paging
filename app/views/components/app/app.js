@@ -169,15 +169,30 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
     }
 });
 
-app.controller('appCtrl', function($scope, $sessionStorage, $routeParams, socket) {
+app.controller('appCtrl', function($scope, $sessionStorage, $localStorage, $routeParams, socket) {
     $scope.appSearch = $sessionStorage.queryData;
-
     $scope.roomID = $routeParams.room;
 
-    /* Upon entry, join the correspondent room */
-    socket.join($scope.roomID);
+    $scope.joinRoom = function() {
+        /* Upon entry, join the correspondent room. */
+        socket.join($scope.roomID);
 
-    socket.broadcast($scope.roomID, 'messages', 'newUser joined');
+        /* Broadcast location to all socket listeners */
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                socket.broadcast($scope.roomID, 'location', {
+                    'username': $localStorage.username,
+                    'lat': position.coords.latitude,
+                    'lng': position.coords.longitude,
+                });
+            });
+    };
+    $scope.joinRoom();
+
+    /* Redefine socket fields for updatingLocation */
+    socket.on('location', function(data) {
+        console.log('Incoming message:', data);
+    });
 
     $scope.handleClick = () => {
         $sessionStorage.queryData = $scope.appSearch;
