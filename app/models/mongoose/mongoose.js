@@ -104,3 +104,24 @@ exports.removeMultipleHelper = function(DB, p) {
         }
     });
 };
+
+/* */
+exports.addHelper = function(DB, cond, query) {
+    return DB.findOneAndUpdate(
+        cond,
+        {$push:
+            query,
+        },
+        {safe: true, upsert: true}
+    );
+};
+
+exports.updateHelper = function(DB, cond, query) {
+    return DB.findOneAndUpdate(
+        cond,
+        {$set:
+            query,
+        },
+        {safe: true, upsert: true}
+    );
+};
