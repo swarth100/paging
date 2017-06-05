@@ -65,9 +65,10 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, $sessionS
     };
 
     $scope.editOptions = (name) => {
-        let index = $scope.homeSearch.type.indexOf(name);
+        let lcName = name.toLowerCase();
+        let index = $scope.homeSearch.type.indexOf(lcName);
         if(index == -1) {
-            $scope.homeSearch.type.push(name);
+            $scope.homeSearch.type.push(lcName);
         } else {
             $scope.homeSearch.type.splice(index, 1);
         }
