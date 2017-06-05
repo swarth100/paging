@@ -53,75 +53,75 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
 
     $scope.types = [
         {
-            type: 'Amusment Park',
+            name: 'Amusment Park',
             image: '../../assets/images/types/amusement_park.png',
         },
         {
-            type: 'Art Gallery',
+            name: 'Art Gallery',
             image: '../../assets/images/types/art_gallery.png',
         },
         {
-            type: 'Museum',
+            name: 'Museum',
             image: '../../assets/images/types/museum.png',
         },
         {
-            type: 'Aquarium',
+            name: 'Aquarium',
             image: '../../assets/images/types/aquarium.png',
         },
         {
-            type: 'Bar',
+            name: 'Bar',
             image: '../../assets/images/types/bar.png',
         },
         {
-            type: 'Cafe',
+            name: 'Cafe',
             image: '../../assets/images/types/cafe.png',
         },
         {
-            type: 'Bowling Alley',
+            name: 'Bowling Alley',
             image: '../../assets/images/types/bowling.png',
         },
         {
-            type: 'Casino',
+            name: 'Casino',
             image: '../../assets/images/types/casino.png',
         },
         {
-            type: 'Zoo',
+            name: 'Zoo',
             image: '../../assets/images/types/zoo.png',
         },
         {
-            type: 'Night Club',
+            name: 'Night Club',
             image: '../../assets/images/types/night_club.png',
         },
         {
-            type: 'Shopping Mall',
-            image: '../../assets/images/types/mall',
+            name: 'Shopping Mall',
+            image: '../../assets/images/types/mall.png',
         },
         {
-            type: 'Restaurant',
+            name: 'Restaurant',
             image: '../../assets/images/types/restaurant.png',
         },
         {
-            type: 'Gym',
+            name: 'Gym',
             image: '../../assets/images/types/gym.png',
         },
         {
-            type: 'Cinema',
+            name: 'Cinema',
             image: '../../assets/images/types/cinema.png',
         },
         {
-            type: 'Park',
+            name: 'Park',
             image: '../../assets/images/types/park.png',
         },
         {
-            type: 'Spa',
+            name: 'Spa',
             image: '../../assets/images/types/spa.png',
         },
         {
-            type: 'Landmarks',
+            name: 'Landmarks',
             image: '../../assets/images/types/landmarks.png',
         },
         {
-            type: 'Library',
+            name: 'Library',
             image: '../../assets/images/types/library.png',
         },
     ];
