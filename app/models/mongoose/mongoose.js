@@ -117,7 +117,7 @@ exports.addHelper = function(DB, cond, query) {
 };
 
 exports.updateHelper = function(DB, cond, query) {
-    return DB.findOneAndUpdate(
+    return DB.update(
         cond,
         {$set:
             query,
