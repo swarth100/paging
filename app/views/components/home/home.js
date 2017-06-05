@@ -1,7 +1,7 @@
 /* */
 
 /* Controller to handle the search bar on the home screen */
-app.controller('homeController', function($scope, $filter, $http, $location, $sessionStorage) {
+app.controller('homeCtrl', function($scope, $filter, $http, $location, $sessionStorage) {
     /* Initialises the following fields to the following default values */
     $scope.setDate = function() {
         $scope.homeSearch.datetime = $filter('date')(new Date(
@@ -48,7 +48,16 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
     });
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
-        $location.url('/app/tmp');
+
+        /*  */
+        $http.get('/users/roomID')
+            .then(function(response) {
+                /* Data is packaged into a nasty JSON format.
+                 * To access it first one must retrieve the *.data part to distinguish from header */
+                $location.url('/app/' + response.data);
+            }, function(response) {
+                console.log('Failure when accessing users/roomID');
+            });
     };
 
     $scope.handleClick = () => {
