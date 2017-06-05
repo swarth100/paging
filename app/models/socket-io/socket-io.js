@@ -59,10 +59,12 @@ exports.start = (server) => {
                             user.longitude);
                         updateOrSavePromise
                             .then(function(room) {
+                                /* User was already present in the room. User's coords have been updated */
                                 console.log('Found user, updated values!');
                             })
                             .catch(function(err) {
-                                console.log('Still cascaded through ... cause, why not?');
+                                /* User is not present in the room */
+                                console.log('User not present in room. Create (and add) new user');
                                 let addPromise = mongooseRoom.addUser(room, user.username, user.latitude,
                                     user.longitude);
                                 addPromise
