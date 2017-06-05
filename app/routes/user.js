@@ -1,6 +1,7 @@
 const express = require('express');
 const router = new express.Router();
 const passport = require('passport');
+const authentication = require('./../models/authentication/authentication');
 const friends = require('./../models/friendlist/friendlist');
 
 /* Handle post requests on /users/login
@@ -35,7 +36,7 @@ router.get('/users/logout', (req, res) => {
 /* Handle post requests on /users/register
  * Explicitally handles form submission for register credentials */
 router.post('/users/register', (req, res) => {
-    passport.checkRegisterFields(req, res, passport.addUserToDb, passport.failToValidateUser);
+    authentication.checkRegisterFields(req, res, authentication.addUserToDb, authentication.failToValidateUser);
 });
 
 /* Handles get request on /users/friends
