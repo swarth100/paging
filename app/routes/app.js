@@ -3,6 +3,7 @@
 const express = require('express');
 const googlemaps = require('../models/googlemaps/googlemaps');
 const router = new express.Router();
+const random = require('../models/vendor/random');
 
 /* Post handler for /googlemaps */
 router.post('/googlemaps', function(req, res) {
@@ -15,6 +16,15 @@ router.post('/googlemaps', function(req, res) {
         // res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(result));
     });
+});
+
+/* Creates a new random ID for the given user
+ * TODO: Refactor so that roomID is saved to DB
+ * TODO: Refactor so that command can be queued seperately as GET and POST requests */
+router.get('/users/roomID', function(req, res) {
+    console.log('[index.html] : POST request to /users/roomID');
+
+    res.send(random.makeID());
 });
 
 module.exports = router;
