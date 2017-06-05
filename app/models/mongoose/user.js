@@ -191,43 +191,58 @@ exports.acceptFriendReq = co.wrap(function* (username, friendUsername) {
 
     let u = User.findOne({username: username}).exec();
     let f = User.findOne({username: friendUsername}).exec();
-    /* waits for the promise to be resolved */
-    [u, f] = yield [u, f];
+    try {
+        /* waits for the promise to be resolved */
+        [u, f] = yield [u, f];
+        let isAlreadyFriend = u.friends.some(function(friend) {
+            return friend.equals(f._id);
+        });
+        let haveFriendReq = u.friendRequests.some(function(req) {
+            return req.equals(f._id);
+        });
 
-    let isAlreadyFriend = u.friends.some(function(friend) {
-        return friend.equals(f._id);
-    });
+        if (isAlreadyFriend) {
+            return [false, 'already friends'];
+        }
+        if (haveFriendReq) {
+            return [false, 'friend request not found'];
+        }
 
-    let haveFriendReq = u.friendRequests.some(function(req) {
-        return req.equals(f._id);
-    });
-
-    if (isAlreadyFriend) {
-        return [false, 'already friends'];
+        u.friendRequests.pull({_id: f._id});
+        User.update({_id: u._id}, {$addToSet: {friends: f._id}}).exec();
+        User.update({_id: f._id}, {$addToSet: {friends: u._id}}).exec();
+        return [true, 'success'];
+    } catch (err) {
+        /* could not find user or friend */
+        console.log(err);
+        return [false, err];
     }
-
-    if (haveFriendReq) {
-        return [false, 'friend request not found'];
-    }
-
-    u.friendRequests.pull({_id: f._id});
-    User.update({_id: u._id}, {$addToSet: {friends: f._id}}).exec();
-    User.update({_id: f._id}, {$addToSet: {friends: u._id}}).exec();
-    return [true, 'success'];
 });
 
 exports.getFriendUsernames = co.wrap(function* (username) {
     let u = User.findOne({username: username}).exec();
-    u = yield u;
-    let friends = [];
-    u.friends.forEach((e) => {
-        friends.push(User.findOne({_id: e}).exec());
-    });
-    friends = yield friends;
-    let friendUsernames = friends.map((e) => {
-        return e.username;
-    });
-    return friendUsernames;
+    try {
+        u = yield u;
+        let friends = [];
+        u.friends.forEach((e) => {
+            friends.push(User.findOne({_id: e}).exec());
+        });
+        try {
+            friends = yield friends;
+            let friendUsernames = friends.map((e) => {
+                return e.username;
+            });
+            return friendUsernames;
+        } catch (err) {
+            /* could not find friends */
+            console.log(err);
+            return [];
+        }
+    } catch (err) {
+        /* could not find user */
+        console.log(err);
+        return err;
+    }
 });
 /* Export the User model *
 exports.userModel = User;
