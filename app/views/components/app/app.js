@@ -169,8 +169,15 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
     }
 });
 
-app.controller('appController', function($scope, $sessionStorage) {
+app.controller('appCtrl', function($scope, $sessionStorage, $routeParams, socket) {
     $scope.appSearch = $sessionStorage.queryData;
+
+    $scope.roomID = $routeParams.room;
+
+    /* Upon entry, join the correspondent room */
+    socket.join($scope.roomID);
+
+    socket.broadcast($scope.roomID, 'messages', 'newUser joined');
 
     $scope.handleClick = () => {
         $sessionStorage.queryData = $scope.appSearch;
