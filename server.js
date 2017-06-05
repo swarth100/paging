@@ -1,14 +1,14 @@
 const express = require('express');
 const authentication = require('./app/models/authentication/authentication');
 const indexRoute = require('./app/routes/index');
-const loginRoute = require('./app/routes/login');
+const userRoute = require('./app/routes/user');
 const homeRoute = require('./app/routes/home');
 const appRoute = require('./app/routes/app');
-const registerRoute = require('./app/routes/register');
 const path = require('path');
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
-
+const socket = require('./app/models/socket-io/socket-io');
+const friends = require('./app/models/friendlist/friendlist');
 /* Defines the application */
 let app = express();
 
@@ -21,8 +21,7 @@ authentication.setup(app, (app) => {
 
     /* Set the URI here */
     app.use(express.static(path.join(__dirname, '/app/views')));
-    app.use(loginRoute);
-    app.use(registerRoute);
+    app.use(userRoute);
     app.use(homeRoute);
     app.use(appRoute);
 
@@ -33,9 +32,10 @@ authentication.setup(app, (app) => {
      * Opens port 3000 to listen for connections
      * Otherwise use heroku provided port */
     app.set('port', (process.env.PORT || 3000));
-    app.listen(app.get('port'), () => {
+    let server = app.listen(app.get('port'), () => {
         console.log('[Server] : open on port ' + app.get('port'));
     });
+    socket.start(server);
 });
 
 module.exports = app;

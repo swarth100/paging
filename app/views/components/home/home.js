@@ -2,6 +2,13 @@
 
 /* Controller to handle the search bar on the home screen */
 app.controller('homeController', function($scope, $filter, $http, $location, $sessionStorage, socket) {
+    socket.on('connect', (data) => {
+        socket.join('hello-world');
+        socket.broadcast('hello-world', 'messages', 'broadcast');
+    });
+    socket.on('messages', function(data) {
+        console.log('Incoming message:', data);
+    });
     /* Initialises the following fields to the following default values */
     $scope.setDate = function() {
         $scope.homeSearch.datetime = $filter('date')(new Date(
