@@ -7,7 +7,7 @@ exports.start = (server) => {
     io.on('connection', function(socket) {
         socket.on('join', (data) => {
             socket.join(data);
-            socket.emit('messages', 'thank you for joining');
+            socket.emit('messages', 'thank you for joining ' + data);
         });
         socket.on('leave', (data) => {
             socket.leave(data);
