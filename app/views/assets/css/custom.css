@@ -174,3 +174,7 @@
         border-top:0 none;
     }
 }
+
+.full-width {
+    width: 100%;
+}

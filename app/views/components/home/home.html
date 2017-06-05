@@ -53,7 +53,7 @@
                     <div class="col-sm-12 col-md-3 no-padding">
                         <p class="white-input">Location:</p>
                         <div class="input-group input-group-cream">
-                            <span class="input-group-addon glyphicon glyphicon-pushpin glyphicon-cream"></span>
+                            <span class="input-group-addon glyphicon glyphicon-pushpin glyphicon-cream square no-top"></span>
                             <input type="text" class="form-control square text-cream" ng-model="homeSearch.location" autocomplete="on">
                         </div>
                     </div>
@@ -62,11 +62,11 @@
                     <div class="col-sm-12 col-md-3 no-padding">
                         <p class="white-input">Date and Time:</p>
                         <div class="input-group input-group-cream">
-                            <span class="input-group-addon square glyphicon glyphicon-calendar glyphicon-cream"></span>
+                            <span class="input-group-addon square glyphicon glyphicon-calendar glyphicon-cream no-top"></span>
                             <input type="datetime" class="form-control text-cream" ng-model="homeSearch.datetime">
                             <div class="input-group-btn square">
                                 <div class="btn-group-lg square">
-                                    <button class="btn dropdown-toggle dropdown-button glyphicon glyphicon-chevron-down square btn-light-cream" type="button" data-toggle="dropdown">
+                                    <button class="btn dropdown-toggle dropdown-button glyphicon glyphicon-chevron-down square btn-light-cream no-top" type="button" data-toggle="dropdown">
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right custom-dropdown" ng-click="$event.stopPropagation();" role="menu">
                                         <div uib-datepicker ng-model="tmpDate" ng-click="setDate()" class="well well-sm no-margin" datepicker-options="options"></div>
@@ -82,10 +82,10 @@
                     </div>
 
                     <!-- DURATION field holder -->
-                    <div class="col-sm-12 col-md-2 no-padding">
+                    <div class="col-sm-12 col-md-1 no-padding">
                         <p class="white-input">Duration:</p>
                         <div class="input-group input-group-cream">
-                            <span class="input-group-addon square glyphicon glyphicon-time glyphicon-cream"></span>
+                            <span class="input-group-addon square glyphicon glyphicon-time glyphicon-cream no-top"></span>
                             <input type="number" class="form-control square text-cream" ng-model="homeSearch.duration">
                         </div>
                     </div>
@@ -94,13 +94,38 @@
                     <div class="col-sm-12 col-md-2 no-padding">
                         <p class="white-input">Radius:</p>
                         <div class="input-group input-group-cream">
-                            <span class="input-group-addon square glyphicon glyphicon-record glyphicon-cream"></span>
+                            <span class="input-group-addon square glyphicon glyphicon-record glyphicon-cream no-top"></span>
                             <input type="number" class="form-control square text-cream" ng-model="homeSearch.radius">
                         </div>
                     </div>
 
-                    <!-- SEARCH button holder -->
+                    <!-- Options field holder -->
                     <div class="col-sm-12 col-md-2 no-padding">
+                        <p class="white-input">Advanced:</p>
+                        <div class="input-group input-group-cream">
+                            <span class="input-group-addon square glyphicon glyphicon-plus glyphicon-cream no-top"></span>
+                            <div class="input-group-btn square">
+                                <div class="btn-group-lg square full-width">
+                                    <button class="btn dropdown-toggle btn-light-cream btn-block  dropdown-button square" type="button" data-toggle="dropdown">
+                                        Options
+                                        <span class="caret"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <div class="row full-width" ng-repeat="tps in types | chunkBy:6">
+                                            <div class="col-xs-12 letter-box" ng-repeat="type in tps" ng-click="editOptions(type.name)">
+                                                <img src="{{type.image}}">
+                                                <br>
+                                                {{type.name}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEARCH button holder -->
+                    <div class="col-sm-12 col-md-1 no-padding">
                         <p class="white-input"><br></p>
                         <div>
                             <p><button type="submit" class="btn-lg btn-block square btn-dark-orange">Search</button></p>
