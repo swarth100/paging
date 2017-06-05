@@ -43,12 +43,12 @@ let locationsSchema = new Schema({
         required: true,
         default: 1,
     },
-    latitude: {
-        type: Number,
+    location: {
+        type: Object,
         required: true,
     },
-    longitude: {
-        type: Number,
+    name: {
+        type: String,
         required: true,
     },
 });
@@ -81,16 +81,16 @@ let Location = locationsDB.model('Location', locationsSchema);
  * Parameters:
  *   a = id
  *   b = avgtime
- *   c = latitude
- *   d = longitude
+ *   c = location
+ *   d = name
  * Returns:
  *   new Location instance */
 exports.createNewLocation = function(a, b, c, d) {
     return new Location({
         id: a,
         avgtime: b,
-        latitude: c,
-        longitude: d,
+        location: c,
+        name: d,
     });
 };
 
