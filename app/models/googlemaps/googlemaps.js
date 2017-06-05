@@ -16,29 +16,59 @@ const numberOfResults = 5;
  * returns the necessary information.
  */
 function searchAroundLocation(queryData, cb) {
-    let query = extractQueryData(queryData);
+    let queries = extractQueryData(queryData);
 
+    let promises = [];
+
+    for (let i = 0; i < queries.length; i++) {
+        promises.push(queryOnce(queries[i], queryData.radius));
+    }
+
+    Promise.all(promises)
+        .then(function(responses) {
+            // Transform the array of arrays into an array of results.
+            let finalPlaces = [].concat.apply(...responses);
+            cb(finalPlaces);
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+}
+
+function queryOnce(query, radius) {
     let results;
 
-    googleMapsClient.placesNearby(query).asPromise()
+    return googleMapsClient.placesNearby(query).asPromise()
         .then(function(response) {
             results = response.json.results;
+
+            // Bypass the rest of this function and return an empty array.
+            if (results.length === 0) {
+                return results;
+            }
 
             return findDistances(results);
         })
         .then(function(response) {
-            let prunedResults = pruneResults(results, response, queryData.radius);
+            // Bypass the rest of this function and return an empty array.
+            if (results.length === 0) {
+                return results;
+            }
+
+            let prunedResults = pruneResults(results, response, radius);
 
             let randomPlaces = chooseRandomPlaces(prunedResults);
 
-            let convertedPlaces = convertFormatOfPlaces(randomPlaces, queryData.type);
+            // When looking for the type replace whitespaces with underscores.
+            let convertedPlaces = convertFormatOfPlaces(randomPlaces, query.name.split(' ').join('_'));
 
             return Promise.all(convertedPlaces.map(function(convertedPlace) {
                 return findInDatabase(convertedPlace);
             }));
         })
         .then(function(responses) {
-            cb(responses);
+            // Return an always resolving promise.
+            return Promise.resolve(responses);
         })
         .catch(function(error) {
             console.log(error);
@@ -48,11 +78,17 @@ function searchAroundLocation(queryData, cb) {
 function extractQueryData(queryData) {
     location = JSON.parse(queryData.location);
 
-    return {
-        location: JSON.parse(queryData.location),
-        radius: queryData.radius,
-        name: queryData.type,
-    };
+    let queries = [];
+
+    for (let i = 0; i < queryData.type.length; i++) {
+        queries.push({
+            location: JSON.parse(queryData.location),
+            radius: queryData.radius,
+            name: queryData.type[i].toLowerCase(),
+        });
+    }
+
+    return queries;
 }
 
 /*
@@ -91,8 +127,8 @@ function pruneResults(results, response, radius) {
 function chooseRandomPlaces(results) {
     let randomPlaces = [];
 
-    // let loopCeiling = Math.min(numberOfResults, results.length);
-    let loopCeiling = results.length;
+    let loopCeiling = Math.min(numberOfResults, results.length);
+    // let loopCeiling = results.length;
 
     for (let i = 0; i < loopCeiling; i++) {
         let randomIndex = Math.floor(Math.random() * (results.length - 1));
