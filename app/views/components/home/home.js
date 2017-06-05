@@ -46,7 +46,83 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
         $scope.$broadcast('submit');
         $location.url('/app');
     };
+
     $scope.handleClick = () => {
         $sessionStorage.queryData = $scope.homeSearch;
     };
+
+    $scope.types = [
+        {
+            type: 'Amusment Park',
+            image: '../../assets/images/types/amusement_park.png',
+        },
+        {
+            type: 'Art Gallery',
+            image: '../../assets/images/types/art_gallery.png',
+        },
+        {
+            type: 'Museum',
+            image: '../../assets/images/types/museum.png',
+        },
+        {
+            type: 'Aquarium',
+            image: '../../assets/images/types/aquarium.png',
+        },
+        {
+            type: 'Bar',
+            image: '../../assets/images/types/bar.png',
+        },
+        {
+            type: 'Cafe',
+            image: '../../assets/images/types/cafe.png',
+        },
+        {
+            type: 'Bowling Alley',
+            image: '../../assets/images/types/bowling.png',
+        },
+        {
+            type: 'Casino',
+            image: '../../assets/images/types/casino.png',
+        },
+        {
+            type: 'Zoo',
+            image: '../../assets/images/types/zoo.png',
+        },
+        {
+            type: 'Night Club',
+            image: '../../assets/images/types/night_club.png',
+        },
+        {
+            type: 'Shopping Mall',
+            image: '../../assets/images/types/mall',
+        },
+        {
+            type: 'Restaurant',
+            image: '../../assets/images/types/restaurant.png',
+        },
+        {
+            type: 'Gym',
+            image: '../../assets/images/types/gym.png',
+        },
+        {
+            type: 'Cinema',
+            image: '../../assets/images/types/cinema.png',
+        },
+        {
+            type: 'Park',
+            image: '../../assets/images/types/park.png',
+        },
+        {
+            type: 'Spa',
+            image: '../../assets/images/types/spa.png',
+        },
+        {
+            type: 'Landmarks',
+            image: '../../assets/images/types/landmarks.png',
+        },
+        {
+            type: 'Library',
+            image: '../../assets/images/types/library.png',
+        },
+    ];
 });
