@@ -159,7 +159,7 @@ exports.removeMultiple = function(p) {
 /* send friend request to the friend */
 exports.addFriends = co.wrap(function* (username, friendUsername) {
     if (username === friendUsername) {
-        return (false, 'username friend username is equal');
+        return [false, 'username friend username is equal'];
     }
 
     let u = User.findOne({username: username}).exec();
@@ -174,13 +174,13 @@ exports.addFriends = co.wrap(function* (username, friendUsername) {
         return req.equals(u._id);
     });
     if (isAlreadyFriend) {
-        return (false, 'already friends');
+        return [false, 'already friends'];
     }
     if (isAlreadySentFriendReq) {
-        return (false, 'already sent friend request');
+        return [false, 'already sent friend request'];
     }
     User.update({_id: f._id}, {$addToSet: {friendRequests: u._id}}).exec();
-    return (true, 'success');
+    return [true, 'success'];
 });
 
 /* user accepts friend request from friend */
@@ -203,17 +203,17 @@ exports.acceptFriendReq = co.wrap(function* (username, friendUsername) {
     });
 
     if (isAlreadyFriend) {
-        return (false, 'already friends');
+        return [false, 'already friends'];
     }
 
     if (haveFriendReq) {
-        return (false, 'friend request not found');
+        return [false, 'friend request not found'];
     }
 
     u.friendRequests.pull({_id: f._id});
     User.update({_id: u._id}, {$addToSet: {friends: f._id}}).exec();
     User.update({_id: f._id}, {$addToSet: {friends: u._id}}).exec();
-    return (true, 'success');
+    return [true, 'success'];
 });
 
 exports.getFriendUsernames = co.wrap(function* (username) {
