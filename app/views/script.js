@@ -14,10 +14,12 @@ app.config(function($routeProvider, $locationProvider) {
         .when('/home',
         {
             templateUrl: '/components/home/home.html',
+            controller: 'homeCtrl',
         })
-        .when('/app/:foo',
+        .when('/app/:room',
         {
             templateUrl: '/components/app/app.html',
+            controller: 'appCtrl',
         })
         .when('/login',
         {
@@ -37,10 +39,10 @@ app.config(function($routeProvider, $locationProvider) {
 });
 
 /* Default socket connection/initialisation */
-app.controller('indexCtrl', function($scope, socket) {
+app.controller('ioCtrl', function($scope, socket) {
     socket.on('connect', (data) => {
-        socket.join('hello-world');
-        socket.broadcast('hello-world', 'messages', 'broadcast');
+        // socket.join('default');
+        // socket.broadcast('default', 'messages', 'broadcast');
     });
     socket.on('messages', function(data) {
         console.log('Incoming message:', data);
