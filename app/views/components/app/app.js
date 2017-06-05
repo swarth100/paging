@@ -11,13 +11,14 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
             navigator.geolocation.getCurrentPosition(postFields);
         } else {
             /* Muhahahaha someone used Firefox */
-            console.log('GeoLoc not supported by browser');
+            // console.log('GeoLoc not supported by browser');
+            geocoder.geocode();
         }
     };
 
     displayMap();
 
-    $scope.$on('submit', displayMap );
+    $scope.$on('submit', displayMap);
 
     /* Initialise the client-sided rendering of the map */
     function initMap(location, results) {
@@ -80,6 +81,7 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
         };
+
         let fields = JSON.stringify({
             location: JSON.stringify(location),
             datetime: $sessionStorage.queryData.datetime,
@@ -88,6 +90,10 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
             type: $sessionStorage.queryData.type,
         });
 
+        postThePackage(location, fields);
+    }
+
+    function postThePackage(location, fields) {
         /* Angular HTTP post
          * Given a URL and a JSON (location), issues a post request on the given URL.
          * Returns a Promise, thus the .then() function */
@@ -99,7 +105,7 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
             }, function(response) {
                 console.log('Failure when accessing googleMaps');
             });
-    };
+    }
 });
 
 app.controller('appController', function($scope, $sessionStorage) {
