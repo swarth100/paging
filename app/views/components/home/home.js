@@ -21,6 +21,7 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
         $sessionStorage.date = $scope.tmpDate;
         $sessionStorage.time = $scope.tmpTime;
     };
+
     if (!$sessionStorage.queryData) {
         /* There is no session storage, initialise the fields */
         $scope.tmpDate = new Date();
@@ -42,6 +43,9 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
         $scope.tmpTime = $sessionStorage.time;
         $scope.homeSearch = $sessionStorage.queryData;
     }
+
+    let searchBox = new google.maps.places.SearchBox(document.getElementById('searchBox'));
+
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
         $location.url('/app');
@@ -59,7 +63,6 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
             $scope.homeSearch.type.splice(index, 1);
         }
     };
-
 
     $scope.types = [
         {
