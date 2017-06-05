@@ -6,6 +6,7 @@ let googleMapsClient = require('@google/maps').createClient({
     key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
     Promise: Promise,
 });
+
 let location;
 
 const numberOfResults = 5;
@@ -26,7 +27,7 @@ function searchAroundLocation(queryData, cb) {
 
     Promise.all(promises)
         .then(function(responses) {
-            // Transform the array of arrays into an array of results.
+            // Flatten the array of arrays into an array of results.
             let finalPlaces = [].concat.apply(...responses);
             cb(finalPlaces);
         })
@@ -35,6 +36,9 @@ function searchAroundLocation(queryData, cb) {
         });
 }
 
+/*
+ * This function is not tested.
+ */
 function queryOnce(query, radius) {
     let results;
 
@@ -60,7 +64,8 @@ function queryOnce(query, radius) {
             let randomPlaces = chooseRandomPlaces(prunedResults);
 
             // When looking for the type replace whitespaces with underscores.
-            let convertedPlaces = convertFormatOfPlaces(randomPlaces, query.name.split(' ').join('_'));
+            let type = query.name.split(' ').join('_');
+            let convertedPlaces = convertFormatOfPlaces(randomPlaces, type);
 
             return Promise.all(convertedPlaces.map(function(convertedPlace) {
                 return findInDatabase(convertedPlace);
