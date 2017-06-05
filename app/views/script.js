@@ -1,4 +1,4 @@
-let app = angular.module('paging', ['ui.bootstrap', 'ngRoute', 'ngStorage']);
+let app = angular.module('paging', ['ui.bootstrap', 'ngRoute', 'angular.filter']);
 
 app.config(function($routeProvider, $locationProvider) {
     $locationProvider.html5Mode({
