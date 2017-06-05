@@ -9,6 +9,7 @@ exports.start = (server) => {
      * 'connection' messages are issues by front-end socket-io.js via the io.connect() command */
     io.on('connection', function(socket) {
         socket.on('join', (roomID) => {
+            socket.room = roomID;
             socket.join(roomID);
 
             socket.emit('messages', 'thank you for joining ' + roomID);
@@ -45,7 +46,38 @@ exports.start = (server) => {
             /* Add backend catch for location posting */
             if (data.eventName === 'location') {
                 console.log('Location has been broadcast');
-            }
+                let user = data.data;
+
+                let findPromise = mongooseRoom.find({'id': socket.room});
+                findPromise
+                    .then(function(room) {
+                        /* Room already exists in the DB */
+                        console.log('Room found in the DB');
+
+                        /* Attempt to update the given user in the DB */
+                        let updateOrSavePromise = mongooseRoom.updateUser(room, user.username, user.latitude,
+                            user.longitude);
+                        updateOrSavePromise
+                            .then(function(room) {
+                                console.log('Found user, updated values!');
+                            })
+                            .catch(function(err) {
+                                console.log('Still cascaded through ... cause, why not?');
+                                let addPromise = mongooseRoom.addUser(room, user.username, user.latitude,
+                                    user.longitude);
+                                addPromise
+                                    .then(function(room) {
+                                        console.log('Saved new user with given values');
+                                    })
+                                    .catch(function(err) {
+                                        console.log('Failed to save new user. Something went horribly wrong.');
+                                    });
+                            });
+                    })
+                    .catch(function(err) {
+                        console.log('Room could not be found on DB');
+                    });
+            };
 
             /* Add backend catch for messages being posted via the socket */
             if (data.eventName === 'messages') {
