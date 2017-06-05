@@ -182,8 +182,8 @@ app.controller('appCtrl', function($scope, $sessionStorage, $localStorage, $rout
             function(position) {
                 socket.broadcast($scope.roomID, 'location', {
                     'username': $localStorage.username,
-                    'lat': position.coords.latitude,
-                    'lng': position.coords.longitude,
+                    'latitude': position.coords.latitude,
+                    'longitude': position.coords.longitude,
                 });
             });
     };
