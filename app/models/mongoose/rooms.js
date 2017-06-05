@@ -127,8 +127,8 @@ exports.addUser = function(room, username, lat, lng) {
 
 exports.updateUser = function(room, username, lat, lng) {
     let query = {
-        'users.latitude': lat,
-        'users.longitude': lng,
+        'users.$.latitude': lat,
+        'users.$.longitude': lng,
     };
 
     let cond = {
@@ -138,39 +138,6 @@ exports.updateUser = function(room, username, lat, lng) {
 
     return helper.updateHelper(Room, cond, query);
 };
-
-/*
- exports.addUser = function (room, username, lat, lng) {
- console.log('Got here!');
- return Room.findOneAndUpdate(
- {id: room.id},
- {$push : {
- "users": {
- "latitude": lat,
- "longitude": lng,
- "username": username,
- }}
- },
- {safe: true, upsert: true}
- );
- };
-
- exports.updateUser = function (room, username, lat, lng) {
- console.log('Got here!');
- return Room.findOneAndUpdate(
- {id: room.id, 'users.username': username},
- {$push : {
- "users": {
- "latitude": lat,
- "longitude": lng,
- "username": username,
- }}
- },
- {safe: true, upsert: true}
- );
- };
-
- */
 
 
 /* Export the User model */
