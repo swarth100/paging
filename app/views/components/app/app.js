@@ -171,9 +171,11 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
 
 app.controller('appController', function($scope, $sessionStorage) {
     $scope.appSearch = $sessionStorage.queryData;
+
     $scope.handleClick = () => {
         $sessionStorage.queryData = $scope.appSearch;
     };
+
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
     };
