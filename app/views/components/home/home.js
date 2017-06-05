@@ -2,6 +2,18 @@
 
 /* Controller to handle the search bar on the home screen */
 app.controller('homeController', function($scope, $filter, $http, $location, $sessionStorage, socket) {
+    $scope.homeSearch = Search;
+
+    $scope.tmpDate = new Date();
+    $scope.tmpTime = new Date();
+
+    /* Initialises the following fields to the following default values */
+    $scope.homeSearch.location = 'Current Location';
+    $scope.homeSearch.datetime = '';
+    $scope.homeSearch.duration = 60;
+    $scope.homeSearch.radius = 1000;
+    $scope.homeSearch.type = [];
+
     socket.on('connect', (data) => {
         socket.join('hello-world');
         socket.broadcast('hello-world', 'messages', 'broadcast');
@@ -9,7 +21,7 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
     socket.on('messages', function(data) {
         console.log('Incoming message:', data);
     });
-    /* Initialises the following fields to the following default values */
+
     $scope.setDate = function() {
         $scope.homeSearch.datetime = $filter('date')(new Date(
             $scope.tmpDate.getFullYear(),
@@ -49,6 +61,15 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
 
     $scope.handleClick = () => {
         $sessionStorage.queryData = $scope.homeSearch;
+    };
+
+    $scope.editOptions = (name) => {
+        let index = $scope.homeSearch.type.indexOf(name);
+        if(index == -1) {
+            $scope.homeSearch.type.push(name);
+        } else {
+            $scope.homeSearch.type.splice(index, 1);
+        }
     };
 
     $scope.types = [
