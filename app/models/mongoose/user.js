@@ -4,6 +4,8 @@
 
 let mongoose = require('mongoose');
 let helper = require('./mongoose');
+const co = require('co');
+const _ = require('underscore');
 
 /* Load the database address from the config file
  * Removesthe double quotation mark using replace function
@@ -58,6 +60,8 @@ let userSchema = new Schema({
     time: {
         type: Date,
     },
+    friends: [{type: Schema.ObjectId, ref: 'User'}],
+    friendRequests: [{type: Schema.ObjectId, ref: 'User'}],
 });
 
 /* Plugin that validates unique entries */
@@ -72,7 +76,7 @@ userSchema.plugin(uniqueValidator);
 *   none */
 userSchema.methods.debugPrinting = function() {
     return 'name: ' + this.name + ', email: ' + this.email + ', password: ' + this.password +
-        ', time: ' + this.time + ', username ' + this.username;
+        ', time: ' + this.time + ', username ' + this.username + ', friends ' + this.friends;
 };
 
 /* Pre save function [AUTORUN]
@@ -152,6 +156,94 @@ exports.removeMultiple = function(p) {
     return helper.removeMultipleHelper(User, p);
 };
 
-/* Export the User model */
-exports.userModel = User;
+/* send friend request to the friend */
+exports.addFriends = co.wrap(function* (username, friendUsername) {
+    if (username === friendUsername) {
+        return [false, 'username friend username is equal'];
+    }
 
+    let u = User.findOne({username: username}).exec();
+    let f = User.findOne({username: friendUsername}).exec();
+    /* waits for the promise to be resolved */
+    [u, f] = yield [u, f];
+
+    let isAlreadyFriend = u.friends.some(function(friend) {
+        return friend.equals(f._id);
+    });
+    let isAlreadySentFriendReq = f.friendRequests.some(function(req) {
+        return req.equals(u._id);
+    });
+    if (isAlreadyFriend) {
+        return [false, 'already friends'];
+    }
+    if (isAlreadySentFriendReq) {
+        return [false, 'already sent friend request'];
+    }
+    User.update({_id: f._id}, {$addToSet: {friendRequests: u._id}}).exec();
+    return [true, 'success'];
+});
+
+/* user accepts friend request from friend */
+exports.acceptFriendReq = co.wrap(function* (username, friendUsername) {
+    if (username === friendUsername) {
+        return (false, 'username friend username is equal');
+    }
+
+    let u = User.findOne({username: username}).exec();
+    let f = User.findOne({username: friendUsername}).exec();
+    try {
+        /* waits for the promise to be resolved */
+        [u, f] = yield [u, f];
+        let isAlreadyFriend = u.friends.some(function(friend) {
+            return friend.equals(f._id);
+        });
+        let haveFriendReq = u.friendRequests.some(function(req) {
+            return req.equals(f._id);
+        });
+
+        if (isAlreadyFriend) {
+            return [false, 'already friends'];
+        }
+        if (haveFriendReq) {
+            return [false, 'friend request not found'];
+        }
+
+        u.friendRequests.pull({_id: f._id});
+        User.update({_id: u._id}, {$addToSet: {friends: f._id}}).exec();
+        User.update({_id: f._id}, {$addToSet: {friends: u._id}}).exec();
+        return [true, 'success'];
+    } catch (err) {
+        /* could not find user or friend */
+        console.log(err);
+        return [false, err];
+    }
+});
+
+exports.getFriendUsernames = co.wrap(function* (username) {
+    let u = User.findOne({username: username}).exec();
+    try {
+        u = yield u;
+        let friends = [];
+        u.friends.forEach((e) => {
+            friends.push(User.findOne({_id: e}).exec());
+        });
+        try {
+            friends = yield friends;
+            let friendUsernames = friends.map((e) => {
+                return e.username;
+            });
+            return friendUsernames;
+        } catch (err) {
+            /* could not find friends */
+            console.log(err);
+            return [];
+        }
+    } catch (err) {
+        /* could not find user */
+        console.log(err);
+        return err;
+    }
+});
+/* Export the User model *
+exports.userModel = User;
+*/

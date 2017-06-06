@@ -1,4 +1,4 @@
-let app = angular.module('paging', ['ui.bootstrap', 'ngRoute']);
+let app = angular.module('paging', ['ui.bootstrap', 'ngRoute', 'angular.filter', 'ngStorage', 'ngMap']);
 
 app.config(function($routeProvider, $locationProvider) {
     $locationProvider.html5Mode({
@@ -8,49 +8,43 @@ app.config(function($routeProvider, $locationProvider) {
 
     $routeProvider
         .when('/',
-            {
-                templateUrl: 'components/index/index.html',
-            })
+        {
+            templateUrl: '/components/index/index.html',
+        })
         .when('/home',
-            {
-                templateUrl: 'components/home/home.html',
-            })
-        .when('/app',
-            {
-                templateUrl: 'components/app/app.html',
-            })
+        {
+            templateUrl: '/components/home/home.html',
+            controller: 'homeCtrl',
+        })
+        .when('/app/:room',
+        {
+            templateUrl: '/components/app/app.html',
+            controller: 'appCtrl',
+        })
         .when('/login',
-            {
-                templateUrl: 'components/login/login.html',
-            })
+        {
+            templateUrl: '/components/login/login.html',
+        })
         .when('/register',
-            {
-                templateUrl: 'components/register/register.html',
-            })
+        {
+            templateUrl: '/components/register/register.html',
+        })
         .otherwise(
-            {
-                templateUrl: 'components/error/error.html',
-            });
+        {
+            templateUrl: '/components/error/error.html',
+        });
 
     /* TODO: Handle default redirection */
     // .otherwise( {redirectTo: '/'} );
 });
 
-app.factory('Search', function() {
-    return {
-        location: '',
-        datetime: '',
-        duration: '',
-        radius: '',
-        type: '',
-    };
-});
-
-app.factory('LoginData', function() {
-    return {
-        name: '',
-        username: '',
-        email: '',
-        isLoggedIn: false,
-    };
+/* Default socket connection/initialisation */
+app.controller('ioCtrl', function($scope, socket) {
+    socket.on('connect', (data) => {
+        // socket.join('default');
+        // socket.broadcast('default', 'messages', 'broadcast');
+    });
+    socket.on('messages', function(data) {
+        console.log('Incoming message:', data);
+    });
 });

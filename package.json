@@ -1,6 +1,6 @@
 {
   "name": "P.A.G.I.N.G.",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Pinpointing Activities Given Insight Not Guesses",
   "main": "server.js",
   "lint-staged": {
@@ -13,8 +13,13 @@
     "precommit": "lint-staged",
     "test": "./node_modules/.bin/mocha",
     "lint": "./node_modules/.bin/eslint .",
-    "build": "echo \"no build\"",
-    "start": "node server"
+    "build": "./node_modules/node-sass/bin/node-sass app/views/assets/scss -o app/views/assets/css",
+    "prestart": "npm run build",
+    "start": "node server",
+    "predev": "npm run build",
+    "dev": "npm run watch-sass | npm run watch-node",
+    "watch-sass": "./node_modules/node-sass/bin/node-sass --watch  app/views/assets/scss -o app/views/assets/css",
+    "watch-node": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -25,9 +30,11 @@
   "license": "ISC",
   "dependencies": {
     "@google/maps": "^0.3.1",
+    "angular-filter": "^0.5.16",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
     "chai": "^4.0.1",
+    "co": "^4.6.0",
     "config": "^1.26.1",
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
@@ -35,11 +42,14 @@
     "express-validator": "^3.2.0",
     "mongoose": "^4.10.2",
     "mongoose-unique-validator": "^1.0.5",
+    "ngmap": "^1.18.4",
+    "node-sass": "^4.5.3",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "should": "^11.2.1",
     "sinon": "^2.3.2",
-    "socket.io": "^2.0.1"
+    "socket.io": "^2.0.2",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "chai": "^4.0.0",
@@ -48,6 +58,7 @@
     "husky": "^0.13.4",
     "lint-staged": "^3.5.0",
     "mocha": "^3.4.2",
+    "nodemon": "^1.11.0",
     "request": "^2.81.0",
     "supertest": "^3.0.0",
     "sinon": "^2.3.2"
