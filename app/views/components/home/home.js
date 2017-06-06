@@ -23,7 +23,7 @@ app.controller('homeCtrl',
         $scope.tmpTime = new Date();
         /* There is no session storage, initialise the fields */
         $scope.homeSearch = {
-            location: 'Current Location',
+            location: '',
             datetime: '',
             duration: 60,
             radius: 1000,
