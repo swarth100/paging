@@ -117,6 +117,7 @@ exports.addUser = function(room, user) {
             'lng': user.lng,
             'username': user.username,
             'radius': user.radius,
+            'color': user.color,
         }};
 
     let cond = {
