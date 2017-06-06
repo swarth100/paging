@@ -100,6 +100,12 @@ exports.start = (server) => {
     }
 
     function addUser(room, user) {
+        /* Credits for random color generator:
+         *  https://gist.github.com/samuelbeek/84721c03607ed5340f53
+         *  */
+        user.color = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+
+        /* Assign each user a random color before saving them */
         mongooseRoom.addUser(room, user)
             .then(function(room) {
                 console.log('Saved new user with given values');
