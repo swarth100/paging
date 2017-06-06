@@ -26,7 +26,7 @@ app.controller('homeCtrl',
             datetime: '',
             duration: 60,
             radius: 1000,
-            type: [],
+            selectedTypes: [],
         };
         $scope.setDate();
         $sessionStorage.queryData = $scope.homeSearch;
@@ -37,6 +37,114 @@ app.controller('homeCtrl',
         $scope.tmpDate = $sessionStorage.date;
         $scope.tmpTime = $sessionStorage.time;
         $scope.homeSearch = $sessionStorage.queryData;
+    }
+
+    /* TODO: Try to make this work using GoogleMaps/AngularJS! */
+    let searchBox = new google.maps.places.SearchBox(document.getElementById('searchBox'));
+    searchBox.addListener('places_changed', function() {
+        // Get all the information from the search box.
+        let temporaryResult = searchBox.getPlaces();
+        // Find the long name of the specified location and use it for the
+        // search.
+        $scope.homeSearch.location = temporaryResult[0].address_components[0].long_name;
+    });
+
+    if(!$sessionStorage.types) {
+        $scope.types = [
+            {
+                name: 'Amusment Park',
+                image: '../../assets/images/types/amusement_park.png',
+                isSelected: false,
+            },
+            {
+                name: 'Art Gallery',
+                image: '../../assets/images/types/art_gallery.png',
+                isSelected: false,
+            },
+            {
+                name: 'Museum',
+                image: '../../assets/images/types/museum.png',
+                isSelected: false,
+            },
+            {
+                name: 'Aquarium',
+                image: '../../assets/images/types/aquarium.png',
+                isSelected: false,
+            },
+            {
+                name: 'Bar',
+                image: '../../assets/images/types/bar.png',
+                isSelected: false,
+            },
+            {
+                name: 'Cafe',
+                image: '../../assets/images/types/cafe.png',
+                isSelected: false,
+            },
+            {
+                name: 'Bowling Alley',
+                image: '../../assets/images/types/bowling.png',
+                isSelected: false,
+            },
+            {
+                name: 'Casino',
+                image: '../../assets/images/types/casino.png',
+                isSelected: false,
+            },
+            {
+                name: 'Zoo',
+                image: '../../assets/images/types/zoo.png',
+                isSelected: false,
+            },
+            {
+                name: 'Night Club',
+                image: '../../assets/images/types/night_club.png',
+                isSelected: false,
+            },
+            {
+                name: 'Shopping Mall',
+                image: '../../assets/images/types/mall.png',
+                isSelected: false,
+            },
+            {
+                name: 'Restaurant',
+                image: '../../assets/images/types/restaurant.png',
+                isSelected: false,
+            },
+            {
+                name: 'Gym',
+                image: '../../assets/images/types/gym.png',
+                isSelected: false,
+            },
+            {
+                name: 'Cinema',
+                image: '../../assets/images/types/cinema.png',
+                isSelected: false,
+            },
+            {
+                name: 'Park',
+                image: '../../assets/images/types/park.png',
+                isSelected: false,
+            },
+            {
+                name: 'Spa',
+                image: '../../assets/images/types/spa.png',
+                isSelected: false,
+            },
+            {
+                name: 'Landmarks',
+                image: '../../assets/images/types/landmarks.png',
+                isSelected: false,
+            },
+            {
+                name: 'Library',
+                image: '../../assets/images/types/library.png',
+                isSelected: false,
+            },
+        ];
+        $sessionStorage.types = $scope.types;
+    } else {
+        $scope.types = $sessionStorage.types;
     }
 
     $scope.submitFields = () => {
@@ -55,90 +163,19 @@ app.controller('homeCtrl',
 
     $scope.handleClick = () => {
         $sessionStorage.queryData = $scope.homeSearch;
+        $sessionStorage.types = $scope.types;
     };
 
-    $scope.editOptions = (name) => {
-        let lcName = name.toLowerCase();
-        let index = $scope.homeSearch.type.indexOf(lcName);
-        if(index == -1) {
-            $scope.homeSearch.type.push(lcName);
+    $scope.editOptions = (type) => {
+        let lcName = type.name.toLowerCase();
+        if(!type.isSelected) {
+            $scope.homeSearch.selectedTypes.push(lcName);
+            type.isSelected = true;
         } else {
-            $scope.homeSearch.type.splice(index, 1);
+            let index = $scope.homeSearch.selectedTypes.indexOf(lcName);
+            $scope.homeSearch.selectedTypes.splice(index, 1);
+            type.isSelected = false;
         }
+        console.log($scope.homeSearch.selectedTypes);
     };
-
-    $scope.types = [
-        {
-            name: 'Amusment Park',
-            image: '../../assets/images/types/amusement_park.png',
-        },
-        {
-            name: 'Art Gallery',
-            image: '../../assets/images/types/art_gallery.png',
-        },
-        {
-            name: 'Museum',
-            image: '../../assets/images/types/museum.png',
-        },
-        {
-            name: 'Aquarium',
-            image: '../../assets/images/types/aquarium.png',
-        },
-        {
-            name: 'Bar',
-            image: '../../assets/images/types/bar.png',
-        },
-        {
-            name: 'Cafe',
-            image: '../../assets/images/types/cafe.png',
-        },
-        {
-            name: 'Bowling Alley',
-            image: '../../assets/images/types/bowling.png',
-        },
-        {
-            name: 'Casino',
-            image: '../../assets/images/types/casino.png',
-        },
-        {
-            name: 'Zoo',
-            image: '../../assets/images/types/zoo.png',
-        },
-        {
-            name: 'Night Club',
-            image: '../../assets/images/types/night_club.png',
-        },
-        {
-            name: 'Shopping Mall',
-            image: '../../assets/images/types/mall.png',
-        },
-        {
-            name: 'Restaurant',
-            image: '../../assets/images/types/restaurant.png',
-        },
-        {
-            name: 'Gym',
-            image: '../../assets/images/types/gym.png',
-        },
-        {
-            name: 'Cinema',
-            image: '../../assets/images/types/cinema.png',
-        },
-        {
-            name: 'Park',
-            image: '../../assets/images/types/park.png',
-        },
-        {
-            name: 'Spa',
-            image: '../../assets/images/types/spa.png',
-        },
-        {
-            name: 'Landmarks',
-            image: '../../assets/images/types/landmarks.png',
-        },
-        {
-            name: 'Library',
-            image: '../../assets/images/types/library.png',
-        },
-    ];
 });
