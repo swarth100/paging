@@ -37,44 +37,6 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
         /* Initialise the radius
         let radius = initRadius(location, map); */
 
-        /* Get all markers of all people in the room */
-        $http.get('/' + $scope.roomID + '/users')
-            .then(function(response) {
-                /* Data is packaged into a nasty JSON format.
-                 * To access it first one must retrieve the *.data part to distinguish from header */
-                let users = response.data;
-
-                for (let i = 0; i ++; i < users.length) {
-                    let radLoc = {
-                        'lat': users[i].latitude,
-                        'lng': users[i].longitude,
-                    };
-
-                    /* Initialise the marker */
-                    let marker = new google.maps.Marker({
-                        position: {
-                            'lat': users[i].latitude,
-                            'lng': users[i].longitude,
-                        },
-                        map: map,
-                    });
-
-                    /* Initialise the radius */
-                    let radius = new google.maps.Circle({
-                        strokeColor: '#FF0000 ',
-                        strokeOpacity: 0.1,
-                        strokeWeight: 1,
-                        fillColor: '#FF0000 ',
-                        fillOpacity: 0.1,
-                        map: map,
-                        center: radLoc,
-                        radius: $scope.appSearch.radius,
-                    });
-                }
-            }, function(response) {
-                console.log('Failure when accessing users/roomID');
-            });
-
         /*
          * Responses, returned by the googlemaps.js are packaged
          * as follows:
@@ -174,8 +136,9 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
             .then(function(response) {
                 /* Data is packaged into a nasty JSON format.
                  * To access it first one must retrieve the *.data part to distinguish from header */
-                initMap(location, response.data);
-            }, function(reason) {
+                $scope.googleData = response.data;
+                $scope.initMap(location, response.data);
+            }, function(response) {
                 console.log('Failure when accessing googleMaps');
                 console.log(reason);
             });
@@ -207,7 +170,7 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
     }
 });
 
-app.controller('appCtrl', function($scope, $sessionStorage, $localStorage, $routeParams, socket) {
+app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, socket) {
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
 
@@ -229,7 +192,15 @@ app.controller('appCtrl', function($scope, $sessionStorage, $localStorage, $rout
 
     /* Redefine socket fields for updatingLocation */
     socket.on('location', function(data) {
-        console.log('Incoming message:', data);
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                let location = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+
+                $scope.initMap(location, $scope.googleData);
+            });
     });
 
     $scope.handleClick = () => {
@@ -238,5 +209,82 @@ app.controller('appCtrl', function($scope, $sessionStorage, $localStorage, $rout
 
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
+    };
+
+    /* Initialise the client-sided rendering of the map */
+    $scope.initMap = function(location, results) {
+        /* Initialise the map via the Google API */
+        let map = new google.maps.Map(document.getElementById('map'), {
+            center: location,
+            zoom: 14,
+        });
+
+        /* Get all markers of all people in the room */
+        $http.get('/' + $scope.roomID + '/users')
+            .then(function(response) {
+                /* Data is packaged into a nasty JSON format.
+                 * To access it first one must retrieve the *.data part to distinguish from header */
+                let users = response.data;
+
+                for (i = 0; i < users.length; i++) {
+                    let radLoc = {
+                        'lat': users[i].latitude,
+                        'lng': users[i].longitude,
+                    };
+
+                    /* Initialise the marker */
+                    let marker = new google.maps.Marker({
+                        position: {
+                            'lat': users[i].latitude,
+                            'lng': users[i].longitude,
+                        },
+                        map: map,
+                    });
+
+                    /* Initialise the radius */
+                    let radius = new google.maps.Circle({
+                        strokeColor: '#FF0000 ',
+                        strokeOpacity: 0.1,
+                        strokeWeight: 1,
+                        fillColor: '#FF0000 ',
+                        fillOpacity: 0.1,
+                        map: map,
+                        center: radLoc,
+                        radius: $scope.appSearch.radius,
+                    });
+                }
+            }, function(response) {
+                console.log('Failure when accessing users/roomID');
+            });
+
+        /* Responses, returned by the googlemaps.js (assets/js) are packaged as follow:
+         * response.json.result[index].geometry.location.{lat/lng}.
+         * This code iterates through all returned positions, setting them up on the map */
+        if (results) {
+            for (let i = 0; i < results.length; i++) {
+                let infowindow = new google.maps.InfoWindow({
+                    content: '<p>Name: ' + results[i].name + '</p>' +
+                    '<p>Average time spent: ' +
+                    results[i].avgtime.toString() + ' minutes.</p>',
+                });
+
+                let marker = new google.maps.Marker({
+                    position: {lat: results[i].latitude, lng: results[i].longitude},
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                        scale: 3,
+                    },
+                });
+
+                marker.addListener('mouseover', function() {
+                    infowindow.open(map, marker);
+                });
+
+                marker.addListener('mouseout', function() {
+                    infowindow.close(map, marker);
+                });
+            }
+        }
     };
 });
