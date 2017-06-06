@@ -214,6 +214,8 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, results) {
         /* Initialise the map via the Google API */
+
+        /* TODO: Look at a way to NOT refresh zoom every time */
         let map = new google.maps.Map(document.getElementById('map'), {
             center: location,
             zoom: 14,
