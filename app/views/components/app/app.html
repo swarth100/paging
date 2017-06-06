@@ -81,6 +81,10 @@
     </div>
     <div class="col-sm-8 col-md-9 no-padding">
         <!-- The following is the controller for the post location -->
-        <div id="map" class="map-dimensions" ng-controller="postLocation"></div>
+        <!-- The div nesting was done so that we could have the rotating gif
+        when a search is commensed. -->
+        <div class="map-dimensions">
+            <div id="map" class="map-dimensions" ng-controller="postLocation"></div>
+        </div>
     </div>
 </div>
