@@ -35,6 +35,7 @@ authentication.setup(app, (app) => {
     let server = app.listen(app.get('port'), () => {
         console.log('[Server] : open on port ' + app.get('port'));
     });
+
     socket.start(server);
 });
 

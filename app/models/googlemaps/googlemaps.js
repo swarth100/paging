@@ -27,8 +27,12 @@ function searchAroundLocation(queryData, cb) {
 
     Promise.all(promises)
         .then(function(responses) {
-            // Flatten the array of arrays into an array of results.
-            let finalPlaces = [].concat.apply(...responses);
+            let finalPlaces = [];
+
+            if (responses.length > 0) {
+                // Flatten the array of arrays into an array of results.
+                finalPlaces = [].concat.apply(...responses);
+            }
             cb(finalPlaces);
         })
         .catch(function(error) {

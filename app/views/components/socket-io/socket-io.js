@@ -6,7 +6,11 @@
  *     });
  */
 app.factory('socket', function($rootScope) {
+    /* Connects to server
+     * Issues a 'connect' message. Must be trapped by socket initialised by server */
     let socket = io.connect();
+
+    /* Traps default socket.io functions emitting the relevant commands for nodeJS */
     return {
         on: (eventName, func) => {
             socket.on(eventName, func);
