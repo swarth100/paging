@@ -39,16 +39,6 @@ app.controller('homeCtrl',
         $scope.homeSearch = $sessionStorage.queryData;
     }
 
-    /* TODO: Try to make this work using GoogleMaps/AngularJS! */
-    let searchBox = new google.maps.places.SearchBox(document.getElementById('searchBox'));
-    searchBox.addListener('places_changed', function() {
-        // Get all the information from the search box.
-        let temporaryResult = searchBox.getPlaces();
-        // Find the long name of the specified location and use it for the
-        // search.
-        $scope.homeSearch.location = temporaryResult[0].address_components[0].long_name;
-    });
-
     if(!$sessionStorage.types) {
         $scope.types = [
             {
@@ -162,7 +152,7 @@ app.controller('homeCtrl',
     };
 
     $scope.handleClick = () => {
-        $sessionStorage.queryData = $scope.homeSearch;
+       $sessionStorage.queryData = $scope.homeSearch;
         $sessionStorage.types = $scope.types;
     };
 
