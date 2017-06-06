@@ -189,10 +189,15 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
                      };
 
                      /* Initialise the marker */
-                     let marker = markUser(radLoc, map);
+                     let marker = markUser(radLoc, users[i], map);
 
                      /* Initialise the radius */
-                     let radius = initRadius(radLoc, users[i].radius, map);
+                     let radius = initRadius(radLoc, users[i], map);
+
+                     let userwindow = createUserWindow(users[i]);
+
+
+                     markerAddInfo(marker, userwindow);
                  }
              },
              function(response) {
@@ -212,13 +217,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
                 let marker = markResult(results[i], map);
 
-                marker.addListener('mouseover', function() {
-                    infowindow.open(map, marker);
-                });
-
-                marker.addListener('mouseout', function() {
-                    infowindow.close(map, marker);
-                });
+                markerAddInfo(marker, infowindow);
             }
         }
     };
@@ -241,23 +240,29 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         return $scope.map;
     };
 
-    markUser = function(location, map) {
+    markUser = function(location, user, map) {
         return new google.maps.Marker({
             position: location,
             map: map,
+            icon: {
+                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                scale: 10,
+                strokeWeight: 5,
+                strokeColor: user.color,
+            },
         });
     };
 
-    initRadius = function(location, radSize, map) {
+    initRadius = function(location, user, map) {
         return new google.maps.Circle({
-            strokeColor: '#FF0000 ',
-            strokeOpacity: 0.1,
+            strokeColor: user.color,
+            strokeOpacity: 0.8,
             strokeWeight: 1,
-            fillColor: '#FF0000 ',
-            fillOpacity: 0.1,
+            fillColor: user.color,
+            fillOpacity: 0.3,
             map: map,
             center: location,
-            radius: radSize,
+            radius: user.radius,
         });
     };
 
@@ -265,6 +270,12 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         return new google.maps.InfoWindow({
             content: '<p>Name: ' + result.name + '</p>' +
             '<p>Average time spent: ' + result.avgtime.toString() + ' minutes.</p>',
+        });
+    };
+
+    createUserWindow = function(user) {
+        return new google.maps.InfoWindow({
+            content: '<div style=\"color: ' + user.color + '\">' + user.username + '</div>',
         });
     };
 
@@ -276,6 +287,16 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
                 path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
                 scale: 3,
             },
+        });
+    };
+
+    markerAddInfo = function(marker, infowindow) {
+        marker.addListener('mouseover', function() {
+            infowindow.open(map, marker);
+        });
+
+        marker.addListener('mouseout', function() {
+            infowindow.close(map, marker);
         });
     };
 });
