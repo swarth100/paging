@@ -92,7 +92,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Generalised getLocation function
      * Determines, according to the current field, whether to use geolocation or parse the location field */
     $scope.getLocation = function(callback) {
-        if ($sessionStorage.queryData.location === 'Current Location') {
+        if ($sessionStorage.queryData.location === '') {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     let location = {
