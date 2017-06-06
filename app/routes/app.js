@@ -36,6 +36,7 @@ router.get('/:roomID/users', function(req, res) {
     findPromise
         .then(function(room) {
             console.log('Found the relevant room');
+
             res.send(room.users);
         })
         .catch(function(err) {

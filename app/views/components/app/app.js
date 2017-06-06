@@ -16,35 +16,19 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
      * DO NOT use firefox browser.
      * Geolocalisation seems to not be supported and confused:
      */
+    /* TODO: Error handler is UNUSED */
     let obtainLocation = function() {
         document.getElementById('map').style.visibility = 'hidden';
+        $scope.getLocation(function(location) {
+            let fields = createJSON(location);
 
-        if ($sessionStorage.queryData.location === 'Current Location') {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(postCurrentPosition, errorHandler);
-            } else {
-                alert('Geolocation is not supported by this browser.');
-            }
-        } else {
-            fireGeocoder();
-        }
+            postThePackage(location, fields);
+        }, errorHandler);
     };
 
     obtainLocation();
 
     $scope.$on('submit', obtainLocation);
-
-    function postCurrentPosition(position) {
-        /* Initialise the location JSON */
-        let location = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-        };
-
-        let fields = createJSON(location);
-
-        postThePackage(location, fields);
-    }
 
     function createJSON(location) {
         return JSON.stringify({
@@ -68,13 +52,12 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
         }
         return result;
     };
-
+    /*
+     * Angular HTTP post
+     * Given a URL and a JSON (location), issues a post request on the given URL.
+     * Returns a Promise, thus the .then() function
+     */
     function postThePackage(location, fields) {
-        /*
-         * Angular HTTP post
-         * Given a URL and a JSON (location), issues a post request on the given URL.
-         * Returns a Promise, thus the .then() function
-         */
         $http.post('/googlemaps', fields)
             .then(function(response) {
                 /* Data is packaged into a nasty JSON format.
@@ -98,22 +81,6 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
                 ' to inform you of the nature of the error...');
         }
     }
-
-    function fireGeocoder() {
-        geocoder.geocode({'address': $sessionStorage.queryData.location},
-            function(results, status) {
-                if (status === 'OK') {
-                    let location = results[0].geometry.location;
-
-                    let fields = createJSON(location);
-
-                    postThePackage(location, fields);
-                } else {
-                    alert('Geocode was not successful for the following' +
-                        ' reason: ' + status);
-                }
-            });
-    }
 });
 
 app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, socket) {
@@ -122,6 +89,8 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     let geocoder = new google.maps.Geocoder();
 
+    /* Generalised getLocation function
+     * Determines, according to the current field, whether to use geolocation or parse the location field */
     $scope.getLocation = function(callback) {
         if ($sessionStorage.queryData.location === 'Current Location') {
             if (navigator.geolocation) {
@@ -156,13 +125,16 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         }
     };
 
+    /* Private controller function
+     * Broadcasts the user data (username, location and radius) to the socket's room */
     broadcastUserData = function() {
         /* Broadcast location to all socket listeners */
         $scope.getLocation(function(location) {
             socket.broadcast($scope.roomID, 'location', {
                 'username': $localStorage.username,
-                'latitude': location.lat,
-                'longitude': location.lng,
+                'lat': location.lat,
+                'lng': location.lng,
+                'radius': $sessionStorage.queryData.radius,
             });
         });
     };
@@ -170,12 +142,12 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Redefine socket fields for updatingLocation */
     socket.on('location', function(data) {
         $scope.getLocation(function(location) {
-            // console.log('Got bobby here');
-            // console.log($sessionStorage.googleData);
             $scope.initMap(location, $sessionStorage.googleData);
         });
     });
 
+    /* Joins a room upon entry.
+     * Room name is given by the roomID in $scope */
     $scope.joinRoom = function() {
         /* Upon entry, join the correspondent room. */
         socket.join($scope.roomID);
@@ -184,10 +156,13 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
     $scope.joinRoom();
 
+    /* Handles ... clicking? */
     $scope.handleClick = () => {
         $sessionStorage.queryData = $scope.appSearch;
     };
 
+    /* Handles clicking on the submit button
+     * Submission also occurs via pressing enter */
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
 
@@ -205,17 +180,19 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
              .then(function(response) {
                  let users = response.data;
 
+                 console.log(users);
+
                  for (i = 0; i < users.length; i++) {
                      let radLoc = {
-                         'lat': users[i].latitude,
-                         'lng': users[i].longitude,
+                         'lat': users[i].lat,
+                         'lng': users[i].lng,
                      };
 
                      /* Initialise the marker */
                      let marker = markUser(radLoc, map);
 
                      /* Initialise the radius */
-                     let radius = initRadius(radLoc, map);
+                     let radius = initRadius(radLoc, users[i].radius, map);
                  }
              },
              function(response) {
@@ -246,6 +223,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         }
     };
 
+    /* InitMap helper functions: */
     createMap = function(location) {
         let zoom = 14;
 
@@ -270,7 +248,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         });
     };
 
-    initRadius = function(location, map) {
+    initRadius = function(location, radSize, map) {
         return new google.maps.Circle({
             strokeColor: '#FF0000 ',
             strokeOpacity: 0.1,
@@ -279,7 +257,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
             fillOpacity: 0.1,
             map: map,
             center: location,
-            radius: $scope.appSearch.radius,
+            radius: radSize,
         });
     };
 

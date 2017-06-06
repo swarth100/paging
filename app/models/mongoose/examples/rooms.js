@@ -32,6 +32,7 @@ savePromise
      });
 
 
+ /* NOTE: DEPRECATED ARGUMENTS */
  let updatePromise = mongooseRoom.updateUser(room, 'rose', 4200, 3100);
  updatePromise
      .then(function(room) {
@@ -41,6 +42,7 @@ savePromise
          console.log('No element in the database meets the search criteria');
      });
 
+/* NOTE: DEPRECATED ARGUMENTS */
  let addPromise = mongooseRoom.addUser(room, 'rose', 4200, 3100);
  addPromise
      .then(function(room) {
@@ -50,6 +52,7 @@ savePromise
          console.log('No element in the database meets the search criteria');
      });
 
+/* NOTE: DEPRECATED ARGUMENTS */
 let updateOrSavePromise = mongooseRoom.updateUser(room, 'bob', 1000, 1000);
 updateOrSavePromise
     .then(function(room) {
