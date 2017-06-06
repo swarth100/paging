@@ -16,7 +16,7 @@
     "build": "./node_modules/node-sass/bin/node-sass app/views/assets/scss -o app/views/assets/css",
     "prestart": "npm run build",
     "start": "node server",
-    "dev": "concurrently --kill-other \"npm run watch-sass\" \"npm run watch-node\"",
+    "dev": "npm run watch-sass | npm run watch-node",
     "watch-sass": "./node_modules/node-sass/bin/node-sass --watch  app/views/assets/scss -o app/views/assets/css",
     "watch-node": "nodemon server.js"
   },
@@ -57,6 +57,7 @@
     "husky": "^0.13.4",
     "lint-staged": "^3.5.0",
     "mocha": "^3.4.2",
+    "nodemon": "^1.11.0",
     "request": "^2.81.0",
     "supertest": "^3.0.0",
     "sinon": "^2.3.2"
