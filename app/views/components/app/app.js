@@ -132,8 +132,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         $scope.getLocation(function(location) {
             socket.broadcast($scope.roomID, 'location', {
                 'username': $localStorage.username,
-                'latitude': location.lat,
-                'longitude': location.lng,
+                'lat': location.lat,
+                'lng': location.lng,
+                'radius': $sessionStorage.queryData.radius,
             });
         });
     };
@@ -141,8 +142,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Redefine socket fields for updatingLocation */
     socket.on('location', function(data) {
         $scope.getLocation(function(location) {
-            // console.log('Got bobby here');
-            // console.log($sessionStorage.googleData);
             $scope.initMap(location, $sessionStorage.googleData);
         });
     });
@@ -181,17 +180,19 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
              .then(function(response) {
                  let users = response.data;
 
+                 console.log(users);
+
                  for (i = 0; i < users.length; i++) {
                      let radLoc = {
-                         'lat': users[i].latitude,
-                         'lng': users[i].longitude,
+                         'lat': users[i].lat,
+                         'lng': users[i].lng,
                      };
 
                      /* Initialise the marker */
                      let marker = markUser(radLoc, map);
 
                      /* Initialise the radius */
-                     let radius = initRadius(radLoc, map);
+                     let radius = initRadius(radLoc, users[i].radius, map);
                  }
              },
              function(response) {
@@ -247,7 +248,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         });
     };
 
-    initRadius = function(location, map) {
+    initRadius = function(location, radSize, map) {
         return new google.maps.Circle({
             strokeColor: '#FF0000 ',
             strokeOpacity: 0.1,
@@ -256,7 +257,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
             fillOpacity: 0.1,
             map: map,
             center: location,
-            radius: $scope.appSearch.radius,
+            radius: radSize,
         });
     };
 
