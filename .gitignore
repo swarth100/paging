@@ -123,6 +123,10 @@ typings/
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]
 [._]s[a-v][a-z]
+
+
+
+
 [._]sw[a-p]
 # session
 Session.vim
@@ -195,3 +199,6 @@ fabric.properties
 .idea/sonarlint
 
 # End of https://www.gitignore.io/api/vim,node,macos,angular,webstorm
+
+app/views/assets/css/*
+app/views/assets/.sass-cache/
