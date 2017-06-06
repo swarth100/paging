@@ -65,7 +65,10 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
                 /* Data is packaged into a nasty JSON format.
                  * To access it first one must retrieve the *.data part to distinguish from header */
                 $scope.initMap(location, response.data);
-                $scope.googleData = response.data;
+                $sessionStorage.googleData = response.data;
+
+                console.log('GG got here');
+                console.log($sessionStorage.googleData);
             }, function(reason) {
                 console.log('Failure when accessing googleMaps');
                 console.log(reason);
@@ -102,15 +105,24 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
 
+    let geocoder = new google.maps.Geocoder();
+
     broadcastUserData = function() {
         /* Broadcast location to all socket listeners */
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                socket.broadcast($scope.roomID, 'location', {
-                    'username': $localStorage.username,
-                    'latitude': position.coords.latitude,
-                    'longitude': position.coords.longitude,
-                });
+        geocoder.geocode({'address': $sessionStorage.queryData.location},
+            function(results, status) {
+                if (status === 'OK') {
+                    let location = results[0].geometry.location;
+
+                    socket.broadcast($scope.roomID, 'location', {
+                        'username': $localStorage.username,
+                        'latitude': location.lat(),
+                        'longitude': location.lng(),
+                    });
+                } else {
+                    alert('Geocode was not successful for the following' +
+                        ' reason: ' + status);
+                }
             });
     };
 
@@ -124,14 +136,23 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     /* Redefine socket fields for updatingLocation */
     socket.on('location', function(data) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                let location = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                };
+        geocoder.geocode({'address': $sessionStorage.queryData.location},
+            function(results, status) {
+                if (status === 'OK') {
+                    let location = results[0].geometry.location;
 
-                $scope.initMap(location, $scope.googleData);
+                    let locMap = {
+                        'lat': location.lat(),
+                        'lng': location.lng(),
+                    };
+
+                    console.log($sessionStorage.googleData);
+
+                    $scope.initMap(locMap, $sessionStorage.googleData);
+                } else {
+                    alert('Geocode was not successful for the following' +
+                        ' reason: ' + status);
+                }
             });
     });
 
