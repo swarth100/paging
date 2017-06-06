@@ -13,7 +13,8 @@
     "precommit": "lint-staged",
     "test": "./node_modules/.bin/mocha",
     "lint": "./node_modules/.bin/eslint .",
-    "build": "echo \"no build\"",
+    "build": "./node_modules/node-sass/bin/node-sass app/views/assets/scss -o app/views/assets/css",
+    "prestart": "npm run build",
     "start": "node server"
   },
   "repository": {
@@ -38,6 +39,7 @@
     "mongoose": "^4.10.2",
     "mongoose-unique-validator": "^1.0.5",
     "ngmap": "^1.18.4",
+    "node-sass": "^4.5.3",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "should": "^11.2.1",
