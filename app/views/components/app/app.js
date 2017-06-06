@@ -65,6 +65,7 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
                 /* Data is packaged into a nasty JSON format.
                  * To access it first one must retrieve the *.data part to distinguish from header */
                 $scope.initMap(location, response.data);
+                $scope.googleData = response.data;
             }, function(reason) {
                 console.log('Failure when accessing googleMaps');
                 console.log(reason);
@@ -101,10 +102,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
 
-    $scope.joinRoom = function() {
-        /* Upon entry, join the correspondent room. */
-        socket.join($scope.roomID);
-
+    broadcastUserData = function() {
         /* Broadcast location to all socket listeners */
         navigator.geolocation.getCurrentPosition(
             function(position) {
@@ -114,6 +112,13 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
                     'longitude': position.coords.longitude,
                 });
             });
+    };
+
+    $scope.joinRoom = function() {
+        /* Upon entry, join the correspondent room. */
+        socket.join($scope.roomID);
+
+        broadcastUserData();
     };
     $scope.joinRoom();
 
@@ -136,6 +141,8 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
+
+        broadcastUserData();
     };
 
     /* Initialise the client-sided rendering of the map */
@@ -171,26 +178,38 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
          * This code iterates through all returned positions, setting them up on
          * the map
          */
-        for (let i = 0; i < results.length; i++) {
-            let infowindow = createInfoWindow(results[i]);
+        if (results) {
+            for (let i = 0; i < results.length; i++) {
+                let infowindow = createInfoWindow(results[i]);
 
-            let marker = markResult(results[i], map);
+                let marker = markResult(results[i], map);
 
-            marker.addListener('mouseover', function() {
-                infowindow.open(map, marker);
-            });
+                marker.addListener('mouseover', function() {
+                    infowindow.open(map, marker);
+                });
 
-            marker.addListener('mouseout', function() {
-                infowindow.close(map, marker);
-            });
+                marker.addListener('mouseout', function() {
+                    infowindow.close(map, marker);
+                });
+            }
         }
     };
 
     createMap = function(location) {
-        return new google.maps.Map(document.getElementById('map'), {
+        let zoom = 14;
+
+        /* TODO: Fix centering upon refresh */
+
+        if ($scope.map) {
+            zoom = $scope.map.getZoom();
+        }
+
+        $scope.map = new google.maps.Map(document.getElementById('map'), {
             center: location,
-            zoom: 14,
+            zoom: zoom,
         });
+
+        return $scope.map;
     };
 
     markUser = function(location, map) {
