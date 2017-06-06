@@ -1,15 +1,8 @@
 /* */
 
 /* Controller to handle the search bar on the home screen */
-app.controller('homeController', function($scope, $filter, $http, $location, $sessionStorage, socket) {
-    socket.on('connect', (data) => {
-        socket.join('hello-world');
-        socket.broadcast('hello-world', 'messages', 'broadcast');
-    });
-    socket.on('messages', function(data) {
-        console.log('Incoming message:', data);
-    });
-
+app.controller('homeController', function($scope, $filter, $http, $location, $sessionStorage) {
+    /* Initialises the following fields to the following default values */
     $scope.setDate = function() {
         $scope.homeSearch.datetime = $filter('date')(new Date(
             $scope.tmpDate.getFullYear(),
@@ -44,7 +37,7 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
         $scope.homeSearch = $sessionStorage.queryData;
     }
 
-    // TODO: Try to make this work using GoogleMaps/AngularJS!
+    /* TODO: Try to make this work using GoogleMaps/AngularJS! */
     let searchBox = new google.maps.places.SearchBox(document.getElementById('searchBox'));
     searchBox.addListener('places_changed', function() {
         // Get all the information from the search box.
@@ -53,10 +46,9 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
         // search.
         $scope.homeSearch.location = temporaryResult[0].address_components[0].long_name;
     });
-
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
-        $location.url('/app');
+        $location.url('/app/tmp');
     };
 
     $scope.handleClick = () => {
