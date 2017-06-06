@@ -9,6 +9,9 @@ app.controller('layoutController', function($scope, $location, $http, $localStor
         return $localStorage.username;
     };
     $scope.isLoggedIn = () => {
+        if ($localStorage.isLoggedIn === undefined) {
+            return false;
+        }
         return $localStorage.isLoggedIn;
     };
     $scope.logout = function() {
