@@ -87,7 +87,7 @@ exports.start = (server) => {
     }
 
     function updateUser(room, user) {
-        mongooseRoom.updateUser(room, user.username, user.latitude, user.longitude)
+        mongooseRoom.updateUser(room, user)
             .then(function(room) {
                 /* User was already present in the room. User's coords have been updated */
                 console.log('Found user, updated values!');
@@ -100,7 +100,7 @@ exports.start = (server) => {
     }
 
     function addUser(room, user) {
-        mongooseRoom.addUser(room, user.username, user.latitude, user.longitude)
+        mongooseRoom.addUser(room, user)
             .then(function(room) {
                 console.log('Saved new user with given values');
             })
