@@ -110,12 +110,13 @@ exports.removeRoom = function(p) {
     return helper.removeElem(Room, p);
 };
 
-exports.addUser = function(room, username, lat, lng) {
+exports.addUser = function(room, user) {
     let query = {
         'users': {
-            'latitude': lat,
-            'longitude': lng,
-            'username': username,
+            'lat': user.lat,
+            'lng': user.lng,
+            'username': user.username,
+            'radius': user.radius,
         }};
 
     let cond = {
@@ -125,15 +126,16 @@ exports.addUser = function(room, username, lat, lng) {
     return helper.addHelper(Room, cond, query);
 };
 
-exports.updateUser = function(room, username, lat, lng) {
+exports.updateUser = function(room, user) {
     let query = {
-        'users.$.latitude': lat,
-        'users.$.longitude': lng,
+        'users.$.lat': user.lat,
+        'users.$.lng': user.lng,
+        'users.$.radius': user.radius,
     };
 
     let cond = {
         'id': room.id,
-        'users.username': username,
+        'users.username': user.username,
     };
 
     return helper.updateHelper(Room, cond, query);
