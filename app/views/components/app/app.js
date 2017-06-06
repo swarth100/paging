@@ -65,7 +65,10 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
                 /* Data is packaged into a nasty JSON format.
                  * To access it first one must retrieve the *.data part to distinguish from header */
                 $scope.initMap(location, response.data);
-                $scope.googleData = response.data;
+                $sessionStorage.googleData = response.data;
+
+                console.log('Following is the google data which was found');
+                console.log($sessionStorage.googleData);
             }, function(reason) {
                 console.log('Failure when accessing googleMaps');
                 console.log(reason);
@@ -102,17 +105,61 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
 
+    let geocoder = new google.maps.Geocoder();
+
+    $scope.getLocation = function(callback) {
+        if ($sessionStorage.queryData.location === 'Current Location') {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    let location = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+
+                    callback(location);
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        } else {
+            geocoder.geocode({'address': $sessionStorage.queryData.location},
+                function(results, status) {
+                    if (status === 'OK') {
+                        let locTmp = results[0].geometry.location;
+
+                        let location = {
+                            'lat': locTmp.lat(),
+                            'lng': locTmp.lng(),
+                        };
+
+                        callback(location);
+                    } else {
+                        alert('Geocode was not successful for the following' +
+                            ' reason: ' + status);
+                    }
+                });
+        }
+    };
+
     broadcastUserData = function() {
         /* Broadcast location to all socket listeners */
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                socket.broadcast($scope.roomID, 'location', {
-                    'username': $localStorage.username,
-                    'latitude': position.coords.latitude,
-                    'longitude': position.coords.longitude,
-                });
+        $scope.getLocation(function(location) {
+            socket.broadcast($scope.roomID, 'location', {
+                'username': $localStorage.username,
+                'latitude': location.lat,
+                'longitude': location.lng,
             });
+        });
     };
+
+    /* Redefine socket fields for updatingLocation */
+    socket.on('location', function(data) {
+        $scope.getLocation(function(location) {
+            // console.log('Got bobby here');
+            // console.log($sessionStorage.googleData);
+            $scope.initMap(location, $sessionStorage.googleData);
+        });
+    });
 
     $scope.joinRoom = function() {
         /* Upon entry, join the correspondent room. */
@@ -121,19 +168,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         broadcastUserData();
     };
     $scope.joinRoom();
-
-    /* Redefine socket fields for updatingLocation */
-    socket.on('location', function(data) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                let location = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                };
-
-                $scope.initMap(location, $scope.googleData);
-            });
-    });
 
     $scope.handleClick = () => {
         $sessionStorage.queryData = $scope.appSearch;
