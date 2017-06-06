@@ -24,13 +24,13 @@ describe('GoogleMaps', function() {
                 datetime: dummyRandom,
                 avgtime: dummyRandom,
                 radius: dummyRandom,
-                type: dummyRandom,
+                type: [dummyRandom],
             };
 
             let dummyResult = maps.extractQueryData(dummyQueryData);
 
-            dummyResult.should.have.size(3);
-            dummyResult.should.have.properties({
+            dummyResult.should.have.size(1);
+            dummyResult[0].should.have.properties({
                 location: dummyLocation,
                 radius: dummyRandom,
                 name: dummyRandom,
