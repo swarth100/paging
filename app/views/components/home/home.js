@@ -52,7 +52,7 @@ app.controller('homeCtrl',
     if(!$sessionStorage.types) {
         $scope.types = [
             {
-                name: 'Amusment Park',
+                name: 'Amusement Park',
                 image: '../../assets/images/types/amusement_park.png',
                 isSelected: false,
             },
