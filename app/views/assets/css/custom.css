@@ -35,9 +35,23 @@
     margin-right: 12px;
 }
 
-.btn-light-cream:hover, .btn-light-cream:focus, .btn-light-cream:active{
-    @extend square;
+input[type="checkbox"] + label { 
+    background-color: #ffcc80;
+    font-variant: small-caps;
     border-color: #995c00;
+    border-left: none;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+input[type="checkbox"]:checked + label {
+    background-color: #995c00;
+}
+
+.btn-light-cream:hover, .btn-light-cream:focus, .btn-light-cream:active 
+    @extend square;
+    background-color: #995c00;
 }
 
 .btn-dark-orange{
