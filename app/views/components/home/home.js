@@ -1,8 +1,10 @@
 /* */
 
 /* Controller to handle the search bar on the home screen */
-app.controller('homeCtrl', function($scope, $filter, $http, $location, $sessionStorage) {
+app.controller('homeCtrl',
+    function($scope, $filter, $http, $location, $sessionStorage, NgMap) {
     /* Initialises the following fields to the following default values */
+
     $scope.setDate = function() {
         $scope.homeSearch.datetime = $filter('date')(new Date(
             $scope.tmpDate.getFullYear(),
@@ -37,15 +39,6 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, $sessionS
         $scope.homeSearch = $sessionStorage.queryData;
     }
 
-    /* TODO: Try to make this work using GoogleMaps/AngularJS! */
-    let searchBox = new google.maps.places.SearchBox(document.getElementById('searchBox'));
-    searchBox.addListener('places_changed', function() {
-        // Get all the information from the search box.
-        let temporaryResult = searchBox.getPlaces();
-        // Find the long name of the specified location and use it for the
-        // search.
-        $scope.homeSearch.location = temporaryResult[0].address_components[0].long_name;
-    });
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
 
