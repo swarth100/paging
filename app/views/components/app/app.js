@@ -31,11 +31,49 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
         /* Initialise the map via the Google API */
         let map = createMap(location);
 
-        /* Initialise the marker */
-        let marker = markUser(location, map);
+        /* Initialise the marker
+        let marker = markUser(location, map); */
 
-        /* Initialise the radius */
-        let radius = initRadius(location, map);
+        /* Initialise the radius
+        let radius = initRadius(location, map); */
+
+        /* Get all markers of all people in the room */
+        $http.get('/' + $scope.roomID + '/users')
+            .then(function(response) {
+                /* Data is packaged into a nasty JSON format.
+                 * To access it first one must retrieve the *.data part to distinguish from header */
+                let users = response.data;
+
+                for (let i = 0; i ++; i < users.length) {
+                    let radLoc = {
+                        'lat': users[i].latitude,
+                        'lng': users[i].longitude,
+                    };
+
+                    /* Initialise the marker */
+                    let marker = new google.maps.Marker({
+                        position: {
+                            'lat': users[i].latitude,
+                            'lng': users[i].longitude,
+                        },
+                        map: map,
+                    });
+
+                    /* Initialise the radius */
+                    let radius = new google.maps.Circle({
+                        strokeColor: '#FF0000 ',
+                        strokeOpacity: 0.1,
+                        strokeWeight: 1,
+                        fillColor: '#FF0000 ',
+                        fillOpacity: 0.1,
+                        map: map,
+                        center: radLoc,
+                        radius: $scope.appSearch.radius,
+                    });
+                }
+            }, function(response) {
+                console.log('Failure when accessing users/roomID');
+            });
 
         /*
          * Responses, returned by the googlemaps.js are packaged
