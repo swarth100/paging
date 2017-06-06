@@ -1,68 +1,53 @@
-/* postLocation controller for the googleMaps module
- * Handles communication between client sided rendering and server sided location analysis */
+/*
+ * postLocation controller for the googleMaps module.
+ * Handles communication between client sided rendering and server sided
+ * location analysis
+ */
 app.controller('postLocation', function($scope, $http, $sessionStorage) {
-    /* Post requests for googlemaps go to the following URL */
-    let url = '/googlemaps';
+    let geocoder = new google.maps.Geocoder();
 
-    /* DO NOT use firefox browser.
-     * Geolocalisation seems to not be supported :confused: */
-    let displayMap = function() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(postFields);
+    /*
+     * DO NOT use firefox browser.
+     * Geolocalisation seems to not be supported and confused:
+     */
+    let obtainLocation = function() {
+        if ($sessionStorage.queryData.location === 'Current Location') {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(postCurrentPosition, errorHandler);
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
         } else {
-            /* Muhahahaha someone used Firefox */
-            console.log('GeoLoc not supported by browser');
+            fireGeocoder();
         }
     };
 
-    displayMap();
+    obtainLocation();
 
-    $scope.$on('submit', displayMap );
+    $scope.$on('submit', obtainLocation);
 
     /* Initialise the client-sided rendering of the map */
     function initMap(location, results) {
         /* Initialise the map via the Google API */
-        let map = new google.maps.Map(document.getElementById('map'), {
-            center: location,
-            zoom: 14,
-        });
+        let map = createMap(location);
 
         /* Initialise the marker */
-        let marker = new google.maps.Marker({
-            position: location,
-            map: map,
-        });
+        let marker = markUser(location, map);
 
         /* Initialise the radius */
-        let radius = new google.maps.Circle({
-            strokeColor: '#FF0000 ',
-            strokeOpacity: 0.1,
-            strokeWeight: 1,
-            fillColor: '#FF0000 ',
-            fillOpacity: 0.1,
-            map: map,
-            center: location,
-            radius: $scope.appSearch.radius,
-        });
+        let radius = initRadius(location, map);
 
-        /* Responses, returned by the googlemaps.js (assets/js) are packaged as follow:
+        /*
+         * Responses, returned by the googlemaps.js are packaged
+         * as follows:
          * response.json.result[index].geometry.location.{lat/lng}.
-         * This code iterates through all returned positions, setting them up on the map */
+         * This code iterates through all returned positions, setting them up on
+         * the map
+         */
         for (let i = 0; i < results.length; i++) {
-            let infowindow = new google.maps.InfoWindow({
-                content: '<p>Name: ' + results[i].name + '</p>' +
-                    '<p>Average time spent: ' +
-                    results[i].avgtime.toString() + ' minutes.</p>',
-            });
+            let infowindow = createInfoWindow(results[i]);
 
-            let marker = new google.maps.Marker({
-                position: results[i].location,
-                map: map,
-                icon: {
-                    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                    scale: 3,
-                },
-            });
+            let marker = markResult(results[i], map);
 
             marker.addListener('mouseover', function() {
                 infowindow.open(map, marker);
@@ -74,32 +59,114 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
         }
     }
 
-    function postFields(position) {
+    function createMap(location) {
+        return new google.maps.Map(document.getElementById('map'), {
+            center: location,
+            zoom: 14,
+        });
+    }
+
+    function markUser(location, map) {
+        return new google.maps.Marker({
+            position: location,
+            map: map,
+        });
+    }
+
+    function initRadius(location, map) {
+        return new google.maps.Circle({
+            strokeColor: '#FF0000 ',
+            strokeOpacity: 0.1,
+            strokeWeight: 1,
+            fillColor: '#FF0000 ',
+            fillOpacity: 0.1,
+            map: map,
+            center: location,
+            radius: $scope.appSearch.radius,
+        });
+    }
+
+    function createInfoWindow(result) {
+        return new google.maps.InfoWindow({
+            content: '<p>Name: ' + result.name + '</p>' +
+            '<p>Average time spent: ' + result.avgtime.toString() + ' minutes.</p>',
+        });
+    }
+
+    function markResult(result, map) {
+        return new google.maps.Marker({
+            position: result.location,
+            map: map,
+            icon: {
+                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                scale: 3,
+            },
+        });
+    }
+
+    function postCurrentPosition(position) {
         /* Initialise the location JSON */
         let location = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
         };
-        let fields = JSON.stringify({
+
+        let fields = createJSON(location);
+
+        postThePackage(location, fields);
+    }
+
+    function createJSON(location) {
+        return JSON.stringify({
             location: JSON.stringify(location),
             datetime: $sessionStorage.queryData.datetime,
             avgtime: $sessionStorage.queryData.duration,
             radius: $sessionStorage.queryData.radius,
             type: $sessionStorage.queryData.type,
         });
+    }
 
-        /* Angular HTTP post
+    function postThePackage(location, fields) {
+        /*
+         * Angular HTTP post
          * Given a URL and a JSON (location), issues a post request on the given URL.
-         * Returns a Promise, thus the .then() function */
-        $http.post(url, fields)
+         * Returns a Promise, thus the .then() function
+         */
+        $http.post('/googlemaps', fields)
             .then(function(response) {
                 /* Data is packaged into a nasty JSON format.
                  * To access it first one must retrieve the *.data part to distinguish from header */
                 initMap(location, response.data);
-            }, function(response) {
+            }, function(reason) {
                 console.log('Failure when accessing googleMaps');
+                console.log(reason);
             });
-    };
+    }
+
+    function errorHandler(error) {
+        if (error.code === error.PERMISSION_DENIED) {
+            alert('You will need to enable geolocation.');
+        } else {
+            alert('An error has occured and the programmer has been too lazy' +
+                ' to inform you of the nature of the error...');
+        }
+    }
+
+    function fireGeocoder() {
+        geocoder.geocode({'address': $sessionStorage.queryData.location},
+            function(results, status) {
+                if (status === 'OK') {
+                    let location = results[0].geometry.location;
+
+                    let fields = createJSON(location);
+
+                    postThePackage(location, fields);
+                } else {
+                    alert('Geocode was not successful for the following' +
+                        ' reason: ' + status);
+                }
+            });
+    }
 });
 
 app.controller('appController', function($scope, $sessionStorage) {

@@ -21,6 +21,7 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
         $sessionStorage.date = $scope.tmpDate;
         $sessionStorage.time = $scope.tmpTime;
     };
+
     if (!$sessionStorage.queryData) {
         /* There is no session storage, initialise the fields */
         $scope.tmpDate = new Date();
@@ -42,6 +43,17 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
         $scope.tmpTime = $sessionStorage.time;
         $scope.homeSearch = $sessionStorage.queryData;
     }
+
+    // TODO: Try to make this work using GoogleMaps/AngularJS!
+    let searchBox = new google.maps.places.SearchBox(document.getElementById('searchBox'));
+    searchBox.addListener('places_changed', function() {
+        // Get all the information from the search box.
+        let temporaryResult = searchBox.getPlaces();
+        // Find the long name of the specified location and use it for the
+        // search.
+        $scope.homeSearch.location = temporaryResult[0].address_components[0].long_name;
+    });
+
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
         $location.url('/app');
@@ -59,7 +71,6 @@ app.controller('homeController', function($scope, $filter, $http, $location, $se
             $scope.homeSearch.type.splice(index, 1);
         }
     };
-
 
     $scope.types = [
         {
