@@ -35,6 +35,10 @@
     margin-right: 12px;
 }
 
+.dropdown-menu-types {
+    width: 83.33vw !important;
+}
+
 input[type="checkbox"] + label { 
     background-color: #ffcc80;
     font-variant: small-caps;
