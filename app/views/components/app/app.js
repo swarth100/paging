@@ -17,6 +17,8 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
      * Geolocalisation seems to not be supported and confused:
      */
     let obtainLocation = function() {
+        document.getElementById('map').style.visibility = 'hidden';
+
         if ($sessionStorage.queryData.location === 'Current Location') {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(postCurrentPosition, errorHandler);
@@ -194,6 +196,8 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, results) {
+        document.getElementById('map').style.visibility = 'visible';
+
         /* Initialise the map via the Google API */
         let map = createMap(location);
 
