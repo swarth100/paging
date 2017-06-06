@@ -15,7 +15,10 @@
     "lint": "./node_modules/.bin/eslint .",
     "build": "./node_modules/node-sass/bin/node-sass app/views/assets/scss -o app/views/assets/css",
     "prestart": "npm run build",
-    "start": "node server"
+    "start": "node server",
+    "dev": "concurrently --kill-other \"npm run watch-sass\" \"npm run watch-node\"",
+    "watch-sass": "./node_modules/node-sass/bin/node-sass --watch  app/views/assets/scss -o app/views/assets/css",
+    "watch-node": "nodemon server.js"
   },
   "repository": {
     "type": "git",
