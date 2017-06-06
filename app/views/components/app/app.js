@@ -67,7 +67,7 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
                 $scope.initMap(location, response.data);
                 $sessionStorage.googleData = response.data;
 
-                console.log('GG got here');
+                console.log('Following is the google data which was found');
                 console.log($sessionStorage.googleData);
             }, function(reason) {
                 console.log('Failure when accessing googleMaps');
@@ -107,24 +107,59 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     let geocoder = new google.maps.Geocoder();
 
+    $scope.getLocation = function(callback) {
+        if ($sessionStorage.queryData.location === 'Current Location') {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    let location = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+
+                    callback(location);
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        } else {
+            geocoder.geocode({'address': $sessionStorage.queryData.location},
+                function(results, status) {
+                    if (status === 'OK') {
+                        let locTmp = results[0].geometry.location;
+
+                        let location = {
+                            'lat': locTmp.lat(),
+                            'lng': locTmp.lng(),
+                        };
+
+                        callback(location);
+                    } else {
+                        alert('Geocode was not successful for the following' +
+                            ' reason: ' + status);
+                    }
+                });
+        }
+    };
+
     broadcastUserData = function() {
         /* Broadcast location to all socket listeners */
-        geocoder.geocode({'address': $sessionStorage.queryData.location},
-            function(results, status) {
-                if (status === 'OK') {
-                    let location = results[0].geometry.location;
-
-                    socket.broadcast($scope.roomID, 'location', {
-                        'username': $localStorage.username,
-                        'latitude': location.lat(),
-                        'longitude': location.lng(),
-                    });
-                } else {
-                    alert('Geocode was not successful for the following' +
-                        ' reason: ' + status);
-                }
+        $scope.getLocation(function(location) {
+            socket.broadcast($scope.roomID, 'location', {
+                'username': $localStorage.username,
+                'latitude': location.lat,
+                'longitude': location.lng,
             });
+        });
     };
+
+    /* Redefine socket fields for updatingLocation */
+    socket.on('location', function(data) {
+        $scope.getLocation(function(location) {
+            // console.log('Got bobby here');
+            // console.log($sessionStorage.googleData);
+            $scope.initMap(location, $sessionStorage.googleData);
+        });
+    });
 
     $scope.joinRoom = function() {
         /* Upon entry, join the correspondent room. */
@@ -133,28 +168,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         broadcastUserData();
     };
     $scope.joinRoom();
-
-    /* Redefine socket fields for updatingLocation */
-    socket.on('location', function(data) {
-        geocoder.geocode({'address': $sessionStorage.queryData.location},
-            function(results, status) {
-                if (status === 'OK') {
-                    let location = results[0].geometry.location;
-
-                    let locMap = {
-                        'lat': location.lat(),
-                        'lng': location.lng(),
-                    };
-
-                    console.log($sessionStorage.googleData);
-
-                    $scope.initMap(locMap, $sessionStorage.googleData);
-                } else {
-                    alert('Geocode was not successful for the following' +
-                        ' reason: ' + status);
-                }
-            });
-    });
 
     $scope.handleClick = () => {
         $sessionStorage.queryData = $scope.appSearch;
