@@ -50,9 +50,22 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
             datetime: $sessionStorage.queryData.datetime,
             avgtime: $sessionStorage.queryData.duration,
             radius: $sessionStorage.queryData.radius,
-            type: $sessionStorage.queryData.type,
+            type: getTypes($sessionStorage.queryData.selectedTypes),
         });
     }
+
+    function getTypes(selections) {
+        let result = [];
+        console.log(selections);
+        if(selections.length == 0) {
+            $sessionStorage.types.forEach(function(element) {
+                result.push(element.name.toLowerCase());
+            }, this);
+        } else {
+            result = selections;
+        }
+        return result;
+    };
 
     function postThePackage(location, fields) {
         /*
