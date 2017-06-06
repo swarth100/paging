@@ -6,6 +6,7 @@ app.controller('homeCtrl',
     /* Initialises the following fields to the following default values */
 
     $scope.setDate = function() {
+        console.log($scope.tmpTime);
         $scope.homeSearch.datetime = $filter('date')(new Date(
             $scope.tmpDate.getFullYear(),
             $scope.tmpDate.getMonth(),
@@ -18,9 +19,9 @@ app.controller('homeCtrl',
     };
 
     if (!$sessionStorage.queryData) {
-        /* There is no session storage, initialise the fields */
         $scope.tmpDate = new Date();
         $scope.tmpTime = new Date();
+        /* There is no session storage, initialise the fields */
         $scope.homeSearch = {
             location: 'Current Location',
             datetime: '',
@@ -34,8 +35,8 @@ app.controller('homeCtrl',
         $sessionStorage.time = $scope.tmpTime;
     } else {
         /* There is session storage, set the temp time using datetime as it removes the functions */
-        $scope.tmpDate = $sessionStorage.date;
-        $scope.tmpTime = $sessionStorage.time;
+        $scope.tmpDate = new Date($sessionStorage.date);
+        $scope.tmpTime = new Date($sessionStorage.time);
         $scope.homeSearch = $sessionStorage.queryData;
     }
 
