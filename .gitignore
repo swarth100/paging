@@ -195,3 +195,5 @@ fabric.properties
 .idea/sonarlint
 
 # End of https://www.gitignore.io/api/vim,node,macos,angular,webstorm
+
+app/views/assets/css/
