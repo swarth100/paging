@@ -34,10 +34,12 @@ let roomsSchema = new Schema({
         unique: true,
         required: true,
     },
+
     users: {
         type: Array,
         default: [],
     },
+
     types: {
         type: Array,
         default: [],
@@ -46,6 +48,14 @@ let roomsSchema = new Schema({
     results: {
         type: Array,
         default: [],
+    },
+
+    duration: {
+        type: Number,
+    },
+
+    date: {
+        type: String,
     },
 });
 
@@ -162,9 +172,11 @@ exports.updateRoom = function(room, results) {
 };
 
 
-exports.updateTypes = function(room, types) {
+exports.updateOptions = function(room, options) {
     let query = {
-        'types': types,
+        'types': options.types,
+        'duration': options.duration,
+        'date': options.date,
     };
 
     let cond = {
