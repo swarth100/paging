@@ -14,28 +14,6 @@ let location;
 
 const numberOfResults = 5;
 
-// Dummy Data
-let dummyUser1 = {
-    // Evelyn
-    location: {lat: 51.4887063, lng: -0.18198},
-    username: 'dummyUser1',
-    radius: 2000,
-};
-
-let dummyUser2 = {
-    // Imperial
-    location: {lat: 51.4988633, lng: -0.176642},
-    username: 'dummyUser2',
-    radius: 2000,
-};
-
-let dummyUser3 = {
-    // Kensington
-    location: {lat: 51.4941387, lng: -0.1760984},
-    username: 'dummyUser3',
-    radius: 2000,
-};
-
 let users;
 
 function temporaryFunction(room, cb) {
