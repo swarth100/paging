@@ -130,7 +130,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     broadcastUserData = function() {
         /* Broadcast location to all socket listeners */
         $scope.getLocation(function(location) {
-            socket.broadcast($scope.roomID, 'location', {
+            socket.emit('location', {
                 'username': $localStorage.username,
                 'lat': location.lat,
                 'lng': location.lng,
@@ -140,7 +140,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     /* Redefine socket fields for updatingLocation */
-    socket.on('location', function(data) {
+    socket.on('update', function(data) {
         $scope.getLocation(function(location) {
             $scope.initMap(location, $sessionStorage.googleData);
         });
