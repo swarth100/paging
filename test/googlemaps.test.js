@@ -14,29 +14,29 @@ let sinon = require('sinon');
 let assert = require('assert');
 
 describe('GoogleMaps', function() {
-    describe('extractQueryData', function() {
-        it('should extract correct data from the given query', function() {
-            let dummyRandom = 'random';
-            let dummyLocation = {lat: dummyRandom, lng: dummyRandom};
-
-            let dummyQueryData = {
-                location: JSON.stringify(dummyLocation),
-                datetime: dummyRandom,
-                avgtime: dummyRandom,
-                radius: dummyRandom,
-                type: [dummyRandom],
-            };
-
-            let dummyResult = maps.extractQueryData(dummyQueryData);
-
-            dummyResult.should.have.size(1);
-            dummyResult[0].should.have.properties({
-                location: dummyLocation,
-                radius: dummyRandom,
-                name: dummyRandom,
-            });
-        });
-    });
+    // describe('extractQueryData', function() {
+    //     it('should extract correct data from the given query', function() {
+    //         let dummyRandom = 'random';
+    //         let dummyLocation = {lat: dummyRandom, lng: dummyRandom};
+    //
+    //         let dummyQueryData = {
+    //             location: JSON.stringify(dummyLocation),
+    //             datetime: dummyRandom,
+    //             avgtime: dummyRandom,
+    //             radius: dummyRandom,
+    //             type: [dummyRandom],
+    //         };
+    //
+    //         let dummyResult = maps.extractQueryData(dummyQueryData);
+    //
+    //         dummyResult.should.have.size(1);
+    //         dummyResult[0].should.have.properties({
+    //             location: dummyLocation,
+    //             radius: dummyRandom,
+    //             name: dummyRandom,
+    //         });
+    //     });
+    // });
 
     describe('chooseRandomPlaces', function() {
         it('should choose places at random', function() {
