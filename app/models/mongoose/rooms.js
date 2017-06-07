@@ -38,7 +38,7 @@ let roomsSchema = new Schema({
         type: Array,
         default: [],
     },
-    selections: {
+    types: {
         type: Array,
         default: [],
     },
@@ -52,6 +52,8 @@ let roomsSchema = new Schema({
  *                  longitude : Number
  *     },
  *     username: String,
+ *     radius: Number,
+ *     color: String,
  *  }
  *  */
 
