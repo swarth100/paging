@@ -74,8 +74,6 @@ function getAllLocations(users) {
             longitude: temporaryLocation.lng,
         };
 
-        // console.log(convertedLocation);
-
         locations.push(convertedLocation);
     }
 
@@ -129,13 +127,9 @@ function searchAroundLocation(queryData, cb) {
 function queryOnce(query, radius) {
     let results;
 
-    // console.log(query);
-
     return googleMapsClient.placesNearby(query).asPromise()
         .then(function(value) {
             results = value.json.results;
-
-            // console.log(results);
 
             /* Find the distances for all of the given results's coordinates */
             let response = findDistances(results);
@@ -164,7 +158,7 @@ function queryOnce(query, radius) {
 }
 
 function exportQueryData(location, radius, types) {
-    let queryData = {
+    return {
         location: {
             lat: location.latitude,
             lng: location.longitude,
@@ -172,18 +166,12 @@ function exportQueryData(location, radius, types) {
         radius: radius,
         type: types,
     };
-
-    return queryData;
 }
 
 function extractQueryData(queryData) {
-    // console.log(queryData);
-
     /* TODO: Previous version is better? */
     location = queryData.location;
     // location = JSON.parse(queryData.location);
-
-    console.log(location);
 
     let queries = [];
 
@@ -207,9 +195,6 @@ function findDistances(results) {
 
     /* Use geolib to determine meter distances given coordinates */
     for (let i = 0; i < results.length; i++) {
-        console.log(results[i].geometry.location);
-        console.log(location);
-
         arrayLocation.push(
             geolib.getDistance(
                 {
