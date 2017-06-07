@@ -25,21 +25,14 @@ function temporaryFunction(room, cb) {
      */
     users = room.users;
 
-    console.log('Inside the cancer');
-
-    console.log(room.types);
-
+    /* Override the types array for the purpose of googlemaps */
     let result = [];
-
     for (let i = 0; i < room.types.length; i++) {
         if (room.types[i].isSelected) {
             result.push(room.types[i].name);
         }
     }
     room.types = result;
-
-    console.log('Outsideeeeeeee');
-    console.log(room.types);
 
     let allUserLocations = getAllLocations(room.users);
 
