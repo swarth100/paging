@@ -43,17 +43,19 @@ exports.start = (server) => {
                 /* Hardcode types in */
                 room.types = ['Art Gallery', 'Museum', 'Cafe'];
 
-                console.log('INVOKE GOOGLE MAPS');
-
                 /* Call googleAPI */
                 googlemaps.temporaryFunction(room, function(results) {
-                    console.log('GOOGLEMAPS RESULT:');
+                    mongooseRoom.updateRoom(room, results)
+                        .then(function(room) {
+                            /* Room already exists in the DB */
+                            console.log('Update success in results');
 
-                    console.log(results);
-
-                    // room.results = results;
-
-                    broadcastSubmit(socket);
+                            broadcastSubmit(socket);
+                        })
+                        .catch(function(err) {
+                            /* Room must be created in the DB */
+                            console.log('Update rooms ERROR. Something horrible. Should never happen');
+                        });
                 });
             });
             // findUserViaRoom(socket, data, broadcastSubmit);
@@ -100,7 +102,7 @@ exports.start = (server) => {
             });
     }
 
-    function saveRoom(room) {
+    function saveRoom(room, cb) {
         mongooseRoom.saveRoom(room)
             .then(function(room) {
                 /* Room has been saved into the DB with success */
@@ -167,8 +169,6 @@ exports.start = (server) => {
         findPromise
             .then(function(room) {
                 console.log('Found the relevant room');
-
-                console.log(room);
 
                 /* Broadcast the found room to the channel with an update */
                 io.in(socket.room).emit('update', room);
