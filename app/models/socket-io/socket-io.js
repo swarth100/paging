@@ -29,8 +29,19 @@ exports.start = (server) => {
 
         socket.on('location', (data) => {
             console.log('Location is being updated');
-            findUserViaRoom(socket, data);
-            socket.broadcast.to(socket.room).emit('update', data);
+            findUserViaRoom(socket, data, function() {
+                let findPromise = mongooseRoom.find({'id': socket.room});
+                findPromise
+                    .then(function(room) {
+                        console.log('Found the relevant room');
+
+                        /* Broadcast the found room to the channel with an update */
+                        socket.broadcast.to(socket.room).emit('update', room);
+                    })
+                    .catch(function(err) {
+                        console.log('No element in the database meets the search criteria');
+                    });
+            });
         });
 
         socket.on('broadcast', (data) => {
@@ -71,34 +82,36 @@ exports.start = (server) => {
             });
     }
 
-    function findUserViaRoom(socket, user) {
+    function findUserViaRoom(socket, user, cb) {
         mongooseRoom.find({'id': socket.room})
             .then(function(room) {
                 /* Room already exists in the DB */
                 console.log('Room found in the DB');
 
                 /* Attempt to update the given user in the DB */
-                updateUser(room, user);
+                updateUser(room, user, cb);
             })
             .catch(function(err) {
                 console.log('Room could not be found on DB');
             });
     }
 
-    function updateUser(room, user) {
+    function updateUser(room, user, cb) {
         mongooseRoom.updateUser(room, user)
             .then(function(room) {
                 /* User was already present in the room. User's coords have been updated */
                 console.log('Found user, updated values!');
+
+                cb();
             })
             .catch(function(err) {
                 /* User is not present in the room */
                 console.log('User not present in room. Create (and add) new user');
-                addUser(room, user);
+                addUser(room, user, cb);
             });
     }
 
-    function addUser(room, user) {
+    function addUser(room, user, cb) {
         /* Credits for random color generator:
          *  https://gist.github.com/samuelbeek/84721c03607ed5340f53
          *  */
@@ -108,6 +121,8 @@ exports.start = (server) => {
         mongooseRoom.addUser(room, user)
             .then(function(room) {
                 console.log('Saved new user with given values');
+
+                cb();
             })
             .catch(function(err) {
                 console.log('Failed to save new user. Something went horribly wrong.');
