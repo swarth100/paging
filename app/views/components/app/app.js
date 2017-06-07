@@ -60,7 +60,7 @@ app.controller('postLocation', function($scope, $http, $sessionStorage, socket) 
     function postThePackage(location, fields) {
         console.log(fields);
 
-        // socket.emit('search', {});
+        socket.emit('search', {});
 
         /*
         $http.post('/googlemaps', fields)
@@ -174,9 +174,11 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Handles clicking on the submit button
      * Submission also occurs via pressing enter */
     $scope.submitFields = () => {
-        $scope.$broadcast('submit');
-
         broadcastUserData();
+    };
+
+    $scope.performSearch = () => {
+        $scope.$broadcast('submit');
     };
 
     /* Initialise the client-sided rendering of the map */
@@ -218,10 +220,10 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
          * the map
          */
         if (room.results) {
-            for (let i = 0; i < results.length; i++) {
-                let infowindow = createInfoWindow(results[i]);
+            for (let i = 0; i < room.results.length; i++) {
+                let infowindow = createInfoWindow(room.results[i]);
 
-                let marker = markResult(results[i], map);
+                let marker = markResult(room.results[i], map);
 
                 markerAddInfo(marker, infowindow);
             }
