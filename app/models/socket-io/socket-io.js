@@ -146,11 +146,55 @@ exports.start = (server) => {
             });
     }
 
+    let colours = {
+        aqua: '#00ffff',
+        blue: '#0000ff',
+        brown: '#a52a2a',
+        darkblue: '#00008b',
+        darkcyan: '#008b8b',
+        darkgrey: '#a9a9a9',
+        darkgreen: '#006400',
+        darkkhaki: '#bdb76b',
+        darkmagenta: '#8b008b',
+        darkolivegreen: '#556b2f',
+        darkorange: '#ff8c00',
+        darkorchid: '#9932cc',
+        darkred: '#8b0000',
+        darksalmon: '#e9967a',
+        fuchsia: '#ff00ff',
+        gold: '#ffd700',
+        green: '#008000',
+        indigo: '#4b0082',
+        khaki: '#f0e68c',
+        lightblue: '#add8e6',
+        lightgreen: '#90ee90',
+        lightpink: '#ffb6c1',
+        lime: '#00ff00',
+        magenta: '#ff00ff',
+        navy: '#000080',
+        olive: '#808000',
+        orange: '#ffa500',
+        pink: '#ffc0cb',
+        violet: '#800080',
+        red: '#ff0000',
+        yellow: '#ffff00',
+    };
+
+    function chooseSemiRandomColour() {
+        let keys = Object.keys(colours);
+        let randomIndex = Math.floor(Math.random() * keys.length);
+
+        console.log(randomIndex);
+
+        return colours[keys[randomIndex]];
+    }
+
     function addUser(room, user, cb) {
         /* Credits for random color generator:
          *  https://gist.github.com/samuelbeek/84721c03607ed5340f53
          *  */
-        user.color = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+        // user.color = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+        user.color = chooseSemiRandomColour();
 
         /* Assign each user a random color before saving them */
         mongooseRoom.addUser(room, user)
