@@ -106,7 +106,7 @@ function pruneRenewed(results) {
         let inAll = true;
         for (let j = 0; j < users.length; j++) {
             let point = fromNormalToRidiculous(results[i].location);
-            let center = fromNormalToRidiculous(users[j].location);
+            let center = fromNormalToRidiculous(users[j]);
             let radius = users[j].radius;
             if (!geolib.isPointInCircle(point, center, radius)) {
                 inAll = false;
