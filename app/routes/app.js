@@ -38,16 +38,7 @@ router.get('/users/roomID', function(req, res) {
 router.get('/:roomID/users', function(req, res) {
     console.log('[index.html] : POST request to /' + req.params.roomID + '/users');
 
-    let findPromise = mongooseRoom.find({'id': req.params.roomID});
-    findPromise
-        .then(function(room) {
-            console.log('Found the relevant room');
-
-            res.send(room.users);
-        })
-        .catch(function(err) {
-            console.log('No element in the database meets the search criteria');
-        });
+    /* DEPRECATED */
 });
 
 module.exports = router;
