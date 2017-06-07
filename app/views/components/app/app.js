@@ -4,97 +4,15 @@
  * location analysis
  */
 
-/*
- * postLocation controller for the googleMaps module.
- * Handles communication between client sided rendering and server sided
- * location analysis
- */
-app.controller('postLocation', function($scope, $http, $sessionStorage, socket) {
-    let geocoder = new google.maps.Geocoder();
-
-    /*
-     * DO NOT use firefox browser.
-     * Geolocalisation seems to not be supported and confused:
-     */
-    /* TODO: Error handler is UNUSED */
-    let obtainLocation = function() {
-        document.getElementById('map').style.visibility = 'hidden';
-        $scope.getLocation(function(location) {
-            let fields = createJSON(location);
-
-            postThePackage(location, fields);
-        }, errorHandler);
-    };
-
-    obtainLocation();
-
-    $scope.$on('submit', obtainLocation);
-
-    function createJSON(location) {
-        return JSON.stringify({
-            location: JSON.stringify(location),
-            datetime: $sessionStorage.queryData.datetime,
-            avgtime: $sessionStorage.queryData.duration,
-            radius: $sessionStorage.queryData.radius,
-            type: getTypes($sessionStorage.queryData.selectedTypes),
-        });
-    }
-
-    function getTypes(selections) {
-        let result = [];
-        console.log(selections);
-        if(selections.length == 0) {
-            $sessionStorage.types.forEach(function(element) {
-                result.push(element.name.toLowerCase());
-            }, this);
-        } else {
-            result = selections;
-        }
-        return result;
-    };
-    /*
-     * Angular HTTP post
-     * Given a URL and a JSON (location), issues a post request on the given URL.
-     * Returns a Promise, thus the .then() function
-     */
-    function postThePackage(location, fields) {
-        console.log(fields);
-
-        socket.emit('search', {});
-
-        /*
-        $http.post('/googlemaps', fields)
-            .then(function(response) {
-                $scope.initMap(location, response.data);
-                $sessionStorage.googleData = response.data;
-
-                console.log('Following is the google data which was found');
-                console.log($sessionStorage.googleData);
-            }, function(reason) {
-                console.log('Failure when accessing googleMaps');
-                console.log(reason);
-            }); */
-    }
-
-    function errorHandler(error) {
-        if (error.code === error.PERMISSION_DENIED) {
-            alert('You will need to enable geolocation.');
-        } else {
-            alert('An error has occured and the programmer has been too lazy' +
-                ' to inform you of the nature of the error...');
-        }
-    }
-});
-
-app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, socket) {
+app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, socket) {
     $scope.types = $sessionStorage.types;
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
 
     let geocoder = new google.maps.Geocoder();
 
-    $scope.removeFromSelected = ((index) => {
-        $scope.types[index].isSelected = false;
+    $scope.toggleSelected = ((index) => {
+        $scope.types[index].isSelected = !$scope.types[index].isSelected;
         $sessionStorage.types = $scope.types;
     });
 
@@ -136,7 +54,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     /* Private controller function
      * Broadcasts the user data (username, location and radius) to the socket's room */
-    broadcastUserData = function() {
+    let broadcastUserData = function() {
         /* Broadcast location to all socket listeners */
         $scope.getLocation(function(location) {
             socket.emit('location', {
@@ -148,14 +66,23 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         });
     };
 
+    let broadcastFieldsData = function() {
+        console.log('Gonna broadcast types');
+
+        console.log($sessionStorage.types);
+
+        /* Broadcast location to all socket listeners */
+        socket.emit('options', {
+            'types': angular.toJson($sessionStorage.types),
+            'duration': $sessionStorage.queryData.duration,
+            'date': $sessionStorage.queryData.datetime,
+        });
+    };
+
     /* Redefine socket fields for updatingLocation */
 
     /* Socket update helper function */
     let socketUpdate = function(room) {
-        console.log(room);
-
-        console.log('RECEIVED AN UPDATE');
-
         $scope.getLocation(function(location) {
             $scope.initMap(location, room);
         });
@@ -173,8 +100,34 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         socket.once('update', socketUpdate);
     });
 
+    let socketRefresh = function(room) {
+        if (!room.duration) {
+            broadcastFieldsData();
+        } else {
+            $sessionStorage.queryData.duration = room.duration;
+            $sessionStorage.queryData.datetime = room.date;
+            $sessionStorage.types = room.types;
+
+            $scope.appSearch = $sessionStorage.queryData;
+
+            $scope.$apply();
+        }
+    };
+
+    socket.removeAllListeners('refresh', function() {
+        socket.once('refresh', socketRefresh);
+    });
+
     socket.on('joinSuccess', function() {
         console.log('Join Success');
+
+        if (!$sessionStorage.queryData) {
+            $sessionStorage.queryData = {
+                location: '',
+                radius: 1000,
+            };
+        }
+
         broadcastUserData();
     });
 
@@ -193,27 +146,43 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     /* Handles clicking on the submit button
      * Submission also occurs via pressing enter */
-    $scope.submitFields = () => {
+    $scope.submitLocation = () => {
         broadcastUserData();
+    };
+
+    /* Handles clicking on the submit button
+     * Submission also occurs via pressing enter */
+    $scope.submitFields = () => {
+        console.log('SUBMITTEEEEEEEEEED');
+
+        broadcastFieldsData();
     };
 
     $scope.performSearch = () => {
         $scope.$broadcast('submit');
     };
 
+    $scope.$on('submit', postThePackage);
+
+    /*
+     * Angular HTTP post
+     * Given a URL and a JSON (location), issues a post request on the given URL.
+     * Returns a Promise, thus the .then() function
+     */
+    function postThePackage() {
+        socket.emit('search', {});
+    }
+
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
-        document.getElementById('map').style.visibility = 'visible';
+         document.getElementById('map').style.visibility = 'visible';
 
-        console.log('Update fields:');
-        console.log(room);
-
-        /* Initialise the map via the Google API */
-        let map = createMap(location);
+         /* Initialise the map via the Google API */
+         let map = createMap(location);
 
          let users = room.users;
 
-         console.log(users);
+         socketRefresh(room);
 
          for (i = 0; i < users.length; i++) {
              let radLoc = {

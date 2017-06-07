@@ -44,7 +44,7 @@
     <div class = "col-sm-4 col-md-3">
         <div class="row">
             <div class="sidenav-top no-padding">
-                <form ng-submit="submitFields()">
+                <form ng-submit="submitLocation()">
                     <!-- ROW div for the left search bar -->
                     <!-- Location input field -->
                     <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
@@ -53,6 +53,12 @@
                             <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" placeholder="Current Location" ng-model="appSearch.location">
                         </div>
                     </div>
+
+                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                    <input type="submit" class="hide-left" tabindex="-1" />
+                </form>
+                <form ng-submit="submitFields()">
+                    <!-- ROW div for the left search bar -->
 
                     <!-- Date and Time input field -->
                     <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
@@ -72,10 +78,23 @@
                         </div>
                     </div>
 
+                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                    <input type="submit" class="hide-left" tabindex="-1" />
+                </form>
+
+                <form ng-submit="submitLocation()">
+                    <!-- ROW div for the left search bar -->
+
+                    <!-- Radius input field -->
                     <div class="col-xs-6 col-sm-6 col-md-6 left-bar-field fix-overlap-top-margin no-padding">
                         <div class="input-group">
                         </div>
                     </div>
+
+                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                    <input type="submit" class="hide-left" tabindex="-1" />
+                </form>
+                <form ng-submit="submitFields()">
 
                     <!-- Option fields -->
                     <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
@@ -88,7 +107,7 @@
                                 <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();">
                                      <div class="" ng-repeat="type in types">
                                         <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
-                                        <label class="std-font" for="{{type.name}}" ng-click="editOptions(type)">
+                                        <label class="std-font" for="{{type.name}}" ng-click="editOptions(type); toggleSelected($index); submitFields()">
                                             <img class="type-icon-small" src="{{type.image}}">
                                             {{type.name}}
                                         </label>
@@ -103,7 +122,7 @@
                                         <td ng-if="type.isSelected">
                                             <img class="type-icon-small" src="{{type.image}}">
                                             {{type.name}}
-                                            <button type="button" class="close" aria-label="Close" ng-click="removeFromSelected($index)">
+                                            <button type="button" class="close" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </td>
@@ -128,7 +147,7 @@
         <!-- The div nesting was done so that we could have the rotating gif
         when a search is commensed. -->
         <div class="map-dimensions">
-            <div id="map" class="map-dimensions" ng-controller="postLocation"></div>
+            <div id="map" class="map-dimensions"></div>
         </div>
     </div>
 </div>
