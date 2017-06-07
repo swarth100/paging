@@ -44,7 +44,7 @@
     <div class = "col-sm-4 col-md-3">
         <div class="row">
             <div class="sidenav-top no-padding">
-                <form ng-submit="submitFields()">
+                <form ng-submit="submitLocation()">
                     <!-- ROW div for the left search bar -->
                     <!-- Location input field -->
                     <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
@@ -53,6 +53,12 @@
                             <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" placeholder="Current Location" ng-model="appSearch.location">
                         </div>
                     </div>
+
+                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                    <input type="submit" class="hide-left" tabindex="-1" />
+                </form>
+                <form ng-submit="submitFields()">
+                    <!-- ROW div for the left search bar -->
 
                     <!-- Date and Time input field -->
                     <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
@@ -71,11 +77,24 @@
                             <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.radius">
                         </div>
                     </div>
+                    
+                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                    <input type="submit" class="hide-left" tabindex="-1" />
+                </form>
 
+                <form ng-submit="submitLocation()">
+                    <!-- ROW div for the left search bar -->
+
+                    <!-- Radius input field -->
                     <div class="col-xs-6 col-sm-6 col-md-6 left-bar-field fix-overlap-top-margin no-padding">
                         <div class="input-group">
                         </div>
                     </div>
+
+                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                    <input type="submit" class="hide-left" tabindex="-1" />
+                </form>
+                <form ng-submit="submitFields()">
 
                     <!-- Option fields -->
                     <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
