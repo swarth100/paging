@@ -27,14 +27,13 @@ exports.start = (server) => {
             socket.leave(data);
         });
 
-        socket.on('broadcast', (data) => {
-            /* Add backend catch for location posting */
-            if (data.eventName === 'location') {
-                console.log('Location has been broadcast');
-                let user = data.data;
-                findUserViaRoom(socket, user);
-            }
+        socket.on('location', (data) => {
+            console.log('Location is being updated');
+            findUserViaRoom(socket, data);
+            socket.broadcast.to(socket.room).emit('update', data);
+        });
 
+        socket.on('broadcast', (data) => {
             /* Add backend catch for messages being posted via the socket */
             if (data.eventName === 'messages') {
                 console.log('Message has been sent');
