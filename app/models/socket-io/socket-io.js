@@ -72,6 +72,24 @@ exports.start = (server) => {
             });
         });
 
+        socket.on('options', (data) => {
+            console.log('Options have been updated');
+            findRoomNoSave(socket.room, function(room) {
+                /* Update the options */
+                mongooseRoom.updateOptions(room, data)
+                    .then(function(room) {
+                        /* Room already exists in the DB */
+                        console.log('Update OPTIONS success in results');
+
+                        broadcastRefresh(socket);
+                    })
+                    .catch(function(err) {
+                        /* Room must be created in the DB */
+                        console.log('Update rooms options ERROR. Something horrible. Should never happen');
+                    });
+            });
+        });
+
         socket.on('search', (data) => {
             findRoomNoSave(socket.room, function(room) {
                 /* Hardcode types in */
@@ -208,17 +226,25 @@ exports.start = (server) => {
             });
     }
 
-    function broadcastSubmit(socket) {
+    function broadcastGeneral(socket, val) {
         let findPromise = mongooseRoom.find({'id': socket.room});
         findPromise
             .then(function(room) {
                 console.log('Found the relevant room');
 
                 /* Broadcast the found room to the channel with an update */
-                io.in(socket.room).emit('update', room);
+                io.in(socket.room).emit(val, room);
             })
             .catch(function(err) {
                 console.log('No element in the database meets the search criteria');
             });
+    }
+
+    function broadcastSubmit(socket) {
+        broadcastGeneral(socket, 'update');
+    }
+
+    function broadcastRefresh(socket) {
+        broadcastGeneral(socket, 'refresh');
     }
 };
