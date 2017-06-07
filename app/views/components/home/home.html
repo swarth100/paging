@@ -39,8 +39,8 @@
     <!-- ROW div for the search bar -->
     <div class="row-fluid">
         <!-- LOCATION field holder -->
-        <div class="col-sm-12 col-md-2 fix-padding">
-            <p class="white-input">Location:</p>
+        <div class="col-sm-12 col-md-2 no-padding">
+            <p class="field-title">Location:</p>
             <div class="input-group">
                 <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-pushpin"></span></span>
                 <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" placeholder="Current Location" ng-model="homeSearch.location">
@@ -48,7 +48,7 @@
         </div>
         <!-- DATETIME field holder -->
         <div class="col-sm-12 col-md-3 no-padding fix-padding">
-            <p class="white-input">Date and Time:</p>
+            <p class="field-title">Date and Time:</p>
             <div class="input-group">
                 <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-calendar"></span></span>
                 <input type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="homeSearch.datetime">
@@ -56,7 +56,7 @@
                     <button type="button" class="btn btn-full-height dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-right custom-dropdown square" ng-click="$event.stopPropagation();" role="menu">
+                    <ul class="dropdown-menu dropdown-menu-right no-padding" ng-click="$event.stopPropagation();" role="menu">
                         <div uib-datepicker ng-model="tmpDate" ng-click="setDate()" class="well well-sm no-margin" datepicker-options="options"></div>
                         <div class="row">
                             <div class="col-sm-8 col-sm-offset-2 no-padding">
@@ -69,7 +69,7 @@
         </div>
         <!-- DURATION field holder -->
         <div class="col-sm-12 col-md-2 fix-padding">
-            <p class="white-input">Duration:</p>
+            <p class="field-title">Duration:</p>
             <div class="input-group">
                 <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-time"></span></span>
                 <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="homeSearch.duration">
@@ -77,7 +77,7 @@
         </div>
         <!-- RADIUS field holder -->
         <div class="col-sm-12 col-md-2 fix-padding">
-            <p class="white-input">Radius:</p>
+            <p class="field-title">Radius:</p>
             <div class="input-group">
                 <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-record"></span></span>
                 <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="homeSearch.radius">
@@ -85,7 +85,7 @@
         </div>
         <!-- OPTION field holder -->
         <div class="col-sm-12 col-md-2 no-padding fix-padding">
-            <p class="white-input">Advanced:</p>
+            <p class="field-title">Advanced:</p>
             <div class="input-group">
                 <!-- Nasty resizing using input-lg -->
                 <div class="form-control input-lg square text-field-colour">Options</div>
@@ -99,7 +99,7 @@
                                 <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
                                 <label for="{{type.name}}" ng-click="editOptions(type)">
                                     <img class="type-icon" src="{{type.image}}">
-                                    <p class="center-text">{{type.name}}</p>
+                                    <p class="centre-text">{{type.name}}</p>
                                 </label>
                             </div>
                         </div>
@@ -110,11 +110,11 @@
 
         <!-- SEARCH button holder -->
         <div class="col-sm-12 col-md-1 no-padding">
-            <p class="white-input"><br></p>
+            <p class="field-title"><br></p>
             <div>
                 <form class="form-group-lg" ng-submit="submitFields()">
                     <!-- Nasty resizing using input-lg -->
-                    <button type="normal" class="btn btn-block input-lg square btn-dark-orange">Search</button>
+                    <button type="normal" class="btn btn-block input-lg square btn-search">Search</button>
                 </form>
             </div>
         </div>
