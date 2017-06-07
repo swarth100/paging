@@ -122,9 +122,15 @@ $input-colour: black;
     background: url(../images/loading.gif) no-repeat center center;
     background-size: 100px 100px;
 }
-.sidenav {
+
+.sidenav-top {
     background-color: #ffcc80;
-    height: calc(100vh - 52px);
+    height: calc(60vh - 53px); 
+}
+
+.sidenav-bottom {
+    background-color: #ffcc80;
+    height: calc(40vh);
 }
 
 .left-bar-field {
