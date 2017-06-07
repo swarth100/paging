@@ -38,7 +38,12 @@ let roomsSchema = new Schema({
         type: Array,
         default: [],
     },
-    selections: {
+    types: {
+        type: Array,
+        default: [],
+    },
+
+    results: {
         type: Array,
         default: [],
     },
@@ -52,6 +57,8 @@ let roomsSchema = new Schema({
  *                  longitude : Number
  *     },
  *     username: String,
+ *     radius: Number,
+ *     color: String,
  *  }
  *  */
 
@@ -137,6 +144,18 @@ exports.updateUser = function(room, user) {
     let cond = {
         'id': room.id,
         'users.username': user.username,
+    };
+
+    return helper.updateHelper(Room, cond, query);
+};
+
+exports.updateRoom = function(room, results) {
+    let query = {
+        'results': results,
+    };
+
+    let cond = {
+        'id': room.id,
     };
 
     return helper.updateHelper(Room, cond, query);

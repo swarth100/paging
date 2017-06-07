@@ -1,5 +1,6 @@
 
 let mongooseRoom = require('../mongoose/rooms');
+let googlemaps = require('../googlemaps/googlemaps');
 
 exports.start = (server) => {
     /* Starts socket.io to be listening on the specific server */
@@ -20,21 +21,47 @@ exports.start = (server) => {
              * If a room is not found a new room is created.
              * If this fails as well, then a very serious error has occured
              * and the application should not be able to proceed.*/
-            findRoom(roomID);
+            findRoom(roomID, function() {
+                /* Emit back a joinSuccess message */
+                socket.emit('joinSuccess');
+            });
         });
 
         socket.on('leave', (data) => {
             socket.leave(data);
         });
 
-        socket.on('broadcast', (data) => {
-            /* Add backend catch for location posting */
-            if (data.eventName === 'location') {
-                console.log('Location has been broadcast');
-                let user = data.data;
-                findUserViaRoom(socket, user);
-            }
+        socket.on('location', (data) => {
+            console.log('Location is being updated');
+            findUserViaRoom(socket, data, function() {
+                broadcastSubmit(socket);
+            });
+        });
 
+        socket.on('search', (data) => {
+            findRoomNoSave(socket.room, function(room) {
+                /* Hardcode types in */
+                room.types = ['Art Gallery', 'Museum', 'Cafe'];
+
+                /* Call googleAPI */
+                googlemaps.temporaryFunction(room, function(results) {
+                    mongooseRoom.updateRoom(room, results)
+                        .then(function(room) {
+                            /* Room already exists in the DB */
+                            console.log('Update success in results');
+
+                            broadcastSubmit(socket);
+                        })
+                        .catch(function(err) {
+                            /* Room must be created in the DB */
+                            console.log('Update rooms ERROR. Something horrible. Should never happen');
+                        });
+                });
+            });
+            // findUserViaRoom(socket, data, broadcastSubmit);
+        });
+
+        socket.on('broadcast', (data) => {
             /* Add backend catch for messages being posted via the socket */
             if (data.eventName === 'messages') {
                 console.log('Message has been sent');
@@ -44,11 +71,13 @@ exports.start = (server) => {
         });
     });
 
-    function findRoom(roomID) {
+    function findRoom(roomID, cb) {
         mongooseRoom.find({'id': roomID})
             .then(function(room) {
                 /* Room already exists in the DB */
                 console.log('Room already exists and found');
+
+                cb();
             })
             .catch(function(err) {
                 /* Room must be created in the DB */
@@ -56,15 +85,30 @@ exports.start = (server) => {
 
                 /* Room must be created and saved into the DB */
                 let room = mongooseRoom.createNewRoom(roomID);
-                saveRoom(room);
+                saveRoom(room, cb);
             });
     }
 
-    function saveRoom(room) {
+    function findRoomNoSave(roomID, cb) {
+        mongooseRoom.find({'id': roomID})
+            .then(function(room) {
+                /* Room already exists in the DB */
+                console.log('Room already exists and found');
+                cb(room);
+            })
+            .catch(function(err) {
+                /* Room must be created in the DB */
+                console.log('Find room ERROR');
+            });
+    }
+
+    function saveRoom(room, cb) {
         mongooseRoom.saveRoom(room)
             .then(function(room) {
                 /* Room has been saved into the DB with success */
                 console.log('Saved with success.');
+
+                cb();
             })
             .catch(function(err) {
                 /* An unexpected error occurred while saving the room */
@@ -72,34 +116,37 @@ exports.start = (server) => {
             });
     }
 
-    function findUserViaRoom(socket, user) {
+    function findUserViaRoom(socket, user, cb) {
         mongooseRoom.find({'id': socket.room})
             .then(function(room) {
                 /* Room already exists in the DB */
                 console.log('Room found in the DB');
 
                 /* Attempt to update the given user in the DB */
-                updateUser(room, user);
+                updateUser(room, user, cb);
             })
             .catch(function(err) {
                 console.log('Room could not be found on DB');
             });
     }
 
-    function updateUser(room, user) {
+    function updateUser(room, user, cb) {
         mongooseRoom.updateUser(room, user)
             .then(function(room) {
                 /* User was already present in the room. User's coords have been updated */
                 console.log('Found user, updated values!');
+
+                /* TODO: ADD comment */
+                cb();
             })
             .catch(function(err) {
                 /* User is not present in the room */
                 console.log('User not present in room. Create (and add) new user');
-                addUser(room, user);
+                addUser(room, user, cb);
             });
     }
 
-    function addUser(room, user) {
+    function addUser(room, user, cb) {
         /* Credits for random color generator:
          *  https://gist.github.com/samuelbeek/84721c03607ed5340f53
          *  */
@@ -109,9 +156,25 @@ exports.start = (server) => {
         mongooseRoom.addUser(room, user)
             .then(function(room) {
                 console.log('Saved new user with given values');
+
+                cb();
             })
             .catch(function(err) {
                 console.log('Failed to save new user. Something went horribly wrong.');
+            });
+    }
+
+    function broadcastSubmit(socket) {
+        let findPromise = mongooseRoom.find({'id': socket.room});
+        findPromise
+            .then(function(room) {
+                console.log('Found the relevant room');
+
+                /* Broadcast the found room to the channel with an update */
+                io.in(socket.room).emit('update', room);
+            })
+            .catch(function(err) {
+                console.log('No element in the database meets the search criteria');
             });
     }
 };

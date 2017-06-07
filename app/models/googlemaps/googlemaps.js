@@ -3,9 +3,9 @@ let avgTimes = require('./average-times');
 let geolib = require('geolib');
 
 let googleMapsClient = require('@google/maps').createClient({
-    key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
+    // key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
     // key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
-    // key: 'AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU',
+    key: 'AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU',
     // key: 'AIzaSyD7c_7yNAAQc6mhE_JremnfrnUyxvFvfz4',
     Promise: Promise,
 });
@@ -36,20 +36,22 @@ let dummyUser3 = {
     radius: 2000,
 };
 
-
+/*
 let room = {
     id: 'dummyRoom',
     users: [dummyUser1, dummyUser2, dummyUser3],
     types: ['Art Gallery', 'Museum', 'Cafe'],
-};
+}; */
 
-function temporaryFunction(cb) {
+function temporaryFunction(room, cb) {
     /*
      * 1. Find center point.
      * 2. Find bounds.
      * 3. Do concurrent searches.
      * 4. Return results.
      */
+
+    // console.log(room);
 
     let allUserLocations = getAllLocations(room.users);
 
@@ -68,7 +70,7 @@ function getAllLocations(users) {
     let locations = [];
 
     for (let i = 0; i < users.length; i++) {
-        let temporaryLocation = users[i].location;
+        let temporaryLocation = users[i];
         let convertedLocation = {
             latitude: temporaryLocation.lat,
             longitude: temporaryLocation.lng,
@@ -89,7 +91,9 @@ function determineSearchRadius(limits) {
         longitude: limits.maxLng,
     });
 
-    return difference / 2;
+    return 1000;
+
+    // return difference / 2;
 }
 
 /*
