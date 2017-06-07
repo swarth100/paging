@@ -4,25 +4,6 @@
  * location analysis
  */
 
-/*
- * postLocation controller for the googleMaps module.
- * Handles communication between client sided rendering and server sided
- * location analysis
- */
-app.controller('postLocation', function($scope, $http, $sessionStorage, socket) {
-    $scope.$on('submit', postThePackage);
-    postThePackage();
-
-    /*
-     * Angular HTTP post
-     * Given a URL and a JSON (location), issues a post request on the given URL.
-     * Returns a Promise, thus the .then() function
-     */
-    function postThePackage() {
-        socket.emit('search', {});
-    }
-});
-
 app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, socket) {
     $scope.types = $sessionStorage.types;
     $scope.appSearch = $sessionStorage.queryData;
@@ -102,10 +83,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     /* Socket update helper function */
     let socketUpdate = function(room) {
-        console.log(room);
-
-        console.log('RECEIVED AN UPDATE');
-
         $scope.getLocation(function(location) {
             $scope.initMap(location, room);
         });
@@ -183,21 +160,27 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         $scope.$broadcast('submit');
     };
 
+    $scope.$on('submit', postThePackage);
+
+    /*
+     * Angular HTTP post
+     * Given a URL and a JSON (location), issues a post request on the given URL.
+     * Returns a Promise, thus the .then() function
+     */
+    function postThePackage() {
+        socket.emit('search', {});
+    }
+
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
-        document.getElementById('map').style.visibility = 'visible';
+         document.getElementById('map').style.visibility = 'visible';
 
-        console.log('Update fields:');
-        console.log(room);
-
-        /* Initialise the map via the Google API */
-        let map = createMap(location);
+         /* Initialise the map via the Google API */
+         let map = createMap(location);
 
          let users = room.users;
 
-         console.log(users);
-
-        socketRefresh(room);
+         socketRefresh(room);
 
          for (i = 0; i < users.length; i++) {
              let radLoc = {
