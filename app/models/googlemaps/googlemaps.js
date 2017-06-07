@@ -24,11 +24,7 @@ function searchAroundLocation(queryData, cb) {
 
     let promises = [];
 
-    /* TODO: Queries are bugged
-     * The following line limits the query search to 1 and 1 only
-     * Please uncomment and fix */
-    // for (let i = 0; i < queries.length; i++) {
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < queries.length; i++) {
         promises.push(queryOnce(queries[i], queryData.radius));
     }
 
