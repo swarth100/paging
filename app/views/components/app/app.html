@@ -87,25 +87,15 @@
                                 </button>
                             </span>
                         </div>
-                        <!--<table class="table table-bordered text-field-colour">
-                            <tbody>
-                              <tr>
-                                <td>John</td>
-                                <td>Doe</td>
-                                <td>john@example.com</td>
-                              </tr>
-                              <tr>
-                                <td>Mary</td>
-                                <td>Moe</td>
-                                <td>mary@example.com</td>
-                              </tr>
-                              <tr>
-                                <td>July</td>
-                                <td>Dooley</td>
-                                <td>july@example.com</td>
-                              </tr>
-                            </tbody>
-                        </table>-->
+                        <div class="scrollable-table text-field-colour set-boarder">
+                            <table class="table table-hover table-bordered set-boarder no-margin">
+                                <tbody>
+                                    <tr ng-repeat="type in types">
+                                        <td ng-if="type.isSelected">{{type.name}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
                     <input type="submit" class="hide-left" tabindex="-1" />
