@@ -11,8 +11,8 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     let geocoder = new google.maps.Geocoder();
 
-    $scope.removeFromSelected = ((index) => {
-        $scope.types[index].isSelected = false;
+    $scope.toggleSelected = ((index) => {
+        $scope.types[index].isSelected = !$scope.types[index].isSelected;
         $sessionStorage.types = $scope.types;
     });
 
@@ -153,6 +153,8 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Handles clicking on the submit button
      * Submission also occurs via pressing enter */
     $scope.submitFields = () => {
+        console.log('SUBMITTEEEEEEEEEED');
+
         broadcastFieldsData();
     };
 
