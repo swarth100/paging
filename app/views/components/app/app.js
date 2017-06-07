@@ -88,13 +88,15 @@ app.controller('postLocation', function($scope, $http, $sessionStorage, socket) 
 
 app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, socket) {
     $scope.types = $sessionStorage.types;
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    console.log($scope.types);
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
 
     let geocoder = new google.maps.Geocoder();
+
+    $scope.removeFromSelected = ((index) => {
+        $scope.types[index].isSelected = false;
+        $sessionStorage.types = $scope.types;
+    });
 
     /* Generalised getLocation function
      * Determines, according to the current field, whether to use geolocation or parse the location field */
