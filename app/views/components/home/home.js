@@ -158,12 +158,6 @@ app.controller('homeCtrl',
     };
 
     $scope.editOptions = (type) => {
-        let lcName = type.name.toLowerCase();
-        if(!type.isSelected) {
-            type.isSelected = true;
-        } else {
-            $scope.homeSearch.selectedTypes.splice(index, 1);
-            type.isSelected = false;
-        }
+        type.isSelected = !type.isSelected;
     };
 });
