@@ -12,7 +12,13 @@ router.post('/googlemaps', function(req, res) {
 
     /* Use above included bodyParser to parse incoming JSON
      * Parsing is done via the req.body */
-    googlemaps.searchAroundLocation(req.body, function(result) {
+    // googlemaps.searchAroundLocation(req.body, function(result) {
+    //     /* The following line could be needed to specify that JSONs will be sent back via the connection */
+    //     // res.setHeader('Content-Type', 'application/json');
+    //     res.send(JSON.stringify(result));
+    // });
+
+    googlemaps.temporaryFunction(function(result) {
         /* The following line could be needed to specify that JSONs will be sent back via the connection */
         // res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(result));
