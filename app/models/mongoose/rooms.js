@@ -173,27 +173,12 @@ exports.updateRoom = function(room, results) {
 
 
 exports.updateOptions = function(room, options) {
-    console.log('INSIDE MONGOOSE');
-    console.log(options);
-    console.log(room);
-
-    console.log(options.types);
-
-    // options.types = Object.values(options.types);
-
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-
+    /* Parse the JSON array into a database array */
     let parsed = JSON.parse(options.types);
-
     let arr = [];
-
     for(let x in parsed) {
         arr.push(parsed[x]);
     }
-
-    console.log(arr);
-
-    console.log(options);
 
     options.types = arr;
 
