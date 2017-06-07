@@ -43,7 +43,7 @@
             <p class="white-input">Location:</p>
             <div class="input-group">
                 <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-pushpin"></span></span>
-                <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border" placeholder="Current Location" ng-model="homeSearch.location">
+                <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" placeholder="Current Location" ng-model="homeSearch.location">
             </div>
         </div>
         <!-- DATETIME field holder -->
@@ -51,7 +51,7 @@
             <p class="white-input">Date and Time:</p>
             <div class="input-group">
                 <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-calendar"></span></span>
-                <input type="text" class="form-control input-lg square text-field-colour no-left-border" ng-model="homeSearch.datetime">
+                <input type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="homeSearch.datetime">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-full-height dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
@@ -72,7 +72,7 @@
             <p class="white-input">Duration:</p>
             <div class="input-group">
                 <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-time"></span></span>
-                <input type="number" class="form-control input-lg square text-field-colour no-left-border" ng-model="homeSearch.duration">
+                <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="homeSearch.duration">
             </div>
         </div>
         <!-- RADIUS field holder -->
@@ -80,7 +80,7 @@
             <p class="white-input">Radius:</p>
             <div class="input-group">
                 <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-record"></span></span>
-                <input type="number" class="form-control input-lg square text-field-colour no-left-border" ng-model="homeSearch.radius">
+                <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="homeSearch.radius">
             </div>
         </div>
         <!-- OPTION field holder -->
@@ -95,11 +95,11 @@
                     </button>
                    <div class="dropdown-menu dropdown-menu-types dropdown-menu-right" ng-click="$event.stopPropagation();">
                         <div class="grid-element" ng-repeat="tps in types | chunkBy:6">
-                            <div class="col-xs-2" ng-repeat="type in tps">
+                            <div class="col-xs-2 no-padding" ng-repeat="type in tps">
                                 <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
                                 <label for="{{type.name}}" ng-click="editOptions(type)">
                                     <img class="type-icon" src="{{type.image}}">
-                                    <p class="center-text">{{type.name}}<p>
+                                    <p class="center-text">{{type.name}}</p>
                                 </label>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
             <div>
                 <form class="form-group-lg" ng-submit="submitFields()">
                     <!-- Nasty resizing using input-lg -->
-                    <p><button type="submit" class="btn btn-block input-lg square btn-dark-orange">Search</button></p>
+                    <button type="normal" class="btn btn-block input-lg square btn-dark-orange">Search</button>
                 </form>
             </div>
         </div>
