@@ -47,7 +47,11 @@ $option-border: $search-field-border;
 }
 
 .no-left-border {
-    border-left:none !important;
+    border-left: none !important;
+    box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
+}
+.no-right-border {
+    border-right: none !important;
     box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
 }
 
