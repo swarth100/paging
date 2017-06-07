@@ -206,6 +206,12 @@ input[type="checkbox"]:checked + label {
     border-top: none;
     border-color: $table-border;
 }
+
+.type-icon-small {
+    max-width: 13%;
+    display: inline;
+    padding: 0 5px;
+}
 /************************************************************/
 
 /* Border, Margin, Padding, Text ****************************/
