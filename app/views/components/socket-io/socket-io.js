@@ -13,7 +13,14 @@ app.factory('socket', function($rootScope) {
     /* Traps default socket.io functions emitting the relevant commands for nodeJS */
     return {
         on: (eventName, func) => {
+            socket.once(eventName, func);
+        },
+        once: (eventName, func) => {
             socket.on(eventName, func);
+        },
+        removeAllListeners: (eventName, func) => {
+            socket.removeAllListeners(eventName);
+            func();
         },
         emit: (eventName, data) => {
             socket.emit(eventName, data);
