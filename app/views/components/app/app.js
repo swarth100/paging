@@ -9,7 +9,7 @@
  * Handles communication between client sided rendering and server sided
  * location analysis
  */
-app.controller('postLocation', function($scope, $http, $sessionStorage) {
+app.controller('postLocation', function($scope, $http, $sessionStorage, socket) {
     let geocoder = new google.maps.Geocoder();
 
     /*
@@ -58,10 +58,13 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
      * Returns a Promise, thus the .then() function
      */
     function postThePackage(location, fields) {
+        console.log(fields);
+
+        // socket.emit('search', {});
+
+        /*
         $http.post('/googlemaps', fields)
             .then(function(response) {
-                /* Data is packaged into a nasty JSON format.
-                 * To access it first one must retrieve the *.data part to distinguish from header */
                 $scope.initMap(location, response.data);
                 $sessionStorage.googleData = response.data;
 
@@ -70,7 +73,7 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
             }, function(reason) {
                 console.log('Failure when accessing googleMaps');
                 console.log(reason);
-            });
+            }); */
     }
 
     function errorHandler(error) {
@@ -143,9 +146,16 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     socket.on('update', function(room) {
         console.log(room);
 
+        console.log('RECEIVED AN UPDATE');
+
         $scope.getLocation(function(location) {
             $scope.initMap(location, room);
         });
+    });
+
+    socket.on('joinSuccess', function() {
+        console.log('Join Success');
+        broadcastUserData();
     });
 
     /* Joins a room upon entry.
@@ -153,8 +163,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     $scope.joinRoom = function() {
         /* Upon entry, join the correspondent room. */
         socket.join($scope.roomID);
-
-        broadcastUserData();
     };
     $scope.joinRoom();
 
@@ -174,6 +182,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
         document.getElementById('map').style.visibility = 'visible';
+
+        console.log('Update fields:');
+        console.log(room);
 
         /* Initialise the map via the Google API */
         let map = createMap(location);
