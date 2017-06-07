@@ -140,9 +140,11 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     /* Redefine socket fields for updatingLocation */
-    socket.on('update', function(data) {
+    socket.on('update', function(room) {
+        console.log(room);
+
         $scope.getLocation(function(location) {
-            $scope.initMap(location, $sessionStorage.googleData);
+            $scope.initMap(location, room);
         });
     });
 
@@ -170,40 +172,33 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     /* Initialise the client-sided rendering of the map */
-    $scope.initMap = function(location, results) {
+    $scope.initMap = function(location, room) {
         document.getElementById('map').style.visibility = 'visible';
 
         /* Initialise the map via the Google API */
         let map = createMap(location);
 
-         $http.get('/' + $scope.roomID + '/users')
-             .then(function(response) {
-                 let users = response.data;
+         let users = room.users;
 
-                 console.log(users);
+         console.log(users);
 
-                 for (i = 0; i < users.length; i++) {
-                     let radLoc = {
-                         'lat': users[i].lat,
-                         'lng': users[i].lng,
-                     };
+         for (i = 0; i < users.length; i++) {
+             let radLoc = {
+                 'lat': users[i].lat,
+                 'lng': users[i].lng,
+             };
 
-                     /* Initialise the marker */
-                     let marker = markUser(radLoc, users[i], map);
+             /* Initialise the marker */
+             let marker = markUser(radLoc, users[i], map);
 
-                     /* Initialise the radius */
-                     let radius = initRadius(radLoc, users[i], map);
+             /* Initialise the radius */
+             let radius = initRadius(radLoc, users[i], map);
 
-                     let userwindow = createUserWindow(users[i]);
+             let userwindow = createUserWindow(users[i]);
 
 
-                     markerAddInfo(marker, userwindow);
-                 }
-             },
-             function(response) {
-                console.log('Failure when accessing users/roomID');
-         });
-
+             markerAddInfo(marker, userwindow);
+         }
         /*
          * Responses, returned by the googlemaps.js are packaged
          * as follows:
@@ -211,7 +206,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
          * This code iterates through all returned positions, setting them up on
          * the map
          */
-        if (results) {
+        if (room.results) {
             for (let i = 0; i < results.length; i++) {
                 let infowindow = createInfoWindow(results[i]);
 
