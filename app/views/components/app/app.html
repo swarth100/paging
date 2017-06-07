@@ -107,7 +107,7 @@
                                 <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();">
                                      <div class="" ng-repeat="type in types">
                                         <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
-                                        <label class="std-font" for="{{type.name}}" ng-click="editOptions(type)">
+                                        <label class="std-font" for="{{type.name}}" ng-click="editOptions(type); toggleSelected($index); submitFields()">
                                             <img class="type-icon-small" src="{{type.image}}">
                                             {{type.name}}
                                         </label>
@@ -122,7 +122,7 @@
                                         <td ng-if="type.isSelected">
                                             <img class="type-icon-small" src="{{type.image}}">
                                             {{type.name}}
-                                            <button type="button" class="close" aria-label="Close" ng-click="removeFromSelected($index)">
+                                            <button type="button" class="close" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </td>
