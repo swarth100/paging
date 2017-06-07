@@ -92,8 +92,6 @@ exports.start = (server) => {
 
         socket.on('search', (data) => {
             findRoomNoSave(socket.room, function(room) {
-                console.log('GOT HEREEEEEEEEEEEEEEE');
-
                 /* Call googleAPI */
                 googlemaps.temporaryFunction(room, function(results) {
                     mongooseRoom.updateRoom(room, results)
@@ -230,8 +228,6 @@ exports.start = (server) => {
         findPromise
             .then(function(room) {
                 console.log('Found the relevant room');
-
-                console.log(room);
 
                 /* Broadcast the found room to the channel with an update */
                 io.in(socket.room).emit(val, room);
