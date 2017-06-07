@@ -12,7 +12,13 @@ router.post('/googlemaps', function(req, res) {
 
     /* Use above included bodyParser to parse incoming JSON
      * Parsing is done via the req.body */
-    googlemaps.searchAroundLocation(req.body, function(result) {
+    // googlemaps.searchAroundLocation(req.body, function(result) {
+    //     /* The following line could be needed to specify that JSONs will be sent back via the connection */
+    //     // res.setHeader('Content-Type', 'application/json');
+    //     res.send(JSON.stringify(result));
+    // });
+
+    googlemaps.temporaryFunction(function(result) {
         /* The following line could be needed to specify that JSONs will be sent back via the connection */
         // res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(result));
@@ -32,16 +38,7 @@ router.get('/users/roomID', function(req, res) {
 router.get('/:roomID/users', function(req, res) {
     console.log('[index.html] : POST request to /' + req.params.roomID + '/users');
 
-    let findPromise = mongooseRoom.find({'id': req.params.roomID});
-    findPromise
-        .then(function(room) {
-            console.log('Found the relevant room');
-
-            res.send(room.users);
-        })
-        .catch(function(err) {
-            console.log('No element in the database meets the search criteria');
-        });
+    /* DEPRECATED */
 });
 
 module.exports = router;

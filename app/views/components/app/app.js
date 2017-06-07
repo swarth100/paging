@@ -9,7 +9,7 @@
  * Handles communication between client sided rendering and server sided
  * location analysis
  */
-app.controller('postLocation', function($scope, $http, $sessionStorage) {
+app.controller('postLocation', function($scope, $http, $sessionStorage, socket) {
     let geocoder = new google.maps.Geocoder();
 
     /*
@@ -58,10 +58,13 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
      * Returns a Promise, thus the .then() function
      */
     function postThePackage(location, fields) {
+        console.log(fields);
+
+        socket.emit('search', {});
+
+        /*
         $http.post('/googlemaps', fields)
             .then(function(response) {
-                /* Data is packaged into a nasty JSON format.
-                 * To access it first one must retrieve the *.data part to distinguish from header */
                 $scope.initMap(location, response.data);
                 $sessionStorage.googleData = response.data;
 
@@ -70,7 +73,7 @@ app.controller('postLocation', function($scope, $http, $sessionStorage) {
             }, function(reason) {
                 console.log('Failure when accessing googleMaps');
                 console.log(reason);
-            });
+            }); */
     }
 
     function errorHandler(error) {
@@ -92,7 +95,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Generalised getLocation function
      * Determines, according to the current field, whether to use geolocation or parse the location field */
     $scope.getLocation = function(callback) {
-        if ($sessionStorage.queryData.location === 'Current Location') {
+        if ($sessionStorage.queryData.location === '') {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     let location = {
@@ -130,7 +133,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     broadcastUserData = function() {
         /* Broadcast location to all socket listeners */
         $scope.getLocation(function(location) {
-            socket.broadcast($scope.roomID, 'location', {
+            socket.emit('location', {
                 'username': $localStorage.username,
                 'lat': location.lat,
                 'lng': location.lng,
@@ -140,10 +143,33 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     /* Redefine socket fields for updatingLocation */
-    socket.on('location', function(data) {
+
+    /* Socket update helper function */
+    let socketUpdate = function(room) {
+        console.log(room);
+
+        console.log('RECEIVED AN UPDATE');
+
         $scope.getLocation(function(location) {
-            $scope.initMap(location, $sessionStorage.googleData);
+            $scope.initMap(location, room);
         });
+    };
+
+    /* DO NOT
+     * UNDER ANY CIRCUMSTANCE
+     * NOT EVEN IF DRUNK
+     * EVER
+     * REMOVE
+     * THIS
+     * FUNCTION
+     * It removes and re-adds the update listener. It just works, OKAY? Now go back to work. */
+    socket.removeAllListeners('update', function() {
+        socket.once('update', socketUpdate);
+    });
+
+    socket.on('joinSuccess', function() {
+        console.log('Join Success');
+        broadcastUserData();
     });
 
     /* Joins a room upon entry.
@@ -151,8 +177,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     $scope.joinRoom = function() {
         /* Upon entry, join the correspondent room. */
         socket.join($scope.roomID);
-
-        broadcastUserData();
     };
     $scope.joinRoom();
 
@@ -164,41 +188,44 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Handles clicking on the submit button
      * Submission also occurs via pressing enter */
     $scope.submitFields = () => {
-        $scope.$broadcast('submit');
-
         broadcastUserData();
     };
 
+    $scope.performSearch = () => {
+        $scope.$broadcast('submit');
+    };
+
     /* Initialise the client-sided rendering of the map */
-    $scope.initMap = function(location, results) {
+    $scope.initMap = function(location, room) {
         document.getElementById('map').style.visibility = 'visible';
+
+        console.log('Update fields:');
+        console.log(room);
 
         /* Initialise the map via the Google API */
         let map = createMap(location);
 
-         $http.get('/' + $scope.roomID + '/users')
-             .then(function(response) {
-                 let users = response.data;
+         let users = room.users;
 
-                 console.log(users);
+         console.log(users);
 
-                 for (i = 0; i < users.length; i++) {
-                     let radLoc = {
-                         'lat': users[i].lat,
-                         'lng': users[i].lng,
-                     };
+         for (i = 0; i < users.length; i++) {
+             let radLoc = {
+                 'lat': users[i].lat,
+                 'lng': users[i].lng,
+             };
 
-                     /* Initialise the marker */
-                     let marker = markUser(radLoc, map);
+             /* Initialise the marker */
+             let marker = markUser(radLoc, users[i], map);
 
-                     /* Initialise the radius */
-                     let radius = initRadius(radLoc, users[i].radius, map);
-                 }
-             },
-             function(response) {
-                console.log('Failure when accessing users/roomID');
-         });
+             /* Initialise the radius */
+             let radius = initRadius(radLoc, users[i], map);
 
+             let userwindow = createUserWindow(users[i]);
+
+
+             markerAddInfo(marker, userwindow);
+         }
         /*
          * Responses, returned by the googlemaps.js are packaged
          * as follows:
@@ -206,19 +233,13 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
          * This code iterates through all returned positions, setting them up on
          * the map
          */
-        if (results) {
-            for (let i = 0; i < results.length; i++) {
-                let infowindow = createInfoWindow(results[i]);
+        if (room.results) {
+            for (let i = 0; i < room.results.length; i++) {
+                let infowindow = createInfoWindow(room.results[i]);
 
-                let marker = markResult(results[i], map);
+                let marker = markResult(room.results[i], map);
 
-                marker.addListener('mouseover', function() {
-                    infowindow.open(map, marker);
-                });
-
-                marker.addListener('mouseout', function() {
-                    infowindow.close(map, marker);
-                });
+                markerAddInfo(marker, infowindow);
             }
         }
     };
@@ -241,23 +262,29 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         return $scope.map;
     };
 
-    markUser = function(location, map) {
+    markUser = function(location, user, map) {
         return new google.maps.Marker({
             position: location,
             map: map,
+            icon: {
+                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                scale: 10,
+                strokeWeight: 5,
+                strokeColor: user.color,
+            },
         });
     };
 
-    initRadius = function(location, radSize, map) {
+    initRadius = function(location, user, map) {
         return new google.maps.Circle({
-            strokeColor: '#FF0000 ',
-            strokeOpacity: 0.1,
+            strokeColor: user.color,
+            strokeOpacity: 0.8,
             strokeWeight: 1,
-            fillColor: '#FF0000 ',
-            fillOpacity: 0.1,
+            fillColor: user.color,
+            fillOpacity: 0.3,
             map: map,
             center: location,
-            radius: radSize,
+            radius: user.radius,
         });
     };
 
@@ -265,6 +292,12 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         return new google.maps.InfoWindow({
             content: '<p>Name: ' + result.name + '</p>' +
             '<p>Average time spent: ' + result.avgtime.toString() + ' minutes.</p>',
+        });
+    };
+
+    createUserWindow = function(user) {
+        return new google.maps.InfoWindow({
+            content: '<div style=\"color: ' + user.color + '\">' + user.username + '</div>',
         });
     };
 
@@ -276,6 +309,16 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
                 path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
                 scale: 3,
             },
+        });
+    };
+
+    markerAddInfo = function(marker, infowindow) {
+        marker.addListener('mouseover', function() {
+            infowindow.open(map, marker);
+        });
+
+        marker.addListener('mouseout', function() {
+            infowindow.close(map, marker);
         });
     };
 });

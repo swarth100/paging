@@ -23,7 +23,7 @@ app.controller('homeCtrl',
         $scope.tmpTime = new Date();
         /* There is no session storage, initialise the fields */
         $scope.homeSearch = {
-            location: 'Current Location',
+            location: '',
             datetime: '',
             duration: 60,
             radius: 1000,
@@ -108,7 +108,7 @@ app.controller('homeCtrl',
                 isSelected: false,
             },
             {
-                name: 'Cinema',
+                name: 'Movie Theater',
                 image: '../../assets/images/types/cinema.png',
                 isSelected: false,
             },
@@ -123,8 +123,8 @@ app.controller('homeCtrl',
                 isSelected: false,
             },
             {
-                name: 'Landmarks',
-                image: '../../assets/images/types/landmarks.png',
+                name: 'Bakery',
+                image: '../../assets/images/types/bakery.png',
                 isSelected: false,
             },
             {

@@ -1,17 +1,136 @@
 let mongooseLocation = require('../mongoose/location');
 let avgTimes = require('./average-times');
+let geolib = require('geolib');
 
 let googleMapsClient = require('@google/maps').createClient({
     // key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
-    // key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
+    key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
     // key: 'AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU',
-    key: 'AIzaSyD7c_7yNAAQc6mhE_JremnfrnUyxvFvfz4',
+    // key: 'AIzaSyD7c_7yNAAQc6mhE_JremnfrnUyxvFvfz4',
     Promise: Promise,
 });
 
 let location;
 
 const numberOfResults = 5;
+
+// Dummy Data
+let dummyUser1 = {
+    // Evelyn
+    location: {lat: 51.4887063, lng: -0.18198},
+    username: 'dummyUser1',
+    radius: 2000,
+};
+
+let dummyUser2 = {
+    // Imperial
+    location: {lat: 51.4988633, lng: -0.176642},
+    username: 'dummyUser2',
+    radius: 2000,
+};
+
+let dummyUser3 = {
+    // Kensington
+    location: {lat: 51.4941387, lng: -0.1760984},
+    username: 'dummyUser3',
+    radius: 2000,
+};
+
+let users;
+
+function temporaryFunction(room, cb) {
+    /*
+     * 1. Find center point.
+     * 2. Find bounds.
+     * 3. Do concurrent searches.
+     * 4. Return results.
+     */
+    users = room.users;
+
+    let allUserLocations = getAllLocations(room.users);
+
+    let center = geolib.getCenter(allUserLocations);
+
+    let limits = geolib.getBounds(allUserLocations);
+
+    let radius = determineSearchRadius(limits);
+
+    let queryData = exportQueryData(center, radius, room.types);
+
+    searchAroundLocation(queryData, cb);
+}
+
+function getAllLocations(users) {
+    let locations = [];
+
+    for (let i = 0; i < users.length; i++) {
+        let temporaryLocation = users[i];
+        let convertedLocation = {
+            latitude: temporaryLocation.lat,
+            longitude: temporaryLocation.lng,
+        };
+
+        locations.push(convertedLocation);
+    }
+
+    return locations;
+}
+
+function determineSearchRadius(limits) {
+    let difference = geolib.getDistance({
+        latitude: limits.minLat,
+        longitude: limits.minLng,
+    }, {
+        latitude: limits.maxLat,
+        longitude: limits.maxLng,
+    });
+
+    return 1000;
+
+    // return difference / 2;
+}
+
+function pruneRenewed(results) {
+    /*
+     * 1. Iterate through results.
+     * 2. For each check whether it is part of all user's circles.
+     * 3. If true push.
+     */
+
+    let prunedResults = [];
+
+    for (let i = 0; i < results.length; i++) {
+        let inAll = true;
+        for (let j = 0; j < users.length; j++) {
+            let point = fromNormalToRidiculous(results[i].location);
+            let center = fromNormalToRidiculous(users[j]);
+            let radius = users[j].radius;
+            if (!geolib.isPointInCircle(point, center, radius)) {
+                inAll = false;
+            }
+        }
+
+        if (inAll) {
+            prunedResults.push(results[i]);
+        }
+    }
+
+    return prunedResults;
+}
+
+function fromNormalToRidiculous(location) {
+    return {
+        latitude: location.lat,
+        longitude: location.lng,
+    };
+}
+
+function fromRidiculousToNormal(location) {
+    return {
+        lat: location.latitude,
+        lng: location.lng,
+    };
+}
 
 /*
  * Given a location JSON and a callback function,
@@ -49,31 +168,30 @@ function queryOnce(query, radius) {
     let results;
 
     return googleMapsClient.placesNearby(query).asPromise()
-        .then(function(response) {
-            results = response.json.results;
+        .then(function(value) {
+            results = value.json.results;
 
-            // Bypass the rest of this function and return an empty array.
-            if (results.length === 0) {
-                return results;
-            }
+            /* Find the distances for all of the given results's coordinates */
+            // let response = findDistances(results);
 
-            return findDistances(results);
-        })
-        .then(function(response) {
-            // Bypass the rest of this function and return an empty array.
-            if (results.length === 0) {
-                return results;
-            }
+            let type = query.name.split(' ').join('_');
+            let convertedPlaces = convertFormatOfPlaces(results, type);
 
-            let prunedResults = pruneResults(results, response, radius);
+            /* Limit the actual number of results used */
+            // let prunedResults = pruneResults(results, response, radius);
+            let prunedResults = pruneRenewed(convertedPlaces);
 
+            /* Pick a max amount of places from the pruned results */
             let randomPlaces = chooseRandomPlaces(prunedResults);
 
             // When looking for the type replace whitespaces with underscores.
-            let type = query.name.split(' ').join('_');
-            let convertedPlaces = convertFormatOfPlaces(randomPlaces, type);
+            // let type = query.name.split(' ').join('_');
+            // let convertedPlaces = convertFormatOfPlaces(randomPlaces, type);
 
-            return Promise.all(convertedPlaces.map(function(convertedPlace) {
+            // return Promise.all(convertedPlaces.map(function(convertedPlace) {
+            //     return findInDatabase(convertedPlace);
+            // }));
+            return Promise.all(randomPlaces.map(function(convertedPlace) {
                 return findInDatabase(convertedPlace);
             }));
         })
@@ -86,14 +204,28 @@ function queryOnce(query, radius) {
         });
 }
 
+function exportQueryData(location, radius, types) {
+    return {
+        location: {
+            lat: location.latitude,
+            lng: location.longitude,
+        },
+        radius: radius,
+        type: types,
+    };
+}
+
 function extractQueryData(queryData) {
-    location = JSON.parse(queryData.location);
+    /* TODO: Previous version is better? */
+    location = queryData.location;
+    // location = JSON.parse(queryData.location);
 
     let queries = [];
 
     for (let i = 0; i < queryData.type.length; i++) {
         queries.push({
-            location: JSON.parse(queryData.location),
+            /* TODO: Previous version is better? */
+            location: queryData.location, // JSON.parse(queryData.location),
             radius: queryData.radius,
             name: queryData.type[i].toLowerCase(),
         });
@@ -108,23 +240,31 @@ function extractQueryData(queryData) {
 function findDistances(results) {
     let arrayLocation = [];
 
+    /* Use geolib to determine meter distances given coordinates */
     for (let i = 0; i < results.length; i++) {
-        arrayLocation.push(results[i].geometry.location);
+        arrayLocation.push(
+            geolib.getDistance(
+                {
+                    'latitude': results[i].geometry.location.lat,
+                    'longitude': results[i].geometry.location.lng,
+                },
+                {
+                    'latitude': location.lat,
+                    'longitude': location.lng,
+                }
+            )
+
+        );
     }
 
-    return googleMapsClient.distanceMatrix({
-        origins: [location],
-        destinations: arrayLocation,
-    }).asPromise();
+    return arrayLocation;
 }
 
 function pruneResults(results, response, radius) {
-    let elements = response.json.rows[0].elements;
-
     let prunedResults = [];
 
-    for (let i = 0; i < elements.length; i++) {
-        if (elements[i].distance.value <= radius) {
+    for (let i = 0; i < response.length; i++) {
+        if (response[i] <= radius) {
             prunedResults.push(results[i]);
         }
     }
@@ -216,6 +356,7 @@ function findName(unnamedPlace) {
 }
 
 module.exports = {
+    temporaryFunction,
     searchAroundLocation,
     extractQueryData,
     findDistances,
