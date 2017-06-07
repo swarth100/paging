@@ -4,8 +4,8 @@ let geolib = require('geolib');
 
 let googleMapsClient = require('@google/maps').createClient({
     // key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
-    // key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
-    key: 'AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU',
+    key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
+    // key: 'AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU',
     // key: 'AIzaSyD7c_7yNAAQc6mhE_JremnfrnUyxvFvfz4',
     Promise: Promise,
 });
@@ -96,9 +96,6 @@ function pruneRenewed(results) {
      * 2. For each check whether it is part of all user's circles.
      * 3. If true push.
      */
-
-    // console.log(users[0].location);
-    console.log(results[0].location);
 
     let prunedResults = [];
 
