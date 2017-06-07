@@ -162,6 +162,19 @@ exports.updateRoom = function(room, results) {
 };
 
 
+exports.updateTypes = function(room, types) {
+    let query = {
+        'types': types,
+    };
+
+    let cond = {
+        'id': room.id,
+    };
+
+    return helper.updateHelper(Room, cond, query);
+};
+
+
 /* Export the User model */
 exports.roomModel = Room;
 
