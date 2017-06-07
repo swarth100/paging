@@ -169,34 +169,15 @@ $input-colour: black;
     }
 }
 
-.full-width {
-    width: 100%;
-}
-
-/* style icon */
-.inner-addon {
-    position: relative;
-    .glyphicon {
-        position: absolute;
-        padding: 10px;
-        pointer-events: none;
-    }
-}
-
-.left-addon {
-    /* align icon */
-    .glyphicon {
-        left: 0px;
-    }
-    /* add padding  */
-    input {
-        padding-left: 30px;
-    }
-}
-
 .right-dropdown {
     display: table;
 }
+
+.no-left-border {
+    border-left:none !important;
+    box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
+}
+
 
 .uib-time input {
     width: 100% !important;
@@ -223,6 +204,7 @@ input[type="checkbox"]:checked + label {
     padding-left: 0px;
     padding-right: 0px;
     margin-right: -1px;
+    margin-left: -1px;
 }
 
 .text-align-left {
@@ -240,4 +222,24 @@ input[type="checkbox"]:checked + label {
 
 .center-text {
     text-align: center;
+}
+
+.btn-full-height {
+    padding: 12px 12px;
+}
+
+.panel-fix-height {
+    max-height: 44px;
+}
+
+.wide-row {
+    margin-left: -100px;
+    margin-right: -100px;
+}
+
+.full-width {
+   width: 100%;
+   margin-left: auto;
+   margin-right: auto;
+   max-width: initial;
 }
