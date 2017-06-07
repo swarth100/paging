@@ -249,3 +249,10 @@ input[type="checkbox"]:checked + label {
    margin-right: auto;
    max-width: initial;
 }
+
+.simplebox {
+    outline: none;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+}
