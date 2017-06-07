@@ -87,6 +87,10 @@ app.controller('postLocation', function($scope, $http, $sessionStorage, socket) 
 });
 
 app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, socket) {
+    $scope.types = $sessionStorage.types;
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log($scope.types);
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
 
