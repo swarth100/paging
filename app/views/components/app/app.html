@@ -62,19 +62,18 @@
                         </div>
                     </div>
 
-                    <!-- Duration input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
+                    <!-- Duration input field and Radius input field -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin no-padding">
                         <div class="input-group">
                             <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-time"></span></span>
                             <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.duration">
+                            <span class="input-group-addon text-field-colour square no-left-border no-right-border"><span class="glyphicon glyphicon-record"></span></span>
+                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.radius">
                         </div>
                     </div>
 
-                    <!-- Radius input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
+                    <div class="col-xs-6 col-sm-6 col-md-6 left-bar-field fix-overlap-top-margin no-padding">
                         <div class="input-group">
-                            <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-record"></span></span>
-                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.radius">
                         </div>
                     </div>
 
@@ -88,8 +87,26 @@
                                 </button>
                             </span>
                         </div>
+                        <!--<table class="table table-bordered text-field-colour">
+                            <tbody>
+                              <tr>
+                                <td>John</td>
+                                <td>Doe</td>
+                                <td>john@example.com</td>
+                              </tr>
+                              <tr>
+                                <td>Mary</td>
+                                <td>Moe</td>
+                                <td>mary@example.com</td>
+                              </tr>
+                              <tr>
+                                <td>July</td>
+                                <td>Dooley</td>
+                                <td>july@example.com</td>
+                              </tr>
+                            </tbody>
+                        </table>-->
                     </div>
-
                     <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
                     <input type="submit" class="hide-left" tabindex="-1" />
                 </form>
