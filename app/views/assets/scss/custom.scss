@@ -189,10 +189,6 @@ $input-colour: black;
     width: 100% !important;
 }
 
-.dropdown-menu-types {
-    width: 83.33vw !important;
-}
-
 input[type="checkbox"] + label {
     background-color: #fff5e6;
     font-variant: small-caps;
@@ -220,14 +216,14 @@ input[type="checkbox"]:checked + label {
 }
 
 .dropdown-menu-types {
-    width: 70vw !important;
+    width: 80vw !important;
     padding: 0px 0px;
     background-color: transparent;
 }
 
 .type-icon {
-    max-width: 110px;
-    max-height: 110px;
+    max-width: 100%;
+    height: auto;
     display: block;
     margin-left: auto;
 	margin-right: auto;
