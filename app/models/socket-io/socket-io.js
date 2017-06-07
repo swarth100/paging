@@ -1,5 +1,6 @@
 
 let mongooseRoom = require('../mongoose/rooms');
+let googlemaps = require('../googlemaps/googlemaps');
 
 exports.start = (server) => {
     /* Starts socket.io to be listening on the specific server */
@@ -20,7 +21,10 @@ exports.start = (server) => {
              * If a room is not found a new room is created.
              * If this fails as well, then a very serious error has occured
              * and the application should not be able to proceed.*/
-            findRoom(roomID);
+            findRoom(roomID, function() {
+                /* Emit back a joinSuccess message */
+                socket.emit('joinSuccess');
+            });
         });
 
         socket.on('leave', (data) => {
@@ -30,18 +34,29 @@ exports.start = (server) => {
         socket.on('location', (data) => {
             console.log('Location is being updated');
             findUserViaRoom(socket, data, function() {
-                let findPromise = mongooseRoom.find({'id': socket.room});
-                findPromise
-                    .then(function(room) {
-                        console.log('Found the relevant room');
-
-                        /* Broadcast the found room to the channel with an update */
-                        socket.broadcast.to(socket.room).emit('update', room);
-                    })
-                    .catch(function(err) {
-                        console.log('No element in the database meets the search criteria');
-                    });
+                broadcastSubmit(socket);
             });
+        });
+
+        socket.on('search', (data) => {
+            findRoomNoSave(socket.room, function(room) {
+                /* Hardcode types in */
+                room.types = ['Art Gallery', 'Museum', 'Cafe'];
+
+                console.log('INVOKE GOOGLE MAPS');
+
+                /* Call googleAPI */
+                googlemaps.temporaryFunction(room, function(results) {
+                    console.log('GOOGLEMAPS RESULT:');
+
+                    console.log(results);
+
+                    // room.results = results;
+
+                    broadcastSubmit(socket);
+                });
+            });
+            // findUserViaRoom(socket, data, broadcastSubmit);
         });
 
         socket.on('broadcast', (data) => {
@@ -54,11 +69,13 @@ exports.start = (server) => {
         });
     });
 
-    function findRoom(roomID) {
+    function findRoom(roomID, cb) {
         mongooseRoom.find({'id': roomID})
             .then(function(room) {
                 /* Room already exists in the DB */
                 console.log('Room already exists and found');
+
+                cb();
             })
             .catch(function(err) {
                 /* Room must be created in the DB */
@@ -66,7 +83,20 @@ exports.start = (server) => {
 
                 /* Room must be created and saved into the DB */
                 let room = mongooseRoom.createNewRoom(roomID);
-                saveRoom(room);
+                saveRoom(room, cb);
+            });
+    }
+
+    function findRoomNoSave(roomID, cb) {
+        mongooseRoom.find({'id': roomID})
+            .then(function(room) {
+                /* Room already exists in the DB */
+                console.log('Room already exists and found');
+                cb(room);
+            })
+            .catch(function(err) {
+                /* Room must be created in the DB */
+                console.log('Find room ERROR');
             });
     }
 
@@ -75,6 +105,8 @@ exports.start = (server) => {
             .then(function(room) {
                 /* Room has been saved into the DB with success */
                 console.log('Saved with success.');
+
+                cb();
             })
             .catch(function(err) {
                 /* An unexpected error occurred while saving the room */
@@ -102,6 +134,7 @@ exports.start = (server) => {
                 /* User was already present in the room. User's coords have been updated */
                 console.log('Found user, updated values!');
 
+                /* TODO: ADD comment */
                 cb();
             })
             .catch(function(err) {
@@ -126,6 +159,22 @@ exports.start = (server) => {
             })
             .catch(function(err) {
                 console.log('Failed to save new user. Something went horribly wrong.');
+            });
+    }
+
+    function broadcastSubmit(socket) {
+        let findPromise = mongooseRoom.find({'id': socket.room});
+        findPromise
+            .then(function(room) {
+                console.log('Found the relevant room');
+
+                console.log(room);
+
+                /* Broadcast the found room to the channel with an update */
+                io.in(socket.room).emit('update', room);
+            })
+            .catch(function(err) {
+                console.log('No element in the database meets the search criteria');
             });
     }
 };
