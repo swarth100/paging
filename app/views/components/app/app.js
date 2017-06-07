@@ -143,7 +143,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     /* Redefine socket fields for updatingLocation */
-    socket.on('update', function(room) {
+
+    /* Socket update helper function */
+    let socketUpdate = function(room) {
         console.log(room);
 
         console.log('RECEIVED AN UPDATE');
@@ -151,6 +153,18 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         $scope.getLocation(function(location) {
             $scope.initMap(location, room);
         });
+    };
+
+    /* DO NOT
+     * UNDER ANY CIRCUMSTANCE
+     * NOT EVEN IF DRUNK
+     * EVER
+     * REMOVE
+     * THIS
+     * FUNCTION
+     * It removes and re-adds the update listener. It just works, OKAY? Now go back to work. */
+    socket.removeAllListeners('update', function() {
+        socket.once('update', socketUpdate);
     });
 
     socket.on('joinSuccess', function() {
