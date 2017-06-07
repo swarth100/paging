@@ -36,12 +36,7 @@ let dummyUser3 = {
     radius: 2000,
 };
 
-/*
-let room = {
-    id: 'dummyRoom',
-    users: [dummyUser1, dummyUser2, dummyUser3],
-    types: ['Art Gallery', 'Museum', 'Cafe'],
-}; */
+let users;
 
 function temporaryFunction(room, cb) {
     /*
@@ -50,8 +45,7 @@ function temporaryFunction(room, cb) {
      * 3. Do concurrent searches.
      * 4. Return results.
      */
-
-    // console.log(room);
+    users = room.users;
 
     let allUserLocations = getAllLocations(room.users);
 
@@ -96,6 +90,51 @@ function determineSearchRadius(limits) {
     // return difference / 2;
 }
 
+function pruneRenewed(results) {
+    /*
+     * 1. Iterate through results.
+     * 2. For each check whether it is part of all user's circles.
+     * 3. If true push.
+     */
+
+    // console.log(users[0].location);
+    console.log(results[0].location);
+
+    let prunedResults = [];
+
+    for (let i = 0; i < results.length; i++) {
+        let inAll = true;
+        for (let j = 0; j < users.length; j++) {
+            let point = fromNormalToRidiculous(results[i].location);
+            let center = fromNormalToRidiculous(users[j]);
+            let radius = users[j].radius;
+            if (!geolib.isPointInCircle(point, center, radius)) {
+                inAll = false;
+            }
+        }
+
+        if (inAll) {
+            prunedResults.push(results[i]);
+        }
+    }
+
+    return prunedResults;
+}
+
+function fromNormalToRidiculous(location) {
+    return {
+        latitude: location.lat,
+        longitude: location.lng,
+    };
+}
+
+function fromRidiculousToNormal(location) {
+    return {
+        lat: location.latitude,
+        lng: location.lng,
+    };
+}
+
 /*
  * Given a location JSON and a callback function,
  * Performs a radar search via the Google API, updates the database and
@@ -136,19 +175,26 @@ function queryOnce(query, radius) {
             results = value.json.results;
 
             /* Find the distances for all of the given results's coordinates */
-            let response = findDistances(results);
+            // let response = findDistances(results);
+
+            let type = query.name.split(' ').join('_');
+            let convertedPlaces = convertFormatOfPlaces(results, type);
 
             /* Limit the actual number of results used */
-            let prunedResults = pruneResults(results, response, radius);
+            // let prunedResults = pruneResults(results, response, radius);
+            let prunedResults = pruneRenewed(convertedPlaces);
 
             /* Pick a max amount of places from the pruned results */
             let randomPlaces = chooseRandomPlaces(prunedResults);
 
             // When looking for the type replace whitespaces with underscores.
-            let type = query.name.split(' ').join('_');
-            let convertedPlaces = convertFormatOfPlaces(randomPlaces, type);
+            // let type = query.name.split(' ').join('_');
+            // let convertedPlaces = convertFormatOfPlaces(randomPlaces, type);
 
-            return Promise.all(convertedPlaces.map(function(convertedPlace) {
+            // return Promise.all(convertedPlaces.map(function(convertedPlace) {
+            //     return findInDatabase(convertedPlace);
+            // }));
+            return Promise.all(randomPlaces.map(function(convertedPlace) {
                 return findInDatabase(convertedPlace);
             }));
         })
