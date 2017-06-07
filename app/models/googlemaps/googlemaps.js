@@ -14,6 +14,84 @@ let location;
 
 const numberOfResults = 5;
 
+// Dummy Data
+let dummyUser1 = {
+    // Evelyn
+    location: {lat: 51.4887063, lng: -0.18198},
+    username: 'dummyUser1',
+    radius: 2000,
+};
+
+let dummyUser2 = {
+    // Imperial
+    location: {lat: 51.4988633, lng: -0.176642},
+    username: 'dummyUser2',
+    radius: 2000,
+};
+
+let dummyUser3 = {
+    // Kensington
+    location: {lat: 51.4941387, lng: -0.1760984},
+    username: 'dummyUser3',
+    radius: 2000,
+};
+
+
+let room = {
+    id: 'dummyRoom',
+    users: [dummyUser1, dummyUser2, dummyUser3],
+    types: ['Art Gallery', 'Museum', 'Cafe'],
+};
+
+function temporaryFunction(cb) {
+    /*
+     * 1. Find center point.
+     * 2. Find bounds.
+     * 3. Do concurrent searches.
+     * 4. Return results.
+     */
+
+    let allUserLocations = getAllLocations(room.users);
+
+    let center = geolib.getCenter(allUserLocations);
+
+    let limits = geolib.getBounds(allUserLocations);
+
+    let radius = determineSearchRadius(limits);
+
+    let queryData = exportQueryData(center, radius, room.types);
+
+    searchAroundLocation(queryData, cb);
+}
+
+function getAllLocations(users) {
+    let locations = [];
+
+    for (let i = 0; i < users.length; i++) {
+        let temporaryLocation = users[i].location;
+        let convertedLocation = {
+            latitude: temporaryLocation.lat,
+            longitude: temporaryLocation.lng,
+        };
+
+        locations.push(convertedLocation);
+    }
+
+    return locations;
+}
+
+function determineSearchRadius(limits) {
+    let difference = geolib.getDistance({
+        latitude: limits.minLat,
+        longitude: limits.minLng,
+    }, {
+        latitude: limits.maxLat,
+        longitude: limits.maxLng,
+    });
+
+    return difference / 2;
+}
+
 /*
  * Given a location JSON and a callback function,
  * Performs a radar search via the Google API, updates the database and
@@ -79,14 +157,28 @@ function queryOnce(query, radius) {
         });
 }
 
+function exportQueryData(location, radius, types) {
+    return {
+        location: {
+            lat: location.latitude,
+            lng: location.longitude,
+        },
+        radius: radius,
+        type: types,
+    };
+}
+
 function extractQueryData(queryData) {
-    location = JSON.parse(queryData.location);
+    /* TODO: Previous version is better? */
+    location = queryData.location;
+    // location = JSON.parse(queryData.location);
 
     let queries = [];
 
     for (let i = 0; i < queryData.type.length; i++) {
         queries.push({
-            location: JSON.parse(queryData.location),
+            /* TODO: Previous version is better? */
+            location: queryData.location, // JSON.parse(queryData.location),
             radius: queryData.radius,
             name: queryData.type[i].toLowerCase(),
         });
@@ -217,6 +309,7 @@ function findName(unnamedPlace) {
 }
 
 module.exports = {
+    temporaryFunction,
     searchAroundLocation,
     extractQueryData,
     findDistances,
