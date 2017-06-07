@@ -19,11 +19,15 @@ $user-dd-bg: rgba(226,221,214,0.9);
 $user-dd-bottom-bg: #E2DDD6;
 /************************************************************/
 
-/* Colour pallet for nav-bar ********************************/
+/* Colour pallet for home ***********************************/
 $field-title-text: #FFFFFF;
 $option-bg: #FFF5E6;
 $option-select-bg: #C5BBAD;
 $option-border: $search-field-border;
+/************************************************************/
+
+/* Colour pallet for app *** ********************************/
+$table-border: $search-field-border;
 /************************************************************/
 
 /* Button and Field *****************************************/
@@ -38,8 +42,8 @@ $option-border: $search-field-border;
     background-color:$search-btn-bg;
     border-color: $search-btn-border;
     color: $search-btn-text;
-    text-transform: uppercase;
     font-weight: bold;
+    text-transform: uppercase;
 }
 
 .btn-search:hover, .btn-search:focus, .btn-search:active {
@@ -47,7 +51,11 @@ $option-border: $search-field-border;
 }
 
 .no-left-border {
-    border-left:none !important;
+    border-left: none !important;
+    box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
+}
+.no-right-border {
+    border-right: none !important;
     box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
 }
 
@@ -185,6 +193,31 @@ input[type="checkbox"]:checked + label {
     padding-right: 0;
     padding-left: 0;
 }
+
+.scrollable-table {
+    height: 150px;
+    overflow: auto;
+    width: 100%;
+}
+
+.set-boarder {
+    border-style: solid;
+    border-width: 1px;
+    border-top: none;
+    border-color: $table-border;
+}
+
+.type-icon-small {
+    max-width: 13%;
+    display: inline;
+    padding: 0 5px;
+}
+
+.dropdown-menu-types-small {
+    width: 15vw !important;
+    padding: 0px 0px;
+    background-color: transparent;
+}
 /************************************************************/
 
 /* Border, Margin, Padding, Text ****************************/
@@ -228,5 +261,11 @@ input[type="checkbox"]:checked + label {
 
 .centre-text {
     text-align: center;
+}
+
+.std-font {
+    font-weight: normal !important;
+    font-variant: none !important;
+    font-size: 14px !important;
 }
 /************************************************************/

@@ -34,10 +34,12 @@ let roomsSchema = new Schema({
         unique: true,
         required: true,
     },
+
     users: {
         type: Array,
         default: [],
     },
+
     types: {
         type: Array,
         default: [],
@@ -46,6 +48,14 @@ let roomsSchema = new Schema({
     results: {
         type: Array,
         default: [],
+    },
+
+    duration: {
+        type: Number,
+    },
+
+    date: {
+        type: String,
     },
 });
 
@@ -152,6 +162,30 @@ exports.updateUser = function(room, user) {
 exports.updateRoom = function(room, results) {
     let query = {
         'results': results,
+    };
+
+    let cond = {
+        'id': room.id,
+    };
+
+    return helper.updateHelper(Room, cond, query);
+};
+
+
+exports.updateOptions = function(room, options) {
+    /* Parse the JSON array into a database array */
+    let parsed = JSON.parse(options.types);
+    let arr = [];
+    for(let x in parsed) {
+        arr.push(parsed[x]);
+    }
+
+    options.types = arr;
+
+    let query = {
+        'types': options.types,
+        'duration': options.duration,
+        'date': options.date,
     };
 
     let cond = {

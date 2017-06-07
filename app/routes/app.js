@@ -10,19 +10,7 @@ const mongooseRoom = require('../models/mongoose/rooms');
 router.post('/googlemaps', function(req, res) {
     console.log('[index.html] : POST request to /googlemaps');
 
-    /* Use above included bodyParser to parse incoming JSON
-     * Parsing is done via the req.body */
-    // googlemaps.searchAroundLocation(req.body, function(result) {
-    //     /* The following line could be needed to specify that JSONs will be sent back via the connection */
-    //     // res.setHeader('Content-Type', 'application/json');
-    //     res.send(JSON.stringify(result));
-    // });
-
-    googlemaps.temporaryFunction(function(result) {
-        /* The following line could be needed to specify that JSONs will be sent back via the connection */
-        // res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(result));
-    });
+    /* DEPRECATED */
 });
 
 /* Creates a new random ID for the given user
