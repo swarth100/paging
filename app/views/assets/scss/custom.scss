@@ -51,11 +51,17 @@ $option-border: $search-field-border;
     box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
 }
 
-.fix-padding {
+.fix-overlap-side-margin {
     padding-left: 0px;
     padding-right: 0px;
     margin-right: -1px;
     margin-left: -1px;
+}
+
+.fix-overlap-top-margin {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-top: -1px;
 }
 
 .simplebox {

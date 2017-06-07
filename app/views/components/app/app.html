@@ -47,36 +47,49 @@
                 <form ng-submit="submitFields()">
                     <!-- ROW div for the left search bar -->
                     <!-- Location input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
                         <div class="input-group">
-                            <span class="input-group-addon  square glyphicon glyphicon-pushpin no-top"></span>
-                            <input type="text" class="form-control square" ng-model="appSearch.location" autocomplete="on">
+                            <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-pushpin"></span></span>
+                            <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" placeholder="Current Location" ng-model="appSearch.location">
                         </div>
                     </div>
 
                     <!-- Date and Time input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
                         <div class="input-group">
-                            <span class="input-group-addon square glyphicon glyphicon-calendar no-top"></span>
-                            <input type="datetime" class="form-control square" ng-model="appSearch.datetime">
+                            <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-calendar"></span></span>
+                            <input type="datetime" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.datetime">
                         </div>
                     </div>
 
                     <!-- Duration input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
                         <div class="input-group">
-                            <span class="input-group-addon square glyphicon glyphicon-time no-top"></span>
-                            <input type="number" class="form-control square" ng-model="appSearch.duration">
+                            <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-time"></span></span>
+                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.duration">
                         </div>
                     </div>
 
                     <!-- Radius input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
                         <div class="input-group">
-                            <span class="input-group-addon square glyphicon glyphicon-record no-top"></span>
-                            <input type="number" class="form-control square" ng-model="appSearch.radius">
+                            <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-record"></span></span>
+                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.radius">
                         </div>
                     </div>
+
+                    <!-- Option fields -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
+                        <div class="input-group">
+                            <div class="form-control input-lg square text-field-colour">Options</div>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-full-height dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="caret"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
                     <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
                     <input type="submit" class="hide-left" tabindex="-1" />
                 </form>
