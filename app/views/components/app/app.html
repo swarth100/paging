@@ -85,17 +85,27 @@
                                 <button type="button" class="btn btn-full-height dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="caret"></span>
                                 </button>
+                                <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();">
+                                     <div class="" ng-repeat="type in types">
+                                        <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
+                                        <label class="std-font" for="{{type.name}}" ng-click="editOptions(type)">
+                                            <img class="type-icon-small" src="{{type.image}}">
+                                            {{type.name}}
+                                        </label>
+                                    </div>
+                                </div>
                             </span>
                         </div>
                         <div class="scrollable-table text-field-colour set-boarder">
                             <table class="table table-hover table-bordered set-boarder no-margin">
                                 <tbody>
                                     <tr ng-repeat="type in types">
-                                        <td ng-if="type.isSelected">{{type.name}}
+                                        <td ng-if="type.isSelected">
+                                            <img class="type-icon-small" src="{{type.image}}">
+                                            {{type.name}}
                                             <button type="button" class="close" aria-label="Close" ng-click="removeFromSelected($index)">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
-
                                         </td>
                                     </tr>
                                 </tbody>

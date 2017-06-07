@@ -42,8 +42,8 @@ $table-border: $search-field-border;
     background-color:$search-btn-bg;
     border-color: $search-btn-border;
     color: $search-btn-text;
-    text-transform: uppercase;
     font-weight: bold;
+    text-transform: uppercase;
 }
 
 .btn-search:hover, .btn-search:focus, .btn-search:active {
@@ -206,6 +206,18 @@ input[type="checkbox"]:checked + label {
     border-top: none;
     border-color: $table-border;
 }
+
+.type-icon-small {
+    max-width: 13%;
+    display: inline;
+    padding: 0 5px;
+}
+
+.dropdown-menu-types-small {
+    width: 15vw !important;
+    padding: 0px 0px;
+    background-color: transparent;
+}
 /************************************************************/
 
 /* Border, Margin, Padding, Text ****************************/
@@ -249,5 +261,11 @@ input[type="checkbox"]:checked + label {
 
 .centre-text {
     text-align: center;
+}
+
+.std-font {
+    font-weight: normal !important;
+    font-variant: none !important;
+    font-size: 14px !important;
 }
 /************************************************************/
