@@ -10,66 +10,16 @@
  * location analysis
  */
 app.controller('postLocation', function($scope, $http, $sessionStorage, socket) {
-    let geocoder = new google.maps.Geocoder();
+    $scope.$on('submit', postThePackage);
+    postThePackage();
 
-    /*
-     * DO NOT use firefox browser.
-     * Geolocalisation seems to not be supported and confused:
-     */
-    /* TODO: Error handler is UNUSED */
-    let obtainLocation = function() {
-        document.getElementById('map').style.visibility = 'hidden';
-        $scope.getLocation(function(location) {
-            let fields = createJSON(location);
-
-            postThePackage(location, fields);
-        }, errorHandler);
-    };
-
-    obtainLocation();
-
-    $scope.$on('submit', obtainLocation);
-
-    function createJSON(location) {
-        return JSON.stringify({
-            location: JSON.stringify(location),
-            datetime: $sessionStorage.queryData.datetime,
-            avgtime: $sessionStorage.queryData.duration,
-            radius: $sessionStorage.queryData.radius,
-            type: $scope.getTypes($sessionStorage.queryData.selectedTypes),
-        });
-    }
     /*
      * Angular HTTP post
      * Given a URL and a JSON (location), issues a post request on the given URL.
      * Returns a Promise, thus the .then() function
      */
-    function postThePackage(location, fields) {
-        console.log(fields);
-
+    function postThePackage() {
         socket.emit('search', {});
-
-        /*
-        $http.post('/googlemaps', fields)
-            .then(function(response) {
-                $scope.initMap(location, response.data);
-                $sessionStorage.googleData = response.data;
-
-                console.log('Following is the google data which was found');
-                console.log($sessionStorage.googleData);
-            }, function(reason) {
-                console.log('Failure when accessing googleMaps');
-                console.log(reason);
-            }); */
-    }
-
-    function errorHandler(error) {
-        if (error.code === error.PERMISSION_DENIED) {
-            alert('You will need to enable geolocation.');
-        } else {
-            alert('An error has occured and the programmer has been too lazy' +
-                ' to inform you of the nature of the error...');
-        }
     }
 });
 
@@ -121,19 +71,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         }
     };
 
-    $scope.getTypes = function(selections) {
-        let result = [];
-        console.log(selections);
-        if(selections.length == 0) {
-            $sessionStorage.queryData.selectedTypes.forEach(function(element) {
-                result.push(element.name.toLowerCase());
-            }, this);
-        } else {
-            result = selections;
-        }
-        return result;
-    };
-
     /* Private controller function
      * Broadcasts the user data (username, location and radius) to the socket's room */
     let broadcastUserData = function() {
@@ -149,9 +86,13 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     let broadcastFieldsData = function() {
+        console.log('Gonna broadcast types');
+
+        console.log($sessionStorage.types);
+
         /* Broadcast location to all socket listeners */
         socket.emit('options', {
-            'types': $scope.getTypes($sessionStorage.queryData.selectedTypes),
+            'types': angular.toJson($sessionStorage.types),
             'duration': $sessionStorage.queryData.duration,
             'date': $sessionStorage.queryData.datetime,
         });
@@ -188,7 +129,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         } else {
             $sessionStorage.queryData.duration = room.duration;
             $sessionStorage.queryData.datetime = room.date;
-            $sessionStorage.queryData.selectedTypes = [];
+            $sessionStorage.types = room.types;
 
             $scope.appSearch = $sessionStorage.queryData;
 
