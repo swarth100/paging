@@ -36,22 +36,9 @@ app.controller('postLocation', function($scope, $http, $sessionStorage, socket) 
             datetime: $sessionStorage.queryData.datetime,
             avgtime: $sessionStorage.queryData.duration,
             radius: $sessionStorage.queryData.radius,
-            type: getTypes($sessionStorage.queryData.selectedTypes),
+            type: $scope.getTypes($sessionStorage.queryData.selectedTypes),
         });
     }
-
-    function getTypes(selections) {
-        let result = [];
-        console.log(selections);
-        if(selections.length == 0) {
-            $sessionStorage.types.forEach(function(element) {
-                result.push(element.name.toLowerCase());
-            }, this);
-        } else {
-            result = selections;
-        }
-        return result;
-    };
     /*
      * Angular HTTP post
      * Given a URL and a JSON (location), issues a post request on the given URL.
@@ -86,7 +73,7 @@ app.controller('postLocation', function($scope, $http, $sessionStorage, socket) 
     }
 });
 
-app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, socket) {
+app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, socket) {
     $scope.types = $sessionStorage.types;
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
@@ -134,9 +121,22 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         }
     };
 
+    $scope.getTypes = function(selections) {
+        let result = [];
+        console.log(selections);
+        if(selections.length == 0) {
+            $sessionStorage.queryData.selectedTypes.forEach(function(element) {
+                result.push(element.name.toLowerCase());
+            }, this);
+        } else {
+            result = selections;
+        }
+        return result;
+    };
+
     /* Private controller function
      * Broadcasts the user data (username, location and radius) to the socket's room */
-    broadcastUserData = function() {
+    let broadcastUserData = function() {
         /* Broadcast location to all socket listeners */
         $scope.getLocation(function(location) {
             socket.emit('location', {
@@ -145,6 +145,15 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
                 'lng': location.lng,
                 'radius': $sessionStorage.queryData.radius,
             });
+        });
+    };
+
+    let broadcastFieldsData = function() {
+        /* Broadcast location to all socket listeners */
+        socket.emit('options', {
+            'types': $scope.getTypes($sessionStorage.queryData.selectedTypes),
+            'duration': $sessionStorage.queryData.duration,
+            'date': $sessionStorage.queryData.datetime,
         });
     };
 
@@ -173,8 +182,34 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         socket.once('update', socketUpdate);
     });
 
+    let socketRefresh = function(room) {
+        if (!room.duration) {
+            broadcastFieldsData();
+        } else {
+            $sessionStorage.queryData.duration = room.duration;
+            $sessionStorage.queryData.datetime = room.date;
+            $sessionStorage.queryData.selectedTypes = [];
+
+            $scope.appSearch = $sessionStorage.queryData;
+
+            $scope.$apply();
+        }
+    };
+
+    socket.removeAllListeners('refresh', function() {
+        socket.once('refresh', socketRefresh);
+    });
+
     socket.on('joinSuccess', function() {
         console.log('Join Success');
+
+        if (!$sessionStorage.queryData) {
+            $sessionStorage.queryData = {
+                location: '',
+                radius: 1000,
+            };
+        }
+
         broadcastUserData();
     });
 
@@ -193,8 +228,14 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     /* Handles clicking on the submit button
      * Submission also occurs via pressing enter */
-    $scope.submitFields = () => {
+    $scope.submitLocation = () => {
         broadcastUserData();
+    };
+
+    /* Handles clicking on the submit button
+     * Submission also occurs via pressing enter */
+    $scope.submitFields = () => {
+        broadcastFieldsData();
     };
 
     $scope.performSearch = () => {
@@ -214,6 +255,8 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
          let users = room.users;
 
          console.log(users);
+
+        socketRefresh(room);
 
          for (i = 0; i < users.length; i++) {
              let radLoc = {
