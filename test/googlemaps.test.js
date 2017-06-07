@@ -94,35 +94,35 @@ describe('GoogleMaps', function() {
     //     })
     // });
 
-    describe('pruneResults', function() {
-        it('should return one of one', function() {
-            let dummyResults = ['result'];
-
-            // What a horrible dummy...
-            let dummyResponse = {json: {rows: [{elements: [{distance: {value: 0}}]}]}};
-            let dummyRadius = 1;
-
-            let dummyResult = maps.pruneResults(dummyResults, dummyResponse, dummyRadius);
-
-            dummyResult.should.have.length(1);
-            dummyResult[0].should.equal('result');
-        });
-
-        it('should return one of two', function() {
-            let dummyResults = ['result', 'disregard'];
-
-            // Another horrible dummy...
-            let dummyResponse = {json: {rows: [{
-                elements: [{distance: {value: 0}}, {distance: {value: 2}}],
-            }]}};
-            let dummyRadius = 1;
-
-            let dummyResult = maps.pruneResults(dummyResults, dummyResponse, dummyRadius);
-
-            dummyResult.should.have.length(1);
-            dummyResult[0].should.equal('result');
-        });
-    });
+    // describe('pruneResults', function() {
+    //     it('should return one of one', function() {
+    //         let dummyResults = ['result'];
+    //
+    //         // What a horrible dummy...
+    //         let dummyResponse = {json: {rows: [{elements: [{distance: {value: 0}}]}]}};
+    //         let dummyRadius = 1;
+    //
+    //         let dummyResult = maps.pruneResults(dummyResults, dummyResponse, dummyRadius);
+    //
+    //         dummyResult.should.have.length(1);
+    //         dummyResult[0].should.equal('result');
+    //     });
+    //
+    //     it('should return one of two', function() {
+    //         let dummyResults = ['result', 'disregard'];
+    //
+    //         // Another horrible dummy...
+    //         let dummyResponse = {json: {rows: [{
+    //             elements: [{distance: {value: 0}}, {distance: {value: 2}}],
+    //         }]}};
+    //         let dummyRadius = 1;
+    //
+    //         let dummyResult = maps.pruneResults(dummyResults, dummyResponse, dummyRadius);
+    //
+    //         dummyResult.should.have.length(1);
+    //         dummyResult[0].should.equal('result');
+    //     });
+    // });
 
     // describe('findInDatabase', function() {
     //     afterEach(function () {
