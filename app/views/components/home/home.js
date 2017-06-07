@@ -153,20 +153,17 @@ app.controller('homeCtrl',
     };
 
     $scope.handleClick = () => {
-       $sessionStorage.queryData = $scope.homeSearch;
+        $sessionStorage.queryData = $scope.homeSearch;
         $sessionStorage.types = $scope.types;
     };
 
     $scope.editOptions = (type) => {
         let lcName = type.name.toLowerCase();
         if(!type.isSelected) {
-            $scope.homeSearch.selectedTypes.push(lcName);
             type.isSelected = true;
         } else {
-            let index = $scope.homeSearch.selectedTypes.indexOf(lcName);
             $scope.homeSearch.selectedTypes.splice(index, 1);
             type.isSelected = false;
         }
-        console.log($scope.homeSearch.selectedTypes);
     };
 });
