@@ -218,6 +218,7 @@ input[type="checkbox"] + label {
 input[type="checkbox"]:checked + label {
     background-color: #995c00;
 }
+
 .fix-padding {
     padding-left: 0px;
     padding-right: 0px;
@@ -226,4 +227,17 @@ input[type="checkbox"]:checked + label {
 
 .text-align-left {
     text-align: left !important;
+}
+
+.dropdown-menu-types {
+    width: 70vw !important;
+}
+
+.type-icon {
+    max-width: 110px;
+    max-height: 110px;
+}
+
+.center-text {
+    text-align: center;
 }
