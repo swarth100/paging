@@ -44,9 +44,19 @@ exports.start = (server) => {
              * If a room is not found a new room is created.
              * If this fails as well, then a very serious error has occured
              * and the application should not be able to proceed.*/
-            findRoom(roomID, function() {
+            findRoom(roomID, function(room) {
                 /* Emit back a joinSuccess message */
-                socket.emit('joinSuccess');
+                mongooseRoom.updateGuestNumber(room)
+                    .then(function(res) {
+                        /* Room already exists in the DB */
+                        console.log('Update USER NUMBER success in results');
+
+                        socket.emit('joinSuccess', room.guestNumber);
+                    })
+                    .catch(function(err) {
+                        /* Room must be created in the DB */
+                        console.log('Update user number ERROR. Something horrible. Should never happen');
+                    });
             });
         });
 
@@ -125,7 +135,7 @@ exports.start = (server) => {
                 /* Room already exists in the DB */
                 console.log('Room already exists and found');
 
-                cb();
+                cb(room);
             })
             .catch(function(err) {
                 /* Room must be created in the DB */
@@ -152,11 +162,11 @@ exports.start = (server) => {
 
     function saveRoom(room, cb) {
         mongooseRoom.saveRoom(room)
-            .then(function(room) {
+            .then(function(res) {
                 /* Room has been saved into the DB with success */
                 console.log('Saved with success.');
 
-                cb();
+                cb(room);
             })
             .catch(function(err) {
                 /* An unexpected error occurred while saving the room */
