@@ -272,15 +272,19 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     markUser = function(location, user, map) {
+        let icon = {
+            path: 'M365.027,44.5c-30-29.667-66.333-44.5-109-44.5s-79,14.833-109,44.5s-45,65.5-45,107.5c0,25.333,12.833,67.667,38.5,127c25.667,59.334,51.333,113.334,77,162s38.5,72.334,38.5,71c4-7.334,9.5-17.334,16.5-30s19.333-36.5,37-71.5s33.167-67.166,46.5-96.5c13.334-29.332,25.667-59.667,37-91s17-55,17-71C410.027,110,395.027,74.167,365.027,44.5z M289.027,184c-9.333,9.333-20.5,14-33.5,14c-13,0-24.167-4.667-33.5-14s-14-20.5-14-33.5s4.667-24,14-33c9.333-9,20.5-13.5,33.5-13.5c13,0,24.167,4.5,33.5,13.5s14,20,14,33S298.36,174.667,289.027,184z',
+            fillColor: user.color,
+            fillOpacity: 1,
+            anchor: new google.maps.Point(250, 400),
+            strokeWeight: 1,
+            scale: .12,
+        };
+
         return new google.maps.Marker({
             position: location,
             map: map,
-            icon: {
-                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                scale: 10,
-                strokeWeight: 5,
-                strokeColor: user.color,
-            },
+            icon: icon,
         });
     };
 
@@ -311,13 +315,19 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     markResult = function(result, map) {
+        let icon = {
+            path: 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z',
+            fillColor: '#ff3700',
+            fillOpacity: 1,
+            anchor: new google.maps.Point(250, 400),
+            strokeWeight: 1,
+            scale: .08,
+        };
+
         return new google.maps.Marker({
             position: result.location,
             map: map,
-            icon: {
-                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                scale: 3,
-            },
+            icon: icon,
         });
     };
 

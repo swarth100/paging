@@ -3,37 +3,25 @@ let mongooseRoom = require('../mongoose/rooms');
 let googlemaps = require('../googlemaps/googlemaps');
 
 let colours = {
-    aqua: '#00ffff',
-    blue: '#0000ff',
-    brown: '#a52a2a',
-    darkblue: '#00008b',
-    darkcyan: '#008b8b',
-    darkgrey: '#a9a9a9',
-    darkgreen: '#006400',
-    darkkhaki: '#bdb76b',
-    darkmagenta: '#8b008b',
-    darkolivegreen: '#556b2f',
-    darkorange: '#ff8c00',
-    darkorchid: '#9932cc',
-    darkred: '#8b0000',
-    darksalmon: '#e9967a',
-    fuchsia: '#ff00ff',
-    gold: '#ffd700',
-    green: '#008000',
-    indigo: '#4b0082',
-    khaki: '#f0e68c',
-    lightblue: '#add8e6',
-    lightgreen: '#90ee90',
-    lightpink: '#ffb6c1',
-    lime: '#00ff00',
-    magenta: '#ff00ff',
-    navy: '#000080',
-    olive: '#808000',
-    orange: '#ffa500',
-    pink: '#ffc0cb',
-    violet: '#800080',
-    red: '#ff0000',
+    grey: '#737373',
     yellow: '#ffff00',
+    orange: '#ff9900',
+    darkOrange: '#993300',
+    // red: '#ff3300',
+    pink: '#ff33cc',
+    purple: '#993399',
+    darkPurple: '#660066',
+    purpleBlue: '#9900cc',
+    blue: '#333399',
+    darkBue: '#000066',
+    electricBlue: '#0000ff',
+    lightBlue: '#0099ff',
+    green: '#00ff00',
+    darkGreen: '#009933',
+    darkerGreen: '#003300',
+    creamGreen: '#669900',
+    brown: '#996633',
+    darkBrown: '#663300',
 };
 
 exports.start = (server) => {
@@ -209,9 +197,8 @@ exports.start = (server) => {
     /* Helper function to search through color array and select one */
     function chooseSemiRandomColour() {
         let keys = Object.keys(colours);
-        let randomIndex = Math.floor(Math.random() * keys.length);
 
-        console.log(randomIndex);
+        let randomIndex = Math.floor(Math.random() * keys.length);
 
         return colours[keys[randomIndex]];
     }
