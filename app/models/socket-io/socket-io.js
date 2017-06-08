@@ -44,6 +44,7 @@ exports.start = (server) => {
      * 'connection' messages are issues by front-end socket-io.js via the
      * io.connect() command */
     io.on('connection', function(socket) {
+        /* Triggered by joining a new room */
         socket.on('join', (roomID) => {
             socket.room = roomID;
             socket.join(roomID);
@@ -65,6 +66,10 @@ exports.start = (server) => {
             socket.leave(data);
         });
 
+        /* Triggered upon changing one of the per-user location fields:
+         * location
+         * radius
+         *  */
         socket.on('location', (data) => {
             console.log('Location is being updated');
             findUserViaRoom(socket, data, function() {
@@ -72,6 +77,11 @@ exports.start = (server) => {
             });
         });
 
+        /* Triggered upon changing one of the options:
+         * duration
+         * datetime
+         * types
+         *  */
         socket.on('options', (data) => {
             console.log('Options have been updated');
             findRoomNoSave(socket.room, function(room) {
@@ -90,6 +100,7 @@ exports.start = (server) => {
             });
         });
 
+        /* Triggered upon searching */
         socket.on('search', (data) => {
             findRoomNoSave(socket.room, function(room) {
                 /* Call googleAPI */
@@ -107,9 +118,9 @@ exports.start = (server) => {
                         });
                 });
             });
-            // findUserViaRoom(socket, data, broadcastSubmit);
         });
 
+        /* Never really used. Meant to broadcast to a socket, except sender */
         socket.on('broadcast', (data) => {
             /* Add backend catch for messages being posted via the socket */
             if (data.eventName === 'messages') {
@@ -195,6 +206,7 @@ exports.start = (server) => {
             });
     }
 
+    /* Helper function to search through color array and select one */
     function chooseSemiRandomColour() {
         let keys = Object.keys(colours);
         let randomIndex = Math.floor(Math.random() * keys.length);
@@ -205,10 +217,7 @@ exports.start = (server) => {
     }
 
     function addUser(room, user, cb) {
-        /* Credits for random color generator:
-         *  https://gist.github.com/samuelbeek/84721c03607ed5340f53
-         *  */
-        // user.color = '#' + (Math.random() * 0xFFFFFF << 0).toString(16);
+        /* Assign each user a random color from a selection */
         user.color = chooseSemiRandomColour();
 
         /* Assign each user a random color before saving them */
