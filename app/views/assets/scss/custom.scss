@@ -134,7 +134,6 @@ input[type="checkbox"] + label {
     min-width: 100%;
     border-style: solid;
     border-width: 1px;
-
 }
 
 input[type="checkbox"]:checked + label {
@@ -218,6 +217,26 @@ input[type="checkbox"]:checked + label {
     padding: 0px 0px;
     background-color: transparent;
 }
+
+.check-box-not-clicked {
+    background-color: $option-bg;
+    border-color:$option-border;
+    margin-bottom: 0;
+    min-width: 100%;
+    border-style: solid;
+    border-width: 1px;
+
+}
+
+.check-box-clicked {
+    background-color: $option-select-bg;
+    border-color:$option-border;
+    margin-bottom: 0;
+    min-width: 100%;
+    border-style: solid;
+    border-width: 1px;
+}
+
 /************************************************************/
 
 /* Border, Margin, Padding, Text ****************************/
