@@ -72,29 +72,28 @@
                     <input type="submit" class="hide-left" tabindex="-1" />
                 </form>
 
-                    <!-- Duration input field and Radius input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin no-padding">
-                        <div class="input-group">
-                            <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-time"></span></span>
-                            <form ng-submit="submitFields()">
-                                <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.duration">
+                <!-- Duration input field and Radius input field -->
+                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin no-padding">
+                    <div class="input-group">
+                        <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-time"></span></span>
+                        <form ng-submit="submitFields()">
+                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.duration">
 
-                                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                                <input type="submit" class="hide-left" tabindex="-1" />
-                            </form>
+                            <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                            <input type="submit" class="hide-left" tabindex="-1" />
+                        </form>
 
-                            <span class="input-group-addon text-field-colour square no-left-border no-right-border"><span class="glyphicon glyphicon-record"></span></span>
-                            <form ng-submit="submitLocation()">
-                                <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.radius">
+                        <span class="input-group-addon text-field-colour square no-left-border no-right-border"><span class="glyphicon glyphicon-record"></span></span>
+                        <form ng-submit="submitLocation()">
+                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.radius">
 
-                                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                                <input type="submit" class="hide-left" tabindex="-1" />
-                            </form>
-                        </div>
+                            <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                            <input type="submit" class="hide-left" tabindex="-1" />
+                        </form>
                     </div>
+                </div>
 
                 <form ng-submit="submitFields()">
-
                     <!-- Option fields -->
                     <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
                         <div class="input-group">
@@ -162,7 +161,7 @@
                         </table>
                     </div>
                 </div>
-                <button type="button" class="btn" ng-click="performSearch()">SEARCH</button>
+                <button type="button" class="btn btn-block btn-lg btn-search square" ng-click="performSearch()">SEARCH</button>
             </div>
         </div>
     </div>
