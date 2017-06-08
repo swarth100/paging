@@ -174,12 +174,7 @@ input[type="checkbox"]:checked + label {
 
 .sidenav-top {
     background-color: #ffcc80;
-    height: calc(60vh - 50px);
-}
-
-.sidenav-bottom {
-    background-color: #ffcc80;
-    height: calc(40vh);
+    height: calc(100vh - 50px);
 }
 
 .left-bar-field {
@@ -194,7 +189,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .scrollable-table {
-    height: 150px;
+    height: calc(50vh - 160px);
     overflow: auto;
     width: 100%;
 }
@@ -286,5 +281,9 @@ input[type="checkbox"]:checked + label {
     font-weight: normal !important;
     font-variant: none !important;
     font-size: 14px !important;
+}
+
+.no-top-border {
+    border-top: none;
 }
 /************************************************************/

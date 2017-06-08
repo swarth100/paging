@@ -96,6 +96,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     /* Socket update helper function */
     let socketUpdate = function(room) {
+        $scope.users = room.users;
         $scope.getLocation(function(location) {
             $scope.initMap(location, room);
         });
