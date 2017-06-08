@@ -104,9 +104,13 @@
                                     <span class="caret"></span>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();">
-                                     <div class="" ng-repeat="type in types">
-                                        <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
-                                        <label class="std-font" for="{{type.name}}" ng-click="editOptions(type); toggleSelected($index); submitFields()">
+                                     <div ng-repeat="type in types">
+                                        <!--<input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">-->
+                                        <label class="std-font check-box-not-clicked" for="{{type.name}}" ng-if="!type.isSelected" ng-click="toggleSelected($index); submitFields()">
+                                            <img class="type-icon-small" src="{{type.image}}">
+                                            {{type.name}}
+                                        </label>
+                                        <label class="std-font check-box-clicked" for="{{type.name}}" ng-if="type.isSelected" ng-click="toggleSelected($index); submitFields()">
                                             <img class="type-icon-small" src="{{type.image}}">
                                             {{type.name}}
                                         </label>
