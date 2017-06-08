@@ -5,6 +5,9 @@
  */
 
 app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, socket) {
+    /* -----------------------------------------------------------------------*/
+
+    /* Initialise fields used by the controller */
     $scope.types = $sessionStorage.types;
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
@@ -17,7 +20,10 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         $sessionStorage.types = $scope.types;
     });
 
-    /* Generalised getLocation function
+    /* -----------------------------------------------------------------------*/
+    /* getLocation monster function */
+
+    /* Generalised getLocation function for A GIVE USER
      * Determines, according to the current field, whether to use geolocation or parse the location field */
     $scope.getLocation = function(callback) {
         if ($sessionStorage.queryData.location === '') {
@@ -53,6 +59,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         }
     };
 
+    /* -----------------------------------------------------------------------*/
+    /* Broadcast information to socket.io room */
+
     /* Private controller function
      * Broadcasts the user data (username, location and radius) to the socket's room */
     let broadcastUserData = function() {
@@ -80,6 +89,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         });
     };
 
+    /* -----------------------------------------------------------------------*/
+    /* Helper functions for update/refresh listeners */
+
     /* Redefine socket fields for updatingLocation */
 
     /* Socket update helper function */
@@ -88,18 +100,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
             $scope.initMap(location, room);
         });
     };
-
-    /* DO NOT
-     * UNDER ANY CIRCUMSTANCE
-     * NOT EVEN IF DRUNK
-     * EVER
-     * REMOVE
-     * THIS
-     * FUNCTION
-     * It removes and re-adds the update listener. It just works, OKAY? Now go back to work. */
-    socket.removeAllListeners('update', function() {
-        socket.once('update', socketUpdate);
-    });
 
     let socketRefresh = function(room) {
         console.log('Socket Refresh');
@@ -121,6 +121,21 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         }
     };
 
+    /* -----------------------------------------------------------------------*/
+    /* Socket.io LISTENERS */
+
+    /* DO NOT
+     * UNDER ANY CIRCUMSTANCE
+     * NOT EVEN IF DRUNK
+     * EVER
+     * REMOVE
+     * THIS
+     * FUNCTION
+     * It removes and re-adds the update listener. It just works, OKAY? Now go back to work. */
+    socket.removeAllListeners('update', function() {
+        socket.once('update', socketUpdate);
+    });
+
     socket.removeAllListeners('refresh', function() {
         socket.once('refresh', socketRefresh);
     });
@@ -138,17 +153,14 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         broadcastUserData();
     });
 
+    /* -----------------------------------------------------------------------*/
+    /* Socket.io helper wrappers */
+
     /* Joins a room upon entry.
      * Room name is given by the roomID in $scope */
     $scope.joinRoom = function() {
         /* Upon entry, join the correspondent room. */
         socket.join($scope.roomID);
-    };
-    $scope.joinRoom();
-
-    /* Handles ... clicking? */
-    $scope.handleClick = () => {
-        $sessionStorage.queryData = $scope.appSearch;
     };
 
     /* Handles clicking on the submit button
@@ -163,20 +175,27 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         broadcastFieldsData();
     };
 
+    /* Button on-click method
+    * Queries a search request to the backend */
     $scope.performSearch = () => {
-        $scope.$broadcast('submit');
+        socket.emit('search', {});
     };
 
-    $scope.$on('submit', postThePackage);
+    /* -----------------------------------------------------------------------*/
+    /* Functions to handle input/refreshing of input */
 
-    /*
-     * Angular HTTP post
-     * Given a URL and a JSON (location), issues a post request on the given URL.
-     * Returns a Promise, thus the .then() function
-     */
-    function postThePackage() {
-        socket.emit('search', {});
-    }
+    /* Handles ... clicking? */
+    $scope.handleClick = () => {
+        $sessionStorage.queryData = $scope.appSearch;
+    };
+
+    /* -----------------------------------------------------------------------*/
+    /* Functions called upon entry */
+
+    $scope.joinRoom();
+
+    /* -----------------------------------------------------------------------*/
+    /* Map rendering functions with helpers */
 
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
@@ -206,6 +225,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
              markerAddInfo(marker, userwindow);
          }
+
         /*
          * Responses, returned by the googlemaps.js are packaged
          * as follows:
@@ -225,7 +245,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
         if (users.length === 1 && $scope.newSession) {
             $scope.newSession = false;
-            $scope.$broadcast('submit');
+            $scope.performSearch();
         }
     };
 
