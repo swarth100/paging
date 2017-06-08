@@ -79,14 +79,14 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     let broadcastFieldsData = function() {
         console.log('Gonna broadcast types');
 
-        console.log($sessionStorage.types);
-
-        /* Broadcast location to all socket listeners */
-        socket.emit('options', {
+       let toSend = {
             'types': angular.toJson($sessionStorage.types),
             'duration': $sessionStorage.queryData.duration,
             'date': $sessionStorage.queryData.datetime,
-        });
+        };
+        console.log(toSend);
+        /* Broadcast location to all socket listeners */
+        socket.emit('options', toSend);
     };
 
     /* -----------------------------------------------------------------------*/
@@ -111,13 +111,16 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
             console.log('bot');
             $sessionStorage.queryData.duration = room.duration;
             $sessionStorage.queryData.datetime = room.date;
-            $sessionStorage.types = room.types;
+
+            /* TYPE REFRESHING */
+            for (let i = 0; i < room.types.length; i++) {
+                $scope.types[i].isSelected = room.types[i].isSelected;
+            }
 
             $scope.appSearch = $sessionStorage.queryData;
+            $sessionStorage.types = $scope.types;
 
             $scope.$apply();
-
-            /* ADD TYPE REFRESHING */
         }
     };
 
