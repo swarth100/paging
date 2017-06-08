@@ -8,6 +8,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     $scope.types = $sessionStorage.types;
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
+    $scope.newSession = true;
 
     let geocoder = new google.maps.Geocoder();
 
@@ -220,6 +221,11 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
                 markerAddInfo(marker, infowindow);
             }
+        }
+
+        if (users.length === 1 && $scope.newSession) {
+            $scope.newSession = false;
+            $scope.$broadcast('submit');
         }
     };
 
