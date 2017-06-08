@@ -41,11 +41,11 @@ function temporaryFunction(room, cb) {
         return elem.isSelected;
     });
 
-    if (!tmpResults.length) {
-        tmpResults = parseTypes(function(elem) {
-            return true;
-        });
-    }
+    // if (!tmpResults.length) {
+    //     tmpResults = parseTypes(function(elem) {
+    //         return true;
+    //     });
+    // }
 
     room.types = tmpResults;
 
