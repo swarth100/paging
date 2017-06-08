@@ -5,9 +5,13 @@
  */
 
 app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, socket) {
+    /* -----------------------------------------------------------------------*/
+
+    /* Initialise fields used by the controller */
     $scope.types = $sessionStorage.types;
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
+    $scope.newSession = true;
 
     let geocoder = new google.maps.Geocoder();
 
@@ -16,7 +20,10 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         $sessionStorage.types = $scope.types;
     });
 
-    /* Generalised getLocation function
+    /* -----------------------------------------------------------------------*/
+    /* getLocation monster function */
+
+    /* Generalised getLocation function for A GIVE USER
      * Determines, according to the current field, whether to use geolocation or parse the location field */
     $scope.getLocation = function(callback) {
         if ($sessionStorage.queryData.location === '') {
@@ -52,6 +59,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         }
     };
 
+    /* -----------------------------------------------------------------------*/
+    /* Broadcast information to socket.io room */
+
     /* Private controller function
      * Broadcasts the user data (username, location and radius) to the socket's room */
     let broadcastUserData = function() {
@@ -69,24 +79,54 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     let broadcastFieldsData = function() {
         console.log('Gonna broadcast types');
 
-        console.log($sessionStorage.types);
-
-        /* Broadcast location to all socket listeners */
-        socket.emit('options', {
+       let toSend = {
             'types': angular.toJson($sessionStorage.types),
             'duration': $sessionStorage.queryData.duration,
             'date': $sessionStorage.queryData.datetime,
-        });
+        };
+        console.log(toSend);
+        /* Broadcast location to all socket listeners */
+        socket.emit('options', toSend);
     };
+
+    /* -----------------------------------------------------------------------*/
+    /* Helper functions for update/refresh listeners */
 
     /* Redefine socket fields for updatingLocation */
 
     /* Socket update helper function */
     let socketUpdate = function(room) {
+        $scope.users = room.users;
         $scope.getLocation(function(location) {
             $scope.initMap(location, room);
         });
     };
+
+    let socketRefresh = function(room) {
+        console.log('Socket Refresh');
+
+        if (!room.duration) {
+            console.log('top');
+            broadcastFieldsData();
+        } else {
+            console.log('bot');
+            $sessionStorage.queryData.duration = room.duration;
+            $sessionStorage.queryData.datetime = room.date;
+
+            /* TYPE REFRESHING */
+            for (let i = 0; i < room.types.length; i++) {
+                $scope.types[i].isSelected = room.types[i].isSelected;
+            }
+
+            $scope.appSearch = $sessionStorage.queryData;
+            $sessionStorage.types = $scope.types;
+
+            $scope.$apply();
+        }
+    };
+
+    /* -----------------------------------------------------------------------*/
+    /* Socket.io LISTENERS */
 
     /* DO NOT
      * UNDER ANY CIRCUMSTANCE
@@ -99,20 +139,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     socket.removeAllListeners('update', function() {
         socket.once('update', socketUpdate);
     });
-
-    let socketRefresh = function(room) {
-        if (!room.duration) {
-            broadcastFieldsData();
-        } else {
-            $sessionStorage.queryData.duration = room.duration;
-            $sessionStorage.queryData.datetime = room.date;
-            $sessionStorage.types = room.types;
-
-            $scope.appSearch = $sessionStorage.queryData;
-
-            $scope.$apply();
-        }
-    };
 
     socket.removeAllListeners('refresh', function() {
         socket.once('refresh', socketRefresh);
@@ -131,17 +157,14 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         broadcastUserData();
     });
 
+    /* -----------------------------------------------------------------------*/
+    /* Socket.io helper wrappers */
+
     /* Joins a room upon entry.
      * Room name is given by the roomID in $scope */
     $scope.joinRoom = function() {
         /* Upon entry, join the correspondent room. */
         socket.join($scope.roomID);
-    };
-    $scope.joinRoom();
-
-    /* Handles ... clicking? */
-    $scope.handleClick = () => {
-        $sessionStorage.queryData = $scope.appSearch;
     };
 
     /* Handles clicking on the submit button
@@ -153,25 +176,30 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Handles clicking on the submit button
      * Submission also occurs via pressing enter */
     $scope.submitFields = () => {
-        console.log('SUBMITTEEEEEEEEEED');
-
         broadcastFieldsData();
     };
 
+    /* Button on-click method
+    * Queries a search request to the backend */
     $scope.performSearch = () => {
-        $scope.$broadcast('submit');
+        socket.emit('search', {});
     };
 
-    $scope.$on('submit', postThePackage);
+    /* -----------------------------------------------------------------------*/
+    /* Functions to handle input/refreshing of input */
 
-    /*
-     * Angular HTTP post
-     * Given a URL and a JSON (location), issues a post request on the given URL.
-     * Returns a Promise, thus the .then() function
-     */
-    function postThePackage() {
-        socket.emit('search', {});
-    }
+    /* Handles ... clicking? */
+    $scope.handleClick = () => {
+        $sessionStorage.queryData = $scope.appSearch;
+    };
+
+    /* -----------------------------------------------------------------------*/
+    /* Functions called upon entry */
+
+    $scope.joinRoom();
+
+    /* -----------------------------------------------------------------------*/
+    /* Map rendering functions with helpers */
 
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
@@ -201,6 +229,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
              markerAddInfo(marker, userwindow);
          }
+
         /*
          * Responses, returned by the googlemaps.js are packaged
          * as follows:
@@ -216,6 +245,11 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
                 markerAddInfo(marker, infowindow);
             }
+        }
+
+        if (users.length === 1 && $scope.newSession) {
+            $scope.newSession = false;
+            $scope.performSearch();
         }
     };
 
@@ -238,15 +272,19 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     markUser = function(location, user, map) {
+        let icon = {
+            path: 'M365.027,44.5c-30-29.667-66.333-44.5-109-44.5s-79,14.833-109,44.5s-45,65.5-45,107.5c0,25.333,12.833,67.667,38.5,127c25.667,59.334,51.333,113.334,77,162s38.5,72.334,38.5,71c4-7.334,9.5-17.334,16.5-30s19.333-36.5,37-71.5s33.167-67.166,46.5-96.5c13.334-29.332,25.667-59.667,37-91s17-55,17-71C410.027,110,395.027,74.167,365.027,44.5z M289.027,184c-9.333,9.333-20.5,14-33.5,14c-13,0-24.167-4.667-33.5-14s-14-20.5-14-33.5s4.667-24,14-33c9.333-9,20.5-13.5,33.5-13.5c13,0,24.167,4.5,33.5,13.5s14,20,14,33S298.36,174.667,289.027,184z',
+            fillColor: user.color,
+            fillOpacity: 1,
+            anchor: new google.maps.Point(250, 400),
+            strokeWeight: 1,
+            scale: .12,
+        };
+
         return new google.maps.Marker({
             position: location,
             map: map,
-            icon: {
-                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                scale: 10,
-                strokeWeight: 5,
-                strokeColor: user.color,
-            },
+            icon: icon,
         });
     };
 
@@ -277,13 +315,19 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     markResult = function(result, map) {
+        let icon = {
+            path: 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z',
+            fillColor: '#ff3700',
+            fillOpacity: 1,
+            anchor: new google.maps.Point(250, 400),
+            strokeWeight: 1,
+            scale: .08,
+        };
+
         return new google.maps.Marker({
             position: result.location,
             map: map,
-            icon: {
-                path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-                scale: 3,
-            },
+            icon: icon,
         });
     };
 

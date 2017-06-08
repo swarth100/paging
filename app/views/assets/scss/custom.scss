@@ -10,7 +10,7 @@ $search-btn-highlight: #FFD699;
 /************************************************************/
 
 /* Colour pallet for nav-bar ********************************/
-$nav-bg: rgba(255, 204, 128,0.85);
+$nav-bg: rgba(255, 204, 128, 0.85);
 $nav-text: #995C00;
 $nav-text-highlight: #000000;
 $nav-text-brand: #000000;
@@ -134,7 +134,6 @@ input[type="checkbox"] + label {
     min-width: 100%;
     border-style: solid;
     border-width: 1px;
-
 }
 
 input[type="checkbox"]:checked + label {
@@ -175,12 +174,7 @@ input[type="checkbox"]:checked + label {
 
 .sidenav-top {
     background-color: #ffcc80;
-    height: calc(60vh - 50px);
-}
-
-.sidenav-bottom {
-    background-color: #ffcc80;
-    height: calc(40vh);
+    height: calc(100vh - 50px);
 }
 
 .left-bar-field {
@@ -195,7 +189,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .scrollable-table {
-    height: 150px;
+    height: calc(50vh - 160px);
     overflow: auto;
     width: 100%;
 }
@@ -218,6 +212,26 @@ input[type="checkbox"]:checked + label {
     padding: 0px 0px;
     background-color: transparent;
 }
+
+.check-box-not-clicked {
+    background-color: $option-bg;
+    border-color:$option-border;
+    margin-bottom: 0;
+    min-width: 100%;
+    border-style: solid;
+    border-width: 1px;
+
+}
+
+.check-box-clicked {
+    background-color: $option-select-bg;
+    border-color:$option-border;
+    margin-bottom: 0;
+    min-width: 100%;
+    border-style: solid;
+    border-width: 1px;
+}
+
 /************************************************************/
 
 /* Border, Margin, Padding, Text ****************************/
@@ -267,5 +281,9 @@ input[type="checkbox"]:checked + label {
     font-weight: normal !important;
     font-variant: none !important;
     font-size: 14px !important;
+}
+
+.no-top-border {
+    border-top: none;
 }
 /************************************************************/
