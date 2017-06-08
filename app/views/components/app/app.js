@@ -101,9 +101,13 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     });
 
     let socketRefresh = function(room) {
+        console.log('Socket Refresh');
+
         if (!room.duration) {
+            console.log('top');
             broadcastFieldsData();
         } else {
+            console.log('bot');
             $sessionStorage.queryData.duration = room.duration;
             $sessionStorage.queryData.datetime = room.date;
             $sessionStorage.types = room.types;
@@ -111,6 +115,8 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
             $scope.appSearch = $sessionStorage.queryData;
 
             $scope.$apply();
+
+            /* ADD TYPE REFRESHING */
         }
     };
 
@@ -153,8 +159,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Handles clicking on the submit button
      * Submission also occurs via pressing enter */
     $scope.submitFields = () => {
-        console.log('SUBMITTEEEEEEEEEED');
-
         broadcastFieldsData();
     };
 
