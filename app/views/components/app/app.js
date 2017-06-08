@@ -103,13 +103,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     let socketRefresh = function(room) {
-        console.log('Socket Refresh');
-
         if (!room.duration) {
-            console.log('top');
             broadcastFieldsData();
         } else {
-            console.log('bot');
             $sessionStorage.queryData.duration = room.duration;
             $sessionStorage.queryData.datetime = room.date;
 
