@@ -177,11 +177,6 @@ input[type="checkbox"]:checked + label {
     height: calc(100vh - 50px);
 }
 
-// .sidenav-bottom {
-//     background-color: #ffcc80;
-//     height: calc(40vh);
-// }
-
 .left-bar-field {
     padding-right: 0;
     padding-left: 0;
@@ -194,7 +189,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .scrollable-table {
-    height: 150px;
+    height: calc(50vh - 160px);
     overflow: auto;
     width: 100%;
 }
