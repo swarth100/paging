@@ -144,8 +144,12 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         socket.once('refresh', socketRefresh);
     });
 
-    socket.on('joinSuccess', function() {
+    socket.on('joinSuccess', function(number) {
         console.log('Join Success');
+
+        if (!$localStorage.username) {
+            $localStorage.username = 'Guest-' + number;
+        }
 
         if (!$sessionStorage.queryData) {
             $sessionStorage.queryData = {
