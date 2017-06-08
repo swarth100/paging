@@ -57,6 +57,11 @@ let roomsSchema = new Schema({
     date: {
         type: String,
     },
+
+    guestNumber: {
+        type: Number,
+        default: 0,
+    },
 });
 
 /*
@@ -162,6 +167,20 @@ exports.updateUser = function(room, user) {
 exports.updateRoom = function(room, results) {
     let query = {
         'results': results,
+    };
+
+    let cond = {
+        'id': room.id,
+    };
+
+    return helper.updateHelper(Room, cond, query);
+};
+
+exports.updateGuestNumber = function(room) {
+    let increasedNumber = room.guestNumber + 1;
+
+    let query = {
+        'guestNumber': increasedNumber,
     };
 
     let cond = {
