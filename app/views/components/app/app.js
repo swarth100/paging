@@ -4,9 +4,9 @@
  * location analysis
  */
 
-app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, socket) {
+app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, $uibModal, $location, socket) {
     /* -----------------------------------------------------------------------*/
-
+    console.log(location.href);
     /* Initialise fields used by the controller */
     $scope.types = $sessionStorage.types;
     $scope.appSearch = $sessionStorage.queryData;
@@ -340,4 +340,23 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
             infowindow.close(map, marker);
         });
     };
+    /* -----------------------------------------------------------------------*/
+    $scope.openLink = function() {
+      $uibModal.open({
+            template: `<div class="modal-body">
+                        Send the link below to your friends to start the group session! <br>
+                        <a href="{{message}}">{{message}}</a> <br>
+                        </div>`,
+            backdrop: true,
+            controller: 'modalController',
+            scope: $scope,
+            size: 'lg',
+            windowClass: 'centre-modal',
+      });
+    };
+});
+
+app.controller('modalController', function($scope, $location) {
+    console.log('location: ', location.href);
+    $scope.message = location.href;
 });
