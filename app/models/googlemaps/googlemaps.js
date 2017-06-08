@@ -24,15 +24,30 @@ function temporaryFunction(room, cb) {
      * 4. Return results.
      */
     users = room.users;
+    let tmpResults = [];
 
     /* Override the types array for the purpose of googlemaps */
-    let result = [];
-    for (let i = 0; i < room.types.length; i++) {
-        if (room.types[i].isSelected) {
-            result.push(room.types[i].name);
+    let parseTypes = function(condFunc) {
+        let result = [];
+        for (let i = 0; i < room.types.length; i++) {
+            if (condFunc(room.types[i])) {
+                result.push(room.types[i].name);
+            }
         }
+        return result;
+    };
+
+    tmpResults = parseTypes(function(elem) {
+        return elem.isSelected;
+    });
+
+    if (!tmpResults.length) {
+        tmpResults = parseTypes(function(elem) {
+            return true;
+        });
     }
-    room.types = result;
+
+    room.types = tmpResults;
 
     let allUserLocations = getAllLocations(room.users);
 
