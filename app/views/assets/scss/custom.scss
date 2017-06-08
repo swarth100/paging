@@ -174,13 +174,13 @@ input[type="checkbox"]:checked + label {
 
 .sidenav-top {
     background-color: #ffcc80;
-    height: calc(60vh - 50px);
+    height: calc(100vh - 50px);
 }
 
-.sidenav-bottom {
-    background-color: #ffcc80;
-    height: calc(40vh);
-}
+// .sidenav-bottom {
+//     background-color: #ffcc80;
+//     height: calc(40vh);
+// }
 
 .left-bar-field {
     padding-right: 0;
