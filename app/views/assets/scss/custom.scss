@@ -1,17 +1,17 @@
 /* Colour pallet for buttons ********************************/
 $search-field-text: #000000;
-$search-field-bg: #FFF5E6;
-$search-field-border: #995C00;
+$search-field-bg: rgb(229, 222, 215);
+$search-field-border: rgb(166, 143, 121);
 
-$search-btn-text: #995C00;
-$search-btn-bg: #FFA31A;
+$search-btn-text: rgb(140, 71, 30);
+$search-btn-bg: rgb(228, 159, 38);
 $search-btn-border: $search-field-border;
 $search-btn-highlight: #FFD699;
 /************************************************************/
 
 /* Colour pallet for nav-bar ********************************/
-$nav-bg: rgba(255, 204, 128, 0.85);
-$nav-text: #995C00;
+$nav-bg: rgba(186, 193, 203, 0.90);
+$nav-text: #000000;
 $nav-text-highlight: #000000;
 $nav-text-brand: #000000;
 
@@ -21,8 +21,8 @@ $user-dd-bottom-bg: #E2DDD6;
 
 /* Colour pallet for home ***********************************/
 $field-title-text: #FFFFFF;
-$option-bg: #FFF5E6;
-$option-select-bg: #C5BBAD;
+$option-bg: rgb(229, 222, 215);
+$option-select-bg: rgb(202, 188, 175);
 $option-border: $search-field-border;
 /************************************************************/
 
