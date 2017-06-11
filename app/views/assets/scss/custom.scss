@@ -39,7 +39,7 @@ $table-border: $search-field-border;
 }
 
 .btn:focus,.btn:active {
-   outline: none !important;
+    outline: none !important;
 }
 
 
@@ -344,5 +344,25 @@ input[type="checkbox"]:checked + label {
 
 .no-left-border {
     border-left: none;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.flexcontainer {
+    display: -webkit-flex;
+    display: flex;
+}
+
+.flex-row {
+    @extend .flexcontainer;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    align-items: center;
+}
+
+.flex-right {
+    margin-left: auto;
 }
 /************************************************************/
