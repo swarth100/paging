@@ -121,10 +121,10 @@
                             <table class="table table-hover table-bordered set-boarder no-bottom-border no-margin">
                                 <tbody>
                                     <tr ng-repeat="type in types">
-                                        <td ng-if="type.isSelected">
+                                        <td ng-if="type.isSelected" class="flex-row">
                                             <img class="type-icon-small" src="{{type.image}}">
                                             {{type.name}}
-                                            <button type="button" class="close" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
+                                            <button type="button" class="close flex-right" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </td>
@@ -139,7 +139,7 @@
                 <!-- Users fields -->
                 <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
                     <div class="input-group">
-                        <div class="form-control input-lg square text-field-colour">Members</div>
+                        <div class="form-control input-lg square text-field-colour no-top-border">Members</div>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-lg input-lg square no-left-border no-right-border btn-search" ng-click="openLink()">
                                 Invite
