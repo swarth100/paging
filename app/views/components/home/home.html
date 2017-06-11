@@ -6,8 +6,8 @@
     +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
     |         Location         |           Date           |   Time spent    |     Radius      |     SEARCH      |
     +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-                 3
-                                         3                      2                 2                 2
+    3
+    3                      2                 2                 2
 
     MOBILE VIEW:
 
@@ -31,19 +31,18 @@
     +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
     |                                                  SEARCH                                                   |
     +--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+
-                                                          12
+    12
 
- -->
-
-<div class="container-fluid search-top-offset">
-    <!-- ROW div for the search bar -->
-    <div class="row-fluid">
+-->
+<div class="container-fluid search-bar">
+    <div class="row search-top"></div>
+    <div class="row search-bottom">
         <!-- LOCATION field holder -->
-        <div class="col-sm-12 col-md-2 no-padding">
+        <div class="col-sm-12 col-md-2 no-padding fix-overlap-side-margin">
             <p class="field-title">Location:</p>
-            <div class="input-group">
+            <div class="input-group no-padding square">
                 <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-pushpin"></span></span>
-                <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" placeholder="Current Location" ng-model="homeSearch.location">
+                <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border simplebox" placeholder="Current Location" ng-model="homeSearch.location">
             </div>
         </div>
         <!-- DATETIME field holder -->
@@ -53,7 +52,7 @@
                 <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-calendar"></span></span>
                 <input type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="homeSearch.datetime">
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-full-height dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right no-padding" ng-click="$event.stopPropagation();" role="menu">
@@ -90,10 +89,10 @@
                 <!-- Nasty resizing using input-lg -->
                 <div class="form-control input-lg square text-field-colour">Options</div>
                 <span class="input-group-btn">
-                    <button type="button" class="btn btn-full-height dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                     </button>
-                   <div class="dropdown-menu dropdown-menu-types dropdown-menu-right" ng-click="$event.stopPropagation();">
+                    <div class="dropdown-menu dropdown-menu-types dropdown-menu-right" ng-click="$event.stopPropagation();">
                         <div class="grid-element" ng-repeat="tps in types | chunkBy:6">
                             <div class="col-xs-2 no-padding" ng-repeat="type in tps">
                                 <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
@@ -119,4 +118,7 @@
             </div>
         </div>
     </div>
+    <div class="row search-bar-footer">
+        <div class="search-bar-footer-div"></div>
+    <div></div>
 </div>
