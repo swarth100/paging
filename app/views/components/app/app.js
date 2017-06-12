@@ -12,6 +12,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     $scope.appSearch = $sessionStorage.queryData;
     $scope.roomID = $routeParams.room;
     $scope.newSession = true;
+    $scope.issueSearch = false;
 
     let geocoder = new google.maps.Geocoder();
 
@@ -96,6 +97,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     /* Socket update helper function */
     let socketUpdate = function(room) {
+        $scope.issueSearch = false;
         $scope.users = room.users;
         $scope.getLocation(function(location) {
             $scope.initMap(location, room);
@@ -182,7 +184,10 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Button on-click method
     * Queries a search request to the backend */
     $scope.performSearch = () => {
-        socket.emit('search', {});
+        if (!$scope.issueSearch) {
+            $scope.issueSearch = true;
+            socket.emit('search', {});
+        }
     };
 
     /* -----------------------------------------------------------------------*/
