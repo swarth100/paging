@@ -1,19 +1,19 @@
 /* Colour pallet for buttons ********************************/
 $search-field-text: #000000;
-$search-field-bg: rgb(229, 222, 215);
-$search-field-border: rgb(166, 143, 121);
+$search-field-bg: rgb(221, 218, 215);
+$search-field-border: rgb(193, 173, 150);
 
 $search-btn-text: rgb(140, 71, 30);
-$search-btn-bg: rgb(228, 159, 38);
-$search-btn-border: $search-field-border;
-$search-btn-highlight: #FFD699;
+$search-btn-bg: rgb(209, 136, 91);
+$search-btn-border: $search-btn-bg;
+$search-btn-highlight: rgb(189, 116, 71);
 /************************************************************/
 
 /* Colour pallet for nav-bar ********************************/
-$nav-bg: rgba(186, 193, 203, 0.90);
-$nav-text: #000000;
-$nav-text-highlight: #000000;
-$nav-text-brand: #000000;
+$nav-bg: rgba(0, 0, 0, 0.8);
+$nav-text: $search-field-bg;
+$nav-text-highlight: #FFFFFF;
+$nav-text-brand: $search-field-bg;
 
 $user-dd-bg: rgba(226,221,214,0.9);
 $user-dd-bottom-bg: #E2DDD6;
@@ -32,11 +32,16 @@ $table-border: $search-field-border;
 
 /* Button and Field *****************************************/
 .text-field-colour {
-    background-color: $search-field-bg !important;
-    border-color:$search-field-border !important;
+    background-color: $search-field-bg;
+    border-color:$search-field-border;
     color: $search-field-text;
-    opacity: 1 !important;
+    opacity: 1;
 }
+
+.btn:focus,.btn:active {
+    outline: none !important;
+}
+
 
 .btn-search {
     background-color:$search-btn-bg;
@@ -54,6 +59,7 @@ $table-border: $search-field-border;
     border-left: none !important;
     box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
 }
+
 .no-right-border {
     border-right: none !important;
     box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
@@ -79,10 +85,15 @@ $table-border: $search-field-border;
     box-shadow: none !important;
 }
 
-.btn-full-height {
-    padding: 12px 12px;
-}
 /************************************************************/
+
+/* Landing page *********************************************/
+
+/************************************************************/
+.landing {
+    background: url('../images/background-2.jpeg') no-repeat center center fixed;
+    background-size: cover;
+}
 
 /* Navbar ***************************************************/
 .navbar-default {
@@ -96,7 +107,7 @@ $table-border: $search-field-border;
         color: $nav-text-highlight;
     }
     .navbar-brand {
-        color: black !important;
+        color: $nav-text-brand;
     }
 }
 
@@ -116,10 +127,8 @@ $table-border: $search-field-border;
 /* Homepage *************************************************/
 .field-title {
     color: $field-title-text;
-    font-variant: small-caps;
-    margin: 0;
-    padding: 0;
-    font-size: 20px;
+    padding-bottom: 4px;
+    font-size: 16px;
 }
 
 .uib-time input {
@@ -151,8 +160,35 @@ input[type="checkbox"]:checked + label {
     height: auto;
     display: block;
     margin-left: auto;
-	margin-right: auto;
+    margin-right: auto;
     padding-top: 10px;
+}
+
+.search-bar {
+    height: calc(100vh - 50px);
+}
+
+.search-top {
+    height: 60%;
+}
+
+.search-bottom {
+    min-height: 30%;
+    background: rgba(0, 0, 0, 0.8);
+    padding-bottom: 10px;
+    padding-top: 70px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.search-bar-footer-div {
+    height: 5px;
+    background: rgb(214, 147, 100);
+}
+
+.search-bar-footer{
+    height: 10%;
+    background: $search-field-bg;
 }
 /************************************************************/
 
@@ -189,7 +225,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .scrollable-table {
-    height: calc(50vh - 160px);
+    height: calc(50vh - 162px);
     overflow: auto;
     width: 100%;
 }
@@ -263,6 +299,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .no-margin {
+    @extend .no-side-margin;
     margin-bottom:0;
     margin-top:0;
 }
@@ -295,5 +332,37 @@ input[type="checkbox"]:checked + label {
 
 .no-top-border {
     border-top: none;
+}
+
+.no-right-border {
+    border-right: none;
+}
+
+.no-bottom-border {
+    border-bottom: none;
+}
+
+.no-left-border {
+    border-left: none;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.flexcontainer {
+    display: -webkit-flex;
+    display: flex;
+}
+
+.flex-row {
+    @extend .flexcontainer;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    align-items: center;
+}
+
+.flex-right {
+    margin-left: auto;
 }
 /************************************************************/
