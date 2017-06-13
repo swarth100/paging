@@ -41,7 +41,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
                 alert('Geolocation is not supported by this browser.');
             }
         } else {
-            geocoder.geocode({'address': $Data.query.location},
+            geocoder.geocode({'address': Data.query.location},
                 function(results, status) {
                     if (status === 'OK') {
                         let locTmp = results[0].geometry.location;
@@ -99,7 +99,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     let socketUpdate = function(room) {
         $scope.issueSearch = false;
         $scope.users = room.users;
-        if ($localStorage.username) {
+        if (Data.user.username !== '') {
             let i = $scope.users.reduce(( cur, val, index ) => {
                 if (val.username === Data.user.username && cur === -1 ) {
                     return index;
@@ -160,7 +160,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     socket.on('joinSuccess', function(number) {
         console.log('Join Success');
 
-        if (Data.user.username === '') {
+        if (!$localStorage.username) {
             Data.user.username = 'Guest-' + number;
         }
 
