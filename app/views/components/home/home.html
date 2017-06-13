@@ -35,8 +35,8 @@
 
 -->
 <div class="container-fluid search-bar">
-    <div class="row search-top"></div>
-    <div class="row search-bottom">
+    <div class="row search-top" ng-class="dropdownOpen ? 'raise-search-bar': 'lower-search-bar'"></div>
+    <div class="row search-bottom" ng-class="dropdownOpen ? 'large-bottom-padding' : 'small-bottom-padding'">
         <!-- LOCATION field holder -->
         <div class="col-sm-12 col-md-2 no-padding fix-overlap-side-margin">
             <p class="field-title">Location:</p>
@@ -88,11 +88,11 @@
             <div class="input-group">
                 <!-- Nasty resizing using input-lg -->
                 <div class="form-control input-lg square text-field-colour">Options</div>
-                <span class="input-group-btn">
-                    <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="input-group-btn" uib-dropdown is-open="dropdownOpen">
+                    <button type="button" class="btn input-lg square text-field-colour" uib-dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-types dropdown-menu-right" ng-click="$event.stopPropagation();">
+                    <div class="dropdown-menu dropdown-menu-types dropdown-menu-right" uib-dropdown-menu ng-click="$event.stopPropagation();">
                         <div class="grid-element" ng-repeat="tps in types | chunkBy:6">
                             <div class="col-xs-2 no-padding" ng-repeat="type in tps">
                                 <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
@@ -103,7 +103,7 @@
                             </div>
                         </div>
                     </div>
-                </span>
+                </div>
             </div>
         </div>
 
@@ -120,5 +120,5 @@
     </div>
     <div class="row search-bar-footer">
         <div class="search-bar-footer-div"></div>
-    <div></div>
+    </div>
 </div>
