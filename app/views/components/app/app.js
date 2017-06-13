@@ -289,6 +289,23 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
         }
     }
 
+    function recalculateLabel(result) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        let label;
+
+        if (listOfUsersWhoClicked.length > 1) {
+            label = {
+                text: (listOfUsersWhoClicked.length).toString(),
+                fontSize: '24px',
+            };
+        } else {
+            label = null;
+        }
+
+        result.setLabel(label);
+    }
+
     function findColourOfUser(user) {
         for (let i = 0; i < users.length; i++) {
             if (users[i].username === user) {
@@ -304,6 +321,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
         listOfUsersWhoClicked.splice(index, 1);
 
         recalculateColour(result);
+        recalculateLabel(result);
     }
 
     function addUserClick(result, user) {
@@ -311,9 +329,8 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
 
         listOfUsersWhoClicked.push(user);
 
-        let icon = generateIconFromUserColour(user);
-
         recalculateColour(result);
+        recalculateLabel(result);
     }
 
     function generateIconFromUserColour(user) {
@@ -330,6 +347,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
             fillColor: colour,
             fillOpacity: 1,
             anchor: new google.maps.Point(250, 400),
+            labelOrigin: new google.maps.Point(240, 150),
             strokeWeight: 1,
             scale: .08,
         };
@@ -544,17 +562,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
             fillColor: '#ff3700',
             fillOpacity: 1,
             anchor: new google.maps.Point(250, 400),
-            strokeWeight: 1,
-            scale: .08,
-        };
-    }
-
-    function createBlueIcon() {
-        return {
-            path: pathToIcon,
-            fillColor: '#0000ff',
-            fillOpacity: 1,
-            anchor: new google.maps.Point(250, 400),
+            labelOrigin: new google.maps.Point(240, 150),
             strokeWeight: 1,
             scale: .08,
         };
