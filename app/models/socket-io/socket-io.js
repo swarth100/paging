@@ -147,8 +147,8 @@ exports.start = (server) => {
          * If a marker is clicked on this broadcasts the change to all users
          * in the same room.
          */
-        socket.on('change', function(index) {
-            io.in(socket.room).emit('evolve', index);
+        socket.on('change', function(packagedData) {
+            io.in(socket.room).emit('evolve', packagedData);
         });
     });
 
