@@ -30,6 +30,11 @@ $option-border: $search-field-border;
 $table-border: $search-field-border;
 /************************************************************/
 
+/* Search bar padding ***************************************/
+$search-padding-bottom: 10px;
+$search-padding-top: 70px;
+/*************************************************************/
+
 /* Button and Field *****************************************/
 .text-field-colour {
     background-color: $search-field-bg;
@@ -90,6 +95,7 @@ $table-border: $search-field-border;
 /* Landing page *********************************************/
 
 /************************************************************/
+
 .landing {
     background: url('../images/background-2.jpeg') no-repeat center center fixed;
     background-size: cover;
@@ -175,11 +181,45 @@ input[type="checkbox"]:checked + label {
 .search-bottom {
     min-height: 30%;
     background: rgba(0, 0, 0, 0.8);
-    padding-bottom: 10px;
     padding-top: 70px;
     padding-left: 20px;
     padding-right: 20px;
 }
+
+.large-bottom-padding {
+    animation: increase-padding 1s;
+    -webkit-animation: increase-padding 1s;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+}
+
+@keyframes increase-padding {
+    0% {padding-bottom: $search-padding-bottom};
+    100% {padding-bottom: 5000px};
+}
+
+@-webkit-keyframes increase-padding {
+    0% {padding-bottom: $search-padding-bottom};
+    100% {padding-bottom: 5000px};
+}
+
+.small-bottom-padding {
+    animation: decrease-padding 1s;
+    -webkit-animation: decrease-padding 1s;
+}
+
+@keyframes decrease-padding {
+    0% {padding-bottom: 5000px};
+    100% {padding-bottom: $search-padding-bottom};
+}
+
+@-webkit-keyframes decrease-padding {
+    0% {padding-bottom: 5000px};
+    100% {padding-bottom: $search-padding-bottom};
+
+}
+
+
 
 .search-bar-footer-div {
     height: 5px;
@@ -187,7 +227,10 @@ input[type="checkbox"]:checked + label {
 }
 
 .search-bar-footer{
+    position: fixed;
+    bottom: 0px;
     height: 10%;
+    width: 100%;
     background: $search-field-bg;
 }
 /************************************************************/
