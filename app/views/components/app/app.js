@@ -248,10 +248,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
              /* Initialise the radius */
              let radius = initRadius(radLoc, users[i], map);
 
-             let userwindow = createUserWindow(users[i]);
+             let userBubble = createUserInfoBubble(users[i]);
 
-
-             markerAddInfo(marker, userwindow);
+             markerAddInfo(map, marker, userBubble);
          }
 
         /*
@@ -263,11 +262,11 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
          */
         if (room.results) {
             for (let i = 0; i < room.results.length; i++) {
-                let infowindow = createInfoWindow(room.results[i]);
+                let infoBubble = createLocationInfoBubble(room.results[i]);
 
                 let marker = markResult(room.results[i], map);
 
-                markerAddInfo(marker, infowindow);
+                markerAddInfo(map, marker, infoBubble);
             }
         }
 
@@ -325,17 +324,39 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         });
     };
 
-    createInfoWindow = function(result) {
-        return new google.maps.InfoWindow({
-            content: '<p>Name: ' + result.name + '</p>' +
-            '<p>Average time spent: ' + result.avgtime.toString() + ' minutes.</p>',
+    createDefaultInfoBubble = function() {
+        return new InfoBubble({
+            content: '',
+            shadowStyle: 1,
+            padding: 0,
+            backgroundColor: 'rgb(221, 218, 215)',
+            borderRadius: 0,
+            arrowSize: 10,
+            borderWidth: 1,
+            borderColor: 'rgb(193, 173, 150)',
+            disableAutoPan: true,
+            hideCloseButton: true,
+            disableAnimation: true,
+            arrowPosition: 30,
+            backgroundClassName: 'infoBubbleText',
+            arrowStyle: 2,
         });
     };
 
-    createUserWindow = function(user) {
-        return new google.maps.InfoWindow({
-            content: '<div style=\"color: ' + user.color + '\">' + user.username + '</div>',
-        });
+    createLocationInfoBubble = function(result) {
+        let infoBubble = createDefaultInfoBubble();
+
+        infoBubble.content = '<div class="infoBubbleLocation">Name: ' + result.name + '<br> Average time spent: ' + result.avgtime.toString() + ' minutes.</div>';
+
+        return infoBubble;
+    };
+
+    createUserInfoBubble = function(user) {
+        let infoBubble = createDefaultInfoBubble();
+
+        infoBubble.content = '<div class="infoBubbleUser" style=\"color: ' + user.color + '\">' + user.username + '</div>';
+
+        return infoBubble;
     };
 
     markResult = function(result, map) {
@@ -355,25 +376,25 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         });
     };
 
-    markerAddInfo = function(marker, infowindow) {
-        marker.addListener('mouseover', function() {
-            infowindow.open(map, marker);
-        });
-
-        marker.addListener('click', function() {
-            marker.windowClicked = true;
-            infowindow.open(map, marker);
-        });
-
-        marker.addListener('mouseout', function() {
-            if (!marker.windowClicked) {
-                infowindow.close(map, marker);
+    markerAddInfo = function(map, marker, infoBubble) {
+        google.maps.event.addListener(marker, 'click', function() {
+            if (!infoBubble.opened) {
+                infoBubble.opened = true;
+                infoBubble.open(map, marker);
+            } else if (infoBubble.opened) {
+                infoBubble.opened = false;
+                infoBubble.close();
             }
         });
 
-        infowindow.addListener('closeclick', function() {
-            marker.windowClicked = false;
-            infowindow.close(map, marker);
+        google.maps.event.addListener(marker, 'mouseover', function() {
+            infoBubble.open(map, marker);
+        });
+
+        google.maps.event.addListener(marker, 'mouseout', function() {
+            if (!infoBubble.opened) {
+                infoBubble.close();
+            }
         });
     };
     /* -----------------------------------------------------------------------*/

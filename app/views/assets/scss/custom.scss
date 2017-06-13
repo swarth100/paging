@@ -369,43 +369,16 @@ input[type="checkbox"]:checked + label {
 
 /* GoogleMaps ***********************************************/
 
-/*style the box*/
-.gm-style .gm-style-iw {
-    background-color: $search-field-bg !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    padding-top: 0;
-    display: block !important;
-    border: 1px solid $search-field-border,
+.infoBubbleText {
+    background-color: $search-field-bg;
 }
 
-/*style the p tag*/
-.gm-style .gm-style-iw #google-popup p{
-    background-color: $search-field-bg !important;
-    padding: 0px;
+.infoBubbleLocation {
+    padding-left: 5px;
 }
 
-
-/*style the arrow*/
-.gm-style div div div div div div div div {
-    background-color: $search-field-border !important;
-    padding: 0;
-    margin: 0;
-    padding: 0;
-    top: 0;
-    color: #fff;
-    font-size: 16px;
+.infoBubbleUser {
+    padding-left: 5px;
 }
-
-/*style the link*/
-.gm-style div div div div div div div div a {
-    color: #f1f1f1;
-    font-weight: bold;
-}
-
-
 
 /************************************************************/
