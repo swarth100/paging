@@ -248,7 +248,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
              /* Initialise the radius */
              let radius = initRadius(radLoc, users[i], map);
 
-             let userBubble = createUserWindow(users[i]);
+             let userBubble = createUserInfoBubble(users[i]);
 
              markerAddInfo(map, marker, userBubble);
          }
@@ -262,7 +262,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
          */
         if (room.results) {
             for (let i = 0; i < room.results.length; i++) {
-                let infoBubble = createInfoWindow(room.results[i]);
+                let infoBubble = createLocationInfoBubble(room.results[i]);
 
                 let marker = markResult(room.results[i], map);
 
@@ -324,62 +324,39 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         });
     };
 
-    createInfoWindow = function(result) {
-        let infoBubble = new InfoBubble({
-            content: '<p>Name: ' + result.name + '</p>' +
-            '<p>Average time spent: ' + result.avgtime.toString() + ' minutes.</p>',
-            position: new google.maps.LatLng(-35, 151),
+    createDefaultInfoBubble = function() {
+        return new InfoBubble({
+            content: '',
             shadowStyle: 1,
             padding: 0,
-            backgroundColor: 'rgb(57,57,57)',
-            borderRadius: 4,
+            backgroundColor: 'rgb(221, 218, 215)',
+            borderRadius: 0,
             arrowSize: 10,
             borderWidth: 1,
-            borderColor: '#2c2c2c',
+            borderColor: 'rgb(193, 173, 150)',
             disableAutoPan: true,
             hideCloseButton: true,
+            disableAnimation: true,
             arrowPosition: 30,
-            backgroundClassName: 'phoney',
+            backgroundClassName: 'infoBubbleText',
             arrowStyle: 2,
         });
-
-        // infoBubble.open(map, marker);
-
-        return infoBubble;
-
-        /*
-
-        return new google.maps.InfoWindow({
-            content: '<p>Name: ' + result.name + '</p>' +
-            '<p>Average time spent: ' + result.avgtime.toString() + ' minutes.</p>',
-        }); */
     };
 
-    createUserWindow = function(user) {
-        let infoBubble = new InfoBubble({
-            content: '<div style=\"color: ' + user.color + '\">' + user.username + '</div>',
-            position: new google.maps.LatLng(-35, 151),
-            shadowStyle: 1,
-            padding: 0,
-            backgroundColor: 'rgb(57,57,57)',
-            borderRadius: 4,
-            arrowSize: 10,
-            borderWidth: 1,
-            borderColor: '#2c2c2c',
-            disableAutoPan: true,
-            hideCloseButton: true,
-            arrowPosition: 30,
-            backgroundClassName: 'phoney',
-            arrowStyle: 2,
-        });
+    createLocationInfoBubble = function(result) {
+        let infoBubble = createDefaultInfoBubble();
 
-        // infoBubble.open(map, marker);
+        infoBubble.content = '<div class="infoBubbleLocation">Name: ' + result.name + '<br> Average time spent: ' + result.avgtime.toString() + ' minutes.</div>';
 
         return infoBubble;
+    };
 
-        /* return new google.maps.InfoWindow({
-            content: '<div style=\"color: ' + user.color + '\">' + user.username + '</div>',
-        }); */
+    createUserInfoBubble = function(user) {
+        let infoBubble = createDefaultInfoBubble();
+
+        infoBubble.content = '<div class="infoBubbleUser" style=\"color: ' + user.color + '\">' + user.username + '</div>';
+
+        return infoBubble;
     };
 
     markResult = function(result, map) {
