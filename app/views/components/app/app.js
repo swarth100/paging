@@ -4,7 +4,7 @@
  * location analysis
  */
 
-app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $filter, $uibModal, $location, Data, socket) {
+app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, $uibModal, $location, $compile, socket) {
     /* -----------------------------------------------------------------------*/
     console.log(location.href);
     /* Initialise fields used by the controller */
@@ -13,6 +13,35 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     $scope.roomID = $routeParams.room;
     $scope.newSession = true;
     $scope.issueSearch = false;
+
+    $scope.result = '';
+    $scope.transportType = '';
+    $scope.transports = [
+        {
+            name: 'Foot',
+        },
+        {
+            name: 'Bicycle',
+        },
+        {
+            name: 'Transport',
+        },
+        {
+            name: 'Car',
+        },
+    ];
+
+    let infoBubbleLocationHTML =
+        '<div>' +
+            '<div class="infoBubbleLocation">Name: ' + '{{result.name}}' + '<br> Average time spent: ' + '{{result.avgtime}}' + ' minutes.</div>' +
+            '<div class="btn-group" data-toggle="buttons-radio">' +
+                '<label ng-repeat="transport in transports">' +
+                '<button type="button" class="btn btn-search" ng-model="$scope.transportType" ng-value="transport.name">{{transport.name}}</button>' +
+                '</label>' +
+            '</div>' +
+        '</div>';
+
+    let compiled = $compile(infoBubbleLocationHTML)($scope);
 
     let geocoder = new google.maps.Geocoder();
 
@@ -455,7 +484,8 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     createLocationInfoBubble = function(result) {
         let infoBubble = createDefaultInfoBubble();
 
-        infoBubble.content = '<div class="infoBubbleLocation">Name: ' + result.name + '<br> Average time spent: ' + result.avgtime.toString() + ' minutes.</div>';
+        $scope.result = result;
+        infoBubble.content = compiled[0];
 
         return infoBubble;
     };
@@ -527,7 +557,9 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
         });
 
         google.maps.event.addListener(marker, 'mouseover', function() {
-            infoBubble.open(map, marker);
+            if (!infoBubble.opened) {
+                infoBubble.open(map, marker);
+            }
         });
 
         google.maps.event.addListener(marker, 'mouseout', function() {
