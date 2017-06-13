@@ -248,10 +248,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
              /* Initialise the radius */
              let radius = initRadius(radLoc, users[i], map);
 
-             let userwindow = createUserWindow(users[i]);
+             let userBubble = createUserWindow(users[i]);
 
-
-             markerAddInfo(marker, userwindow);
+             markerAddInfo(map, marker, userBubble);
          }
 
         /*
@@ -263,11 +262,11 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
          */
         if (room.results) {
             for (let i = 0; i < room.results.length; i++) {
-                let infowindow = createInfoWindow(room.results[i]);
+                let infoBubble = createInfoWindow(room.results[i]);
 
                 let marker = markResult(room.results[i], map);
 
-                markerAddInfo(marker, infowindow);
+                markerAddInfo(map, marker, infoBubble);
             }
         }
 
@@ -326,16 +325,61 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     };
 
     createInfoWindow = function(result) {
+        let infoBubble = new InfoBubble({
+            content: '<p>Name: ' + result.name + '</p>' +
+            '<p>Average time spent: ' + result.avgtime.toString() + ' minutes.</p>',
+            position: new google.maps.LatLng(-35, 151),
+            shadowStyle: 1,
+            padding: 0,
+            backgroundColor: 'rgb(57,57,57)',
+            borderRadius: 4,
+            arrowSize: 10,
+            borderWidth: 1,
+            borderColor: '#2c2c2c',
+            disableAutoPan: true,
+            hideCloseButton: true,
+            arrowPosition: 30,
+            backgroundClassName: 'phoney',
+            arrowStyle: 2,
+        });
+
+        // infoBubble.open(map, marker);
+
+        return infoBubble;
+
+        /*
+
         return new google.maps.InfoWindow({
             content: '<p>Name: ' + result.name + '</p>' +
             '<p>Average time spent: ' + result.avgtime.toString() + ' minutes.</p>',
-        });
+        }); */
     };
 
     createUserWindow = function(user) {
-        return new google.maps.InfoWindow({
+        let infoBubble = new InfoBubble({
             content: '<div style=\"color: ' + user.color + '\">' + user.username + '</div>',
+            position: new google.maps.LatLng(-35, 151),
+            shadowStyle: 1,
+            padding: 0,
+            backgroundColor: 'rgb(57,57,57)',
+            borderRadius: 4,
+            arrowSize: 10,
+            borderWidth: 1,
+            borderColor: '#2c2c2c',
+            disableAutoPan: true,
+            hideCloseButton: true,
+            arrowPosition: 30,
+            backgroundClassName: 'phoney',
+            arrowStyle: 2,
         });
+
+        // infoBubble.open(map, marker);
+
+        return infoBubble;
+
+        /* return new google.maps.InfoWindow({
+            content: '<div style=\"color: ' + user.color + '\">' + user.username + '</div>',
+        }); */
     };
 
     markResult = function(result, map) {
@@ -355,25 +399,25 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         });
     };
 
-    markerAddInfo = function(marker, infowindow) {
-        marker.addListener('mouseover', function() {
-            infowindow.open(map, marker);
-        });
-
-        marker.addListener('click', function() {
-            marker.windowClicked = true;
-            infowindow.open(map, marker);
-        });
-
-        marker.addListener('mouseout', function() {
-            if (!marker.windowClicked) {
-                infowindow.close(map, marker);
+    markerAddInfo = function(map, marker, infoBubble) {
+        google.maps.event.addListener(marker, 'click', function() {
+            if (!infoBubble.opened) {
+                infoBubble.opened = true;
+                infoBubble.open(map, marker);
+            } else if (infoBubble.opened) {
+                infoBubble.opened = false;
+                infoBubble.close();
             }
         });
 
-        infowindow.addListener('closeclick', function() {
-            marker.windowClicked = false;
-            infowindow.close(map, marker);
+        google.maps.event.addListener(marker, 'mouseover', function() {
+            infoBubble.open(map, marker);
+        });
+
+        google.maps.event.addListener(marker, 'mouseout', function() {
+            if (!infoBubble.opened) {
+                infoBubble.close();
+            }
         });
     };
     /* -----------------------------------------------------------------------*/
