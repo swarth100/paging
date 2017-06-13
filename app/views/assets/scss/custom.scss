@@ -33,6 +33,7 @@ $table-border: $search-field-border;
 /* Search bar padding ***************************************/
 $search-padding-bottom: 10px;
 $search-padding-top: 70px;
+$bottom-padding: calc(100vh - 50px - 70px - 82px - 9vh);
 /*************************************************************/
 
 /* Button and Field *****************************************/
@@ -187,34 +188,35 @@ input[type="checkbox"]:checked + label {
 }
 
 .large-bottom-padding {
-    animation: increase-padding 1s;
-    -webkit-animation: increase-padding 1s;
+    animation: increase-padding 0s;
+    -webkit-animation: increase-padding 0s;
     animation-fill-mode: forwards;
     -webkit-animation-fill-mode: forwards;
 }
 
+
 @keyframes increase-padding {
     0% {padding-bottom: $search-padding-bottom};
-    100% {padding-bottom: 5000px};
+    100% {padding-bottom: $bottom-padding};
 }
 
 @-webkit-keyframes increase-padding {
     0% {padding-bottom: $search-padding-bottom};
-    100% {padding-bottom: 5000px};
+    100% {padding-bottom: $bottom-padding};
 }
 
 .small-bottom-padding {
-    animation: decrease-padding 1s;
-    -webkit-animation: decrease-padding 1s;
+    animation: decrease-padding 5s;
+    -webkit-animation: decrease-padding 5s;
 }
 
 @keyframes decrease-padding {
-    0% {padding-bottom: 5000px};
+    0% {padding-bottom: $bottom-padding};
     100% {padding-bottom: $search-padding-bottom};
 }
 
 @-webkit-keyframes decrease-padding {
-    0% {padding-bottom: 5000px};
+    0% {padding-bottom: $bottom-padding};
     100% {padding-bottom: $search-padding-bottom};
 
 }
@@ -230,7 +232,7 @@ input[type="checkbox"]:checked + label {
     position: fixed;
     bottom: 0px;
     height: 10%;
-    width: 100%;
+    width: 100vw;
     background: $search-field-bg;
 }
 /************************************************************/
