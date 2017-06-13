@@ -342,7 +342,19 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
             infowindow.open(map, marker);
         });
 
+        marker.addListener('click', function() {
+            marker.windowClicked = true;
+            infowindow.open(map, marker);
+        });
+
         marker.addListener('mouseout', function() {
+            if (!marker.windowClicked) {
+                infowindow.close(map, marker);
+            }
+        });
+
+        infowindow.addListener('closeclick', function() {
+            marker.windowClicked = false;
             infowindow.close(map, marker);
         });
     };
