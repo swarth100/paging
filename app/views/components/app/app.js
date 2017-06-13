@@ -4,12 +4,12 @@
  * location analysis
  */
 
-app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, $uibModal, $location, socket) {
+app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $filter, $uibModal, $location, Data, socket) {
     /* -----------------------------------------------------------------------*/
     console.log(location.href);
     /* Initialise fields used by the controller */
-    $scope.types = $sessionStorage.types;
-    $scope.appSearch = $sessionStorage.queryData;
+    $scope.types = Data.types;
+    $scope.appSearch = Data.query;
     $scope.roomID = $routeParams.room;
     $scope.newSession = true;
     $scope.issueSearch = false;
@@ -18,7 +18,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     $scope.toggleSelected = ((index) => {
         $scope.types[index].isSelected = !$scope.types[index].isSelected;
-        $sessionStorage.types = $scope.types;
+        Data.types = $scope.types;
     });
 
     /* -----------------------------------------------------------------------*/
@@ -27,7 +27,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Generalised getLocation function for A GIVE USER
      * Determines, according to the current field, whether to use geolocation or parse the location field */
     $scope.getLocation = function(callback) {
-        if ($sessionStorage.queryData.location === '') {
+        if (Data.query.location === '') {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     let location = {
@@ -41,7 +41,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
                 alert('Geolocation is not supported by this browser.');
             }
         } else {
-            geocoder.geocode({'address': $sessionStorage.queryData.location},
+            geocoder.geocode({'address': Data.query.location},
                 function(results, status) {
                     if (status === 'OK') {
                         let locTmp = results[0].geometry.location;
@@ -69,10 +69,10 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         /* Broadcast location to all socket listeners */
         $scope.getLocation(function(location) {
             socket.emit('location', {
-                'username': $localStorage.username,
+                'username': Data.user.username,
                 'lat': location.lat,
                 'lng': location.lng,
-                'radius': $sessionStorage.queryData.radius,
+                'radius': Data.query.radius,
             });
         });
     };
@@ -81,9 +81,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         console.log('Gonna broadcast types');
 
        let toSend = {
-            'types': angular.toJson($sessionStorage.types),
-            'duration': $sessionStorage.queryData.duration,
-            'date': $sessionStorage.queryData.datetime,
+            'types': angular.toJson(Data.types),
+            'duration': Data.query.duration,
+            'date': Data.query.datetime,
         };
         console.log(toSend);
         /* Broadcast location to all socket listeners */
@@ -99,9 +99,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     let socketUpdate = function(room) {
         $scope.issueSearch = false;
         $scope.users = room.users;
-        if ($localStorage.username) {
+        if (Data.user.username !== '') {
             let i = $scope.users.reduce(( cur, val, index ) => {
-                if (val.username === $localStorage.username && cur === -1 ) {
+                if (val.username === Data.user.username && cur === -1 ) {
                     return index;
                 }
                 return cur;
@@ -121,16 +121,18 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         if (!room.duration) {
             broadcastFieldsData();
         } else {
-            $sessionStorage.queryData.duration = room.duration;
-            $sessionStorage.queryData.datetime = room.date;
+            Data.query.duration = room.duration;
+            Data.query.datetime = room.date;
 
             /* TYPE REFRESHING */
             for (let i = 0; i < room.types.length; i++) {
                 $scope.types[i].isSelected = room.types[i].isSelected;
             }
+            console.log($scope.types);
+            console.log(Data.types);
 
-            $scope.appSearch = $sessionStorage.queryData;
-            $sessionStorage.types = $scope.types;
+            $scope.appSearch = Data.query;
+            Data.types = $scope.types;
 
             $scope.$apply();
         }
@@ -159,14 +161,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         console.log('Join Success');
 
         if (!$localStorage.username) {
-            $localStorage.username = 'Guest-' + number;
-        }
-
-        if (!$sessionStorage.queryData) {
-            $sessionStorage.queryData = {
-                location: '',
-                radius: 1000,
-            };
+            Data.user.username = 'Guest-' + number;
         }
 
         broadcastUserData();
@@ -206,15 +201,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     $scope.deleteUser = (index) => {
         console.log($scope.users[index].username);
         socket.emit('deleteUser', $scope.users[index].username);
-    };
-
-
-    /* -----------------------------------------------------------------------*/
-    /* Functions to handle input/refreshing of input */
-
-    /* Handles ... clicking? */
-    $scope.handleClick = () => {
-        $sessionStorage.queryData = $scope.appSearch;
     };
 
     /* -----------------------------------------------------------------------*/
