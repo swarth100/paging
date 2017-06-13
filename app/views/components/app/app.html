@@ -120,7 +120,7 @@
                         <div class="scrollable-table text-field-colour set-boarder">
                             <table class="table table-hover table-bordered set-boarder no-bottom-border no-margin">
                                 <tbody>
-                                    <tr ng-repeat="type in types">
+                                    <tr ng-repeat="type in types" class="no-right-border no-left-border">
                                         <td ng-if="type.isSelected" class="flex-row">
                                             <img class="type-icon-small" src="{{type.image}}">
                                             {{type.name}}
@@ -170,7 +170,7 @@
         <!-- The div nesting was done so that we could have the rotating gif
         when a search is commensed. -->
         <div class="map-dimensions">
-            <div id="map" class="map-dimensions"></div>
+            <div id="map" class="map-dimensions" ng-if="!issueSearch"></div>
         </div>
     </div>
 </div>
