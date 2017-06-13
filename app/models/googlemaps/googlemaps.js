@@ -1,6 +1,7 @@
 let mongooseLocation = require('../mongoose/location');
 let avgTimes = require('./average-times');
 let geolib = require('geolib');
+const co = require('co');
 
 let googleMapsClient = require('@google/maps').createClient({
     // key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
@@ -156,11 +157,14 @@ function searchAroundLocation(queryData, cb) {
                 // Flatten the array of arrays into an array of results.
                 finalPlaces = [].concat.apply(...responses);
             }
+            getTravelTime(queryData.location, finalPlaces[0], (res) => {
+                console.log(res);
+            });
             cb(finalPlaces);
         })
-        .catch(function(error) {
-            console.log(error);
-        });
+    .catch(function(error) {
+        console.log(error);
+    });
 }
 
 /*
@@ -197,13 +201,13 @@ function queryOnce(query, radius) {
                 return findInDatabase(convertedPlace);
             }));
         })
-        .then(function(responses) {
-            // Return an always resolving promise.
-            return Promise.resolve(responses);
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
+    .then(function(responses) {
+        // Return an always resolving promise.
+        return Promise.resolve(responses);
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
 }
 
 function exportQueryData(location, radius, types) {
@@ -245,18 +249,18 @@ function findDistances(results) {
     /* Use geolib to determine meter distances given coordinates */
     for (let i = 0; i < results.length; i++) {
         arrayLocation.push(
-            geolib.getDistance(
-                {
-                    'latitude': results[i].geometry.location.lat,
-                    'longitude': results[i].geometry.location.lng,
-                },
-                {
-                    'latitude': location.lat,
-                    'longitude': location.lng,
-                }
-            )
+                geolib.getDistance(
+                    {
+                        'latitude': results[i].geometry.location.lat,
+                        'longitude': results[i].geometry.location.lng,
+                    },
+                    {
+                        'latitude': location.lat,
+                        'longitude': location.lng,
+                    }
+                    )
 
-        );
+                );
     }
 
     return arrayLocation;
@@ -333,9 +337,9 @@ function findInDatabase(randomPlace) {
         .then(function(result) {
             return result;
         })
-        .catch(function(err) {
-            return saveInDatabase(randomPlace);
-        });
+    .catch(function(err) {
+        return saveInDatabase(randomPlace);
+    });
 }
 
 /*
@@ -349,6 +353,42 @@ function saveInDatabase(randomPlace) {
         return mongooseLocation.saveLocation(randomPlace);
     });
 }
+
+const appendTravelTime = (travelTimes, dest, modes) => {
+    let result = [];
+    travelTimes.forEach((time, i) => {
+        let res = {
+            mode: modes[i],
+            location: dest,
+            travelTime: time.json.rows[0].elements,
+        };
+        result.push(res);
+    });
+    return result;
+};
+
+/* pass in origin as lat-lng and dest as single places object */
+const getTravelTime = co.wrap(function* (origin, dest, callback) {
+    /* format origin into google format, NO SPACE */
+    origin = origin.lat + ',' + origin.lng;
+    /* format the destination into google format, dest should be in similar format to finalPlaces */
+    let destination = 'place_id:' + dest.id;
+    /* these are the options avaliable for travel methods */
+    const diffModes = ['driving', 'walking', 'bicycling', 'transit'];
+    let results = [];
+    diffModes.forEach((mode, index) => {
+        results.push(googleMapsClient.distanceMatrix({
+            origins: origin,
+            destinations: destination,
+            mode: mode,
+        }).asPromise());
+    });
+    /* wait for promise to resolve */
+    results = yield results;
+    /* attach destination data to the result */
+    results = appendTravelTime(results, dest, diffModes);
+    callback(results);
+});
 
 /*
  * This function is not tested.
