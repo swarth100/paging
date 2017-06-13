@@ -158,7 +158,6 @@ function searchAroundLocation(queryData, cb) {
                 finalPlaces = [].concat.apply(...responses);
             }
             getTravelTime(queryData.location, finalPlaces[0], (res) => {
-                console.log(res);
             });
             cb(finalPlaces);
         })
