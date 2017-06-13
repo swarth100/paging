@@ -4,7 +4,7 @@
  * location analysis
  */
 
-app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, $uibModal, $location, $compile, socket, Data) {
+app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams, $filter, $uibModal, $location, $compile, socket, Data) {
     /* -----------------------------------------------------------------------*/
     /* Initialise fields used by the controller */
     console.log(location.href);
@@ -226,7 +226,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     socket.on('joinSuccess', function(number) {
         console.log('Join Success');
 
-        if (!$localStorage.username) {
+        if (!Data.user.username) {
             Data.user.username = 'Guest-' + number;
         }
 
@@ -614,7 +614,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
         let packagedData = {
             markerIdentification: marker.id,
-            username: $localStorage.username,
+            username: Data.user.username,
         };
 
         socket.emit('change', packagedData);
