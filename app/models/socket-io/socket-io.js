@@ -142,6 +142,14 @@ exports.start = (server) => {
 
             socket.broadcast.to(data.room).emit(data.eventName, data.data);
         });
+
+        /*
+         * If a marker is clicked on this broadcasts the change to all users
+         * in the same room.
+         */
+        socket.on('change', function(packagedData) {
+            io.in(socket.room).emit('evolve', packagedData);
+        });
     });
 
     function findRoom(roomID, cb) {
