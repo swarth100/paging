@@ -35,7 +35,7 @@
 
 -->
 <div class="container-fluid search-bar">
-    <div class="row search-top"></div>
+    <div class="row search-top" ng-class="dropdownOpen ? 'raise-search-bar': 'lower-search-bar'"></div>
     <div class="row search-bottom">
         <!-- LOCATION field holder -->
         <div class="col-sm-12 col-md-2 no-padding fix-overlap-side-margin">
@@ -89,7 +89,7 @@
                 <!-- Nasty resizing using input-lg -->
                 <div class="form-control input-lg square text-field-colour">Options</div>
                 <span class="input-group-btn">
-                    <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-click="dropdownOpen = !dropdownOpen">
                         <span class="caret"></span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-types dropdown-menu-right" ng-click="$event.stopPropagation();">
