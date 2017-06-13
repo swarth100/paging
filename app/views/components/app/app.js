@@ -189,6 +189,8 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
         socket.once('evolve', swapMarkers);
     });
 
+    let lastOpenedInfoBubble = undefined;
+
     function swapMarkers(packagedData) {
         let id = packagedData.markerIdentification;
         let user = packagedData.username;
@@ -510,9 +512,15 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
             if (!infoBubble.opened) {
                 infoBubble.opened = true;
                 infoBubble.open(map, marker);
+                if (lastOpenedInfoBubble !== undefined) {
+                    lastOpenedInfoBubble.opened = false;
+                    lastOpenedInfoBubble.close();
+                }
+                lastOpenedInfoBubble = infoBubble;
             } else if (infoBubble.opened) {
                 infoBubble.opened = false;
                 infoBubble.close();
+                lastOpenedInfoBubble = undefined;
             }
 
             changeMarkerToBlue(marker);
@@ -532,8 +540,6 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     function changeMarkerToBlue(marker) {
         let index = resultMarkers.indexOf(marker);
 
-        // socket.emit('change', index);
-        // socket.emit('change', marker.id);
         let packagedData = {
             markerIdentification: marker.id,
             username: $localStorage.username,
