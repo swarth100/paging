@@ -80,6 +80,11 @@ function getAllLocations(users) {
 }
 
 function determineSearchRadius(limits) {
+    if (users.length === 1) {
+        return users[0].radius;
+    }
+
+    /*
     let difference = geolib.getDistance({
         latitude: limits.minLat,
         longitude: limits.minLng,
@@ -87,10 +92,16 @@ function determineSearchRadius(limits) {
         latitude: limits.maxLat,
         longitude: limits.maxLng,
     });
+    */
 
-    return 1000;
+    let min = Infinity;
+    users.forEach((user, index) => {
+        if (min > user.radius) {
+            min = user.radius;
+        }
+    });
 
-    // return difference / 2;
+    return min;
 }
 
 function pruneRenewed(results) {
@@ -356,7 +367,7 @@ function saveInDatabase(randomPlace) {
 const appendTravelTime = (travelTimes, dest, modes) => {
     let result = [];
     travelTimes.forEach((time, i) => {
-        let res = {
+        const res = {
             mode: modes[i],
             location: dest,
             travelTime: time.json.rows[0].elements,
@@ -371,7 +382,7 @@ const getTravelTime = co.wrap(function* (origin, dest, callback) {
     /* format origin into google format, NO SPACE */
     origin = origin.lat + ',' + origin.lng;
     /* format the destination into google format, dest should be in similar format to finalPlaces */
-    let destination = 'place_id:' + dest.id;
+    const destination = 'place_id:' + dest.id;
     /* these are the options avaliable for travel methods */
     const diffModes = ['driving', 'walking', 'bicycling', 'transit'];
     let results = [];
