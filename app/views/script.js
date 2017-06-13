@@ -38,15 +38,25 @@ app.config(function($routeProvider, $locationProvider) {
     // .otherwise( {redirectTo: '/'} );
 });
 
-app.factory('Data', function($localStorage) {
+app.factory('Data', function($localStorage, $filter) {
     let username = '';
+    /* Initialises the following fields to the following default values */
+    let tmpDate = new Date();
+    let tmpTime = new Date();
+    let datetime = $filter('date')(new Date(
+            tmpDate.getFullYear(),
+            tmpDate.getMonth(),
+            tmpDate.getDate(),
+            tmpTime.getHours(),
+            tmpTime.getMinutes()
+        ), 'yyyy-MM-dd HH:mm');
     if ($localStorage.username) {
         username = $localStorage.username;
     }
     return {
         query: {
             location: '',
-            datetime: '',
+            datetime: datetime,
             duration: 60,
             radius: 1000,
             selectedTypes: [],
