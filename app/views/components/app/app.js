@@ -13,6 +13,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
     $scope.roomID = $routeParams.room;
     $scope.newSession = true;
     $scope.issueSearch = false;
+    Data.user.username = Data.updateUsername();
 
     let geocoder = new google.maps.Geocoder();
 
