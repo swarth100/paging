@@ -50,15 +50,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Scope HTML templates for labels. Must be precompiled to inject angular correctly down */
 
+    /* Displays a given route onto the map */
     function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-        // let selectedMode = document.getElementById('mode').value;
         $scope.getLocation(function(currLoc) {
             directionsService.route({
                 origin: currLoc,
                 destination: $scope.selectedResult.location,
-                // Note that Javascript allows us to access the constant
-                // using square brackets and a string value as its
-                // "property."
                 travelMode: google.maps.TravelMode[$scope.transportType.type],
             }, function(response, status) {
                 if (status == 'OK') {
@@ -69,7 +66,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             });
         });
     }
-
 
     /* Handles clicking on the submit button
      * Submission also occurs via pressing enter */
@@ -324,12 +320,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
          /* Initialise the map via the Google API */
          let map = createMap(location);
 
-         /* */
-
+         /* Hook for rendering of directions API */
          directionsDisplay.setMap(map);
 
-
-        users = room.users;
+         users = room.users;
 
          socketRefresh(room);
 
@@ -499,9 +493,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
                 /* Change the template of the selected label to use the 'selected' style
                  * Then change the $scope field and apply the angular changes */
-                infoBubble.content = compiledSelectedHTML[0];
-                $scope.selectedResult = infoBubble.result;
-                $scope.$apply();
+                if (infoBubble.result) {
+                    infoBubble.content = compiledSelectedHTML[0];
+                    $scope.selectedResult = infoBubble.result;
+                    $scope.$apply();
+                }
 
                 /* Close the last opened label if necessary */
                 if (lastOpenedInfoBubble) {
@@ -525,9 +521,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             if (!infoBubble.opened) {
                 /* Change the template of the hovered label to use the hovering style
                  * Then change the $scope field and apply the angular changes */
-                infoBubble.content = compiledHoveredHTML[0];
-                $scope.hoveredResult = infoBubble.result;
-                $scope.$apply();
+                if (infoBubble.result) {
+                    infoBubble.content = compiledHoveredHTML[0];
+                    $scope.hoveredResult = infoBubble.result;
+                    $scope.$apply();
+                }
 
                 infoBubble.open(map, marker);
             }
