@@ -189,22 +189,20 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
         socket.once('evolve', swapMarkers);
     });
 
+    let indexOflastSelectedMarker = undefined;
+
     function swapMarkers(index) {
-        let oldMarker = resultMarkers[index];
+        let newMarker = resultMarkers[index];
 
-        // let map = oldMarker.getMap();
-        //
-        // let position = oldMarker.getPosition();
-        //
-        // let newMarker = blueMarker(position);
-        //
-        // oldMarker.setMap(null);
-        //
-        // newMarker.setMap(map);
-        //
-        // resultMarkers[index] = newMarker;
+        newMarker.setIcon(createBlueIcon());
 
-        oldMarker.setIcon(createBlueIcon());
+        if (indexOflastSelectedMarker !== undefined) {
+            let oldMarker = resultMarkers[indexOflastSelectedMarker];
+
+            oldMarker.setIcon(createRedIcon());
+        }
+
+        indexOflastSelectedMarker = index;
     }
 
     /* -----------------------------------------------------------------------*/
@@ -424,15 +422,6 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
             strokeWeight: 1,
             scale: .08,
         };
-    }
-
-    function blueMarker(location) {
-        let icon = createBlueIcon();
-
-        return new google.maps.Marker({
-            position: location,
-            icon: icon,
-        });
     }
 
     markerAddInfo = function(map, marker, infoBubble) {
