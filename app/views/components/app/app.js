@@ -98,8 +98,20 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Socket update helper function */
     let socketUpdate = function(room) {
         $scope.issueSearch = false;
-        $scope.$apply();
         $scope.users = room.users;
+        if ($localStorage.username) {
+            let i = $scope.users.reduce(( cur, val, index ) => {
+                if (val.username === $localStorage.username && cur === -1 ) {
+                    return index;
+                }
+                return cur;
+            }, -1 );
+            if (i === -1) {
+                /* The user does not exist in the room (kicked out) */
+                $location.url('/home');
+            }
+        }
+        $scope.$apply();
         $scope.getLocation(function(location) {
             $scope.initMap(location, room);
         });
@@ -190,6 +202,12 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
             socket.emit('search', {});
         }
     };
+
+    $scope.deleteUser = (index) => {
+        console.log($scope.users[index].username);
+        socket.emit('deleteUser', $scope.users[index].username);
+    };
+
 
     /* -----------------------------------------------------------------------*/
     /* Functions to handle input/refreshing of input */
