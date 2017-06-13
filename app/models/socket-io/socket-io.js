@@ -142,6 +142,14 @@ exports.start = (server) => {
 
             socket.broadcast.to(data.room).emit(data.eventName, data.data);
         });
+
+        socket.on('change', function(index) {
+            console.log('Entered the change function on the server');
+            console.log('The room is ' + socket.room);
+            console.log('Trying to change index: ' + index);
+
+            io.in(socket.room).emit('evolve', index);
+        });
     });
 
     function findRoom(roomID, cb) {
