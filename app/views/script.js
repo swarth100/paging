@@ -156,6 +156,14 @@ app.factory('Data', function($localStorage, $filter) {
         user: {
             username: username,
         },
+        updateUsername: () => {
+            let u = $localStorage.username;
+            if (u) {
+                return u;
+            } else {
+                return '';
+            }
+        },
     };
 });
 
