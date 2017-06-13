@@ -189,20 +189,93 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
         socket.once('evolve', swapMarkers);
     });
 
-    let indexOflastSelectedMarker = undefined;
+    function swapMarkers(packagedData) {
+        let id = packagedData.markerIdentification;
+        let user = packagedData.username;
 
-    function swapMarkers(index) {
-        let newMarker = resultMarkers[index];
+        for (let i = 0; i < resultMarkers.length; i++) {
+            if (resultMarkers[i].id === id) {
+                if (didUserClick(resultMarkers[i], user)) {
+                    removeUserClick(resultMarkers[i], user);
+                } else {
+                    addUserClick(resultMarkers[i], user);
+                }
+            } else {
+                if (didUserClick(resultMarkers[i], user)) {
+                    removeUserClick(resultMarkers[i], user);
+                }
+            }
+        }
+    }
 
-        newMarker.setIcon(createBlueIcon());
+    function didUserClick(result, user) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
 
-        if (indexOflastSelectedMarker !== undefined) {
-            let oldMarker = resultMarkers[indexOflastSelectedMarker];
-
-            oldMarker.setIcon(createRedIcon());
+        for (let i = 0; i < listOfUsersWhoClicked.length; i++) {
+            if (listOfUsersWhoClicked[i] === user) {
+                return true;
+            }
         }
 
-        indexOflastSelectedMarker = index;
+        return false;
+    }
+
+    function recalculateColour(result) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        if (listOfUsersWhoClicked.length === 0) {
+            result.setIcon(createRedIcon());
+        } else if (listOfUsersWhoClicked.length === 1) {
+            result.setIcon(generateIconFromUserColour(listOfUsersWhoClicked[0]));
+        } else {
+            result.setIcon(generateIcon('#ffffff'));
+        }
+    }
+
+    function findColourOfUser(user) {
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].username === user) {
+                return users[i].color;
+            }
+        }
+    }
+
+    function removeUserClick(result, user) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+        let index = listOfUsersWhoClicked.indexOf(user);
+
+        listOfUsersWhoClicked.splice(index, 1);
+
+        recalculateColour(result);
+    }
+
+    function addUserClick(result, user) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        listOfUsersWhoClicked.push(user);
+
+        let icon = generateIconFromUserColour(user);
+
+        recalculateColour(result);
+    }
+
+    function generateIconFromUserColour(user) {
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].username === user) {
+                return generateIcon(users[i].color);
+            }
+        }
+    }
+
+    function generateIcon(colour) {
+        return {
+            path: pathToIcon,
+            fillColor: colour,
+            fillOpacity: 1,
+            anchor: new google.maps.Point(250, 400),
+            strokeWeight: 1,
+            scale: .08,
+        };
     }
 
     /* -----------------------------------------------------------------------*/
@@ -250,6 +323,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     /* Map rendering functions with helpers */
 
     let resultMarkers = [];
+    let users;
 
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
@@ -258,7 +332,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
          /* Initialise the map via the Google API */
          let map = createMap(location);
 
-         let users = room.users;
+         users = room.users;
 
          socketRefresh(room);
 
@@ -291,6 +365,8 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
             resultMarkers = [];
 
             for (let i = 0; i < room.results.length; i++) {
+                console.log(room.results[i]);
+
                 let infoBubble = createLocationInfoBubble(room.results[i]);
 
                 let marker = markResult(room.results[i], map);
@@ -393,11 +469,16 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     markResult = function(result, map) {
         let icon = createRedIcon();
 
-        return new google.maps.Marker({
+        let marker = new google.maps.Marker({
             position: result.location,
             map: map,
             icon: icon,
         });
+
+        marker['id'] = result.id;
+        marker['listOfUsersWhoClicked'] = [];
+
+        return marker;
     };
 
     let pathToIcon = 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z';
@@ -451,7 +532,14 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     function changeMarkerToBlue(marker) {
         let index = resultMarkers.indexOf(marker);
 
-        socket.emit('change', index);
+        // socket.emit('change', index);
+        // socket.emit('change', marker.id);
+        let packagedData = {
+            markerIdentification: marker.id,
+            username: $localStorage.username,
+        };
+
+        socket.emit('change', packagedData);
     }
     /* -----------------------------------------------------------------------*/
     $scope.openLink = function() {
