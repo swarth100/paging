@@ -179,15 +179,17 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
         broadcastUserData();
     });
 
-    // socket.on('evolve', );
-
+    /*
+     * Note to self: This should work if one uses only socket.on. However,
+     * it does not. It would appear that the event is only triggered once.
+     * This behaviour leads me to believe that the listener is either
+     * destroyed or it is made to only listen once.
+     */
     socket.removeAllListeners('evolve', function() {
-        socket.once('evolve', temporaryFunction);
+        socket.once('evolve', swapMarkers);
     });
 
-    function temporaryFunction(index) {
-        console.log('Wanting to change the marker at ' + index);
-
+    function swapMarkers(index) {
         let oldMarker = resultMarkers[index];
 
         let map = oldMarker.getMap();
@@ -285,6 +287,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
          * the map
          */
         if (room.results) {
+            /* Reset the resultMarkers array when new results are received. */
             resultMarkers = [];
 
             for (let i = 0; i < room.results.length; i++) {
@@ -296,8 +299,6 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
 
                 markerAddInfo(map, marker, infoBubble);
             }
-
-            console.log('The current markers are: ' + resultMarkers);
         }
 
         if (users.length === 1 && $scope.newSession) {
@@ -447,26 +448,10 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
         });
     };
 
-    function changeMarkerToBlue(marker) {
-        console.log('Entered the changeMarkerToBlue function');
-
+    function changeMarkerToSelected(marker) {
         let index = resultMarkers.indexOf(marker);
 
         socket.emit('change', index);
-
-        /*
-        let oldMarker = resultMarkers[index];
-
-        let map = oldMarker.getMap();
-
-        let position = oldMarker.getPosition();
-
-        let newMarker = blueMarker(position);
-
-        oldMarker.setMap(null);
-
-        newMarker.setMap(map);
-        */
     }
     /* -----------------------------------------------------------------------*/
     $scope.openLink = function() {
