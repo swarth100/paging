@@ -238,120 +238,11 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
      * Note to self: This should work if one uses only socket.on. However,
      * it does not. It would appear that the event is only triggered once.
      * This behaviour leads me to believe that the listener is either
-     * destroyed or it is made to only listen once.
+     * destroyed or it listens only once.
      */
     socket.removeAllListeners('evolve', function() {
-        socket.once('evolve', swapMarkers);
+        socket.once('evolve', changeColoursOfMarkers);
     });
-
-    let lastOpenedInfoBubble = undefined;
-
-    function swapMarkers(packagedData) {
-        let id = packagedData.markerIdentification;
-        let user = packagedData.username;
-
-        for (let i = 0; i < resultMarkers.length; i++) {
-            if (resultMarkers[i].id === id) {
-                if (didUserClick(resultMarkers[i], user)) {
-                    removeUserClick(resultMarkers[i], user);
-                } else {
-                    addUserClick(resultMarkers[i], user);
-                }
-            } else {
-                if (didUserClick(resultMarkers[i], user)) {
-                    removeUserClick(resultMarkers[i], user);
-                }
-            }
-        }
-    }
-
-    function didUserClick(result, user) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        for (let i = 0; i < listOfUsersWhoClicked.length; i++) {
-            if (listOfUsersWhoClicked[i] === user) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    function recalculateColour(result) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        if (listOfUsersWhoClicked.length === 0) {
-            result.setIcon(createRedIcon());
-        } else if (listOfUsersWhoClicked.length === 1) {
-            result.setIcon(generateIconFromUserColour(listOfUsersWhoClicked[0]));
-        } else {
-            result.setIcon(generateIcon('#ffffff'));
-        }
-    }
-
-    function recalculateLabel(result) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        let label;
-
-        if (listOfUsersWhoClicked.length > 1) {
-            label = {
-                text: (listOfUsersWhoClicked.length).toString(),
-                fontSize: '24px',
-            };
-        } else {
-            label = null;
-        }
-
-        result.setLabel(label);
-    }
-
-    function findColourOfUser(user) {
-        for (let i = 0; i < users.length; i++) {
-            if (users[i].username === user) {
-                return users[i].color;
-            }
-        }
-    }
-
-    function removeUserClick(result, user) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-        let index = listOfUsersWhoClicked.indexOf(user);
-
-        listOfUsersWhoClicked.splice(index, 1);
-
-        recalculateColour(result);
-        recalculateLabel(result);
-    }
-
-    function addUserClick(result, user) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        listOfUsersWhoClicked.push(user);
-
-        recalculateColour(result);
-        recalculateLabel(result);
-    }
-
-    function generateIconFromUserColour(user) {
-        for (let i = 0; i < users.length; i++) {
-            if (users[i].username === user) {
-                return generateIcon(users[i].color);
-            }
-        }
-    }
-
-    function generateIcon(colour) {
-        return {
-            path: pathToIcon,
-            fillColor: colour,
-            fillOpacity: 1,
-            anchor: new google.maps.Point(250, 400),
-            labelOrigin: new google.maps.Point(240, 150),
-            strokeWeight: 1,
-            scale: .08,
-        };
-    }
 
     /* -----------------------------------------------------------------------*/
     /* Socket.io helper wrappers */
@@ -397,9 +288,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
     /* -----------------------------------------------------------------------*/
     /* Map rendering functions with helpers */
 
-    let resultMarkers = [];
-    let users;
-
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
          document.getElementById('map').style.visibility = 'visible';
@@ -436,15 +324,15 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
          * the map
          */
         if (room.results) {
-            /* Reset the resultMarkers array when new results are received. */
-            resultMarkers = [];
+            /* Reset the markers array when new results are received. */
+            markers = [];
 
             for (let i = 0; i < room.results.length; i++) {
                 let infoBubble = createLocationInfoBubble(room.results[i]);
 
                 let marker = markResult(room.results[i], map);
 
-                resultMarkers.push(marker);
+                markers.push(marker);
 
                 markerAddInfo(map, marker, infoBubble);
             }
@@ -540,7 +428,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
     };
 
     markResult = function(result, map) {
-        let icon = createRedIcon();
+        let icon = createDefaultRedIcon();
 
         let marker = new google.maps.Marker({
             position: result.location,
@@ -556,7 +444,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
 
     let pathToIcon = 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z';
 
-    function createRedIcon() {
+    function createDefaultRedIcon() {
         return {
             path: pathToIcon,
             fillColor: '#ff3700',
@@ -593,8 +481,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
                 lastOpenedInfoBubble = undefined;
             }
 
-            /* */
-            changeMarkerToBlue(marker);
+            /* When a marker is clicked its colour needs to change and
+             potentially other markers' colours would need to change as well. */
+            changeMarkers(marker);
         });
 
         /* Handle mouse hovering over labels */
@@ -618,9 +507,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
         });
     };
 
-    function changeMarkerToBlue(marker) {
-        let index = resultMarkers.indexOf(marker);
-
+    function changeMarkers(marker) {
         let packagedData = {
             markerIdentification: marker.id,
             username: Data.user.username,
@@ -642,6 +529,110 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
             windowClass: 'centre-modal',
       });
     };
+
+    /* -----------------------------------------------------------------------*/
+    /* Functions used in order to change colours of markers. */
+
+    let markers = [];
+    let users;
+    let lastOpenedInfoBubble = undefined;
+
+    function changeColoursOfMarkers(packagedData) {
+        let id = packagedData.markerIdentification;
+        let user = packagedData.username;
+
+        for (let i = 0; i < markers.length; i++) {
+            if (markers[i].id === id) {
+                if (didUserClickBefore(markers[i], user)) {
+                    removeUserClick(markers[i], user);
+                } else {
+                    addUserClick(markers[i], user);
+                }
+            } else {
+                if (didUserClickBefore(markers[i], user)) {
+                    removeUserClick(markers[i], user);
+                }
+            }
+        }
+    }
+
+    function didUserClickBefore(result, user) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        for (let i = 0; i < listOfUsersWhoClicked.length; i++) {
+            if (listOfUsersWhoClicked[i] === user) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function recalculateColour(result) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        if (listOfUsersWhoClicked.length === 0) {
+            result.setIcon(createDefaultRedIcon());
+        } else if (listOfUsersWhoClicked.length === 1) {
+            result.setIcon(generateIconFromUserColour(listOfUsersWhoClicked[0]));
+        } else {
+            result.setIcon(generateIcon('#ffffff'));
+        }
+    }
+
+    function recalculateLabel(result) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        let label = null;
+
+        if (listOfUsersWhoClicked.length > 1) {
+            label = {
+                text: (listOfUsersWhoClicked.length).toString(),
+                fontSize: '24px',
+            };
+        }
+
+        result.setLabel(label);
+    }
+
+    function removeUserClick(result, user) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+        let index = listOfUsersWhoClicked.indexOf(user);
+
+        listOfUsersWhoClicked.splice(index, 1);
+
+        recalculateColour(result);
+        recalculateLabel(result);
+    }
+
+    function addUserClick(result, user) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        listOfUsersWhoClicked.push(user);
+
+        recalculateColour(result);
+        recalculateLabel(result);
+    }
+
+    function generateIconFromUserColour(user) {
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].username === user) {
+                return generateIcon(users[i].color);
+            }
+        }
+    }
+
+    function generateIcon(colour) {
+        return {
+            path: pathToIcon,
+            fillColor: colour,
+            fillOpacity: 1,
+            anchor: new google.maps.Point(250, 400),
+            labelOrigin: new google.maps.Point(240, 150),
+            strokeWeight: 1,
+            scale: .08,
+        };
+    }
 });
 
 app.controller('modalController', function($scope, $location) {
