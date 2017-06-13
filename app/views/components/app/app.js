@@ -4,18 +4,24 @@
  * location analysis
  */
 
-app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, $uibModal, $location, $compile, socket) {
+app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, $uibModal, $location, $compile, socket, Data) {
     /* -----------------------------------------------------------------------*/
-    console.log(location.href);
     /* Initialise fields used by the controller */
+    console.log(location.href);
     $scope.types = Data.types;
     $scope.appSearch = Data.query;
     $scope.roomID = $routeParams.room;
     $scope.newSession = true;
     $scope.issueSearch = false;
 
-    $scope.result = '';
-    $scope.transportType = '';
+    let geocoder = new google.maps.Geocoder();
+
+    /* -----------------------------------------------------------------------*/
+    /* Scope fields for handling location labels */
+
+    $scope.selectedResult = '';
+    $scope.hoveredResult = '';
+    $scope.transportType = 'Null';
     $scope.transports = [
         {
             name: 'Foot',
@@ -31,19 +37,38 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         },
     ];
 
-    let infoBubbleLocationHTML =
+    /* -----------------------------------------------------------------------*/
+    /* Scope HTML templates for labels. Must be precompiled to inject angular correctly down */
+
+    /* Handles clicking on the submit button
+     * Submission also occurs via pressing enter */
+    $scope.printTransport = (value) => {
+        $scope.transportType = value;
+        console.log('Transport Type:');
+        console.log($scope.transportType);
+    };
+
+    let infoBubbleSelectedHTML =
+        '<div class="infoBubbleLocation">Name: ' + '{{selectedResult.name}}' + '<br> Average time spent: ' + '{{selectedResult.avgtime}}' + ' minutes.</div>';
+
+    let infoBubbleHoveredHTML =
+        '<div class="infoBubbleLocation">Name: ' + '{{hoveredResult.name}}' + '<br> Average time spent: ' + '{{hoveredResult.avgtime}}' + ' minutes.</div>';
+
+    let generateInfoBubbleTemplate = function(tmp) {
+        return (
         '<div>' +
-            '<div class="infoBubbleLocation">Name: ' + '{{result.name}}' + '<br> Average time spent: ' + '{{result.avgtime}}' + ' minutes.</div>' +
-            '<div class="btn-group" data-toggle="buttons-radio">' +
-                '<label ng-repeat="transport in transports">' +
-                '<button type="button" class="btn btn-search" ng-model="$scope.transportType" ng-value="transport.name">{{transport.name}}</button>' +
-                '</label>' +
-            '</div>' +
-        '</div>';
+            tmp +
+            '<label ng-repeat="transport in transports">' +
+                '<button type="button" class="btn btn-search" ng-value="transport.name" ng-click="printTransport(transport.name)">{{transport.name}}</button>' +
+            '</label>' +
+        '</div>'
+        );
+    };
 
-    let compiled = $compile(infoBubbleLocationHTML)($scope);
+    let compiledSelectedHTML = $compile(generateInfoBubbleTemplate(infoBubbleSelectedHTML))($scope);
+    let compiledHoveredHTML = $compile(generateInfoBubbleTemplate(infoBubbleHoveredHTML))($scope);
 
-    let geocoder = new google.maps.Geocoder();
+    /* -----------------------------------------------------------------------*/
 
     $scope.toggleSelected = ((index) => {
         $scope.types[index].isSelected = !$scope.types[index].isSelected;
@@ -396,8 +421,6 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
             resultMarkers = [];
 
             for (let i = 0; i < room.results.length; i++) {
-                console.log(room.results[i]);
-
                 let infoBubble = createLocationInfoBubble(room.results[i]);
 
                 let marker = markResult(room.results[i], map);
@@ -484,8 +507,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     createLocationInfoBubble = function(result) {
         let infoBubble = createDefaultInfoBubble();
 
-        $scope.result = result;
-        infoBubble.content = compiled[0];
+        infoBubble.result = result;
 
         return infoBubble;
     };
@@ -538,11 +560,20 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     }
 
     markerAddInfo = function(map, marker, infoBubble) {
+        /* Handle mouse click events over labels */
         google.maps.event.addListener(marker, 'click', function() {
             if (!infoBubble.opened) {
                 infoBubble.opened = true;
                 infoBubble.open(map, marker);
-                if (lastOpenedInfoBubble !== undefined) {
+
+                /* Change the template of the selected label to use the 'selected' style
+                 * Then change the $scope field and apply the angular changes */
+                infoBubble.content = compiledSelectedHTML[0];
+                $scope.selectedResult = infoBubble.result;
+                $scope.$apply();
+
+                /* Close the last opened label if necessary */
+                if (lastOpenedInfoBubble) {
                     lastOpenedInfoBubble.opened = false;
                     lastOpenedInfoBubble.close();
                 }
@@ -553,15 +584,24 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
                 lastOpenedInfoBubble = undefined;
             }
 
+            /* */
             changeMarkerToBlue(marker);
         });
 
+        /* Handle mouse hovering over labels */
         google.maps.event.addListener(marker, 'mouseover', function() {
             if (!infoBubble.opened) {
+                /* Change the template of the hovered label to use the hovering style
+                 * Then change the $scope field and apply the angular changes */
+                infoBubble.content = compiledHoveredHTML[0];
+                $scope.hoveredResult = infoBubble.result;
+                $scope.$apply();
+
                 infoBubble.open(map, marker);
             }
         });
 
+        /* Handle mouse UN-hovering over labels */
         google.maps.event.addListener(marker, 'mouseout', function() {
             if (!infoBubble.opened) {
                 infoBubble.close();
