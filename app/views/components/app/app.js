@@ -4,20 +4,101 @@
  * location analysis
  */
 
-app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage, $routeParams, $filter, $uibModal, $location, socket) {
+app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibModal, $location, $compile, socket, Data) {
     /* -----------------------------------------------------------------------*/
-    console.log(location.href);
     /* Initialise fields used by the controller */
-    $scope.types = $sessionStorage.types;
-    $scope.appSearch = $sessionStorage.queryData;
+    console.log(location.href);
+    $scope.types = Data.types;
+    $scope.appSearch = Data.query;
     $scope.roomID = $routeParams.room;
     $scope.newSession = true;
+    $scope.issueSearch = false;
+    Data.user.username = Data.updateUsername();
 
     let geocoder = new google.maps.Geocoder();
+    let directionsDisplay = new google.maps.DirectionsRenderer(
+        {
+            suppressMarkers: true,
+        });
+    let directionsService = new google.maps.DirectionsService;
+
+    /* -----------------------------------------------------------------------*/
+    /* Scope fields for handling location labels */
+
+    $scope.selectedResult = '';
+    $scope.hoveredResult = '';
+    $scope.transportType = 'Null';
+    $scope.transports = [
+        {
+            name: 'Foot',
+            type: 'WALKING',
+        },
+        {
+            name: 'Bicycle',
+            type: 'BICYCLING',
+        },
+        {
+            name: 'Transport',
+            type: 'TRANSIT',
+        },
+        {
+            name: 'Car',
+            type: 'DRIVING',
+        },
+    ];
+
+    /* -----------------------------------------------------------------------*/
+    /* Scope HTML templates for labels. Must be precompiled to inject angular correctly down */
+
+    /* Displays a given route onto the map */
+    function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        $scope.getLocation(function(currLoc) {
+            directionsService.route({
+                origin: currLoc,
+                destination: $scope.selectedResult.location,
+                travelMode: google.maps.TravelMode[$scope.transportType.type],
+            }, function(response, status) {
+                if (status == 'OK') {
+                    directionsDisplay.setDirections(response);
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
+        });
+    }
+
+    /* Handles clicking on the submit button
+     * Submission also occurs via pressing enter */
+    $scope.printTransport = (transport) => {
+        $scope.transportType = transport;
+        calculateAndDisplayRoute(directionsService, directionsDisplay);
+    };
+
+    let infoBubbleSelectedHTML =
+        '<div class="infoBubbleLocation">Name: ' + '{{selectedResult.name}}' + '<br> Average time spent: ' + '{{selectedResult.avgtime}}' + ' minutes.</div>';
+
+    let infoBubbleHoveredHTML =
+        '<div class="infoBubbleLocation">Name: ' + '{{hoveredResult.name}}' + '<br> Average time spent: ' + '{{hoveredResult.avgtime}}' + ' minutes.</div>';
+
+    let generateInfoBubbleTemplate = function(tmp) {
+        return (
+        '<div>' +
+            tmp +
+            '<label ng-repeat="transport in transports">' +
+                '<button type="button" class="btn btn-search" ng-value="transport.name" ng-click="printTransport(transport)">{{transport.name}}</button>' +
+            '</label>' +
+        '</div>'
+        );
+    };
+
+    let compiledSelectedHTML = $compile(generateInfoBubbleTemplate(infoBubbleSelectedHTML))($scope);
+    let compiledHoveredHTML = $compile(generateInfoBubbleTemplate(infoBubbleHoveredHTML))($scope);
+
+    /* -----------------------------------------------------------------------*/
 
     $scope.toggleSelected = ((index) => {
         $scope.types[index].isSelected = !$scope.types[index].isSelected;
-        $sessionStorage.types = $scope.types;
+        Data.types = $scope.types;
     });
 
     /* -----------------------------------------------------------------------*/
@@ -26,7 +107,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Generalised getLocation function for A GIVE USER
      * Determines, according to the current field, whether to use geolocation or parse the location field */
     $scope.getLocation = function(callback) {
-        if ($sessionStorage.queryData.location === '') {
+        if (Data.query.location === '') {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     let location = {
@@ -35,12 +116,12 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
                     };
 
                     callback(location);
-                });
+                }, errorHandler);
             } else {
                 alert('Geolocation is not supported by this browser.');
             }
         } else {
-            geocoder.geocode({'address': $sessionStorage.queryData.location},
+            geocoder.geocode({'address': Data.query.location},
                 function(results, status) {
                     if (status === 'OK') {
                         let locTmp = results[0].geometry.location;
@@ -59,6 +140,18 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         }
     };
 
+    function errorHandler(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                alert('If you want to use your current location you will' +
+                    ' need to share your current location.');
+                break;
+            default:
+                alert('Unhandled error.');
+                break;
+        }
+    }
+
     /* -----------------------------------------------------------------------*/
     /* Broadcast information to socket.io room */
 
@@ -68,10 +161,10 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         /* Broadcast location to all socket listeners */
         $scope.getLocation(function(location) {
             socket.emit('location', {
-                'username': $localStorage.username,
+                'username': Data.user.username,
                 'lat': location.lat,
                 'lng': location.lng,
-                'radius': $sessionStorage.queryData.radius,
+                'radius': Data.query.radius,
             });
         });
     };
@@ -80,9 +173,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         console.log('Gonna broadcast types');
 
        let toSend = {
-            'types': angular.toJson($sessionStorage.types),
-            'duration': $sessionStorage.queryData.duration,
-            'date': $sessionStorage.queryData.datetime,
+            'types': angular.toJson(Data.types),
+            'duration': Data.query.duration,
+            'date': Data.query.datetime,
         };
         console.log(toSend);
         /* Broadcast location to all socket listeners */
@@ -96,7 +189,21 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
 
     /* Socket update helper function */
     let socketUpdate = function(room) {
+        $scope.issueSearch = false;
         $scope.users = room.users;
+        if (Data.user.username !== '') {
+            let i = $scope.users.reduce(( cur, val, index ) => {
+                if (val.username === Data.user.username && cur === -1 ) {
+                    return index;
+                }
+                return cur;
+            }, -1 );
+            if (i === -1) {
+                /* The user does not exist in the room (kicked out) */
+                $location.url('/home');
+            }
+        }
+        $scope.$apply();
         $scope.getLocation(function(location) {
             $scope.initMap(location, room);
         });
@@ -106,16 +213,18 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         if (!room.duration) {
             broadcastFieldsData();
         } else {
-            $sessionStorage.queryData.duration = room.duration;
-            $sessionStorage.queryData.datetime = room.date;
+            Data.query.duration = room.duration;
+            Data.query.datetime = room.date;
 
             /* TYPE REFRESHING */
             for (let i = 0; i < room.types.length; i++) {
                 $scope.types[i].isSelected = room.types[i].isSelected;
             }
+            console.log($scope.types);
+            console.log(Data.types);
 
-            $scope.appSearch = $sessionStorage.queryData;
-            $sessionStorage.types = $scope.types;
+            $scope.appSearch = Data.query;
+            Data.types = $scope.types;
 
             $scope.$apply();
         }
@@ -143,18 +252,21 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     socket.on('joinSuccess', function(number) {
         console.log('Join Success');
 
-        if (!$localStorage.username) {
-            $localStorage.username = 'Guest-' + number;
-        }
-
-        if (!$sessionStorage.queryData) {
-            $sessionStorage.queryData = {
-                location: '',
-                radius: 1000,
-            };
+        if (!Data.user.username) {
+            Data.user.username = 'Guest-' + number;
         }
 
         broadcastUserData();
+    });
+
+    /*
+     * Note to self: This should work if one uses only socket.on. However,
+     * it does not. It would appear that the event is only triggered once.
+     * This behaviour leads me to believe that the listener is either
+     * destroyed or it listens only once.
+     */
+    socket.removeAllListeners('evolve', function() {
+        socket.once('evolve', changeColoursOfMarkers);
     });
 
     /* -----------------------------------------------------------------------*/
@@ -182,15 +294,15 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
     /* Button on-click method
     * Queries a search request to the backend */
     $scope.performSearch = () => {
-        socket.emit('search', {});
+        if (!$scope.issueSearch) {
+            $scope.issueSearch = true;
+            socket.emit('search', {});
+        }
     };
 
-    /* -----------------------------------------------------------------------*/
-    /* Functions to handle input/refreshing of input */
-
-    /* Handles ... clicking? */
-    $scope.handleClick = () => {
-        $sessionStorage.queryData = $scope.appSearch;
+    $scope.deleteUser = (index) => {
+        console.log($scope.users[index].username);
+        socket.emit('deleteUser', $scope.users[index].username);
     };
 
     /* -----------------------------------------------------------------------*/
@@ -208,7 +320,10 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
          /* Initialise the map via the Google API */
          let map = createMap(location);
 
-         let users = room.users;
+         /* Hook for rendering of directions API */
+         directionsDisplay.setMap(map);
+
+         users = room.users;
 
          socketRefresh(room);
 
@@ -224,10 +339,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
              /* Initialise the radius */
              let radius = initRadius(radLoc, users[i], map);
 
-             let userwindow = createUserWindow(users[i]);
+             let userBubble = createUserInfoBubble(users[i]);
 
-
-             markerAddInfo(marker, userwindow);
+             markerAddInfo(map, marker, userBubble);
          }
 
         /*
@@ -238,12 +352,17 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
          * the map
          */
         if (room.results) {
+            /* Reset the markers array when new results are received. */
+            markers = [];
+
             for (let i = 0; i < room.results.length; i++) {
-                let infowindow = createInfoWindow(room.results[i]);
+                let infoBubble = createLocationInfoBubble(room.results[i]);
 
                 let marker = markResult(room.results[i], map);
 
-                markerAddInfo(marker, infowindow);
+                markers.push(marker);
+
+                markerAddInfo(map, marker, infoBubble);
             }
         }
 
@@ -301,45 +420,133 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
         });
     };
 
-    createInfoWindow = function(result) {
-        return new google.maps.InfoWindow({
-            content: '<p>Name: ' + result.name + '</p>' +
-            '<p>Average time spent: ' + result.avgtime.toString() + ' minutes.</p>',
+    createDefaultInfoBubble = function() {
+        return new InfoBubble({
+            content: '',
+            shadowStyle: 1,
+            padding: 0,
+            backgroundColor: 'rgb(221, 218, 215)',
+            borderRadius: 0,
+            arrowSize: 10,
+            borderWidth: 1,
+            borderColor: 'rgb(193, 173, 150)',
+            disableAutoPan: true,
+            hideCloseButton: true,
+            disableAnimation: true,
+            arrowPosition: 30,
+            backgroundClassName: 'infoBubbleText',
+            arrowStyle: 2,
         });
     };
 
-    createUserWindow = function(user) {
-        return new google.maps.InfoWindow({
-            content: '<div style=\"color: ' + user.color + '\">' + user.username + '</div>',
-        });
+    createLocationInfoBubble = function(result) {
+        let infoBubble = createDefaultInfoBubble();
+
+        infoBubble.result = result;
+
+        return infoBubble;
+    };
+
+    createUserInfoBubble = function(user) {
+        let infoBubble = createDefaultInfoBubble();
+
+        infoBubble.content = '<div class="infoBubbleUser" style=\"color: ' + user.color + '\">' + user.username + '</div>';
+
+        return infoBubble;
     };
 
     markResult = function(result, map) {
-        let icon = {
-            path: 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z',
-            fillColor: '#ff3700',
-            fillOpacity: 1,
-            anchor: new google.maps.Point(250, 400),
-            strokeWeight: 1,
-            scale: .08,
-        };
+        let icon = createDefaultRedIcon();
 
-        return new google.maps.Marker({
+        let marker = new google.maps.Marker({
             position: result.location,
             map: map,
             icon: icon,
         });
+
+        marker['id'] = result.id;
+        marker['listOfUsersWhoClicked'] = [];
+
+        return marker;
     };
 
-    markerAddInfo = function(marker, infowindow) {
-        marker.addListener('mouseover', function() {
-            infowindow.open(map, marker);
+    let pathToIcon = 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z';
+
+    function createDefaultRedIcon() {
+        return {
+            path: pathToIcon,
+            fillColor: '#ff3700',
+            fillOpacity: 1,
+            anchor: new google.maps.Point(250, 400),
+            labelOrigin: new google.maps.Point(240, 150),
+            strokeWeight: 1,
+            scale: .08,
+        };
+    }
+
+    markerAddInfo = function(map, marker, infoBubble) {
+        /* Handle mouse click events over labels */
+        google.maps.event.addListener(marker, 'click', function() {
+            if (!infoBubble.opened) {
+                infoBubble.opened = true;
+                infoBubble.open(map, marker);
+
+                /* Change the template of the selected label to use the 'selected' style
+                 * Then change the $scope field and apply the angular changes */
+                if (infoBubble.result) {
+                    infoBubble.content = compiledSelectedHTML[0];
+                    $scope.selectedResult = infoBubble.result;
+                    $scope.$apply();
+                }
+
+                /* Close the last opened label if necessary */
+                if (lastOpenedInfoBubble) {
+                    lastOpenedInfoBubble.opened = false;
+                    lastOpenedInfoBubble.close();
+                }
+                lastOpenedInfoBubble = infoBubble;
+            } else if (infoBubble.opened) {
+                infoBubble.opened = false;
+                infoBubble.close();
+                lastOpenedInfoBubble = undefined;
+            }
+
+            /* When a marker is clicked its colour needs to change and
+             potentially other markers' colours would need to change as well. */
+            changeMarkers(marker);
         });
 
-        marker.addListener('mouseout', function() {
-            infowindow.close(map, marker);
+        /* Handle mouse hovering over labels */
+        google.maps.event.addListener(marker, 'mouseover', function() {
+            if (!infoBubble.opened) {
+                /* Change the template of the hovered label to use the hovering style
+                 * Then change the $scope field and apply the angular changes */
+                if (infoBubble.result) {
+                    infoBubble.content = compiledHoveredHTML[0];
+                    $scope.hoveredResult = infoBubble.result;
+                    $scope.$apply();
+                }
+
+                infoBubble.open(map, marker);
+            }
+        });
+
+        /* Handle mouse UN-hovering over labels */
+        google.maps.event.addListener(marker, 'mouseout', function() {
+            if (!infoBubble.opened) {
+                infoBubble.close();
+            }
         });
     };
+
+    function changeMarkers(marker) {
+        let packagedData = {
+            markerIdentification: marker.id,
+            username: Data.user.username,
+        };
+
+        socket.emit('change', packagedData);
+    }
     /* -----------------------------------------------------------------------*/
     $scope.openLink = function() {
       $uibModal.open({
@@ -354,6 +561,110 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $localStorage
             windowClass: 'centre-modal',
       });
     };
+
+    /* -----------------------------------------------------------------------*/
+    /* Functions used in order to change colours of markers. */
+
+    let markers = [];
+    let users;
+    let lastOpenedInfoBubble = undefined;
+
+    function changeColoursOfMarkers(packagedData) {
+        let id = packagedData.markerIdentification;
+        let user = packagedData.username;
+
+        for (let i = 0; i < markers.length; i++) {
+            if (markers[i].id === id) {
+                if (didUserClickBefore(markers[i], user)) {
+                    removeUserClick(markers[i], user);
+                } else {
+                    addUserClick(markers[i], user);
+                }
+            } else {
+                if (didUserClickBefore(markers[i], user)) {
+                    removeUserClick(markers[i], user);
+                }
+            }
+        }
+    }
+
+    function didUserClickBefore(result, user) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        for (let i = 0; i < listOfUsersWhoClicked.length; i++) {
+            if (listOfUsersWhoClicked[i] === user) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function recalculateColour(result) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        if (listOfUsersWhoClicked.length === 0) {
+            result.setIcon(createDefaultRedIcon());
+        } else if (listOfUsersWhoClicked.length === 1) {
+            result.setIcon(generateIconFromUserColour(listOfUsersWhoClicked[0]));
+        } else {
+            result.setIcon(generateIcon('#ffffff'));
+        }
+    }
+
+    function recalculateLabel(result) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        let label = null;
+
+        if (listOfUsersWhoClicked.length > 1) {
+            label = {
+                text: (listOfUsersWhoClicked.length).toString(),
+                fontSize: '24px',
+            };
+        }
+
+        result.setLabel(label);
+    }
+
+    function removeUserClick(result, user) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+        let index = listOfUsersWhoClicked.indexOf(user);
+
+        listOfUsersWhoClicked.splice(index, 1);
+
+        recalculateColour(result);
+        recalculateLabel(result);
+    }
+
+    function addUserClick(result, user) {
+        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+
+        listOfUsersWhoClicked.push(user);
+
+        recalculateColour(result);
+        recalculateLabel(result);
+    }
+
+    function generateIconFromUserColour(user) {
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].username === user) {
+                return generateIcon(users[i].color);
+            }
+        }
+    }
+
+    function generateIcon(colour) {
+        return {
+            path: pathToIcon,
+            fillColor: colour,
+            fillOpacity: 1,
+            anchor: new google.maps.Point(250, 400),
+            labelOrigin: new google.maps.Point(240, 150),
+            strokeWeight: 1,
+            scale: .08,
+        };
+    }
 });
 
 app.controller('modalController', function($scope, $location) {

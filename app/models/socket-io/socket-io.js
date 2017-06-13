@@ -118,6 +118,21 @@ exports.start = (server) => {
             });
         });
 
+        /* Triggered upon searching */
+        socket.on('deleteUser', (username) => {
+            findRoom(socket.room, function(room) {
+                console.log(room);
+                mongooseRoom.deleteUser(room, username)
+                    .then(() => {
+                        console.log('deleted user from model, updating client');
+                        broadcastSubmit(socket);
+                    })
+                    .catch((err) => {
+                        console.log('Failed to remove user from a room');
+                    });
+            });
+        });
+
         /* Never really used. Meant to broadcast to a socket, except sender */
         socket.on('broadcast', (data) => {
             /* Add backend catch for messages being posted via the socket */
@@ -126,6 +141,14 @@ exports.start = (server) => {
             }
 
             socket.broadcast.to(data.room).emit(data.eventName, data.data);
+        });
+
+        /*
+         * If a marker is clicked on this broadcasts the change to all users
+         * in the same room.
+         */
+        socket.on('change', function(packagedData) {
+            io.in(socket.room).emit('evolve', packagedData);
         });
     });
 

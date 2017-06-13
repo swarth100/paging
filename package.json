@@ -1,6 +1,6 @@
 {
   "name": "P.A.G.I.N.G.",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Pinpointing Activities Given Insight Not Guesses",
   "main": "server.js",
   "lint-staged": {

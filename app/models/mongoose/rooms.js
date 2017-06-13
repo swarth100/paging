@@ -4,6 +4,7 @@
 
 let mongoose = require('mongoose');
 let helper = require('./mongoose');
+const co = require('co');
 
 /* Load the database address from the config file
  * Removes the double quotation mark using replace function
@@ -162,6 +163,10 @@ exports.updateUser = function(room, user) {
     };
 
     return helper.updateHelper(Room, cond, query);
+};
+
+exports.deleteUser = function(room, username) {
+    return Room.update({_id: room._id}, {$pull: {users: {username: username}}});
 };
 
 exports.updateRoom = function(room, results) {

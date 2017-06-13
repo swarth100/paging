@@ -47,10 +47,10 @@
                 <form ng-submit="submitLocation()">
                     <!-- ROW div for the left search bar -->
                     <!-- Location input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
+                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
                         <div class="input-group">
-                            <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-pushpin"></span></span>
-                            <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" placeholder="Current Location" ng-model="appSearch.location">
+                            <span class="input-group-addon text-field-colour square no-bottom-border"><span class="glyphicon glyphicon-pushpin"></span></span>
+                            <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border no-bottom-border no-padding simplebox" placeholder="Current Location" ng-model="appSearch.location">
                         </div>
                     </div>
 
@@ -61,10 +61,10 @@
                     <!-- ROW div for the left search bar -->
 
                     <!-- Date and Time input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
+                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
                         <div class="input-group">
-                            <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-calendar"></span></span>
-                            <input type="datetime" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.datetime">
+                            <span class="input-group-addon text-field-colour square no-bottom-border"><span class="glyphicon glyphicon-calendar"></span></span>
+                            <input type="datetime" class="form-control input-lg square text-field-colour no-left-border no-bottom-border simplebox" ng-model="appSearch.datetime">
                         </div>
                     </div>
 
@@ -73,19 +73,19 @@
                 </form>
 
                 <!-- Duration input field and Radius input field -->
-                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin no-padding">
+                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
                     <div class="input-group">
-                        <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-time"></span></span>
+                        <span class="input-group-addon text-field-colour square no-bottom-border"><span class="glyphicon glyphicon-time"></span></span>
                         <form ng-submit="submitFields()">
-                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.duration">
+                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-bottom-border no-padding simplebox" ng-model="appSearch.duration">
 
                             <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
                             <input type="submit" class="hide-left" tabindex="-1" />
                         </form>
 
-                        <span class="input-group-addon text-field-colour square no-left-border no-right-border"><span class="glyphicon glyphicon-record"></span></span>
+                        <span class="input-group-addon text-field-colour square no-left-border no-right-border no-bottom-border"><span class="glyphicon glyphicon-record"></span></span>
                         <form ng-submit="submitLocation()">
-                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="appSearch.radius">
+                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-bottom-border simplebox" ng-model="appSearch.radius">
 
                             <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
                             <input type="submit" class="hide-left" tabindex="-1" />
@@ -95,11 +95,11 @@
 
                 <form ng-submit="submitFields()">
                     <!-- Option fields -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
+                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
                         <div class="input-group">
                             <div class="form-control input-lg square text-field-colour">Options</div>
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-full-height dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="caret"></span>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();">
@@ -118,13 +118,13 @@
                             </span>
                         </div>
                         <div class="scrollable-table text-field-colour set-boarder">
-                            <table class="table table-hover table-bordered set-boarder no-margin">
+                            <table class="table table-hover table-bordered set-boarder no-bottom-border no-margin">
                                 <tbody>
-                                    <tr ng-repeat="type in types">
-                                        <td ng-if="type.isSelected">
+                                    <tr ng-repeat="type in types" class="no-right-border no-left-border">
+                                        <td ng-if="type.isSelected" class="flex-row">
                                             <img class="type-icon-small" src="{{type.image}}">
                                             {{type.name}}
-                                            <button type="button" class="close" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
+                                            <button type="button" class="close flex-right" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </td>
@@ -137,11 +137,11 @@
                     <input type="submit" class="hide-left" tabindex="-1" />
                 </form>
                 <!-- Users fields -->
-                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field fix-overlap-top-margin">
+                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
                     <div class="input-group">
-                        <div class="form-control input-lg square text-field-colour">Members</div>
+                        <div class="form-control input-lg square text-field-colour no-top-border">Members</div>
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-lg input-lg square btn-search" ng-click="openLink()">
+                            <button type="button" class="btn btn-lg input-lg square no-left-border no-right-border btn-search" ng-click="openLink()">
                                 Invite
                             </button>
                         </span>
@@ -152,7 +152,7 @@
                                 <tr ng-repeat="user in users">
                                     <td>
                                         {{user.username}}
-                                        <button type="button" class="close" aria-label="Close" ng-click="">
+                                        <button type="button" class="close" aria-label="Close" ng-click="deleteUser($index)">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </td>
@@ -170,7 +170,7 @@
         <!-- The div nesting was done so that we could have the rotating gif
         when a search is commensed. -->
         <div class="map-dimensions">
-            <div id="map" class="map-dimensions"></div>
+            <div id="map" class="map-dimensions" ng-if="!issueSearch"></div>
         </div>
     </div>
 </div>
