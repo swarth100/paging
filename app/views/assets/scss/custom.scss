@@ -278,6 +278,39 @@ input[type="checkbox"]:checked + label {
     margin-left: -10%;
 }
 
+.raise-search-bar {
+    animation: raise 1s;
+    -webkit-animation: raise 1s;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+}
+
+@keyframes raise {
+    0% {height: 60%;};
+    100% {height: 0%};
+}
+
+@-webkit-keyframes raise {
+    0% {height: 60%;};
+    100% {height: 0%};
+}
+
+.lower-search-bar {
+    animation: lower 1s;
+    -webkit-animation: lower 1s;
+}
+
+@keyframes lower {
+    0% {height: 0%;};
+    100% {height: 60%};
+}
+
+@-webkit-keyframes lower {
+    0% {height: 0%;};
+    100% {height: 60%};
+}
+
+
 /************************************************************/
 
 /* Border, Margin, Padding, Text ****************************/
