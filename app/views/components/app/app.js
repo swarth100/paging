@@ -4,7 +4,7 @@
  * location analysis
  */
 
-app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams, $filter, $uibModal, $location, $compile, socket, Data) {
+app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibModal, $location, $compile, socket, Data) {
     /* -----------------------------------------------------------------------*/
     /* Initialise fields used by the controller */
     console.log(location.href);
@@ -16,6 +16,11 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
     Data.user.username = Data.updateUsername();
 
     let geocoder = new google.maps.Geocoder();
+    let directionsDisplay = new google.maps.DirectionsRenderer(
+        {
+            suppressMarkers: true,
+        });
+    let directionsService = new google.maps.DirectionsService;
 
     /* -----------------------------------------------------------------------*/
     /* Scope fields for handling location labels */
@@ -26,27 +31,47 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
     $scope.transports = [
         {
             name: 'Foot',
+            type: 'WALKING',
         },
         {
             name: 'Bicycle',
+            type: 'BICYCLING',
         },
         {
             name: 'Transport',
+            type: 'TRANSIT',
         },
         {
             name: 'Car',
+            type: 'DRIVING',
         },
     ];
 
     /* -----------------------------------------------------------------------*/
     /* Scope HTML templates for labels. Must be precompiled to inject angular correctly down */
 
+    /* Displays a given route onto the map */
+    function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        $scope.getLocation(function(currLoc) {
+            directionsService.route({
+                origin: currLoc,
+                destination: $scope.selectedResult.location,
+                travelMode: google.maps.TravelMode[$scope.transportType.type],
+            }, function(response, status) {
+                if (status == 'OK') {
+                    directionsDisplay.setDirections(response);
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
+        });
+    }
+
     /* Handles clicking on the submit button
      * Submission also occurs via pressing enter */
-    $scope.printTransport = (value) => {
-        $scope.transportType = value;
-        console.log('Transport Type:');
-        console.log($scope.transportType);
+    $scope.printTransport = (transport) => {
+        $scope.transportType = transport;
+        calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
 
     let infoBubbleSelectedHTML =
@@ -60,7 +85,7 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
         '<div>' +
             tmp +
             '<label ng-repeat="transport in transports">' +
-                '<button type="button" class="btn btn-search" ng-value="transport.name" ng-click="printTransport(transport.name)">{{transport.name}}</button>' +
+                '<button type="button" class="btn btn-search" ng-value="transport.name" ng-click="printTransport(transport)">{{transport.name}}</button>' +
             '</label>' +
         '</div>'
         );
@@ -295,6 +320,9 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
          /* Initialise the map via the Google API */
          let map = createMap(location);
 
+         /* Hook for rendering of directions API */
+         directionsDisplay.setMap(map);
+
          users = room.users;
 
          socketRefresh(room);
@@ -465,9 +493,11 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
 
                 /* Change the template of the selected label to use the 'selected' style
                  * Then change the $scope field and apply the angular changes */
-                infoBubble.content = compiledSelectedHTML[0];
-                $scope.selectedResult = infoBubble.result;
-                $scope.$apply();
+                if (infoBubble.result) {
+                    infoBubble.content = compiledSelectedHTML[0];
+                    $scope.selectedResult = infoBubble.result;
+                    $scope.$apply();
+                }
 
                 /* Close the last opened label if necessary */
                 if (lastOpenedInfoBubble) {
@@ -491,9 +521,11 @@ app.controller('appCtrl', function($scope, $http, $sessionStorage, $routeParams,
             if (!infoBubble.opened) {
                 /* Change the template of the hovered label to use the hovering style
                  * Then change the $scope field and apply the angular changes */
-                infoBubble.content = compiledHoveredHTML[0];
-                $scope.hoveredResult = infoBubble.result;
-                $scope.$apply();
+                if (infoBubble.result) {
+                    infoBubble.content = compiledHoveredHTML[0];
+                    $scope.hoveredResult = infoBubble.result;
+                    $scope.$apply();
+                }
 
                 infoBubble.open(map, marker);
             }
