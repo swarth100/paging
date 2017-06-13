@@ -152,7 +152,7 @@
                                 <tr ng-repeat="user in users">
                                     <td>
                                         {{user.username}}
-                                        <button type="button" class="close" aria-label="Close" ng-click="">
+                                        <button type="button" class="close" aria-label="Close" ng-click="deleteUser($index)">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </td>
