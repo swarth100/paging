@@ -143,11 +143,11 @@ exports.start = (server) => {
             socket.broadcast.to(data.room).emit(data.eventName, data.data);
         });
 
+        /*
+         * If a marker is clicked on this broadcasts the change to all users
+         * in the same room.
+         */
         socket.on('change', function(index) {
-            console.log('Entered the change function on the server');
-            console.log('The room is ' + socket.room);
-            console.log('Trying to change index: ' + index);
-
             io.in(socket.room).emit('evolve', index);
         });
     });
