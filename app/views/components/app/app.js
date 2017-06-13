@@ -36,7 +36,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
                     };
 
                     callback(location);
-                });
+                }, errorHandler);
             } else {
                 alert('Geolocation is not supported by this browser.');
             }
@@ -59,6 +59,18 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
                 });
         }
     };
+
+    function errorHandler(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                alert('If you want to use your current location you will' +
+                    ' need to share your current location.');
+                break;
+            default:
+                alert('Unhandled error.');
+                break;
+        }
+    }
 
     /* -----------------------------------------------------------------------*/
     /* Broadcast information to socket.io room */
