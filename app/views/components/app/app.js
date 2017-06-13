@@ -192,17 +192,19 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     function swapMarkers(index) {
         let oldMarker = resultMarkers[index];
 
-        let map = oldMarker.getMap();
+        // let map = oldMarker.getMap();
+        //
+        // let position = oldMarker.getPosition();
+        //
+        // let newMarker = blueMarker(position);
+        //
+        // oldMarker.setMap(null);
+        //
+        // newMarker.setMap(map);
+        //
+        // resultMarkers[index] = newMarker;
 
-        let position = oldMarker.getPosition();
-
-        let newMarker = blueMarker(position);
-
-        oldMarker.setMap(null);
-
-        newMarker.setMap(map);
-
-        resultMarkers[index] = newMarker;
+        oldMarker.setIcon(createBlueIcon());
     }
 
     /* -----------------------------------------------------------------------*/
@@ -391,14 +393,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     };
 
     markResult = function(result, map) {
-        let icon = {
-            path: 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z',
-            fillColor: '#ff3700',
-            fillOpacity: 1,
-            anchor: new google.maps.Point(250, 400),
-            strokeWeight: 1,
-            scale: .08,
-        };
+        let icon = createRedIcon();
 
         return new google.maps.Marker({
             position: result.location,
@@ -409,8 +404,19 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
 
     let pathToIcon = 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z';
 
-    function blueMarker(location) {
-        let icon = {
+    function createRedIcon() {
+        return {
+            path: pathToIcon,
+            fillColor: '#ff3700',
+            fillOpacity: 1,
+            anchor: new google.maps.Point(250, 400),
+            strokeWeight: 1,
+            scale: .08,
+        };
+    }
+
+    function createBlueIcon() {
+        return {
             path: pathToIcon,
             fillColor: '#0000ff',
             fillOpacity: 1,
@@ -418,6 +424,10 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
             strokeWeight: 1,
             scale: .08,
         };
+    }
+
+    function blueMarker(location) {
+        let icon = createBlueIcon();
 
         return new google.maps.Marker({
             position: location,
@@ -434,6 +444,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
                 infoBubble.opened = false;
                 infoBubble.close();
             }
+
             changeMarkerToBlue(marker);
         });
 
@@ -448,7 +459,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
         });
     };
 
-    function changeMarkerToSelected(marker) {
+    function changeMarkerToBlue(marker) {
         let index = resultMarkers.indexOf(marker);
 
         socket.emit('change', index);
