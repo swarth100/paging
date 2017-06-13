@@ -179,6 +179,30 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
         broadcastUserData();
     });
 
+    // socket.on('evolve', );
+
+    socket.removeAllListeners('evolve', function() {
+        socket.once('evolve', temporaryFunction);
+    });
+
+    function temporaryFunction(index) {
+        console.log('Wanting to change the marker at ' + index);
+
+        let oldMarker = resultMarkers[index];
+
+        let map = oldMarker.getMap();
+
+        let position = oldMarker.getPosition();
+
+        let newMarker = blueMarker(position);
+
+        oldMarker.setMap(null);
+
+        newMarker.setMap(map);
+
+        resultMarkers[index] = newMarker;
+    }
+
     /* -----------------------------------------------------------------------*/
     /* Socket.io helper wrappers */
 
@@ -223,6 +247,8 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
     /* -----------------------------------------------------------------------*/
     /* Map rendering functions with helpers */
 
+    let resultMarkers = [];
+
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
          document.getElementById('map').style.visibility = 'visible';
@@ -259,13 +285,19 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
          * the map
          */
         if (room.results) {
+            resultMarkers = [];
+
             for (let i = 0; i < room.results.length; i++) {
                 let infoBubble = createLocationInfoBubble(room.results[i]);
 
                 let marker = markResult(room.results[i], map);
 
+                resultMarkers.push(marker);
+
                 markerAddInfo(map, marker, infoBubble);
             }
+
+            console.log('The current markers are: ' + resultMarkers);
         }
 
         if (users.length === 1 && $scope.newSession) {
@@ -374,6 +406,24 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
         });
     };
 
+    let pathToIcon = 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z';
+
+    function blueMarker(location) {
+        let icon = {
+            path: pathToIcon,
+            fillColor: '#0000ff',
+            fillOpacity: 1,
+            anchor: new google.maps.Point(250, 400),
+            strokeWeight: 1,
+            scale: .08,
+        };
+
+        return new google.maps.Marker({
+            position: location,
+            icon: icon,
+        });
+    }
+
     markerAddInfo = function(map, marker, infoBubble) {
         google.maps.event.addListener(marker, 'click', function() {
             if (!infoBubble.opened) {
@@ -383,6 +433,7 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
                 infoBubble.opened = false;
                 infoBubble.close();
             }
+            changeMarkerToBlue(marker);
         });
 
         google.maps.event.addListener(marker, 'mouseover', function() {
@@ -395,6 +446,28 @@ app.controller('appCtrl', function($scope, $http, $localStorage, $routeParams, $
             }
         });
     };
+
+    function changeMarkerToBlue(marker) {
+        console.log('Entered the changeMarkerToBlue function');
+
+        let index = resultMarkers.indexOf(marker);
+
+        socket.emit('change', index);
+
+        /*
+        let oldMarker = resultMarkers[index];
+
+        let map = oldMarker.getMap();
+
+        let position = oldMarker.getPosition();
+
+        let newMarker = blueMarker(position);
+
+        oldMarker.setMap(null);
+
+        newMarker.setMap(map);
+        */
+    }
     /* -----------------------------------------------------------------------*/
     $scope.openLink = function() {
       $uibModal.open({
