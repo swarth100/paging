@@ -483,6 +483,7 @@ input[type="checkbox"]:checked + label {
 
 .btn-like:hover, .btn-like:focus, .btn-like:active {
     background-color: $like-btn-highlight;
+    color: $like-btn-text;
 }
 
 /************************************************************/
