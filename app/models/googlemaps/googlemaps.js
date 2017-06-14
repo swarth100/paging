@@ -170,6 +170,14 @@ function searchAroundLocation(queryData, cb) {
             }
             getTravelTime(queryData.location, finalPlaces[0], (res) => {
             });
+
+            /* Set the users field for each location to empty */
+            /* TODO: Refactor so that users are sent around searches */
+            for (let i = 0; i < finalPlaces.length; i ++) {
+                finalPlaces[i] = finalPlaces[i].toJSON();
+                finalPlaces[i].users = [];
+            }
+
             cb(finalPlaces);
         })
     .catch(function(error) {
