@@ -259,6 +259,15 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    let issueOneByOne = function(locationData) {
+        resultLocations = locationData;
+        $scope.$apply();
+
+        for (let i = 0; i < locationData.length; i++) {
+            changeColoursOfMarkers(i, locationData[i].users);
+        }
+    };
+
     /* -----------------------------------------------------------------------*/
     /* Socket.io LISTENERS */
 
@@ -295,7 +304,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      * destroyed or it listens only once.
      */
     socket.removeAllListeners('updateMarkers', function() {
-        socket.once('updateMarkers', changeColoursOfMarkers);
+        socket.once('updateMarkers', issueOneByOne);
     });
 
     /* -----------------------------------------------------------------------*/
@@ -497,8 +506,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             icon: icon,
         });
 
-        marker['id'] = result.id;
-        marker['listOfUsersWhoClicked'] = [];
+        // marker['id'] = result.id;
+        marker['colouredDots'] = [];
 
         return marker;
     };
@@ -599,12 +608,45 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let lastOpenedInfoBubble = undefined;
 
     /* Handle changing of marker colors */
-    function changeColoursOfMarkers(locationData) {
-        console.log(locationData);
+    function changeColoursOfMarkers(index, users) {
+        console.log('Index is: ' + index);
+        console.log('List of users who clicked: ' + users);
 
-        /* Update the location DATA */
-        resultLocations = locationData;
-        $scope.$apply();
+        if (users.length === 0) {
+            return;
+        } else {
+            let currentMarker = markers[i];
+
+            let colouredDots = currentMarker.colouredDots;
+
+            for (let i = 0; i < colouredDots.length; i++) {
+                colouredDots[i].setMap(null);
+            }
+
+            colouredDots = [];
+
+            if (users.length % 2 !== 0) {
+                let temporary = Math.floor(users.length / 2);
+
+                for (let i = 0; i < users.length; i++) {
+                    let subMarker = new google.maps.Marker({
+                        position: currentMarker.getPosition(),
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 4,
+                            anchor: new google.maps.Point(-3 * (temporary - i), 10),
+                            fillColor: users[i].color,
+                            fillOpacity: 1,
+                            strokeColor: 'black',
+                            strokeWeight: 1,
+                        },
+                        map: currentMarker.getMap(),
+                    });
+
+                    colouredDots.push(subMarker);
+                }
+            }
+        }
 
         /*
         let id = packagedData.markerIdentification;
