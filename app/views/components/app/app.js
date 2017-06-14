@@ -529,7 +529,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             maxWidth: 300,
             minHeight: 'calc(100% + 2px)',
             disableAutoPan: true,
-            hideCloseButton: true,
+            hideCloseButton: false,
             disableAnimation: true,
             arrowPosition: 30,
             backgroundClassName: 'infoBubbleText',
