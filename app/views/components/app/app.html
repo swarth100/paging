@@ -12,11 +12,11 @@
     +--------+--------+--------+                                    MAPS                                        |
     |          Radius          |                                                                                |
     +--------+--------+--------+                                                                                |
-                 3             |                                                                                |
-                               +                                                                                |
-                               |                                                                                |
-                               +--------+--------+--------+--------+--------+--------+--------+--------+--------+
-                                                                       9
+    3             |                                                                                |
+    +                                                                                |
+    |                                                                                |
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    9
 
 
     MOBILE VIEW:
@@ -31,19 +31,19 @@
     +--------+--------+--------+--------+                                 MAPS                                  |
     |              Radius               |                                                                       |
     +--------+--------+--------+--------+                                                                       |
-                      4                 |                                                                       |
-                                        +                                                                       |
-                                        |                                                                       |
-                                        +--------+--------+--------+--------+--------+--------+--------+--------+
-                                                                            8
+    4                 |                                                                       |
+    +                                                                       |
+    |                                                                       |
+    +--------+--------+--------+--------+--------+--------+--------+--------+
+    8
 
- -->
+-->
 <div class="container-fluid no-padding">
     <!-- ROW div for the search bar -->
     <!-- Left search bar holder -->
     <div class = "col-sm-4 col-md-3">
         <div class="row">
-            <div class="sidenav-top no-padding">
+            <div class="sidenav-top no-padding" ng-show="!isChatting">
                 <form ng-submit="submitLocation()">
                     <!-- ROW div for the left search bar -->
                     <!-- Location input field -->
@@ -103,7 +103,7 @@
                                     <span class="caret"></span>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();">
-                                     <div ng-repeat="type in types">
+                                    <div ng-repeat="type in types">
                                         <!--<input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">-->
                                         <label class="std-font check-box-not-clicked" for="{{type.name}}" ng-if="!type.isSelected" ng-click="toggleSelected($index); submitFields()">
                                             <img class="type-icon-small" src="{{type.image}}">
@@ -138,13 +138,34 @@
                 </form>
                 <!-- Users fields -->
                 <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
-                    <div class="input-group">
-                        <div class="form-control input-lg square text-field-colour no-top-border">Members</div>
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-lg input-lg square no-left-border no-right-border btn-search" ng-click="openLink()">
-                                Invite
-                            </button>
-                        </span>
+                    <div class="input-group full-width">
+                        <div class="col-xs-5 no-padding">
+                            <div class="form-control input-lg square text-field-colour no-top-border">Members</div>
+                        </div>
+                        <div class="col-xs-4 no-padding">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn input-lg dropdown-toggle square text-field-colour full-width no-padding" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="text-field-colour">Change Colour</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <div class="dropdown-menu scrollable-table dropdown-menu-right square text-field-colour">
+                                     <div ng-repeat="color in colors">
+                                         <div style="background:{{color.hex}};">
+                                            <button style="width: 80%;" ng-click="changeUserColour(color.hex)">
+                                                {{color.name}}
+                                            </button>
+                                         </div>
+                                   </div>
+                                </div>
+                            </span>
+                        </div>
+                        <div class="col-xs-3 no-padding">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-lg input-lg square no-left-border no-right-border btn-search full-width no-padding" ng-click="openLink()">
+                                    Invite
+                                </button>
+                            </span>
+                        </div>
                     </div>
                     <div class="scrollable-table text-field-colour set-boarder">
                         <table class="table table-hover table-bordered set-boarder no-margin">
@@ -152,7 +173,7 @@
                                 <tr ng-repeat="user in users">
                                     <td>
                                         {{user.username}}
-                                        <button type="button" class="close" aria-label="Close" ng-click="deleteUser($index)">
+                                            <button type="button" class="close" aria-label="Close" ng-click="deleteUser($index)">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </td>
@@ -163,6 +184,33 @@
                 </div>
                 <button type="button" class="btn btn-block btn-lg btn-search square no-top-border" ng-click="performSearch()">SEARCH</button>
             </div>
+            <div class="sidenav-top no-padding" ng-show="isChatting">
+                <div class="close-box">
+                    <button type="button" class="close" aria-label="Close" ng-click="isChatting = false;">
+                        <span aria-hidden="true" class="close-lg">&times;</span>
+                    </button>
+                </div>
+                <div scroll-glue id="message-board">
+                    <div class="message-box" ng-repeat="mes in messages">
+                        <span class="username">{{mes.username}}: </span>
+                        <!--<span class="location">@{{mes.location}}</span>-->
+                        <br>
+                        <span class="message">{{mes.message}}</span>
+                    </div>
+                </div>
+                <div class="col-xs-9 col-sm-9 col-md-9 left-bar-field">
+                    <div class="chat-input">
+                        <form ng-submit="sendMessage()">
+                            <input type="text" class="form-control" ng-model="message">
+                            <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                            <input type="submit" class="hide-left" tabindex="-1" />
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3 no-margin no-padding">
+                    <button class="btn btn-primary" type="submit" ng-click="sendMessage();">Send</button>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-sm-8 col-md-9 no-padding">
@@ -170,7 +218,7 @@
         <!-- The div nesting was done so that we could have the rotating gif
         when a search is commensed. -->
         <div class="map-dimensions">
-            <div id="map" class="map-dimensions" ng-if="!issueSearch"></div>
+            <div id="map" class="map-dimensions" ng-show="!issueSearch"></div>
         </div>
     </div>
 </div>

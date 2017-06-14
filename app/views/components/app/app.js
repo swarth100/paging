@@ -8,42 +8,60 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Initialise fields used by the controller */
     console.log(location.href);
+    $scope.messages = [];
     $scope.types = Data.types;
+    $scope.colors = Data.colors;
     $scope.appSearch = Data.query;
     $scope.roomID = $routeParams.room;
     $scope.newSession = true;
     $scope.issueSearch = false;
+    let resultLocations = [];
+    $scope.isChatting = false;
+    $scope.message = '';
+
     Data.user.username = Data.updateUsername();
 
     let geocoder = new google.maps.Geocoder();
     let directionsDisplay = new google.maps.DirectionsRenderer(
-        {
-            suppressMarkers: true,
-        });
+            {
+                suppressMarkers: true,
+            });
     let directionsService = new google.maps.DirectionsService;
+
+    /*
+     * As far as observed, these global variables are used in conjunction of
+     * changing the coloured dots over locations.
+     */
+    let markers = [];
+    let users;
+    let lastOpenedInfoBubble = undefined;
 
     /* -----------------------------------------------------------------------*/
     /* Scope fields for handling location labels */
 
-    $scope.selectedResult = '';
-    $scope.hoveredResult = '';
+    $scope.selectedResultIndex = 0;
+    $scope.hoveredResultIndex = 0;
     $scope.transportType = 'Null';
     $scope.transports = [
         {
             name: 'Foot',
             type: 'WALKING',
+            icon: 'fa fa-blind',
         },
         {
             name: 'Bicycle',
             type: 'BICYCLING',
+            icon: 'fa fa-bicycle',
         },
         {
-            name: 'Transport',
+            name: 'Public',
             type: 'TRANSIT',
+            icon: 'fa fa-bus',
         },
         {
             name: 'Car',
             type: 'DRIVING',
+            icon: 'fa fa-car',
         },
     ];
 
@@ -55,7 +73,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.getLocation(function(currLoc) {
             directionsService.route({
                 origin: currLoc,
-                destination: $scope.selectedResult.location,
+                destination: $scope.getResultFromIndex($scope.selectedResultIndex).location,
                 travelMode: google.maps.TravelMode[$scope.transportType.type],
             }, function(response, status) {
                 if (status == 'OK') {
@@ -74,31 +92,88 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
 
-    let infoBubbleSelectedHTML =
-        '<div class="infoBubbleLocation">Name: ' + '{{selectedResult.name}}' + '<br> Average time spent: ' + '{{selectedResult.avgtime}}' + ' minutes.</div>';
+    $scope.getResultFromIndex = function(index) {
+        return resultLocations[index];
+    };
 
-    let infoBubbleHoveredHTML =
-        '<div class="infoBubbleLocation">Name: ' + '{{hoveredResult.name}}' + '<br> Average time spent: ' + '{{hoveredResult.avgtime}}' + ' minutes.</div>';
+    $scope.displayLike = function(result) {
+        if (result) {
+            for (let i = 0; i < result.users.length; i++) {
+                if (result.users[i] === Data.user.username) {
+                    return 'UNLIKE';
+                }
+            }
+            return 'LIKE';
+        }
+        return '';
+    };
 
-    let generateInfoBubbleTemplate = function(tmp) {
+    $scope.printUsers = function(users) {
+        if (users) {
+            let userString = '';
+            for (let i = 0; i < users.length; i ++) {
+                if (userString) {
+                    userString += ', ' + users[i];
+                } else {
+                    userString = users[i];
+                }
+            }
+            return userString;
+        }
+        return '';
+    };
+
+    $scope.toggleLike = function(result) {
+        changeMarkers(result);
+    };
+
+    let generateInfoBubbleTemplate = function(result) {
         return (
         '<div>' +
-            tmp +
-            '<label ng-repeat="transport in transports">' +
-                '<button type="button" class="btn btn-search" ng-value="transport.name" ng-click="printTransport(transport)">{{transport.name}}</button>' +
-            '</label>' +
+            `<div class="input-group">
+                <span class="input-group-btn bubble-header">
+                    <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
+                        <i class="fa fa-thumbs-up"></i>
+                    </button>
+                </span>
+                <div type="text" class="form-control centre-text text-field-colour input-lg square">{{getResultFromIndex(` + result + `).name}}</div>
+            </div>
+            <div class="bubbleSeparator"></div>` +
+            '<div class="btn-group btn-group-justified">' +
+                '<label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">' +
+                    '<i class="{{transport.icon}}"></i>' +
+                    '<br>' +
+                    '{{transport.name}}' +
+                '</label>' +
+            '</div>' +
+            '<div class="bubbleSeparator"></div>' +
+            `<div class="like-text-field">
+                <div style="display: inline; color: blue; font-weight: bold;">Liked By: </div>
+                 {{printUsers(getResultFromIndex(` + result + `).users)}}
+             </div>` +
         '</div>'
         );
     };
 
-    let compiledSelectedHTML = $compile(generateInfoBubbleTemplate(infoBubbleSelectedHTML))($scope);
-    let compiledHoveredHTML = $compile(generateInfoBubbleTemplate(infoBubbleHoveredHTML))($scope);
+    let compiledSelectedHTML = $compile(generateInfoBubbleTemplate('selectedResultIndex'))($scope);
+    let compiledHoveredHTML = $compile(generateInfoBubbleTemplate('hoveredResultIndex'))($scope);
 
     /* -----------------------------------------------------------------------*/
 
     $scope.toggleSelected = ((index) => {
         $scope.types[index].isSelected = !$scope.types[index].isSelected;
         Data.types = $scope.types;
+    });
+
+    /* ------------------------------------------------------------------------*/
+    /* A function to change the users colour */
+
+    $scope.changeUserColour = ((colour) => {
+        if (!$scope.issueSearch) {
+            $scope.issueSearch = true;
+            socket.emit('changeColour', {username: Data.user.username,
+                                      colour: colour});
+        };
     });
 
     /* -----------------------------------------------------------------------*/
@@ -122,29 +197,32 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         } else {
             geocoder.geocode({'address': Data.query.location},
-                function(results, status) {
-                    if (status === 'OK') {
-                        let locTmp = results[0].geometry.location;
+                    function(results, status) {
+                        if (status === 'OK') {
+                            let locTmp = results[0].geometry.location;
 
-                        let location = {
-                            'lat': locTmp.lat(),
-                            'lng': locTmp.lng(),
-                        };
+                            let location = {
+                                'lat': locTmp.lat(),
+                                'lng': locTmp.lng(),
+                            };
 
-                        callback(location);
-                    } else {
-                        alert('Geocode was not successful for the following' +
-                            ' reason: ' + status);
-                    }
-                });
+                            callback(location);
+                        } else {
+                            alert('Geocode was not successful for the following' +
+                                    ' reason: ' + status);
+                        }
+                    });
         }
     };
 
+    /*
+     * Error handler used in conjunction with the geolocation function above.
+     */
     function errorHandler(error) {
         switch(error.code) {
             case error.PERMISSION_DENIED:
                 alert('If you want to use your current location you will' +
-                    ' need to share your current location.');
+                        ' need to share your current location.');
                 break;
             default:
                 alert('Unhandled error.');
@@ -172,7 +250,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let broadcastFieldsData = function() {
         console.log('Gonna broadcast types');
 
-       let toSend = {
+        let toSend = {
             'types': angular.toJson(Data.types),
             'duration': Data.query.duration,
             'date': Data.query.datetime,
@@ -230,6 +308,20 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    /*
+     * Receives a list of locations whose coloured dots need to be
+     * refreshed. Sends them one by one to the function which takes care of
+     * actually refreshing the coloured dots.
+     */
+    let issueOneByOne = function(locationData) {
+        resultLocations = locationData;
+        $scope.$apply();
+
+        for (let i = 0; i < locationData.length; i++) {
+            changeColoursOfMarkers(i, locationData[i].users);
+        }
+    };
+
     /* -----------------------------------------------------------------------*/
     /* Socket.io LISTENERS */
 
@@ -265,8 +357,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      * This behaviour leads me to believe that the listener is either
      * destroyed or it listens only once.
      */
-    socket.removeAllListeners('evolve', function() {
-        socket.once('evolve', changeColoursOfMarkers);
+    socket.removeAllListeners('updateMarkers', function() {
+        socket.once('updateMarkers', issueOneByOne);
     });
 
     /* -----------------------------------------------------------------------*/
@@ -292,7 +384,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* Button on-click method
-    * Queries a search request to the backend */
+     * Queries a search request to the backend */
     $scope.performSearch = () => {
         if (!$scope.issueSearch) {
             $scope.issueSearch = true;
@@ -315,48 +407,47 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
-         document.getElementById('map').style.visibility = 'visible';
+        document.getElementById('map').style.visibility = 'visible';
 
-         /* Initialise the map via the Google API */
-         let map = createMap(location);
+        /* Initialise the map via the Google API */
+        map = createMap(location);
 
-         /* Hook for rendering of directions API */
-         directionsDisplay.setMap(map);
+        /* Hook for rendering of directions API */
+        directionsDisplay.setMap(map);
+        directionsDisplay.setDirections({routes: []});
 
-         users = room.users;
+        users = room.users;
+        resultLocations = room.results;
 
-         socketRefresh(room);
+        socketRefresh(room);
 
-         for (i = 0; i < users.length; i++) {
-             let radLoc = {
-                 'lat': users[i].lat,
-                 'lng': users[i].lng,
-             };
+        for (i = 0; i < users.length; i++) {
+            let radLoc = {
+                'lat': users[i].lat,
+                'lng': users[i].lng,
+            };
 
-             /* Initialise the marker */
-             let marker = markUser(radLoc, users[i], map);
+            /* Initialise the marker */
+            let marker = markUser(radLoc, users[i], map);
 
-             /* Initialise the radius */
-             let radius = initRadius(radLoc, users[i], map);
+            /* Initialise the radius */
+            let radius = initRadius(radLoc, users[i], map);
 
-             let userBubble = createUserInfoBubble(users[i]);
+            let userBubble = createUserInfoBubble(users[i]);
 
-             markerAddInfo(map, marker, userBubble);
-         }
+            markerAddInfo(map, marker, userBubble);
+        }
 
         /*
-         * Responses, returned by the googlemaps.js are packaged
-         * as follows:
-         * response.json.result[index].geometry.location.{lat/lng}.
          * This code iterates through all returned positions, setting them up on
-         * the map
+         * the map.
          */
         if (room.results) {
             /* Reset the markers array when new results are received. */
             markers = [];
 
             for (let i = 0; i < room.results.length; i++) {
-                let infoBubble = createLocationInfoBubble(room.results[i]);
+                let infoBubble = createLocationInfoBubble(i);
 
                 let marker = markResult(room.results[i], map);
 
@@ -364,6 +455,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
                 markerAddInfo(map, marker, infoBubble);
             }
+        }
+
+        // Draws coloured dots over locations if needed.
+        for (let i = 0; i < room.results.length; i++) {
+            changeColoursOfMarkers(i, room.results[i].users);
         }
 
         if (users.length === 1 && $scope.newSession) {
@@ -423,26 +519,30 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     createDefaultInfoBubble = function() {
         return new InfoBubble({
             content: '',
-            shadowStyle: 1,
+            shadowStyle: 0,
             padding: 0,
-            backgroundColor: 'rgb(221, 218, 215)',
+            backgroundColor: 'rgb(193, 173, 150)',
             borderRadius: 0,
             arrowSize: 10,
-            borderWidth: 1,
+            borderWidth: 0,
             borderColor: 'rgb(193, 173, 150)',
+            maxWidth: 300,
+            minHeight: 'calc(100% + 2px)',
             disableAutoPan: true,
-            hideCloseButton: true,
+            hideCloseButton: false,
             disableAnimation: true,
             arrowPosition: 30,
             backgroundClassName: 'infoBubbleText',
             arrowStyle: 2,
+            result: '',
         });
     };
 
-    createLocationInfoBubble = function(result) {
+    createLocationInfoBubble = function(index) {
         let infoBubble = createDefaultInfoBubble();
 
-        infoBubble.result = result;
+        infoBubble.index = index;
+        infoBubble.locationBubble = true;
 
         return infoBubble;
     };
@@ -464,8 +564,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             icon: icon,
         });
 
-        marker['id'] = result.id;
-        marker['listOfUsersWhoClicked'] = [];
+        // This property is used to keep track of the colours used to
+        // represent which users have clicked on the marker.
+        marker['colouredDots'] = [];
 
         return marker;
     };
@@ -493,9 +594,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
                 /* Change the template of the selected label to use the 'selected' style
                  * Then change the $scope field and apply the angular changes */
-                if (infoBubble.result) {
+                if (infoBubble.locationBubble) {
                     infoBubble.content = compiledSelectedHTML[0];
-                    $scope.selectedResult = infoBubble.result;
+                    $scope.selectedResultIndex = infoBubble.index;
                     $scope.$apply();
                 }
 
@@ -510,10 +611,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 infoBubble.close();
                 lastOpenedInfoBubble = undefined;
             }
-
-            /* When a marker is clicked its colour needs to change and
-             potentially other markers' colours would need to change as well. */
-            changeMarkers(marker);
         });
 
         /* Handle mouse hovering over labels */
@@ -521,9 +618,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             if (!infoBubble.opened) {
                 /* Change the template of the hovered label to use the hovering style
                  * Then change the $scope field and apply the angular changes */
-                if (infoBubble.result) {
+                if (infoBubble.locationBubble) {
                     infoBubble.content = compiledHoveredHTML[0];
-                    $scope.hoveredResult = infoBubble.result;
+                    $scope.hoveredResultIndex = infoBubble.index;
                     $scope.$apply();
                 }
 
@@ -539,135 +636,162 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
-    function changeMarkers(marker) {
-        let packagedData = {
-            markerIdentification: marker.id,
+    function changeMarkers(result) {
+        let packagedData = [{
+            id: result.id,
             username: Data.user.username,
-        };
+        }];
 
-        socket.emit('change', packagedData);
+        socket.emit('changeMarkers', packagedData);
     }
     /* -----------------------------------------------------------------------*/
     $scope.openLink = function() {
-      $uibModal.open({
+        $uibModal.open({
             template: `<div class="modal-body">
-                        Send the link below to your friends to start the group session! <br>
-                        <a href="{{message}}">{{message}}</a> <br>
-                        </div>`,
+                Send the link below to your friends to start the group session! <br>
+                <a href="{{message}}">{{message}}</a> <br>
+                </div>`,
             backdrop: true,
             controller: 'modalController',
             scope: $scope,
             size: 'lg',
             windowClass: 'centre-modal',
-      });
+        });
     };
 
     /* -----------------------------------------------------------------------*/
     /* Functions used in order to change colours of markers. */
 
-    let markers = [];
-    let users;
-    let lastOpenedInfoBubble = undefined;
+    /*
+     * Handles the chaning of the coloured dots above a marker
+     * denoting a location.
+     */
+    function changeColoursOfMarkers(index, usersWhoClicked) {
+        // Find the marker, whose dots need to be updated.
+        let currentMarker = markers[index];
 
-    function changeColoursOfMarkers(packagedData) {
-        let id = packagedData.markerIdentification;
-        let user = packagedData.username;
+        console.log(currentMarker.colouredDots);
 
-        for (let i = 0; i < markers.length; i++) {
-            if (markers[i].id === id) {
-                if (didUserClickBefore(markers[i], user)) {
-                    removeUserClick(markers[i], user);
-                } else {
-                    addUserClick(markers[i], user);
+        clearPreviousColouredDots(currentMarker);
+
+        let colouredDots = [];
+
+        // If no users clicked then just exit, otherwise enter the if statement.
+        if (usersWhoClicked.length !== 0) {
+            // Find the middle user's index. If there are 2 users in the array,
+            // then the middle user's index will be 1. If there are 3 users in
+            // the array then the middle user's index will be 1 again.
+            let middleUserIndex = Math.floor(usersWhoClicked.length / 2);
+
+            // The algorithm differs if there is an odd or even number of users.
+            if (usersWhoClicked.length % 2 !== 0) {
+                for (let i = 0; i < usersWhoClicked.length; i++) {
+                    // Generate the offset of the coloured dot for the
+                    // current user in the loop.
+                    let anchor = new google.maps.Point(-3 * (middleUserIndex - i), 10);
+
+                    let colouredDot = generateColouredDot(currentMarker, anchor, usersWhoClicked[i]);
+
+                    colouredDots.push(colouredDot);
                 }
             } else {
-                if (didUserClickBefore(markers[i], user)) {
-                    removeUserClick(markers[i], user);
+                for (let i = 0; i < usersWhoClicked.length; i++) {
+                    let anchor;
+
+                    // Generate the offset of the coloured dot for the
+                    // current user in the loop.
+                    if (i < middleUserIndex) {
+                        anchor = new google.maps.Point(2 - (3 * (middleUserIndex - i)), 10);
+                    } else {
+                        anchor = new google.maps.Point(2 + 3 * (i - middleUserIndex), 10);
+                    }
+
+                    let colouredDot = generateColouredDot(currentMarker, anchor, usersWhoClicked[i]);
+
+                    colouredDots.push(colouredDot);
                 }
             }
         }
+
+        currentMarker.colouredDots = colouredDots;
     }
 
-    function didUserClickBefore(result, user) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
+    /*
+     * Clears the previous array of coloured dots on a specific location.
+     */
+    function clearPreviousColouredDots(currentMarker) {
+        let colouredDots = currentMarker.colouredDots;
 
-        for (let i = 0; i < listOfUsersWhoClicked.length; i++) {
-            if (listOfUsersWhoClicked[i] === user) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    function recalculateColour(result) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        if (listOfUsersWhoClicked.length === 0) {
-            result.setIcon(createDefaultRedIcon());
-        } else if (listOfUsersWhoClicked.length === 1) {
-            result.setIcon(generateIconFromUserColour(listOfUsersWhoClicked[0]));
-        } else {
-            result.setIcon(generateIcon('#ffffff'));
+        for (let i = 0; i < colouredDots.length; i++) {
+            colouredDots[i].setMap(null);
         }
     }
 
-    function recalculateLabel(result) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        let label = null;
-
-        if (listOfUsersWhoClicked.length > 1) {
-            label = {
-                text: (listOfUsersWhoClicked.length).toString(),
-                fontSize: '24px',
-            };
-        }
-
-        result.setLabel(label);
-    }
-
-    function removeUserClick(result, user) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-        let index = listOfUsersWhoClicked.indexOf(user);
-
-        listOfUsersWhoClicked.splice(index, 1);
-
-        recalculateColour(result);
-        recalculateLabel(result);
-    }
-
-    function addUserClick(result, user) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        listOfUsersWhoClicked.push(user);
-
-        recalculateColour(result);
-        recalculateLabel(result);
-    }
-
-    function generateIconFromUserColour(user) {
+    /*
+     * Finds the colour of the user who clicked on a specific location.
+     */
+    function findColourOfUserWhoClicked(username) {
         for (let i = 0; i < users.length; i++) {
-            if (users[i].username === user) {
-                return generateIcon(users[i].color);
+            if (users[i].username === username) {
+                return users[i].color;
             }
         }
     }
 
-    function generateIcon(colour) {
-        return {
-            path: pathToIcon,
-            fillColor: colour,
-            fillOpacity: 1,
-            anchor: new google.maps.Point(250, 400),
-            labelOrigin: new google.maps.Point(240, 150),
-            strokeWeight: 1,
-            scale: .08,
-        };
+    /*
+     * Generates a new coloured dot over the currentMarker at anchor offset.
+     */
+    function generateColouredDot(currentMarker, anchor, userWhoClicked) {
+        return new google.maps.Marker({
+            position: currentMarker.getPosition(),
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 4,
+                anchor: anchor,
+                fillColor: findColourOfUserWhoClicked(userWhoClicked),
+                fillOpacity: 1,
+                strokeColor: 'black',
+                strokeWeight: 1,
+            },
+            map: currentMarker.getMap(),
+        });
     }
+
+    /* -----------------------------------------------------------------------*/
+
+    /* On recieve */
+    function socketRecieveMessage(messages) {
+        $scope.messages = messages;
+        $scope.$apply();
+    }
+
+    /* Add socket listener for messaging */
+    socket.removeAllListeners('recieveChatMessage', function() {
+        socket.once('recieveChatMessage', socketRecieveMessage);
+    });
+
+    /* handle message exhange */
+    $scope.sendMessage = () => {
+        /* no empty message */
+        if ($scope.message !== '') {
+            // $scope.messages.push({
+            // username: Data.user.username,
+            // location: '',
+            // message: $scope.message,
+            // });
+            socket.emit('chatMessage', {
+                username: Data.user.username,
+                location: '',
+                message: $scope.message,
+            });
+            $scope.message = '';
+        }
+    };
+    /* -----------------------------------------------------------------------*/
 });
 
 app.controller('modalController', function($scope, $location) {
     console.log('location: ', location.href);
     $scope.message = location.href;
 });
+

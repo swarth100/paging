@@ -7,6 +7,11 @@ $search-btn-text: rgb(140, 71, 30);
 $search-btn-bg: rgb(209, 136, 91);
 $search-btn-border: $search-btn-bg;
 $search-btn-highlight: rgb(189, 116, 71);
+
+$like-btn-text: rgb(255, 255, 255);
+$like-btn-bg: rgb(0, 0, 179);
+$like-btn-border: rgb(0, 0, 77);
+$like-btn-highlight: rgb(77, 77, 255);
 /************************************************************/
 
 /* Colour pallet for nav-bar ********************************/
@@ -467,6 +472,67 @@ input[type="checkbox"]:checked + label {
 
 .infoBubbleUser {
     padding-left: 5px;
+}
+
+.btn-like {
+    @extend .square;
+    background-color: $like-btn-bg;
+    border-color: $like-btn-border;
+    color: $like-btn-text;
+}
+
+.btn-like:hover, .btn-like:focus, .btn-like:active {
+    background-color: $like-btn-highlight;
+    color: $like-btn-text;
+}
+
+.bubbleSeparator {
+    height: 5px;
+    background-color: $search-field-border;
+}
+
+.bubbleHeader {
+    border: 1px $search-field-border;
+}
+
+.like-text-field {
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 140%;
+    border: 1px;
+    border-style: solid;
+    border-color: $search-field-border;
+}
+
+/************************************************************/
+
+/* Messages *************************************************/
+.close-lg {
+    font-size: 30px;
+}
+
+$close-box-height: 35px;
+.close-box {
+    height: $close-box-height;
+}
+
+#message-board {
+    height: calc(100vh - 50px - 34px - 35px);
+    overflow: scroll;
+    padding-top: 10px;
+    .message-box {
+        padding: 5px 20px;
+        font-size: 16px;
+    }
+    .username {
+        word-wrap: break-word;
+    }
+    .location {
+        word-wrap: break-word;
+    }
+    .message {
+        word-wrap: break-word;
+    }
 }
 
 /************************************************************/

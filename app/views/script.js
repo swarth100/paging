@@ -1,4 +1,6 @@
-let app = angular.module('paging', ['ui.bootstrap', 'ngRoute', 'angular.filter', 'ngStorage', 'ngMap', 'ngAnimate']);
+let app = angular.module('paging',
+        ['ui.bootstrap', 'ngRoute', 'angular.filter', 'ngStorage',
+         'ngMap', 'ngAnimate', 'luegg.directives']);
 
 app.config(function($routeProvider, $locationProvider) {
     $locationProvider.html5Mode({
@@ -164,6 +166,45 @@ app.factory('Data', function($localStorage, $filter) {
                 return '';
             }
         },
+        colors: [
+            {name: 'Grey',
+             hex: '#737373'},
+            {name: 'Yellow',
+             hex: '#ffff00'},
+            {name: 'Orange',
+             hex: '#ff9900'},
+            {name: 'Dark Orange',
+             hex: '#993300'},
+            // {red: '#ff3300'},
+            {name: 'Pink',
+             hex: '#ff33cc'},
+            {name: 'Purple',
+             hex: '#993399'},
+            {name: 'Dark Purple',
+             hex: '#660066'},
+            {name: 'Purple Blue',
+             hex: '#9900cc'},
+            {name: 'Blue',
+             hex: '#333399'},
+            {name: 'Dark Blue',
+             hex: '#000066'},
+            {name: 'Electric Blue',
+             hex: '#0000ff'},
+            {name: 'Light Blue',
+             hex: '#0099ff'},
+            {name: 'Green',
+             hex: '#00ff00'},
+            {name: 'Dark Green',
+             hex: '#009933'},
+            {name: 'Darker Green',
+             hex: '#003300'},
+            {name: 'Cream Green',
+             hex: '#669900'},
+            {name: 'Brown',
+             hex: '#996633'},
+            {name: 'Dark Brown',
+             hex: '#663300'},
+        ],
     };
 });
 

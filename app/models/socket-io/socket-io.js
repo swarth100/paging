@@ -40,7 +40,7 @@ exports.start = (server) => {
             socket.emit('messages', 'thank you for joining ' + roomID);
 
             /* Looks into the database to find an object corresponding to
-             the given roomID.
+               the given roomID.
              * If a room is not found a new room is created.
              * If this fails as well, then a very serious error has occured
              * and the application should not be able to proceed.*/
@@ -53,10 +53,10 @@ exports.start = (server) => {
 
                         socket.emit('joinSuccess', room.guestNumber);
                     })
-                    .catch(function(err) {
-                        /* Room must be created in the DB */
-                        console.log('Update user number ERROR. Something horrible. Should never happen');
-                    });
+                .catch(function(err) {
+                    /* Room must be created in the DB */
+                    console.log('Update user number ERROR. Something horrible. Should never happen');
+                });
             });
         });
 
@@ -91,10 +91,10 @@ exports.start = (server) => {
 
                         broadcastRefresh(socket);
                     })
-                    .catch(function(err) {
-                        /* Room must be created in the DB */
-                        console.log('Update rooms options ERROR. Something horrible. Should never happen');
-                    });
+                .catch(function(err) {
+                    /* Room must be created in the DB */
+                    console.log('Update rooms options ERROR. Something horrible. Should never happen');
+                });
             });
         });
 
@@ -110,10 +110,10 @@ exports.start = (server) => {
 
                             broadcastSubmit(socket);
                         })
-                        .catch(function(err) {
-                            /* Room must be created in the DB */
-                            console.log('Update rooms ERROR. Something horrible. Should never happen');
-                        });
+                    .catch(function(err) {
+                        /* Room must be created in the DB */
+                        console.log('Update rooms ERROR. Something horrible. Should never happen');
+                    });
                 });
             });
         });
@@ -121,15 +121,14 @@ exports.start = (server) => {
         /* Triggered upon searching */
         socket.on('deleteUser', (username) => {
             findRoom(socket.room, function(room) {
-                console.log(room);
                 mongooseRoom.deleteUser(room, username)
                     .then(() => {
                         console.log('deleted user from model, updating client');
                         broadcastSubmit(socket);
                     })
-                    .catch((err) => {
-                        console.log('Failed to remove user from a room');
-                    });
+                .catch((err) => {
+                    console.log('Failed to remove user from a room');
+                });
             });
         });
 
@@ -147,8 +146,72 @@ exports.start = (server) => {
          * If a marker is clicked on this broadcasts the change to all users
          * in the same room.
          */
-        socket.on('change', function(packagedData) {
-            io.in(socket.room).emit('evolve', packagedData);
+        socket.on('changeMarkers', function(changedLocations) {
+            console.log('Received marker change');
+            findRoomNoSave(socket.room, function(room) {
+                for (let i = 0; i < room.results.length; i ++) {
+                    for (let j = 0; j < changedLocations.length; j ++) {
+                        if (changedLocations[j].id === room.results[i].id) {
+                            let found = false;
+                            for (let k = 0; k < room.results[i].users.length; k ++) {
+                                if (room.results[i].users[k] === changedLocations[j].username) {
+                                    found = true;
+                                    room.results[i].users.splice(k);
+                                }
+                            }
+                            if (!found) {
+                                room.results[i].users.push(changedLocations[j].username);
+                            }
+                        }
+                    }
+                }
+                /* Update the list of users in the given room */
+                mongooseRoom.updateRoom(room, room.results)
+                    .then(function(res) {
+                        /* Room already exists in the DB */
+                        console.log('Update success upon change');
+
+                        console.log(room);
+
+                        io.in(socket.room).emit('updateMarkers', room.results);
+                    })
+                    .catch(function(err) {
+                        /* Room must be created in the DB */
+                        console.log('Change rooms ERROR. Something horrible. Should never happen');
+                    });
+            });
+        });
+
+        /* If a user changes their colour */
+        socket.on('changeColour', (usernameAndColour) => {
+            findRoom(socket.room, function(room) {
+                mongooseRoom.changeUserColour(room, usernameAndColour.username, usernameAndColour.colour)
+                    .then(() => {
+                        console.log('Changed colour of user, updating client');
+                        broadcastSubmit(socket);
+                    })
+                    .catch((err) => {
+                        console.log('Failed to change colour user');
+                    });
+            });
+        });
+
+        /*
+         * Recieve a message for the room, broadcast it to everyone in the room
+         */
+        socket.on('chatMessage', (message) => {
+            findRoom(socket.room, function(room) {
+                findRoom(room._id, (r) => {
+                    /* Gets the messages in the room, push the new message and save */
+                    r.messages.push(message);
+                    mongooseRoom.updateMessage(room._id, r.messages).then(() => {
+                        io.in(socket.room).emit('recieveChatMessage', r.messages);
+                    })
+                    .catch(() =>{
+                        console.log('Error, failed to update message in the room');
+                    });
+                });
+            });
         });
     });
 
@@ -160,14 +223,14 @@ exports.start = (server) => {
 
                 cb(room);
             })
-            .catch(function(err) {
-                /* Room must be created in the DB */
-                console.log('New room has been created');
+        .catch(function(err) {
+            /* Room must be created in the DB */
+            console.log('New room has been created');
 
-                /* Room must be created and saved into the DB */
-                let room = mongooseRoom.createNewRoom(roomID);
-                saveRoom(room, cb);
-            });
+            /* Room must be created and saved into the DB */
+            let room = mongooseRoom.createNewRoom(roomID);
+            saveRoom(room, cb);
+        });
     }
 
     function findRoomNoSave(roomID, cb) {
@@ -177,10 +240,10 @@ exports.start = (server) => {
                 console.log('Room already exists and found');
                 cb(room);
             })
-            .catch(function(err) {
-                /* Room must be created in the DB */
-                console.log('Find room ERROR');
-            });
+        .catch(function(err) {
+            /* Room must be created in the DB */
+            console.log('Find room ERROR');
+        });
     }
 
     function saveRoom(room, cb) {
@@ -191,10 +254,10 @@ exports.start = (server) => {
 
                 cb(room);
             })
-            .catch(function(err) {
-                /* An unexpected error occurred while saving the room */
-                console.log('Error occurred while saving to the database');
-            });
+        .catch(function(err) {
+            /* An unexpected error occurred while saving the room */
+            console.log('Error occurred while saving to the database');
+        });
     }
 
     function findUserViaRoom(socket, user, cb) {
@@ -206,9 +269,9 @@ exports.start = (server) => {
                 /* Attempt to update the given user in the DB */
                 updateUser(room, user, cb);
             })
-            .catch(function(err) {
-                console.log('Room could not be found on DB');
-            });
+        .catch(function(err) {
+            console.log('Room could not be found on DB');
+        });
     }
 
     function updateUser(room, user, cb) {
@@ -220,11 +283,11 @@ exports.start = (server) => {
                 /* TODO: ADD comment */
                 cb();
             })
-            .catch(function(err) {
-                /* User is not present in the room */
-                console.log('User not present in room. Create (and add) new user');
-                addUser(room, user, cb);
-            });
+        .catch(function(err) {
+            /* User is not present in the room */
+            console.log('User not present in room. Create (and add) new user');
+            addUser(room, user, cb);
+        });
     }
 
     /* Helper function to search through color array and select one */
@@ -247,9 +310,9 @@ exports.start = (server) => {
 
                 cb();
             })
-            .catch(function(err) {
-                console.log('Failed to save new user. Something went horribly wrong.');
-            });
+        .catch(function(err) {
+            console.log('Failed to save new user. Something went horribly wrong.');
+        });
     }
 
     function broadcastGeneral(socket, val) {
@@ -261,9 +324,9 @@ exports.start = (server) => {
                 /* Broadcast the found room to the channel with an update */
                 io.in(socket.room).emit(val, room);
             })
-            .catch(function(err) {
-                console.log('No element in the database meets the search criteria');
-            });
+        .catch(function(err) {
+            console.log('No element in the database meets the search criteria');
+        });
     }
 
     function broadcastSubmit(socket) {
