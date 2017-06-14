@@ -406,6 +406,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         }
 
+        for (let i = 0; i < room.results.length; i++) {
+            changeColoursOfMarkers(i, room.results[i].users);
+        }
+
         if (users.length === 1 && $scope.newSession) {
             $scope.newSession = false;
             $scope.performSearch();
@@ -608,34 +612,35 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let lastOpenedInfoBubble = undefined;
 
     /* Handle changing of marker colors */
-    function changeColoursOfMarkers(index, users) {
+    function changeColoursOfMarkers(index, usersWhoClicked) {
         console.log('Index is: ' + index);
-        console.log('List of users who clicked: ' + users);
+        console.log('List of users who clicked: ' + usersWhoClicked);
 
-        if (users.length === 0) {
+        let currentMarker = markers[index];
+
+        let colouredDots = currentMarker.colouredDots;
+
+        for (let i = 0; i < colouredDots.length; i++) {
+            colouredDots[i].setMap(null);
+        }
+
+        colouredDots = [];
+
+        if (usersWhoClicked.length === 0) {
+            console.log('I should not reach this');
             return;
         } else {
-            let currentMarker = markers[i];
+            if (usersWhoClicked.length % 2 !== 0) {
+                let temporary = Math.floor(usersWhoClicked.length / 2);
 
-            let colouredDots = currentMarker.colouredDots;
-
-            for (let i = 0; i < colouredDots.length; i++) {
-                colouredDots[i].setMap(null);
-            }
-
-            colouredDots = [];
-
-            if (users.length % 2 !== 0) {
-                let temporary = Math.floor(users.length / 2);
-
-                for (let i = 0; i < users.length; i++) {
+                for (let i = 0; i < usersWhoClicked.length; i++) {
                     let subMarker = new google.maps.Marker({
                         position: currentMarker.getPosition(),
                         icon: {
                             path: google.maps.SymbolPath.CIRCLE,
                             scale: 4,
                             anchor: new google.maps.Point(-3 * (temporary - i), 10),
-                            fillColor: users[i].color,
+                            fillColor: findColourOfUserWhoClicked(usersWhoClicked[i]),
                             fillOpacity: 1,
                             strokeColor: 'black',
                             strokeWeight: 1,
@@ -645,27 +650,62 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
                     colouredDots.push(subMarker);
                 }
-            }
-        }
-
-        /*
-        let id = packagedData.markerIdentification;
-        let user = packagedData.username;
-
-        for (let i = 0; i < markers.length; i++) {
-            if (markers[i].id === id) {
-                if (didUserClickBefore(markers[i], user)) {
-                    removeUserClick(markers[i], user);
-                } else {
-                    addUserClick(markers[i], user);
-                }
             } else {
-                if (didUserClickBefore(markers[i], user)) {
-                    removeUserClick(markers[i], user);
+                let temporary = Math.floor(usersWhoClicked.length / 2);
+
+                console.log(temporary);
+
+                for (let i = 0; i < usersWhoClicked.length; i++) {
+                    let subMarker;
+
+                    if (i < temporary) {
+                        subMarker = new google.maps.Marker({
+                            position: currentMarker.getPosition(),
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 4,
+                                anchor: new google.maps.Point(2 + ((-3) * (temporary - i)), 10),
+                                fillColor: findColourOfUserWhoClicked(usersWhoClicked[i]),
+                                fillOpacity: 1,
+                                strokeColor: 'black',
+                                strokeWeight: 1,
+                            },
+                            map: currentMarker.getMap(),
+                        });
+                    } else {
+                        subMarker = new google.maps.Marker({
+                            position: currentMarker.getPosition(),
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 4,
+                                anchor: new google.maps.Point(2 + 3 * (i - temporary), 10),
+                                fillColor: findColourOfUserWhoClicked(usersWhoClicked[i]),
+                                fillOpacity: 1,
+                                strokeColor: 'black',
+                                strokeWeight: 1,
+                            },
+                            map: currentMarker.getMap(),
+                        });
+                    }
+
+                    colouredDots.push(subMarker);
                 }
             }
+
+            currentMarker.colouredDots = colouredDots;
         }
-        */
+    }
+
+    function findColourOfUserWhoClicked(user) {
+        let username = user;
+
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].username === username) {
+                return users[i].color;
+            }
+        }
+
+        console.log('You should not reach this place!');
     }
 
     function didUserClickBefore(result, user) {
