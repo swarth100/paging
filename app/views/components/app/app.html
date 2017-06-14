@@ -142,12 +142,12 @@
                         <div class="form-control input-lg square text-field-colour no-top-border">Members</div>
                          <span class="input-group-btn">
                                 <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <div class="text-field-colour">Change User Colour</div>
+                                    <div class="text-field-colour">Change Colour</div>
                                     <span class="caret"></span>
                                 </button>
-                                <div class="dropdown-menu dropdown-menu-right square text-field-colour" ng-click="$event.stopPropagation();">
+                                <div class="dropdown-menu scrollable-table dropdown-menu-right square text-field-colour" ng-click="$event.stopPropagation();">
                                      <div ng-repeat="color in colors">
-                                         <button ng-click="changeUserColour(color.hex)" style="background-color:{{color.hex}}">
+                                         <button class="full-width" ng-click="changeUserColour(color.hex)" style="background-color:{{color.hex}}; width:100%">
                                             {{color.name}}
                                          </button>
                                     </div>
