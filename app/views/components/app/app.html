@@ -138,11 +138,14 @@
                 </form>
                 <!-- Users fields -->
                 <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
-                    <div class="input-group">
-                        <div class="form-control input-lg square text-field-colour no-top-border">Members</div>
-                         <span class="input-group-btn">
-                                <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <div class="text-field-colour">Change Colour</div>
+                    <div class="input-group full-width">
+                        <div class="col-xs-5 no-padding">
+                            <div class="form-control input-lg square text-field-colour no-top-border">Members</div>
+                        </div>
+                        <div class="col-xs-4 no-padding">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn input-lg dropdown-toggle square text-field-colour full-width no-padding" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="text-field-colour">Change Colour</span>
                                     <span class="caret"></span>
                                 </button>
                                 <div class="dropdown-menu scrollable-table dropdown-menu-right square text-field-colour">
@@ -155,11 +158,14 @@
                                    </div>
                                 </div>
                             </span>
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-lg input-lg square no-left-border no-right-border btn-search" ng-click="openLink()">
-                                Invite
-                            </button>
-                        </span>
+                        </div>
+                        <div class="col-xs-3 no-padding">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-lg input-lg square no-left-border no-right-border btn-search full-width no-padding" ng-click="openLink()">
+                                    Invite
+                                </button>
+                            </span>
+                        </div>
                     </div>
                     <div class="scrollable-table text-field-colour set-boarder">
                         <table class="table table-hover table-bordered set-boarder no-margin">
