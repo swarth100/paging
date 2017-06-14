@@ -43,22 +43,22 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.hoveredResultIndex = 0;
     $scope.transportType = 'Null';
     $scope.transports = [
-    {
-        name: 'Foot',
-        type: 'WALKING',
-    },
-    {
-        name: 'Bicycle',
-        type: 'BICYCLING',
-    },
-    {
-        name: 'Transport',
-        type: 'TRANSIT',
-    },
-    {
-        name: 'Car',
-        type: 'DRIVING',
-    },
+        {
+            name: 'Foot',
+            type: 'WALKING',
+        },
+        {
+            name: 'Bicycle',
+            type: 'BICYCLING',
+        },
+        {
+            name: 'Public',
+            type: 'TRANSIT',
+        },
+        {
+            name: 'Car',
+            type: 'DRIVING',
+        },
     ];
 
     /* -----------------------------------------------------------------------*/
@@ -111,12 +111,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let generateInfoBubbleTemplate = function(result) {
         return (
         '<div>' +
-        '<div class="infoBubbleLocation">Name: ' + '{{getResultFromIndex(' + result + ').name}}' + '<br> Average time spent: ' + '{{getResultFromIndex(' + result + ').avgtime}}' + ' minutes.</div>' +
-            '<label ng-repeat="transport in transports">' +
-                '<button type="button" class="btn btn-search" ng-value="transport.name" ng-click="printTransport(transport)">{{transport.name}}</button>' +
-            '</label>' +
-            '<br>' +
-            '<button type="button" class="btn btn-block btn-primary" ng-click=\"toggleLike(getResultFromIndex(' + result + '))\">{{displayLike(getResultFromIndex(' + result + '))}}</button>' +
+            '<div class="infoBubbleLocation">Name: ' + '{{getResultFromIndex(' + result + ').name}}' + '<br> Average time spent: ' + '{{getResultFromIndex(' + result + ').avgtime}}' + ' minutes.</div>' +
+            '<div class="btn-group btn-group-justified">' +
+                '<label class="btn btn-primary" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">{{transport.name}}</label>' +
+            '</div>' +
+            '<button type="button" class="btn btn-group btn-group-justified btn-primary" ng-click=\"toggleLike(getResultFromIndex(' + result + '))\">{{displayLike(getResultFromIndex(' + result + '))}}</button>' +
         '</div>'
         );
     };
@@ -492,8 +491,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             arrowSize: 10,
             borderWidth: 1,
             borderColor: 'rgb(193, 173, 150)',
+            maxWidth: 300,
             disableAutoPan: true,
-            hideCloseButton: false,
+            hideCloseButton: true,
             disableAnimation: true,
             arrowPosition: 30,
             backgroundClassName: 'infoBubbleText',
