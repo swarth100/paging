@@ -145,12 +145,14 @@
                                     <div class="text-field-colour">Change Colour</div>
                                     <span class="caret"></span>
                                 </button>
-                                <div class="dropdown-menu scrollable-table dropdown-menu-right square text-field-colour" ng-click="$event.stopPropagation();">
+                                <div class="dropdown-menu scrollable-table dropdown-menu-right square text-field-colour">
                                      <div ng-repeat="color in colors">
-                                         <button class="full-width" ng-click="changeUserColour(color.hex)" style="background-color:{{color.hex}}; width:100%">
-                                            {{color.name}}
-                                         </button>
-                                    </div>
+                                         <div style="background:{{color.hex}};">
+                                            <button style="width: 80%;" ng-click="changeUserColour(color.hex)">
+                                                {{color.name}}
+                                            </button>
+                                         </div>
+                                   </div>
                                 </div>
                             </span>
                         <span class="input-group-btn">
