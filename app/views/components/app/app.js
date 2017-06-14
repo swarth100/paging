@@ -115,7 +115,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let generateInfoBubbleTemplate = function(result) {
         return (
         '<div>' +
-            '<div class="infoBubbleLocation">Name: ' + '{{getResultFromIndex(' + result + ').name}}' + '<br> Average time spent: ' + '{{getResultFromIndex(' + result + ').avgtime}}' + ' minutes.</div>' +
+            `<div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-like" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
+                        <i class="fa fa-thumbs-up"></i>
+                    </button>
+                </span>
+                <div type="text" class="form-control centre-text">{{getResultFromIndex(` + result + `).name}}</div>
+            </div>` +
             '<div class="btn-group btn-group-justified">' +
                 '<label class="btn btn-primary" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">' +
                     '<i class="{{transport.icon}}"></i>' +
