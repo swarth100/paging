@@ -134,7 +134,7 @@ $bottom-padding: calc(100vh - 50px - 70px - 82px - 9vh);
         padding: 14px;
     }
 }
-/************************************************************/$search-btn-bg
+/************************************************************/
 
 /* Homepage *************************************************/
 .field-title {
@@ -493,6 +493,15 @@ input[type="checkbox"]:checked + label {
 
 .bubbleHeader {
     border: 1px $search-field-border;
+}
+
+.like-text-field {
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 140%;
+    border: 1px;
+    border-style: solid;
+    border-color: $search-field-border;
 }
 
 /************************************************************/
