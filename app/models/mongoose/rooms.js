@@ -63,6 +63,12 @@ let roomsSchema = new Schema({
         type: Number,
         default: 0,
     },
+
+    messages: {
+        type: Array,
+        default: [],
+    },
+
 });
 
 /*
@@ -232,6 +238,15 @@ exports.updateOptions = function(room, options) {
     return helper.updateHelper(Room, cond, query);
 };
 
+exports.updateMessage = function(roomID, m) {
+    let query = {
+        'messages': m,
+    };
+    let cond = {
+        'id': roomID,
+    };
+    return helper.updateHelper(Room, cond, query);
+};
 
 /* Export the User model */
 exports.roomModel = Room;
