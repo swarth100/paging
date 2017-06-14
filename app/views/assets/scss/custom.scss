@@ -7,6 +7,11 @@ $search-btn-text: rgb(140, 71, 30);
 $search-btn-bg: rgb(209, 136, 91);
 $search-btn-border: $search-btn-bg;
 $search-btn-highlight: rgb(189, 116, 71);
+
+$like-btn-text: rgb(255, 255, 255);
+$like-btn-bg: rgb(0, 0, 179);
+$like-btn-border: rgb(0, 0, 77);
+$like-btn-highlight: rgb(77, 77, 255);
 /************************************************************/
 
 /* Colour pallet for nav-bar ********************************/
@@ -467,6 +472,17 @@ input[type="checkbox"]:checked + label {
 
 .infoBubbleUser {
     padding-left: 5px;
+}
+
+.btn-like {
+    @extend .square;
+    background-color: $like-btn-bg;
+    border-color: $like-btn-border;
+    color: $like-btn-text;
+}
+
+.btn-like:hover, .btn-like:focus, .btn-like:active {
+    background-color: $like-btn-highlight;
 }
 
 /************************************************************/
