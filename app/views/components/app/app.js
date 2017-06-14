@@ -116,13 +116,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return (
         '<div>' +
             `<div class="input-group">
-                <span class="input-group-btn">
-                    <button class="btn btn-like" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
+                <span class="input-group-btn bubble-header">
+                    <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
                         <i class="fa fa-thumbs-up"></i>
                     </button>
                 </span>
-                <div type="text" class="form-control centre-text">{{getResultFromIndex(` + result + `).name}}</div>
-            </div>` +
+                <div type="text" class="form-control centre-text text-field-colour input-lg">{{getResultFromIndex(` + result + `).name}}</div>
+            </div>
+            <div class="bubbleSeparator"></div>` +
             '<div class="btn-group btn-group-justified">' +
                 '<label class="btn btn-primary" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">' +
                     '<i class="{{transport.icon}}"></i>' +
@@ -130,7 +131,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     '{{transport.name}}' +
                 '</label>' +
             '</div>' +
-            '<button type="button" class="btn btn-group btn-group-justified btn-like" ng-click=\"toggleLike(getResultFromIndex(' + result + '))\">{{displayLike(getResultFromIndex(' + result + '))}}</button>' +
+            '<div class="bubbleSeparator"></div>' +
         '</div>'
         );
     };
@@ -507,6 +508,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             borderWidth: 1,
             borderColor: 'rgb(193, 173, 150)',
             maxWidth: 300,
+            minHeight: 'calc(100% + 2px)',
             disableAutoPan: true,
             hideCloseButton: true,
             disableAnimation: true,
