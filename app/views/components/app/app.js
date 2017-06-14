@@ -13,6 +13,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.roomID = $routeParams.room;
     $scope.newSession = true;
     $scope.issueSearch = false;
+    let resultLocations = [];
     Data.user.username = Data.updateUsername();
 
     let geocoder = new google.maps.Geocoder();
@@ -83,6 +84,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     $scope.toggleLike = function(result) {
         result.like = !result.like;
+        changeMarkers(result);
     };
 
     let generateInfoBubbleTemplate = function(result) {
@@ -272,8 +274,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      * This behaviour leads me to believe that the listener is either
      * destroyed or it listens only once.
      */
-    socket.removeAllListeners('evolve', function() {
-        socket.once('evolve', changeColoursOfMarkers);
+    socket.removeAllListeners('updateMarkers', function() {
+        socket.once('updateMarkers', changeColoursOfMarkers);
     });
 
     /* -----------------------------------------------------------------------*/
@@ -332,6 +334,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         directionsDisplay.setDirections({routes: []});
 
         users = room.users;
+        resultLocations = room.results;
 
         socketRefresh(room);
 
@@ -364,7 +367,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             markers = [];
 
             for (let i = 0; i < room.results.length; i++) {
-                let infoBubble = createLocationInfoBubble(room.results[i]);
+                let infoBubble = createLocationInfoBubble(i);
 
                 let marker = markResult(room.results[i], map);
 
@@ -444,13 +447,15 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             arrowPosition: 30,
             backgroundClassName: 'infoBubbleText',
             arrowStyle: 2,
+            result: '',
         });
     };
 
-    createLocationInfoBubble = function(result) {
+    createLocationInfoBubble = function(index) {
         let infoBubble = createDefaultInfoBubble();
 
-        infoBubble.result = result;
+        infoBubble.index = index;
+        infoBubble.locationBubble = true;
 
         return infoBubble;
     };
@@ -461,6 +466,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         infoBubble.content = '<div class="infoBubbleUser" style=\"color: ' + user.color + '\">' + user.username + '</div>';
 
         return infoBubble;
+    };
+
+    updateResultInfoBubble = function(infoBubble) {
+        infoBubble.result = resultLocations[infoBubble.index];
     };
 
     markResult = function(result, map) {
@@ -501,7 +510,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
                 /* Change the template of the selected label to use the 'selected' style
                  * Then change the $scope field and apply the angular changes */
-                if (infoBubble.result) {
+                if (infoBubble.locationBubble) {
+                    updateResultInfoBubble(infoBubble);
                     infoBubble.content = compiledSelectedHTML[0];
                     $scope.selectedResult = infoBubble.result;
                     $scope.$apply();
@@ -518,10 +528,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 infoBubble.close();
                 lastOpenedInfoBubble = undefined;
             }
-
-            /* When a marker is clicked its colour needs to change and
-             potentially other markers' colours would need to change as well. */
-            changeMarkers(marker);
         });
 
         /* Handle mouse hovering over labels */
@@ -529,7 +535,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             if (!infoBubble.opened) {
                 /* Change the template of the hovered label to use the hovering style
                  * Then change the $scope field and apply the angular changes */
-                if (infoBubble.result) {
+                if (infoBubble.locationBubble) {
+                    updateResultInfoBubble(infoBubble);
                     infoBubble.content = compiledHoveredHTML[0];
                     $scope.hoveredResult = infoBubble.result;
                     $scope.$apply();
@@ -547,13 +554,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
-    function changeMarkers(marker) {
-        let packagedData = {
-            markerIdentification: marker.id,
+    function changeMarkers(result) {
+        let packagedData = [{
+            id: result.id,
             username: Data.user.username,
-        };
+        }];
 
-        socket.emit('change', packagedData);
+        socket.emit('changeMarkers', packagedData);
     }
     /* -----------------------------------------------------------------------*/
     $scope.openLink = function() {
@@ -577,7 +584,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let users;
     let lastOpenedInfoBubble = undefined;
 
-    function changeColoursOfMarkers(packagedData) {
+    /* Handle changing of marker colors */
+    function changeColoursOfMarkers(locationData) {
+        console.log(locationData);
+
+        /* Update the location DATA */
+        resultLocations = locationData;
+
+        /*
         let id = packagedData.markerIdentification;
         let user = packagedData.username;
 
@@ -594,6 +608,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 }
             }
         }
+        */
     }
 
     function didUserClickBefore(result, user) {
