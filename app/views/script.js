@@ -1,4 +1,6 @@
-let app = angular.module('paging', ['ui.bootstrap', 'ngRoute', 'angular.filter', 'ngStorage', 'ngMap', 'ngAnimate']);
+let app = angular.module('paging',
+        ['ui.bootstrap', 'ngRoute', 'angular.filter', 'ngStorage',
+         'ngMap', 'ngAnimate', 'luegg.directives']);
 
 app.config(function($routeProvider, $locationProvider) {
     $locationProvider.html5Mode({
