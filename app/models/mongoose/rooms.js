@@ -169,6 +169,19 @@ exports.deleteUser = function(room, username) {
     return Room.update({_id: room._id}, {$pull: {users: {username: username}}});
 };
 
+exports.changeUserColour = function(room, username, color) {
+    let query = {
+        'users.$.color': color,
+    };
+
+    let cond = {
+        'id': room.id,
+        'users.username': username,
+    };
+
+    return helper.updateHelper(Room, cond, query);
+};
+
 exports.updateRoom = function(room, results) {
     let query = {
         'results': results,

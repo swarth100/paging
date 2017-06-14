@@ -9,6 +9,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Initialise fields used by the controller */
     console.log(location.href);
     $scope.types = Data.types;
+    $scope.colors = Data.colors;
     $scope.appSearch = Data.query;
     $scope.roomID = $routeParams.room;
     $scope.newSession = true;
@@ -116,6 +117,17 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.toggleSelected = ((index) => {
         $scope.types[index].isSelected = !$scope.types[index].isSelected;
         Data.types = $scope.types;
+    });
+
+    /* ------------------------------------------------------------------------*/
+    /* A function to change the users colour */
+
+    $scope.changeUserColour = ((colour) => {
+        if (!$scope.issueSearch) {
+            $scope.issueSearch = true;
+            socket.emit('changeColour', {username: Data.user.username,
+                                      colour: colour});
+        };
     });
 
     /* -----------------------------------------------------------------------*/
@@ -697,3 +709,4 @@ app.controller('modalController', function($scope, $location) {
     console.log('location: ', location.href);
     $scope.message = location.href;
 });
+

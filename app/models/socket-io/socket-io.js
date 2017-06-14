@@ -182,6 +182,20 @@ exports.start = (server) => {
                     });
             });
         });
+
+        /* If a user changes their colour */
+        socket.on('changeColour', (usernameAndColour) => {
+            findRoom(socket.room, function(room) {
+                mongooseRoom.changeUserColour(room, usernameAndColour.username, usernameAndColour.colour)
+                    .then(() => {
+                        console.log('Changed colour of user, updating client');
+                        broadcastSubmit(socket);
+                    })
+                    .catch((err) => {
+                        console.log('Failed to change colour user');
+                    });
+            });
+        });
     });
 
     function findRoom(roomID, cb) {
