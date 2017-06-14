@@ -24,6 +24,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     let directionsService = new google.maps.DirectionsService;
 
+    /*
+     * As far as observed, these global variables are used in conjunction of
+     * changing the coloured dots over locations.
+     */
+    let markers = [];
+    let users;
+    let lastOpenedInfoBubble = undefined;
+
     /* -----------------------------------------------------------------------*/
     /* Scope fields for handling location labels */
 
@@ -169,6 +177,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    /*
+     * Error handler used in conjunction with the geolocation function above.
+     */
     function errorHandler(error) {
         switch(error.code) {
             case error.PERMISSION_DENIED:
@@ -259,6 +270,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    /*
+     * Receives a list of locations whose coloured dots need to be
+     * refreshed. Sends them one by one to the function which takes care of
+     * actually refreshing the coloured dots.
+     */
     let issueOneByOne = function(locationData) {
         resultLocations = locationData;
         $scope.$apply();
@@ -385,12 +401,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
 
         /*
-        * Responses, returned by the googlemaps.js are packaged
-        * as follows:
-        * response.json.result[index].geometry.location.{lat/lng}.
-        * This code iterates through all returned positions, setting them up on
-        * the map
-        */
+         * This code iterates through all returned positions, setting them up on
+         * the map.
+         */
         if (room.results) {
             /* Reset the markers array when new results are received. */
             markers = [];
@@ -406,6 +419,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         }
 
+        // Draws coloured dots over locations if needed.
         for (let i = 0; i < room.results.length; i++) {
             changeColoursOfMarkers(i, room.results[i].users);
         }
@@ -413,7 +427,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         if (users.length === 1 && $scope.newSession) {
             $scope.newSession = false;
             $scope.performSearch();
-            }
+        }
     };
 
     /* InitMap helper functions: */
@@ -510,25 +524,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             icon: icon,
         });
 
-        // marker['id'] = result.id;
+        // This property is used to keep track of the colours used to
+        // represent which users have clicked on the marker.
         marker['colouredDots'] = [];
 
         return marker;
     };
 
     let pathToIcon = 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z';
-
-    function createDefaultRedIcon() {
-        return {
-            path: pathToIcon,
-            fillColor: '#ff3700',
-            fillOpacity: 1,
-            anchor: new google.maps.Point(250, 400),
-            labelOrigin: new google.maps.Point(240, 150),
-            strokeWeight: 1,
-            scale: .08,
-        };
-    }
 
     markerAddInfo = function(map, marker, infoBubble) {
         /* Handle mouse click events over labels */
@@ -607,88 +610,51 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Functions used in order to change colours of markers. */
 
-    let markers = [];
-    let users;
-    let lastOpenedInfoBubble = undefined;
-
-    /* Handle changing of marker colors */
+    /*
+     * Handles the chaning of the coloured dots above a marker
+     * denoting a location.
+     */
     function changeColoursOfMarkers(index, usersWhoClicked) {
-        console.log('Index is: ' + index);
-        console.log('List of users who clicked: ' + usersWhoClicked);
-
+        // Find the marker, whose dots need to be updated.
         let currentMarker = markers[index];
 
-        let colouredDots = currentMarker.colouredDots;
+        clearPreviousColouredDots(currentMarker);
 
-        for (let i = 0; i < colouredDots.length; i++) {
-            colouredDots[i].setMap(null);
-        }
+        let colouredDots = [];
 
-        colouredDots = [];
+        // If no users clicked then just exit, otherwise enter the if statement.
+        if (usersWhoClicked.length !== 0) {
+            // Find the middle user's index. If there are 2 users in the array,
+            // then the middle user's index will be 1. If there are 3 users in
+            // the array then the middle user's index will be 1 again.
+            let middleUserIndex = Math.floor(usersWhoClicked.length / 2);
 
-        if (usersWhoClicked.length === 0) {
-            console.log('I should not reach this');
-            return;
-        } else {
+            // The algorithm differs if there is an odd or even number of users.
             if (usersWhoClicked.length % 2 !== 0) {
-                let temporary = Math.floor(usersWhoClicked.length / 2);
-
                 for (let i = 0; i < usersWhoClicked.length; i++) {
-                    let subMarker = new google.maps.Marker({
-                        position: currentMarker.getPosition(),
-                        icon: {
-                            path: google.maps.SymbolPath.CIRCLE,
-                            scale: 4,
-                            anchor: new google.maps.Point(-3 * (temporary - i), 10),
-                            fillColor: findColourOfUserWhoClicked(usersWhoClicked[i]),
-                            fillOpacity: 1,
-                            strokeColor: 'black',
-                            strokeWeight: 1,
-                        },
-                        map: currentMarker.getMap(),
-                    });
+                    // Generate the offset of the coloured dot for the
+                    // current user in the loop.
+                    let anchor = new google.maps.Point(-3 * (middleUserIndex - i), 10);
 
-                    colouredDots.push(subMarker);
+                    let colouredDot = generateColouredDot(currentMarker, anchor, usersWhoClicked[i]);
+
+                    colouredDots.push(colouredDot);
                 }
             } else {
-                let temporary = Math.floor(usersWhoClicked.length / 2);
-
-                console.log(temporary);
-
                 for (let i = 0; i < usersWhoClicked.length; i++) {
-                    let subMarker;
+                    let anchor;
 
-                    if (i < temporary) {
-                        subMarker = new google.maps.Marker({
-                            position: currentMarker.getPosition(),
-                            icon: {
-                                path: google.maps.SymbolPath.CIRCLE,
-                                scale: 4,
-                                anchor: new google.maps.Point(2 + ((-3) * (temporary - i)), 10),
-                                fillColor: findColourOfUserWhoClicked(usersWhoClicked[i]),
-                                fillOpacity: 1,
-                                strokeColor: 'black',
-                                strokeWeight: 1,
-                            },
-                            map: currentMarker.getMap(),
-                        });
+                    // Generate the offset of the coloured dot for the
+                    // current user in the loop.
+                    if (i < middleUserIndex) {
+                        anchor = new google.maps.Point(2 - (3 * (middleUserIndex - i)), 10);
                     } else {
-                        subMarker = new google.maps.Marker({
-                            position: currentMarker.getPosition(),
-                            icon: {
-                                path: google.maps.SymbolPath.CIRCLE,
-                                scale: 4,
-                                anchor: new google.maps.Point(2 + 3 * (i - temporary), 10),
-                                fillColor: findColourOfUserWhoClicked(usersWhoClicked[i]),
-                                fillOpacity: 1,
-                                strokeColor: 'black',
-                                strokeWeight: 1,
-                            },
-                            map: currentMarker.getMap(),
-                        });
+                        anchor = new google.maps.Point(2 + 3 * (i - middleUserIndex), 10);
                     }
 
-                    colouredDots.push(subMarker);
+                    let colouredDot = generateColouredDot(currentMarker, anchor, usersWhoClicked[i]);
+
+                    colouredDots.push(colouredDot);
                 }
             }
 
@@ -696,94 +662,45 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     }
 
-    function findColourOfUserWhoClicked(user) {
-        let username = user;
+    /*
+     * Clears the previous array of coloured dots on a specific location.
+     */
+    function clearPreviousColouredDots(currentMarker) {
+        let colouredDots = currentMarker.colouredDots;
 
+        for (let i = 0; i < colouredDots.length; i++) {
+            colouredDots[i].setMap(null);
+        }
+    }
+
+    /*
+     * Finds the colour of the user who clicked on a specific location.
+     */
+    function findColourOfUserWhoClicked(username) {
         for (let i = 0; i < users.length; i++) {
             if (users[i].username === username) {
                 return users[i].color;
             }
         }
-
-        console.log('You should not reach this place!');
     }
 
-    function didUserClickBefore(result, user) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        for (let i = 0; i < listOfUsersWhoClicked.length; i++) {
-            if (listOfUsersWhoClicked[i] === user) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    function recalculateColour(result) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        if (listOfUsersWhoClicked.length === 0) {
-            result.setIcon(createDefaultRedIcon());
-        } else if (listOfUsersWhoClicked.length === 1) {
-            result.setIcon(generateIconFromUserColour(listOfUsersWhoClicked[0]));
-        } else {
-            result.setIcon(generateIcon('#ffffff'));
-        }
-    }
-
-    function recalculateLabel(result) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        let label = null;
-
-        if (listOfUsersWhoClicked.length > 1) {
-            label = {
-                text: (listOfUsersWhoClicked.length).toString(),
-                fontSize: '24px',
-            };
-        }
-
-        result.setLabel(label);
-    }
-
-    function removeUserClick(result, user) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-        let index = listOfUsersWhoClicked.indexOf(user);
-
-        listOfUsersWhoClicked.splice(index, 1);
-
-        recalculateColour(result);
-        recalculateLabel(result);
-    }
-
-    function addUserClick(result, user) {
-        let listOfUsersWhoClicked = result.listOfUsersWhoClicked;
-
-        listOfUsersWhoClicked.push(user);
-
-        recalculateColour(result);
-        recalculateLabel(result);
-    }
-
-    function generateIconFromUserColour(user) {
-        for (let i = 0; i < users.length; i++) {
-            if (users[i].username === user) {
-                return generateIcon(users[i].color);
-            }
-        }
-    }
-
-    function generateIcon(colour) {
-        return {
-            path: pathToIcon,
-            fillColor: colour,
-            fillOpacity: 1,
-            anchor: new google.maps.Point(250, 400),
-            labelOrigin: new google.maps.Point(240, 150),
-            strokeWeight: 1,
-            scale: .08,
-        };
+    /*
+     * Generates a new coloured dot over the currentMarker at anchor offset.
+     */
+    function generateColouredDot(currentMarker, anchor, userWhoClicked) {
+        new google.maps.Marker({
+            position: currentMarker.getPosition(),
+            icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 4,
+                anchor: anchor,
+                fillColor: findColourOfUserWhoClicked(userWhoClicked),
+                fillOpacity: 1,
+                strokeColor: 'black',
+                strokeWeight: 1,
+            },
+            map: currentMarker.getMap(),
+        });
     }
 });
 
