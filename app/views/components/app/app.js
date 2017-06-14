@@ -43,22 +43,26 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.hoveredResultIndex = 0;
     $scope.transportType = 'Null';
     $scope.transports = [
-    {
-        name: 'Foot',
-        type: 'WALKING',
-    },
-    {
-        name: 'Bicycle',
-        type: 'BICYCLING',
-    },
-    {
-        name: 'Transport',
-        type: 'TRANSIT',
-    },
-    {
-        name: 'Car',
-        type: 'DRIVING',
-    },
+        {
+            name: 'Foot',
+            type: 'WALKING',
+            icon: 'fa fa-blind',
+        },
+        {
+            name: 'Bicycle',
+            type: 'BICYCLING',
+            icon: 'fa fa-bicycle',
+        },
+        {
+            name: 'Public',
+            type: 'TRANSIT',
+            icon: 'fa fa-bus',
+        },
+        {
+            name: 'Car',
+            type: 'DRIVING',
+            icon: 'fa fa-car',
+        },
     ];
 
     /* -----------------------------------------------------------------------*/
@@ -104,6 +108,21 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return '';
     };
 
+    $scope.printUsers = function(users) {
+        if (users) {
+            let userString = '';
+            for (let i = 0; i < users.length; i ++) {
+                if (userString) {
+                    userString += ', ' + users[i];
+                } else {
+                    userString = users[i];
+                }
+            }
+            return userString;
+        }
+        return '';
+    };
+
     $scope.toggleLike = function(result) {
         changeMarkers(result);
     };
@@ -111,12 +130,27 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let generateInfoBubbleTemplate = function(result) {
         return (
         '<div>' +
-        '<div class="infoBubbleLocation">Name: ' + '{{getResultFromIndex(' + result + ').name}}' + '<br> Average time spent: ' + '{{getResultFromIndex(' + result + ').avgtime}}' + ' minutes.</div>' +
-            '<label ng-repeat="transport in transports">' +
-                '<button type="button" class="btn btn-search" ng-value="transport.name" ng-click="printTransport(transport)">{{transport.name}}</button>' +
-            '</label>' +
-            '<br>' +
-            '<button type="button" class="btn btn-block btn-primary" ng-click=\"toggleLike(getResultFromIndex(' + result + '))\">{{displayLike(getResultFromIndex(' + result + '))}}</button>' +
+            `<div class="input-group">
+                <span class="input-group-btn bubble-header">
+                    <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
+                        <i class="fa fa-thumbs-up"></i>
+                    </button>
+                </span>
+                <div type="text" class="form-control centre-text text-field-colour input-lg square">{{getResultFromIndex(` + result + `).name}}</div>
+            </div>
+            <div class="bubbleSeparator"></div>` +
+            '<div class="btn-group btn-group-justified">' +
+                '<label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">' +
+                    '<i class="{{transport.icon}}"></i>' +
+                    '<br>' +
+                    '{{transport.name}}' +
+                '</label>' +
+            '</div>' +
+            '<div class="bubbleSeparator"></div>' +
+            `<div class="like-text-field">
+                <div style="display: inline; color: blue; font-weight: bold;">Liked By: </div>
+                 {{printUsers(getResultFromIndex(` + result + `).users)}}
+             </div>` +
         '</div>'
         );
     };
@@ -485,13 +519,15 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     createDefaultInfoBubble = function() {
         return new InfoBubble({
             content: '',
-            shadowStyle: 1,
+            shadowStyle: 0,
             padding: 0,
-            backgroundColor: 'rgb(221, 218, 215)',
+            backgroundColor: 'rgb(193, 173, 150)',
             borderRadius: 0,
             arrowSize: 10,
-            borderWidth: 1,
+            borderWidth: 0,
             borderColor: 'rgb(193, 173, 150)',
+            maxWidth: 300,
+            minHeight: 'calc(100% + 2px)',
             disableAutoPan: true,
             hideCloseButton: false,
             disableAnimation: true,
