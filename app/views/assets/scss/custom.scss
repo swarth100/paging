@@ -235,6 +235,16 @@ input[type="checkbox"]:checked + label {
     width: 100vw;
     background: $search-field-bg;
 }
+
+.icon-credits{
+    position: absolute; 
+    bottom: 3%; 
+    right:2%;
+}
+
+.black-link{
+    color: black;
+}
 /************************************************************/
 
 /* App ******************************************************/
