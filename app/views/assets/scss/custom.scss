@@ -134,7 +134,7 @@ $bottom-padding: calc(100vh - 50px - 70px - 82px - 9vh);
         padding: 14px;
     }
 }
-/************************************************************/
+/************************************************************/$search-btn-bg
 
 /* Homepage *************************************************/
 .field-title {
@@ -484,6 +484,15 @@ input[type="checkbox"]:checked + label {
 .btn-like:hover, .btn-like:focus, .btn-like:active {
     background-color: $like-btn-highlight;
     color: $like-btn-text;
+}
+
+.bubbleSeparator {
+    height: 5px;
+    background-color: $search-field-border;
+}
+
+.bubbleHeader {
+    border: 1px $search-field-border;
 }
 
 /************************************************************/
