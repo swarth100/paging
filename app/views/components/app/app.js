@@ -26,8 +26,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Scope fields for handling location labels */
 
-    $scope.selectedResult = '';
-    $scope.hoveredResult = '';
+    $scope.selectedResultIndex = 0;
+    $scope.hoveredResultIndex = 0;
     $scope.transportType = 'Null';
     $scope.transports = [
         {
@@ -56,7 +56,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.getLocation(function(currLoc) {
             directionsService.route({
                 origin: currLoc,
-                destination: $scope.selectedResult.location,
+                destination: $scope.getResultFromIndex($scope.selectedResultIndex).location,
                 travelMode: google.maps.TravelMode[$scope.transportType.type],
             }, function(response, status) {
                 if (status == 'OK') {
@@ -75,33 +75,41 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
 
-    $scope.displayLike = function(value) {
-        if (value) {
-            return 'UNLIKE';
+    $scope.getResultFromIndex = function(index) {
+        return resultLocations[index];
+    };
+
+    $scope.displayLike = function(result) {
+        if (result) {
+            for (let i = 0; i < result.users.length; i++) {
+                if (result.users[i] === Data.user.username) {
+                    return 'UNLIKE';
+                }
+            }
+            return 'LIKE';
         }
-        return 'LIKE';
+        return '';
     };
 
     $scope.toggleLike = function(result) {
-        result.like = !result.like;
         changeMarkers(result);
     };
 
     let generateInfoBubbleTemplate = function(result) {
         return (
         '<div>' +
-        '<div class="infoBubbleLocation">Name: ' + '{{' + result + '.name}}' + '<br> Average time spent: ' + '{{' + result + '.avgtime}}' + ' minutes.</div>' +
+        '<div class="infoBubbleLocation">Name: ' + '{{getResultFromIndex(' + result + ').name}}' + '<br> Average time spent: ' + '{{getResultFromIndex(' + result + ').avgtime}}' + ' minutes.</div>' +
             '<label ng-repeat="transport in transports">' +
                 '<button type="button" class="btn btn-search" ng-value="transport.name" ng-click="printTransport(transport)">{{transport.name}}</button>' +
             '</label>' +
             '<br>' +
-            '<button type="button" class="btn btn-block btn-primary" ng-click=\"toggleLike(' + result + ')\">{{displayLike(' + result + '.like)}}</button>' +
+            '<button type="button" class="btn btn-block btn-primary" ng-click=\"toggleLike(getResultFromIndex(' + result + '))\">{{displayLike(getResultFromIndex(' + result + '))}}</button>' +
         '</div>'
         );
     };
 
-    let compiledSelectedHTML = $compile(generateInfoBubbleTemplate('selectedResult'))($scope);
-    let compiledHoveredHTML = $compile(generateInfoBubbleTemplate('hoveredResult'))($scope);
+    let compiledSelectedHTML = $compile(generateInfoBubbleTemplate('selectedResultIndex'))($scope);
+    let compiledHoveredHTML = $compile(generateInfoBubbleTemplate('hoveredResultIndex'))($scope);
 
     /* -----------------------------------------------------------------------*/
 
@@ -442,7 +450,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             borderWidth: 1,
             borderColor: 'rgb(193, 173, 150)',
             disableAutoPan: true,
-            hideCloseButton: true,
+            hideCloseButton: false,
             disableAnimation: true,
             arrowPosition: 30,
             backgroundClassName: 'infoBubbleText',
@@ -466,10 +474,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         infoBubble.content = '<div class="infoBubbleUser" style=\"color: ' + user.color + '\">' + user.username + '</div>';
 
         return infoBubble;
-    };
-
-    updateResultInfoBubble = function(infoBubble) {
-        infoBubble.result = resultLocations[infoBubble.index];
     };
 
     markResult = function(result, map) {
@@ -511,9 +515,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 /* Change the template of the selected label to use the 'selected' style
                  * Then change the $scope field and apply the angular changes */
                 if (infoBubble.locationBubble) {
-                    updateResultInfoBubble(infoBubble);
                     infoBubble.content = compiledSelectedHTML[0];
-                    $scope.selectedResult = infoBubble.result;
+                    $scope.selectedResultIndex = infoBubble.index;
                     $scope.$apply();
                 }
 
@@ -536,9 +539,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 /* Change the template of the hovered label to use the hovering style
                  * Then change the $scope field and apply the angular changes */
                 if (infoBubble.locationBubble) {
-                    updateResultInfoBubble(infoBubble);
                     infoBubble.content = compiledHoveredHTML[0];
-                    $scope.hoveredResult = infoBubble.result;
+                    $scope.hoveredResultIndex = infoBubble.index;
                     $scope.$apply();
                 }
 
@@ -590,6 +592,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Update the location DATA */
         resultLocations = locationData;
+        $scope.$apply();
 
         /*
         let id = packagedData.markerIdentification;
