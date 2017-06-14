@@ -16,7 +16,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.newSession = true;
     $scope.issueSearch = false;
     let resultLocations = [];
-    $scope.isChatting = true;
+    $scope.isChatting = false;
     $scope.message = '';
 
     Data.user.username = Data.updateUsername();
