@@ -12,11 +12,11 @@
     +--------+--------+--------+                                    MAPS                                        |
     |          Radius          |                                                                                |
     +--------+--------+--------+                                                                                |
-                 3             |                                                                                |
-                               +                                                                                |
-                               |                                                                                |
-                               +--------+--------+--------+--------+--------+--------+--------+--------+--------+
-                                                                       9
+    3             |                                                                                |
+    +                                                                                |
+    |                                                                                |
+    +--------+--------+--------+--------+--------+--------+--------+--------+--------+
+    9
 
 
     MOBILE VIEW:
@@ -31,19 +31,19 @@
     +--------+--------+--------+--------+                                 MAPS                                  |
     |              Radius               |                                                                       |
     +--------+--------+--------+--------+                                                                       |
-                      4                 |                                                                       |
-                                        +                                                                       |
-                                        |                                                                       |
-                                        +--------+--------+--------+--------+--------+--------+--------+--------+
-                                                                            8
+    4                 |                                                                       |
+    +                                                                       |
+    |                                                                       |
+    +--------+--------+--------+--------+--------+--------+--------+--------+
+    8
 
- -->
+-->
 <div class="container-fluid no-padding">
     <!-- ROW div for the search bar -->
     <!-- Left search bar holder -->
     <div class = "col-sm-4 col-md-3">
         <div class="row">
-            <div class="sidenav-top no-padding">
+            <div class="sidenav-top no-padding" ng-show="!isChatting">
                 <form ng-submit="submitLocation()">
                     <!-- ROW div for the left search bar -->
                     <!-- Location input field -->
@@ -103,7 +103,7 @@
                                     <span class="caret"></span>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();">
-                                     <div ng-repeat="type in types">
+                                    <div ng-repeat="type in types">
                                         <!--<input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">-->
                                         <label class="std-font check-box-not-clicked" for="{{type.name}}" ng-if="!type.isSelected" ng-click="toggleSelected($index); submitFields()">
                                             <img class="type-icon-small" src="{{type.image}}">
@@ -175,6 +175,25 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-block btn-lg btn-search square no-top-border" ng-click="performSearch()">SEARCH</button>
+            </div>
+            <div class="sidenav-top no-padding" ng-show="isChatting">
+                <div scroll-glue id="message-board">
+                    <div id="chatmessages" class="message-box" ng-repeat="mes in messages">
+                        <span class="username">{{mes.username}}: </span>
+                        <!--<span class="location">@{{mes.location}}</span><br>-->
+                        <span class="message">{{mes.message}}</span>
+                    </div>
+                </div>
+                <form>
+                    <div class="col-xs-10 col-sm-10 col-md-10 left-bar-field">
+                        <div class="chat-input">
+                            <input type="text" class="form-control" ng-model="message">
+                        </div>
+                    </div>
+                    <div class="col-xs-2 col-sm-2 col-md-2 no-margin no-padding">
+                        <button class="btn btn-primary" type="submit" ng-click="sendMessage();">Send</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
