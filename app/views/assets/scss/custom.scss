@@ -470,3 +470,34 @@ input[type="checkbox"]:checked + label {
 }
 
 /************************************************************/
+
+/* Messages *************************************************/
+.close-lg {
+    font-size: 30px;
+}
+
+$close-box-height: 35px;
+.close-box {
+    height: $close-box-height;
+}
+
+#message-board {
+    height: calc(100vh - 50px - 34px - 35px);
+    overflow: scroll;
+    padding-top: 10px;
+    .message-box {
+        padding: 5px 20px;
+        font-size: 16px;
+    }
+    .username {
+        word-wrap: break-word;
+    }
+    .location {
+        word-wrap: break-word;
+    }
+    .message {
+        word-wrap: break-word;
+    }
+}
+
+/************************************************************/
