@@ -74,6 +74,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
 
+    $scope.displayLike = function(value) {
+        return 'Bobby';
+    };
+
+    $scope.toggleLike = function() {
+        console.log('Like toggled');
+    };
+
     let infoBubbleSelectedHTML =
         '<div class="infoBubbleLocation">Name: ' + '{{selectedResult.name}}' + '<br> Average time spent: ' + '{{selectedResult.avgtime}}' + ' minutes.</div>';
 
@@ -87,6 +95,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             '<label ng-repeat="transport in transports">' +
                 '<button type="button" class="btn btn-search" ng-value="transport.name" ng-click="printTransport(transport)">{{transport.name}}</button>' +
             '</label>' +
+            '<br>' +
+            '<button type="button" class="btn btn-search" ng-click="toggleLike()">{{displayLike(selectedResult.like)}}</button>' +
         '</div>'
         );
     };
