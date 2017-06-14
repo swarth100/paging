@@ -75,34 +75,31 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     $scope.displayLike = function(value) {
-        return 'Bobby';
+        if (value) {
+            return 'UNLIKE';
+        }
+        return 'LIKE';
     };
 
-    $scope.toggleLike = function() {
-        console.log('Like toggled');
+    $scope.toggleLike = function(result) {
+        result.like = !result.like;
     };
 
-    let infoBubbleSelectedHTML =
-        '<div class="infoBubbleLocation">Name: ' + '{{selectedResult.name}}' + '<br> Average time spent: ' + '{{selectedResult.avgtime}}' + ' minutes.</div>';
-
-    let infoBubbleHoveredHTML =
-        '<div class="infoBubbleLocation">Name: ' + '{{hoveredResult.name}}' + '<br> Average time spent: ' + '{{hoveredResult.avgtime}}' + ' minutes.</div>';
-
-    let generateInfoBubbleTemplate = function(tmp) {
+    let generateInfoBubbleTemplate = function(result) {
         return (
         '<div>' +
-            tmp +
+        '<div class="infoBubbleLocation">Name: ' + '{{' + result + '.name}}' + '<br> Average time spent: ' + '{{' + result + '.avgtime}}' + ' minutes.</div>' +
             '<label ng-repeat="transport in transports">' +
                 '<button type="button" class="btn btn-search" ng-value="transport.name" ng-click="printTransport(transport)">{{transport.name}}</button>' +
             '</label>' +
             '<br>' +
-            '<button type="button" class="btn btn-search" ng-click="toggleLike()">{{displayLike(selectedResult.like)}}</button>' +
+            '<button type="button" class="btn btn-block btn-primary" ng-click=\"toggleLike(' + result + ')\">{{displayLike(' + result + '.like)}}</button>' +
         '</div>'
         );
     };
 
-    let compiledSelectedHTML = $compile(generateInfoBubbleTemplate(infoBubbleSelectedHTML))($scope);
-    let compiledHoveredHTML = $compile(generateInfoBubbleTemplate(infoBubbleHoveredHTML))($scope);
+    let compiledSelectedHTML = $compile(generateInfoBubbleTemplate('selectedResult'))($scope);
+    let compiledHoveredHTML = $compile(generateInfoBubbleTemplate('hoveredResult'))($scope);
 
     /* -----------------------------------------------------------------------*/
 
