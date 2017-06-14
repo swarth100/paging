@@ -630,6 +630,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         // Find the marker, whose dots need to be updated.
         let currentMarker = markers[index];
 
+        console.log(currentMarker.colouredDots);
+
         clearPreviousColouredDots(currentMarker);
 
         let colouredDots = [];
@@ -669,9 +671,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     colouredDots.push(colouredDot);
                 }
             }
-
-            currentMarker.colouredDots = colouredDots;
         }
+
+        currentMarker.colouredDots = colouredDots;
     }
 
     /*
@@ -700,7 +702,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      * Generates a new coloured dot over the currentMarker at anchor offset.
      */
     function generateColouredDot(currentMarker, anchor, userWhoClicked) {
-        new google.maps.Marker({
+        return new google.maps.Marker({
             position: currentMarker.getPosition(),
             icon: {
                 path: google.maps.SymbolPath.CIRCLE,
