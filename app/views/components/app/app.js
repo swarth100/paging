@@ -315,42 +315,43 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
-         document.getElementById('map').style.visibility = 'visible';
+        document.getElementById('map').style.visibility = 'visible';
 
-         /* Initialise the map via the Google API */
-         let map = createMap(location);
+        /* Initialise the map via the Google API */
+        map = createMap(location);
 
-         /* Hook for rendering of directions API */
-         directionsDisplay.setMap(map);
+        /* Hook for rendering of directions API */
+        directionsDisplay.setMap(map);
+        directionsDisplay.setDirections({routes: []});
 
-         users = room.users;
+        users = room.users;
 
-         socketRefresh(room);
+        socketRefresh(room);
 
-         for (i = 0; i < users.length; i++) {
-             let radLoc = {
-                 'lat': users[i].lat,
-                 'lng': users[i].lng,
-             };
+        for (i = 0; i < users.length; i++) {
+            let radLoc = {
+                'lat': users[i].lat,
+                'lng': users[i].lng,
+            };
 
-             /* Initialise the marker */
-             let marker = markUser(radLoc, users[i], map);
+            /* Initialise the marker */
+            let marker = markUser(radLoc, users[i], map);
 
-             /* Initialise the radius */
-             let radius = initRadius(radLoc, users[i], map);
+            /* Initialise the radius */
+            let radius = initRadius(radLoc, users[i], map);
 
-             let userBubble = createUserInfoBubble(users[i]);
+            let userBubble = createUserInfoBubble(users[i]);
 
-             markerAddInfo(map, marker, userBubble);
-         }
+            markerAddInfo(map, marker, userBubble);
+        }
 
         /*
-         * Responses, returned by the googlemaps.js are packaged
-         * as follows:
-         * response.json.result[index].geometry.location.{lat/lng}.
-         * This code iterates through all returned positions, setting them up on
-         * the map
-         */
+        * Responses, returned by the googlemaps.js are packaged
+        * as follows:
+        * response.json.result[index].geometry.location.{lat/lng}.
+        * This code iterates through all returned positions, setting them up on
+        * the map
+        */
         if (room.results) {
             /* Reset the markers array when new results are received. */
             markers = [];
@@ -369,7 +370,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         if (users.length === 1 && $scope.newSession) {
             $scope.newSession = false;
             $scope.performSearch();
-        }
+            }
     };
 
     /* InitMap helper functions: */
