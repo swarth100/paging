@@ -80,12 +80,15 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     $scope.displayLike = function(result) {
-        for (let i = 0; i < result.users.length; i ++) {
-            if (result.users[i] === Data.user.username) {
-                return 'UNLIKE';
+        if (result) {
+            for (let i = 0; i < result.users.length; i++) {
+                if (result.users[i] === Data.user.username) {
+                    return 'UNLIKE';
+                }
             }
+            return 'LIKE';
         }
-        return 'LIKE';
+        return '';
     };
 
     $scope.toggleLike = function(result) {
