@@ -147,8 +147,40 @@ exports.start = (server) => {
          * If a marker is clicked on this broadcasts the change to all users
          * in the same room.
          */
-        socket.on('change', function(packagedData) {
-            io.in(socket.room).emit('evolve', packagedData);
+        socket.on('changeMarkers', function(changedLocations) {
+            console.log('Received marker change');
+            findRoomNoSave(socket.room, function(room) {
+                for (let i = 0; i < room.results.length; i ++) {
+                    for (let j = 0; j < changedLocations.length; j ++) {
+                        if (changedLocations[j].id === room.results[i].id) {
+                            let found = false;
+                            for (let k = 0; k < room.results[i].users.length; k ++) {
+                                if (room.results[i].users[k] === changedLocations[j].username) {
+                                    found = true;
+                                    room.results[i].users.splice(k);
+                                }
+                            }
+                            if (!found) {
+                                room.results[i].users.push(changedLocations[j].username);
+                            }
+                        }
+                    }
+                }
+                /* Update the list of users in the given room */
+                mongooseRoom.updateRoom(room, room.results)
+                    .then(function(res) {
+                        /* Room already exists in the DB */
+                        console.log('Update success upon change');
+
+                        console.log(room);
+
+                        io.in(socket.room).emit('updateMarkers', room.results);
+                    })
+                    .catch(function(err) {
+                        /* Room must be created in the DB */
+                        console.log('Change rooms ERROR. Something horrible. Should never happen');
+                    });
+            });
         });
     });
 
