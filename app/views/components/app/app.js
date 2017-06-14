@@ -741,13 +741,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* handle message exhange */
 
     $scope.sendMessage = () => {
-        console.log('send');
-        $scope.messages.push({
-            username: Data.user.username,
-            location: '',
-            message: $scope.message,
-        });
-        $scope.message = '';
+        if ($scope.message !== '') {
+            $scope.messages.push({
+                username: Data.user.username,
+                location: '',
+                message: $scope.message,
+            });
+            $scope.message = '';
+        }
     };
     /* -----------------------------------------------------------------------*/
 });
