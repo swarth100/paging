@@ -46,18 +46,22 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         {
             name: 'Foot',
             type: 'WALKING',
+            icon: 'fa fa-blind',
         },
         {
             name: 'Bicycle',
             type: 'BICYCLING',
+            icon: 'fa fa-bicycle',
         },
         {
             name: 'Public',
             type: 'TRANSIT',
+            icon: 'fa fa-bus',
         },
         {
             name: 'Car',
             type: 'DRIVING',
+            icon: 'fa fa-car',
         },
     ];
 
@@ -113,9 +117,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         '<div>' +
             '<div class="infoBubbleLocation">Name: ' + '{{getResultFromIndex(' + result + ').name}}' + '<br> Average time spent: ' + '{{getResultFromIndex(' + result + ').avgtime}}' + ' minutes.</div>' +
             '<div class="btn-group btn-group-justified">' +
-                '<label class="btn btn-primary" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">{{transport.name}}</label>' +
+                '<label class="btn btn-primary" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">' +
+                    '<i class="{{transport.icon}}"></i>' +
+                    '<br>' +
+                    '{{transport.name}}' +
+                '</label>' +
             '</div>' +
-            '<button type="button" class="btn btn-group btn-group-justified btn-primary" ng-click=\"toggleLike(getResultFromIndex(' + result + '))\">{{displayLike(getResultFromIndex(' + result + '))}}</button>' +
+            '<button type="button" class="btn btn-group btn-group-justified btn-like" ng-click=\"toggleLike(getResultFromIndex(' + result + '))\">{{displayLike(getResultFromIndex(' + result + '))}}</button>' +
         '</div>'
         );
     };
