@@ -8,23 +8,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Initialise fields used by the controller */
     console.log(location.href);
-    $scope.messages = [
-        {
-            username: 'Alice',
-            location: 'home',
-            message: 'hi',
-        },
-        {
-            username: 'Bob',
-            location: 'home',
-            message: 'hello',
-        },
-        {
-            username: 'Charlie',
-            location: 'labs',
-            message: '..',
-        },
-    ];
+    $scope.messages = [];
     $scope.types = Data.types;
     $scope.colors = Data.colors;
     $scope.appSearch = Data.query;
@@ -39,9 +23,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     let geocoder = new google.maps.Geocoder();
     let directionsDisplay = new google.maps.DirectionsRenderer(
-        {
-            suppressMarkers: true,
-        });
+            {
+                suppressMarkers: true,
+            });
     let directionsService = new google.maps.DirectionsService;
 
     /*
@@ -59,22 +43,22 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.hoveredResultIndex = 0;
     $scope.transportType = 'Null';
     $scope.transports = [
-        {
-            name: 'Foot',
-            type: 'WALKING',
-        },
-        {
-            name: 'Bicycle',
-            type: 'BICYCLING',
-        },
-        {
-            name: 'Transport',
-            type: 'TRANSIT',
-        },
-        {
-            name: 'Car',
-            type: 'DRIVING',
-        },
+    {
+        name: 'Foot',
+        type: 'WALKING',
+    },
+    {
+        name: 'Bicycle',
+        type: 'BICYCLING',
+    },
+    {
+        name: 'Transport',
+        type: 'TRANSIT',
+    },
+    {
+        name: 'Car',
+        type: 'DRIVING',
+    },
     ];
 
     /* -----------------------------------------------------------------------*/
@@ -179,21 +163,21 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         } else {
             geocoder.geocode({'address': Data.query.location},
-                function(results, status) {
-                    if (status === 'OK') {
-                        let locTmp = results[0].geometry.location;
+                    function(results, status) {
+                        if (status === 'OK') {
+                            let locTmp = results[0].geometry.location;
 
-                        let location = {
-                            'lat': locTmp.lat(),
-                            'lng': locTmp.lng(),
-                        };
+                            let location = {
+                                'lat': locTmp.lat(),
+                                'lng': locTmp.lng(),
+                            };
 
-                        callback(location);
-                    } else {
-                        alert('Geocode was not successful for the following' +
-                            ' reason: ' + status);
-                    }
-                });
+                            callback(location);
+                        } else {
+                            alert('Geocode was not successful for the following' +
+                                    ' reason: ' + status);
+                        }
+                    });
         }
     };
 
@@ -204,7 +188,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         switch(error.code) {
             case error.PERMISSION_DENIED:
                 alert('If you want to use your current location you will' +
-                    ' need to share your current location.');
+                        ' need to share your current location.');
                 break;
             default:
                 alert('Unhandled error.');
@@ -232,7 +216,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let broadcastFieldsData = function() {
         console.log('Gonna broadcast types');
 
-       let toSend = {
+        let toSend = {
             'types': angular.toJson(Data.types),
             'duration': Data.query.duration,
             'date': Data.query.datetime,
@@ -366,7 +350,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* Button on-click method
-    * Queries a search request to the backend */
+     * Queries a search request to the backend */
     $scope.performSearch = () => {
         if (!$scope.issueSearch) {
             $scope.issueSearch = true;
@@ -626,17 +610,17 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     }
     /* -----------------------------------------------------------------------*/
     $scope.openLink = function() {
-      $uibModal.open({
+        $uibModal.open({
             template: `<div class="modal-body">
-                        Send the link below to your friends to start the group session! <br>
-                        <a href="{{message}}">{{message}}</a> <br>
-                        </div>`,
+                Send the link below to your friends to start the group session! <br>
+                <a href="{{message}}">{{message}}</a> <br>
+                </div>`,
             backdrop: true,
             controller: 'modalController',
             scope: $scope,
             size: 'lg',
             windowClass: 'centre-modal',
-      });
+        });
     };
 
     /* -----------------------------------------------------------------------*/
@@ -738,11 +722,28 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     }
 
     /* -----------------------------------------------------------------------*/
-    /* handle message exhange */
 
+    /* On recieve */
+    function socketRecieveMessage(messages) {
+        $scope.messages = messages;
+        $scope.$apply();
+    }
+
+    /* Add socket listener for messaging */
+    socket.removeAllListeners('recieveChatMessage', function() {
+        socket.once('recieveChatMessage', socketRecieveMessage);
+    });
+
+    /* handle message exhange */
     $scope.sendMessage = () => {
+        /* no empty message */
         if ($scope.message !== '') {
-            $scope.messages.push({
+            // $scope.messages.push({
+            // username: Data.user.username,
+            // location: '',
+            // message: $scope.message,
+            // });
+            socket.emit('chatMessage', {
                 username: Data.user.username,
                 location: '',
                 message: $scope.message,
