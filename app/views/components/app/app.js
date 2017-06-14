@@ -8,6 +8,23 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Initialise fields used by the controller */
     console.log(location.href);
+    $scope.messages = [
+        {
+            username: 'Alice',
+            location: 'home',
+            message: 'hi',
+        },
+        {
+            username: 'Bob',
+            location: 'home',
+            message: 'hello',
+        },
+        {
+            username: 'Charlie',
+            location: 'labs',
+            message: '..',
+        },
+    ];
     $scope.types = Data.types;
     $scope.colors = Data.colors;
     $scope.appSearch = Data.query;
@@ -15,6 +32,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.newSession = true;
     $scope.issueSearch = false;
     let resultLocations = [];
+    $scope.isChatting = true;
+    $scope.message = '';
+
     Data.user.username = Data.updateUsername();
 
     let geocoder = new google.maps.Geocoder();
@@ -716,6 +736,20 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             map: currentMarker.getMap(),
         });
     }
+
+    /* -----------------------------------------------------------------------*/
+    /* handle message exhange */
+
+    $scope.sendMessage = () => {
+        console.log('send');
+        $scope.messages.push({
+            username: Data.user.username,
+            location: '',
+            message: $scope.message,
+        });
+        $scope.message = '';
+    };
+    /* -----------------------------------------------------------------------*/
 });
 
 app.controller('modalController', function($scope, $location) {
