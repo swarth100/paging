@@ -125,10 +125,15 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     $scope.hasTime = function(result) {
         if (result) {
-            return true;
-            // return result.transportTimes;
+            return result.transportTimes;
         }
         return false;
+    };
+
+    $scope.getTime = function(result, transport) {
+        console.log(result);
+        console.log(transport);
+        return '(00:00)';
     };
 
     $scope.toggleLike = function(result) {
@@ -153,7 +158,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     <br>
                     <p style="margin: 0">{{transport.name}}</p>
                     <div ng-show=\"hasTime(getResultFromIndex(` + result + `))\">
-                        <p style="margin: 0">(00:00)</p>
+                        <p style="margin: 0">getTime(getResultFromIndex(` + result + `), transport)</p>
                     </div>
                 </label>
             </div>
@@ -298,6 +303,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
+    /* */
     let socketRefresh = function(room) {
         if (!room.duration) {
             broadcastFieldsData();
@@ -309,14 +315,17 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             for (let i = 0; i < room.types.length; i++) {
                 $scope.types[i].isSelected = room.types[i].isSelected;
             }
-            // console.log($scope.types);
-            // console.log(Data.types);
 
             $scope.appSearch = Data.query;
             Data.types = $scope.types;
 
             $scope.$apply();
         }
+    };
+
+    /* */
+    let socketUpdateTransportTime = function(transportTimes) {
+        console.log(transportTimes);
     };
 
     /*
@@ -352,6 +361,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     socket.removeAllListeners('refresh', function() {
         socket.once('refresh', socketRefresh);
+    });
+
+    socket.removeAllListeners('receiveTransportTime', function() {
+        socket.once('receiveTransportTime', socketUpdateTransportTime);
     });
 
     socket.on('joinSuccess', function(number) {
@@ -657,6 +670,16 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     lastOpenedInfoBubble.close();
                 }
                 lastOpenedInfoBubble = infoBubble;
+
+                /* */
+                if (!$scope.hasTime(resultLocations[$scope.selectedResultIndex])) {
+                    $scope.getLocation(function(currLoc) {
+                        socket.emit('calculateTransportTime', {
+                            source: currLoc,
+                            destination: resultLocations[$scope.selectedResultIndex],
+                        });
+                    });
+                }
             } else if (infoBubble.opened) {
                 infoBubble.opened = false;
                 infoBubble.close();
