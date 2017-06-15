@@ -156,7 +156,7 @@ exports.start = (server) => {
                             for (let k = 0; k < room.results[i].users.length; k ++) {
                                 if (room.results[i].users[k] === changedLocations[j].username) {
                                     found = true;
-                                    room.results[i].users.splice(k);
+                                    room.results[i].users.splice(k, 1);
                                 }
                             }
                             if (!found) {
@@ -170,8 +170,6 @@ exports.start = (server) => {
                     .then(function(res) {
                         /* Room already exists in the DB */
                         console.log('Update success upon change');
-
-                        console.log(room);
 
                         io.in(socket.room).emit('updateMarkers', room.results);
                     })
