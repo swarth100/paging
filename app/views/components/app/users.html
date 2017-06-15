@@ -19,19 +19,13 @@
 
     <!-- Users fields -->
     <div class="col-xs-12 col-sm-12 col-md-12">
-
-
         <div class="scrollable-table left-nav-bg no-boarder">
             <table class="table table-hover table-bordered underline no-margin">
                 <tbody>
-                <tr ng-repeat="type in types" class="no-border">
-                    <td ng-if="type.isSelected"
-                        class="flex-row no-border"
-                        ng-click="filterByType(type.name);">
-                        <img class="type-icon-small"
-                             src="{{type.image}}">
-                        {{type.name}}
-                        <button type="button" class="close flex-right no-border" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
+                <tr ng-repeat="user in users">
+                    <td>
+                        {{user.username}}
+                        <button type="button" class="close flex-right no-border" aria-label="Close" ng-click="deleteUser($index)">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </td>
