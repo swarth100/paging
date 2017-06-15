@@ -25,6 +25,20 @@ app.controller('homeCtrl',
         /*  */
         $http.get('/users/roomID')
             .then(function(response) {
+                /* Iterate through all types to see if they are all non-selected */
+                let noTypes = true;
+                for (let i = 0; i < Data.types.length; i ++) {
+                    if (Data.types[i].isSelected) {
+                        noTypes = false;
+                        break;
+                    }
+                }
+
+                /* If no type has been selected, default to cafes */
+                if (noTypes) {
+                    Data.types[5].isSelected = true;
+                }
+
                 /* Data is packaged into a nasty JSON format.
                  * To access it first one must retrieve the *.data part to distinguish from header */
                 $location.url('/app/' + response.data);
