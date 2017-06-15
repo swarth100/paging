@@ -532,23 +532,23 @@ $close-box-height: 35px;
     padding-top: 10px;
     padding-right: 20px;
     padding-left: 20px;
-    .message-div {
-        height: 3px;
-        background: rgb(214, 147, 100);
-    }
     .message-box {
         display: inline-block;
         padding: 3px 30px;
         font-size: 16px;
     }
-    .username {
-        word-wrap: break-word;
+    .panel-default {
+        min-width: 100px;
     }
     .location {
         word-wrap: break-word;
     }
     .message {
         word-wrap: break-word;
+    }
+    .username {
+        word-wrap: break-word;
+        display: block;
     }
     .my-message {
         float: right;
@@ -557,6 +557,9 @@ $close-box-height: 35px;
     .others-message {
         float: left;
         clear: both;
+        .username {
+            text-align: left;
+        }
     }
 }
 
