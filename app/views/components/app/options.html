@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <div class="row">
-    <form ng-submit="submitLocation()">
+    <form>
         <!-- ROW div for the left search bar -->
         <!-- Location input field -->
         <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
             <div class="input-group">
                 <span class="input-group-addon text-field-colour square no-bottom-border"><span class="glyphicon glyphicon-pushpin"></span></span>
-                <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border no-bottom-border no-padding simplebox" placeholder="Current Location" ng-model="appSearch.location">
+                <input places-auto-complete type="text"
+                       class="form-control input-lg square text-field-colour no-left-border no-bottom-border no-padding simplebox" placeholder="Current Location" ng-model="appSearch.location" ng-blur="submitLocation()">
             </div>
         </div>
 
