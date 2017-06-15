@@ -526,29 +526,37 @@ $close-box-height: 35px;
     height: $close-box-height;
 }
 
+.message-title {
+    font-size: 30px;
+    padding-left: 20px;
+}
+
 #message-board {
-    height: calc(100vh - 50px - 34px - 35px);
-    overflow: scroll;
+    height: calc(100vh - 50px - 35px - 46px);
+    overflow: auto;
     padding-top: 10px;
     padding-right: 20px;
     padding-left: 20px;
-    .message-div {
-        height: 3px;
-        background: rgb(214, 147, 100);
+    .panel-group {
+        .panel {
+            margin-bottom: 10px;
+            max-width: 80%;
+        }
     }
     .message-box {
         display: inline-block;
         padding: 3px 30px;
         font-size: 16px;
     }
-    .username {
-        word-wrap: break-word;
-    }
     .location {
         word-wrap: break-word;
     }
     .message {
         word-wrap: break-word;
+    }
+    .username {
+        word-wrap: break-word;
+        display: block;
     }
     .my-message {
         float: right;
@@ -557,6 +565,9 @@ $close-box-height: 35px;
     .others-message {
         float: left;
         clear: both;
+        .username {
+            text-align: left;
+        }
     }
 }
 
