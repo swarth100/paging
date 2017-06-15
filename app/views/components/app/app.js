@@ -96,10 +96,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         calculateAndDisplayRoute(directionsService, directionsDisplay);
     };
 
+    /* Given an index of a location  */
     $scope.getResultFromIndex = function(index) {
         return resultLocations[index];
     };
 
+    /* Diplays the like status of a location
+     * DEPRECATED */
     $scope.displayLike = function(result) {
         if (result) {
             for (let i = 0; i < result.users.length; i++) {
@@ -112,6 +115,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return '';
     };
 
+    /* Generates a string containing a list of users which have liked a specific location */
     $scope.printUsers = function(users) {
         if (users) {
             let userString = '';
@@ -127,6 +131,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return '';
     };
 
+    /* Determines if a location has had the travel times determined already */
     $scope.hasTime = function(result) {
         if (result) {
             return result.transportTimes;
@@ -134,6 +139,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return false;
     };
 
+    /* Determines the content of the travel time to a location */
     $scope.getTime = function(result, transport) {
         if (result) {
             if (result.transportTimes) {
@@ -142,10 +148,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    /* Function invoked whenever pressing the like button of a location */
     $scope.toggleLike = function(result) {
         changeMarkers(result);
     };
 
+    /* Template according to which precompile infoBubble */
     let generateInfoBubbleTemplate = function(result) {
         return (
         `<div>
@@ -162,7 +170,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 <label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
                     <i class="{{transport.icon}}"></i>
                     <br>
-                    <p style="margin: 0">{{transport.name}}</p>
+                    <div ng-show=\"!hasTime(getResultFromIndex(` + result + `))\">
+                        <p style="margin: 0">{{transport.name}}</p>
+                    </div>
                     <div ng-show=\"hasTime(getResultFromIndex(` + result + `))\">
                         <p style="margin: 0">{{getTime(getResultFromIndex(` + result + `), transport)}}</p>
                     </div>
@@ -177,10 +187,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         );
     };
 
+    /* Precompile HTML files for infoBubble */
     let compiledSelectedHTML = $compile(generateInfoBubbleTemplate('selectedResultIndex'))($scope);
     let compiledHoveredHTML = $compile(generateInfoBubbleTemplate('hoveredResultIndex'))($scope);
 
     /* -----------------------------------------------------------------------*/
+    /* Handle type toggleing */
 
     $scope.toggleSelected = ((index) => {
         $scope.types[index].isSelected = !$scope.types[index].isSelected;
@@ -195,7 +207,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             $scope.issueSearch = true;
             socket.emit('changeColour', {username: Data.user.username,
                                       colour: colour});
-        };
+        }
     });
 
     /* -----------------------------------------------------------------------*/
@@ -253,7 +265,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     }
 
     /* -----------------------------------------------------------------------*/
-    /* Broadcast information to socket.io room */
+    /* Send information to socket.io room */
 
     /* Private controller function
      * Broadcasts the user data (username, location and radius) to the socket's room */
@@ -353,6 +365,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    /* On recieve */
+    function socketRecieveMessage(messages) {
+        $scope.messages = messages;
+        $scope.$apply();
+    }
+
     /* -----------------------------------------------------------------------*/
     /* Socket.io LISTENERS */
 
@@ -374,6 +392,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     socket.removeAllListeners('receiveTransportTime', function() {
         socket.once('receiveTransportTime', socketUpdateTransportTime);
+    });
+
+    /* Add socket listener for messaging */
+    socket.removeAllListeners('recieveChatMessage', function() {
+        socket.once('recieveChatMessage', socketRecieveMessage);
     });
 
     socket.on('joinSuccess', function(number) {
@@ -434,6 +457,39 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         // console.log($scope.users[index].username);
         socket.emit('deleteUser', $scope.users[index].username);
     };
+
+    /* handle message exhange */
+    $scope.sendMessage = () => {
+        /* no empty message */
+        if ($scope.message !== '') {
+            socket.emit('chatMessage', {
+                username: Data.user.username,
+                location: '',
+                message: $scope.message,
+            });
+            $scope.message = '';
+        }
+    };
+
+    /* */
+    function changeMarkers(result) {
+        let packagedData = [{
+            id: result.id,
+            username: Data.user.username,
+        }];
+
+        socket.emit('changeMarkers', packagedData);
+    }
+
+    /* */
+    function socketSendTimeRequest() {
+        $scope.getLocation(function(currLoc) {
+            socket.emit('calculateTransportTime', {
+                source: currLoc,
+                destination: resultLocations[$scope.selectedResultIndex],
+            });
+        });
+    }
 
     /* -----------------------------------------------------------------------*/
     /* Functions called upon entry */
@@ -524,6 +580,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return $scope.map;
     };
 
+    /* TODO: Add comment */
     markUser = function(location, user, map) {
         let icon = {
             path: 'M365.027,44.5c-30-29.667-66.333-44.5-109-44.5s-79,14.833-109,44.5s-45,65.5-45,107.5c0,25.333,12.833,67.667,38.5,127c25.667,59.334,51.333,113.334,77,162s38.5,72.334,38.5,71c4-7.334,9.5-17.334,16.5-30s19.333-36.5,37-71.5s33.167-67.166,46.5-96.5c13.334-29.332,25.667-59.667,37-91s17-55,17-71C410.027,110,395.027,74.167,365.027,44.5z M289.027,184c-9.333,9.333-20.5,14-33.5,14c-13,0-24.167-4.667-33.5-14s-14-20.5-14-33.5s4.667-24,14-33c9.333-9,20.5-13.5,33.5-13.5c13,0,24.167,4.5,33.5,13.5s14,20,14,33S298.36,174.667,289.027,184z',
@@ -541,6 +598,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
+    /* TODO: Add comment */
     initRadius = function(location, user, map) {
         return new google.maps.Circle({
             strokeColor: user.color,
@@ -554,6 +612,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
+    /* TODO: Add comment */
     createDefaultInfoBubble = function() {
         return new InfoBubble({
             content: '',
@@ -576,6 +635,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
+    /* TODO: Add comment */
     createLocationInfoBubble = function(index) {
         let infoBubble = createDefaultInfoBubble();
 
@@ -585,6 +645,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return infoBubble;
     };
 
+    /* TODO: Add comment */
     createUserInfoBubble = function(user) {
         let infoBubble = createDefaultInfoBubble();
 
@@ -593,6 +654,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return infoBubble;
     };
 
+    /* TODO: Add comment */
     markResult = function(result, map) {
         let icon = createDefaultRedIcon();
 
@@ -600,14 +662,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             position: result.location,
             map: map,
             icon: icon,
-            // The optimized property is needed for the zIndex to work.
+            /* The optimized property is needed for the zIndex to work. */
             optimized: false,
             zIndex: 0,
 
         });
 
-        // This property is used to keep track of the colours used to
-        // represent which users have clicked on the marker.
+        /* This property is used to keep track of the colours used to
+         * represent which users have clicked on the marker. */
         marker['colouredDots'] = [];
 
         /* Generate additional type markers. */
@@ -616,17 +678,18 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             position: result.location,
             map: map,
             icon: typeIcon,
-            // The optimized property is needed for the zIndex to work.
+            /* The optimized property is needed for the zIndex to work. */
             optimized: false,
             zIndex: 0,
-            // Prevents this marker from capturing the cursor when a user is
-            // hovering over a location marker.
+            /* Prevents this marker from capturing the cursor when a user is
+             * hovering over a location marker. */
             clickable: false,
         });
 
         return marker;
     };
 
+    /* TODO: Add comment */
     function createTypeIcon(type) {
         return {
             url: findImageByType(type),
@@ -635,6 +698,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         };
     }
 
+    /* TODO: Add comment */
     function findImageByType(type) {
         let types = $scope.types;
 
@@ -647,6 +711,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     let pathToIcon = 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z';
 
+    /* TODO: Add comment */
     function createDefaultRedIcon() {
         return {
             path: pathToIcon,
@@ -658,6 +723,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         };
     }
 
+    /* TODO: Add comment */
     markerAddInfo = function(map, marker, infoBubble) {
         /* Handle mouse click events over labels */
         google.maps.event.addListener(marker, 'click', function() {
@@ -682,12 +748,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
                 /* */
                 if (!$scope.hasTime(resultLocations[$scope.selectedResultIndex])) {
-                    $scope.getLocation(function(currLoc) {
-                        socket.emit('calculateTransportTime', {
-                            source: currLoc,
-                            destination: resultLocations[$scope.selectedResultIndex],
-                        });
-                    });
+                    socketSendTimeRequest();
                 }
             } else if (infoBubble.opened) {
                 infoBubble.opened = false;
@@ -718,16 +779,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         });
     };
-
-    function changeMarkers(result) {
-        let packagedData = [{
-            id: result.id,
-            username: Data.user.username,
-        }];
-
-        socket.emit('changeMarkers', packagedData);
-    }
     /* -----------------------------------------------------------------------*/
+    /* TODO: Add comment */
+
+    /* TODO: Add comment */
     $scope.openLink = function() {
         $uibModal.open({
             template: `<div class="modal-body">
@@ -750,25 +805,25 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      * denoting a location.
      */
     function changeColoursOfMarkers(index, usersWhoClicked) {
-        // Find the marker, whose dots need to be updated.
+        /* Find the marker, whose dots need to be updated. */
         let currentMarker = markers[index];
 
         clearPreviousColouredDots(currentMarker);
 
         let colouredDots = [];
 
-        // If no users clicked then just exit, otherwise enter the if statement.
+        /* If no users clicked then just exit, otherwise enter the if statement. */
         if (usersWhoClicked.length !== 0) {
-            // Find the middle user's index. If there are 2 users in the array,
-            // then the middle user's index will be 1. If there are 3 users in
-            // the array then the middle user's index will be 1 again.
+            /* Find the middle user's index. If there are 2 users in the array,
+             * then the middle user's index will be 1. If there are 3 users in
+             * the array then the middle user's index will be 1 again. */
             let middleUserIndex = Math.floor(usersWhoClicked.length / 2);
 
-            // The algorithm differs if there is an odd or even number of users.
+            /* The algorithm differs if there is an odd or even number of users. */
             if (usersWhoClicked.length % 2 !== 0) {
                 for (let i = 0; i < usersWhoClicked.length; i++) {
-                    // Generate the offset of the coloured dot for the
-                    // current user in the loop.
+                    /* Generate the offset of the coloured dot for the
+                     * current user in the loop. */
                     let anchor = new google.maps.Point(-3 * (middleUserIndex - i), 12);
 
                     let colouredDot = generateColouredDot(currentMarker, anchor, usersWhoClicked[i]);
@@ -779,8 +834,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 for (let i = 0; i < usersWhoClicked.length; i++) {
                     let anchor;
 
-                    // Generate the offset of the coloured dot for the
-                    // current user in the loop.
+                    /* Generate the offset of the coloured dot for the
+                     * current user in the loop. */
                     if (i < middleUserIndex) {
                         anchor = new google.maps.Point(2 - (3 * (middleUserIndex - i)), 12);
                     } else {
@@ -839,30 +894,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     }
 
     /* -----------------------------------------------------------------------*/
-
-    /* On recieve */
-    function socketRecieveMessage(messages) {
-        $scope.messages = messages;
-        $scope.$apply();
-    }
-
-    /* Add socket listener for messaging */
-    socket.removeAllListeners('recieveChatMessage', function() {
-        socket.once('recieveChatMessage', socketRecieveMessage);
-    });
-
-    /* handle message exhange */
-    $scope.sendMessage = () => {
-        /* no empty message */
-        if ($scope.message !== '') {
-            socket.emit('chatMessage', {
-                username: Data.user.username,
-                location: '',
-                message: $scope.message,
-            });
-            $scope.message = '';
-        }
-    };
+    /* Functions to handle message authentication checking */
 
     /* checks if message was sent by the user */
     $scope.isMyMessage = (username) => {
@@ -871,6 +903,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
 });
 
+/* */
 app.controller('modalController', function($scope, $location) {
     console.log('location: ', location.href);
     $scope.message = location.href;
