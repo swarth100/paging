@@ -380,6 +380,19 @@ input[type="checkbox"]:checked + label {
     border-width: 1px;
 }
 
+.check-box-button {
+    background-color: $left-nav-option-bg;
+    border-color:$left-nav-header-border;
+    margin-bottom: 0;
+    border-style: solid;
+    border-width: 1px;
+    text-align: left;
+}
+
+.check-box-button:focus, .check-box-button:hover {
+    background-color: $left-nav-option-select-bg;
+}
+
 #accordion {
     h2 {
         font-size: 20px;
