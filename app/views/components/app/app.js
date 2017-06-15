@@ -23,6 +23,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* this one is for which location to filter the message for */
     $scope.currentSelectedLocation = '';
 
+    $scope.accordionOptions = true;
+    $scope.accordionUsers = false;
+    $scope.accordionChat = false;
+
     Data.user.username = Data.updateUsername();
 
     let geocoder = new google.maps.Geocoder();
@@ -47,30 +51,30 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.hoveredResultIndex = 0;
     $scope.transportType = 'Null';
     $scope.transports = [
-        {
-            name: 'Foot',
-            type: 'WALKING',
-            icon: 'fa fa-male',
-            index: 1,
-        },
-        {
-            name: 'Bicycle',
-            type: 'BICYCLING',
-            icon: 'fa fa-bicycle',
-            index: 2,
-        },
-        {
-            name: 'Public',
-            type: 'TRANSIT',
-            icon: 'fa fa-bus',
-            index: 3,
-        },
-        {
-            name: 'Car',
-            type: 'DRIVING',
-            icon: 'fa fa-car',
-            index: 0,
-        },
+    {
+        name: 'Foot',
+        type: 'WALKING',
+        icon: 'fa fa-male',
+        index: 1,
+    },
+    {
+        name: 'Bicycle',
+        type: 'BICYCLING',
+        icon: 'fa fa-bicycle',
+        index: 2,
+    },
+    {
+        name: 'Public',
+        type: 'TRANSIT',
+        icon: 'fa fa-bus',
+        index: 3,
+    },
+    {
+        name: 'Car',
+        type: 'DRIVING',
+        icon: 'fa fa-car',
+        index: 0,
+    },
     ];
 
     /* -----------------------------------------------------------------------*/
@@ -165,35 +169,35 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Template according to which precompile infoBubble */
     let generateInfoBubbleTemplate = function(result) {
         return (
-        `<div>
-            <div class="input-group">
-                <span class="input-group-btn bubble-header">
-                    <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
-                        <i class="fa fa-thumbs-up"></i>
-                    </button>
-                </span>
-                <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
-            </div>
-            <div class="bubble-separator"></div>
-            <div class="btn-group btn-group-justified">
-                <label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
-                    <i class="{{transport.icon}}"></i>
-                    <br>
-                    <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
-                        <p style="margin: 0">{{transport.name}}</p>
+                `<div>
+                    <div class="input-group">
+                        <span class="input-group-btn bubble-header">
+                            <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
+                                <i class="fa fa-thumbs-up"></i>
+                            </button>
+                        </span>
+                        <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
                     </div>
-                    <div ng-show=\"hasTime(getMarkerFromIndex(` + result + `))\">
-                        <p style="margin: 0">{{getTime(getMarkerFromIndex(` + result + `), transport)}}</p>
+                    <div class="bubble-separator"></div>
+                    <div class="btn-group btn-group-justified">
+                        <label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
+                            <i class="{{transport.icon}}"></i>
+                            <br>
+                            <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
+                                <p style="margin: 0">{{transport.name}}</p>
+                            </div>
+                            <div ng-show=\"hasTime(getMarkerFromIndex(` + result + `))\">
+                                <p style="margin: 0">{{getTime(getMarkerFromIndex(` + result + `), transport)}}</p>
+                            </div>
+                        </label>
                     </div>
-                </label>
-            </div>
-            <div class="bubble-separator"></div>
-            <div class="like-text-field">
-                <div style="display: inline; color: blue; font-weight: bold;">Liked By: </div>
-                 {{printUsers(getResultFromIndex(` + result + `).users)}}
-             </div>
-        </div>`
-        );
+                    <div class="bubble-separator"></div>
+                    <div class="like-text-field">
+                        <div style="display: inline; color: blue; font-weight: bold;">Liked By: </div>
+                        {{printUsers(getResultFromIndex(` + result + `).users)}}
+                    </div>
+                </div>`
+            );
     };
 
     /* Precompile HTML files for infoBubble */
@@ -215,7 +219,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         if (!$scope.issueSearch) {
             $scope.issueSearch = true;
             socket.emit('changeColour', {username: Data.user.username,
-                                      colour: colour});
+                colour: colour});
         }
     });
 
@@ -977,6 +981,25 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             filterByType.lastSelectedType = undefined;
         }
     }
+
+    /* -----------------------------------------------------------------------*/
+    /* Functions to handle accordion */
+    /* allow only one type at a type */
+    $scope.setAccordionOptions = (type) => {
+        $scope.accordionOptions = false;
+        $scope.accordionUsers = false;
+        $scope.accordionChat = false;
+        if (type === 'options') {
+            $scope.accordionOptions = true;
+        } else if(type === 'users') {
+            $scope.accordionUsers = true;
+        } else if(type === 'chat') {
+            $scope.accordionChat = true;
+        } else {
+            console.log('accordion type mismatch');
+        }
+    };
+    /* -----------------------------------------------------------------------*/
 });
 
 /* */
