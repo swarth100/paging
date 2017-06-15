@@ -540,9 +540,7 @@ $close-box-height: 35px;
     .panel-group {
         .panel {
             margin-bottom: 10px;
-        }
-        .panel-body {
-            max-width: 300px;
+            max-width: 80%;
         }
     }
     .message-box {
