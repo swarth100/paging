@@ -51,7 +51,7 @@ $bottom-padding: calc(100vh - 50px - 70px - 82px - 9vh);
 /*************************************************************/
 
 body{
-      font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 /* Button and Field *****************************************/
 .text-field-colour {
@@ -85,6 +85,18 @@ body{
 }
 
 .btn-opt-search:hover, .btn-opt-search:focus, .btn-opt-search:active {
+    background-color: $search-btn-opt-highlight;
+    color: white;
+}
+
+.send-btn {
+    margin-left: 0 !important;
+    margin-right: -1px !important;
+    background-color:$search-btn-opt-bg;
+    color: white;
+}
+
+.send-btn:hover, .send-btn:focus, .send-btn:active {
     background-color: $search-btn-opt-highlight;
     color: white;
 }
@@ -413,7 +425,7 @@ input[type="checkbox"]:checked + label {
 
 #left-nav-options {
     .panel-heading {
-        @extend .square;
+        border-radius: 0;
         border-color: $left-nav-header-border;
         border-style: solid;
         border-width: 1px;
@@ -433,7 +445,7 @@ input[type="checkbox"]:checked + label {
 
 #left-nav-users{
     .panel-heading {
-        @extend .square;
+        border-radius: 0;
         border-color: $left-nav-header-border;
         border-style: solid;
         border-width: 1px;
@@ -449,7 +461,6 @@ input[type="checkbox"]:checked + label {
 
 #left-nav-chat{
     .panel-heading {
-        @extend .square;
         border-color: $left-nav-header-border;
         border-style: solid;
         border-width: 1px;
@@ -676,7 +687,7 @@ $close-box-height: 40px;
 }
 
 #message-board {
-    height: calc(100vh - 50px - 40px - 46px);
+    height: calc(100vh - 280px);
     overflow: auto;
     padding-top: 10px;
     padding-right: 20px;
@@ -685,6 +696,18 @@ $close-box-height: 40px;
         .panel {
             margin-bottom: 10px;
             max-width: 80%;
+        }
+        .panel-heading {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background: #b0bec5;
+            border-top-right-radius: 3px;
+            border-top-left-radius: 3px;
+            border: none;
+        }
+        .panel-body {
+            background: white;
+            border-radius: 3px
         }
     }
     .message-box {
