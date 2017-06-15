@@ -95,12 +95,17 @@
                                 </div>
                             </span>
                         </div>
+
+                        <!-- TODO: I CAN FIND THIS EASILY!-->
                         <div class="scrollable-table text-field-colour set-boarder">
                             <table class="table table-hover table-bordered set-boarder no-bottom-border no-margin">
                                 <tbody>
                                     <tr ng-repeat="type in types" class="no-right-border no-left-border">
-                                        <td ng-if="type.isSelected" class="flex-row">
-                                            <img class="type-icon-small" src="{{type.image}}">
+                                        <td ng-if="type.isSelected"
+                                            class="flex-row"
+                                            ng-click="filterByType(type.name);">
+                                            <img class="type-icon-small"
+                                                 src="{{type.image}}">
                                             {{type.name}}
                                             <button type="button" class="close flex-right" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
                                                 <span aria-hidden="true">&times;</span>

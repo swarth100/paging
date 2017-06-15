@@ -693,6 +693,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             clickable: false,
         });
 
+        marker['typeMarker'] = typeMarker;
+        marker['type'] = result.type;
+
         return marker;
     };
 
@@ -924,6 +927,41 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return '@' + location;
     };
     /* -----------------------------------------------------------------------*/
+
+    /*
+     * This function is called when a user clicks on a type which has
+     * already been selected as a search criteria. It fades out all markers
+     * not belonging to the type.
+     */
+    $scope.filterByType = filterByType;
+
+    function filterByType(typeName) {
+        let type = typeName.toLowerCase().split(' ').join('_');
+
+        for (let i = 0; i < markers.length; i++) {
+            markers[i].setOpacity(1);
+            markers[i].typeMarker.setOpacity(1);
+            for (let j = 0; j < markers[i].colouredDots.length; j++) {
+                markers[i].colouredDots[j].setOpacity(1);
+            }
+        }
+
+        if (filterByType.lastSelectedType !== type) {
+            for (let i = 0; i < markers.length; i++) {
+                if (markers[i].type !== type) {
+                    markers[i].setOpacity(0.2);
+                    markers[i].typeMarker.setOpacity(0.2);
+                    for (let j = 0; j < markers[i].colouredDots.length; j++) {
+                        markers[i].colouredDots[j].setOpacity(0.2);
+                    }
+                }
+            }
+
+            filterByType.lastSelectedType = type;
+        } else {
+            filterByType.lastSelectedType = undefined;
+        }
+    }
 });
 
 /* */
