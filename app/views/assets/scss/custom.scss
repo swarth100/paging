@@ -153,9 +153,12 @@ body{
         color: $nav-text-highlight;
     }
     .navbar-brand {
-        color: $nav-text-brand;
+        color: $nav-text;
         font-size: 30px;
         padding-top: 25%;
+    }
+    .navbar-brand:focus, .navbar-brand:hover {
+        color: $nav-text-highlight;
     }
 }
 
@@ -226,7 +229,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .search-bar {
-    height: calc(100vh - 50px);
+    height: calc(100vh - 80px);
 }
 
 .search-top {
@@ -317,7 +320,7 @@ input[type="checkbox"]:checked + label {
 
 .map-dimensions {
     overflow: hidden;
-    height: calc(100vh - 50px);
+    height: calc(100vh - 80px);
     width: 100%;
     background: url(../images/loading.gif) no-repeat center center;
     background-size: 100px 100px;
@@ -380,7 +383,6 @@ input[type="checkbox"]:checked + label {
 #accordion {
     h2 {
         font-size: 20px;
-        color: white;
     }
     .panel-body{
         padding-top: 0px;
@@ -393,7 +395,7 @@ input[type="checkbox"]:checked + label {
     border-color: $left-nav-header-border;
     border-style: solid;
     border-width: 1px;
-    height: calc(100vh - 50px);
+    height: calc(100vh - 80px);
 }
 
 #left-nav-options {
@@ -446,6 +448,19 @@ input[type="checkbox"]:checked + label {
     .panel-body{
         background: $left-nav-text-bg;
     }
+}
+
+.left-nav-button {
+    display: block;
+    color: $nav-text;
+    padding: 0;
+    border: none;
+    width: 100%;
+    text-align: left;
+}
+
+.left-nav-button:focus, .left-nav-button:hover {
+    color: $nav-text-highlight;
 }
 
 .centre-modal {
