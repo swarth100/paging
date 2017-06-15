@@ -1,6 +1,7 @@
 
 let mongooseRoom = require('../mongoose/rooms');
 let googlemaps = require('../googlemaps/googlemaps');
+const _ = require('underscore');
 
 let colours = {
     grey: '#737373',
@@ -201,7 +202,11 @@ exports.start = (server) => {
             findRoom(socket.room, function(room) {
                 findRoom(room._id, (r) => {
                     /* Gets the messages in the room, push the new message and save */
-                    r.messages.push(message);
+                    if (!_.isEmpty(message)) {
+                        /* check for null as on join we send empty message to
+                         * update the messages */
+                        r.messages.push(message);
+                    }
                     mongooseRoom.updateMessage(room._id, r.messages).then(() => {
                         io.in(socket.room).emit('recieveChatMessage', r.messages);
                     })
