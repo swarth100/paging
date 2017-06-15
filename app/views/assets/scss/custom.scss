@@ -42,6 +42,8 @@ $left-nav-header-border: #37474f;
 $left-nav-text-bg: #eceff1;
 $left-nav-option-bg: $left-nav-text-bg;
 $left-nav-option-select-bg: #cfd8dc;
+
+$search-bar-border: #b0bec5;
 /************************************************************/
 
 /* Search bar padding ***************************************/
@@ -256,6 +258,37 @@ input[type="checkbox"]:checked + label {
     padding-right: 20px;
 }
 
+#search-bar {
+    .panel-body{
+        background: $left-nav-text-bg;
+    }
+    .search-component {
+        border: 1px solid $search-bar-border;
+        border-left: none;
+        background: $left-nav-text-bg;
+        text-align: left;
+    }
+    .search-icon {
+        border: 1px solid $search-bar-border;
+        border-left: none;
+        border-right: none;
+        background: $left-nav-text-bg;
+    }
+    .search-btn, .search-btn:hover, .search-btn:focus {
+        border: 1px solid $search-bar-border;
+    }
+    .search-search-btn {
+        color: $nav-text;
+        background: $search-btn-opt-bg;
+        border: none;
+    }
+
+    .search-search-btn:focus, .search-search-btn:hover {
+        color: $nav-text-highlight;
+        background: $search-btn-opt-highlight;
+    }
+}
+
 .large-bottom-padding {
     animation: increase-padding 0s;
     -webkit-animation: increase-padding 0s;
@@ -292,7 +325,7 @@ input[type="checkbox"]:checked + label {
 
 .search-bar-footer-div {
     height: 5px;
-    background: rgb(214, 147, 100);
+    background: $left-nav-text-bg;
 }
 
 .search-bar-footer{
@@ -300,17 +333,18 @@ input[type="checkbox"]:checked + label {
     bottom: 0px;
     height: 10%;
     width: 100vw;
-    background: $search-field-bg;
+    background: $left-nav-header;
 }
 
 .icon-credits{
+    color: white;
     position: absolute;
     bottom: 3%;
     right:2%;
 }
 
-.black-link{
-    color: black;
+.white-link, .white-link:hover{
+    color: $user-dd-bg;
 }
 
 .unit{
@@ -446,7 +480,7 @@ input[type="checkbox"]:checked + label {
         background: $left-nav-text-bg;
     }
     .underline {
-        border-bottom: 1px solid #b0bec5;
+        border-bottom: 1px solid $search-bar-border;
     }
 }
 
