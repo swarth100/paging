@@ -273,6 +273,9 @@ input[type="checkbox"]:checked + label {
 .unit{
     padding-left: 0px;
     border-right: none;
+    text-align: left;
+    width:100%; 
+    overflow: hidden
 }
 /************************************************************/
 
