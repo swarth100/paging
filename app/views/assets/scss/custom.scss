@@ -349,11 +349,18 @@ input[type="checkbox"]:checked + label {
     padding-left: 0;
 }
 
-.scrollable-table {
-    height: calc(50vh - 46px);
+.scrollable-table-users {
+    height: calc(100vh - 256px - 40px);
     overflow: auto;
     width: 100%;
 }
+
+.scrollable-table-options {
+    height: calc(100vh - 256px - 45px - 45px - 45px);
+    overflow: auto;
+    width: 100%;
+}
+
 
 .set-boarder {
     border-style: solid;
