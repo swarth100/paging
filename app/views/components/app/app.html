@@ -186,19 +186,22 @@
             </div>
             <div class="sidenav-top no-padding" ng-show="isChatting">
                 <div class="close-box">
+                    <span class="message-title">Messages</span>
                     <button type="button" class="close" aria-label="Close" ng-click="isChatting = false;">
                         <span aria-hidden="true" class="close-lg">&times;</span>
                     </button>
                 </div>
                 <div scroll-glue id="message-board">
-                    <div ng-repeat="mes in messages">
-                        <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}">
-                            <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
-                                <span class="username">{{mes.username}}</span>
-                                <!--<span class="location">@{{mes.location}}</span>-->
-                            </div>
-                            <div class="panel-body">
-                                <span class="message">{{mes.message}}</span>
+                    <div class="panel-group">
+                        <div ng-repeat="mes in messages">
+                            <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}">
+                                <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
+                                    <span class="username">{{mes.username}}</span>
+                                    <!--<span class="location">@{{mes.location}}</span>-->
+                                </div>
+                                <div class="panel-body">
+                                    <span class="message">{{mes.message}}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -206,12 +209,12 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
                     <div class="input-group">
                         <form ng-submit="sendMessage()">
-                            <input type="text" class="form-control square" ng-model="message">
+                            <input type="text" class="form-control input-lg square" ng-model="message">
                             <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
                             <input type="submit" class="hide-left" tabindex="-1" />
                         </form>
                         <span class="input-group-btn">
-                            <button class="btn btn-primary square" type="submit" ng-click="sendMessage();">Send</button>
+                            <button class="btn btn-primary input-lg square" type="submit" ng-click="sendMessage();">Send</button>
                         </span>
                     </div>
                 </div>
