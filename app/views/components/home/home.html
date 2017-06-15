@@ -65,7 +65,7 @@
                         <button type="button" class="btn input-lg square text-field-colour" uib-dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="caret"></span>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-types dropdown-menu-right" uib-dropdown-menu ng-click="$event.stopPropagation();">
+                        <div class="dropdown-menu dropdown-menu-types dropdown-center dropdown-right" uib-dropdown-menu ng-click="$event.stopPropagation();">
                             <div class="grid-element" ng-repeat="tps in types | chunkBy:6">
                                 <div class="col-xs-2 no-padding" ng-repeat="type in tps">
                                     <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
