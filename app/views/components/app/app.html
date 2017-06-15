@@ -149,13 +149,13 @@
                                     <span class="caret"></span>
                                 </button>
                                 <div class="dropdown-menu scrollable-table dropdown-menu-right square text-field-colour">
-                                     <div ng-repeat="color in colors">
-                                         <div style="background:{{color.hex}};">
+                                    <div ng-repeat="color in colors">
+                                        <div style="background:{{color.hex}};">
                                             <button style="width: 80%;" ng-click="changeUserColour(color.hex)">
                                                 {{color.name}}
                                             </button>
-                                         </div>
-                                   </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </span>
                         </div>
@@ -192,17 +192,14 @@
                 </div>
                 <div scroll-glue id="message-board">
                     <div ng-repeat="mes in messages">
-                        <div class="panel panel-default message-box my-message" ng-show="isMyMessage(mes.username)">
-                            <span class="username">{{mes.username}}: </span>
-                            <!--<span class="location">@{{mes.location}}</span>-->
-                            <br>
-                            <span class="message">{{mes.message}}</span>
-                        </div>
-                        <div class="panel panel-default message-box others-message" ng-show="!isMyMessage(mes.username)">
-                            <span class="username">{{mes.username}}: </span>
-                            <!--<span class="location">@{{mes.location}}</span>-->
-                            <br>
-                            <span class="message">{{mes.message}}</span>
+                        <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}">
+                            <div class="panel-heading">
+                                <span class="username">{{mes.username}}: </span>
+                                <!--<span class="location">@{{mes.location}}</span>-->
+                            </div>
+                            <div class="panel-body">
+                                <span class="message">{{mes.message}}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
