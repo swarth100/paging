@@ -541,6 +541,9 @@ $close-box-height: 35px;
         .panel {
             margin-bottom: 10px;
         }
+        .panel-body {
+            max-width: 300px;
+        }
     }
     .message-box {
         display: inline-block;
