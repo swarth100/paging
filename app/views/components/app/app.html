@@ -41,34 +41,22 @@
 <div class="container-fluid no-padding">
     <!-- ROW div for the search bar -->
     <!-- Left search bar holder -->
-    <div class = "col-sm-4 col-md-3">
-        <div class="row">
-            <div class="sidenav-top no-padding" ng-show="!isChatting">
-                <form ng-submit="submitLocation()">
-                    <!-- ROW div for the left search bar -->
-                    <!-- Location input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
-                        <div class="input-group">
-                            <span class="input-group-addon text-field-colour square no-bottom-border"><span class="glyphicon glyphicon-pushpin"></span></span>
-                            <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border no-bottom-border no-padding simplebox" placeholder="Current Location" ng-model="appSearch.location">
+    <div class = "col-sm-4 col-md-3 no-padding">
+        <div class="sidenav-top">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" ng-click="setAccordionOptions('options');">Options</h3>
+                    </div>
+                    <div data-ng-show="accordionOptions">
+                        <div class="panel-body">
+                            <div ng-include="'/components/app/options.html'"></div>
                         </div>
                     </div>
-
-                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                    <input type="submit" class="hide-left" tabindex="-1" />
-                </form>
-
-                <!-- Duration input field and Radius input field -->
-                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
-                    <div class="input-group">
-                        <span class="input-group-addon text-field-colour square no-left-border no-right-border no-bottom-border"><span class="glyphicon glyphicon-record"></span></span>
-                        <form ng-submit="submitLocation()">
-                                <input type="number" class="form-control input-lg square text-field-colour no-left-border no-bottom-border simplebox no-right-border" ng-model="appSearch.radius">
-                                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                                <input type="submit" class="hide-left" tabindex="-1" />
-                        </form>
-                        <span class="input-group-addon text-field-colour square unit no-bottom-border">m</span>
+                    <div class="panel-heading">
+                        <h3 class="panel-title" ng-click="setAccordionOptions('users');">Users</h3>
                     </div>
+<<<<<<< HEAD
                 </div>
 
                 <form ng-submit="submitFields()">
@@ -114,91 +102,49 @@
                                     </tr>
                                 </tbody>
                             </table>
+=======
+                    <div data-ng-show="accordionUsers">
+                        <div class="panel-body">
+                            <div ng-include="'/components/app/users.html'"></div>
+>>>>>>> c18d078... app/app.html: Add accordion for options
                         </div>
                     </div>
-                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                    <input type="submit" class="hide-left" tabindex="-1" />
-                </form>
-                <!-- Users fields -->
-                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
-                    <div class="input-group full-width">
-                        <div class="col-xs-5 no-padding">
-                            <div class="form-control input-lg square text-field-colour no-top-border">Members</div>
-                        </div>
-                        <div class="col-xs-4 no-padding">
-                            <span class="input-group-btn">
-                                <button type="button" class="btn input-lg dropdown-toggle square text-field-colour full-width no-padding" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="text-field-colour">Change Colour</span>
-                                    <span class="caret"></span>
-                                </button>
-                                <div class="dropdown-menu scrollable-table dropdown-menu-right square text-field-colour">
-                                    <div ng-repeat="color in colors">
-                                        <div style="background:{{color.hex}};">
-                                            <button style="width: 80%;" ng-click="changeUserColour(color.hex)">
-                                                {{color.name}}
-                                            </button>
+                    <div class="panel-heading">
+                        <h3 class="panel-title" ng-click="setAccordionOptions('chat');">Chat</h3>
+                    </div>
+                    <div data-ng-show="accordionChat">
+                        <div class="panel-body">
+                            <div class="row">
+                                <h3>Messages</h3>
+                                <div scroll-glue id="message-board">
+                                    <div class="panel-group">
+                                        <div ng-repeat="mes in messages">
+                                            <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}" ng-show='filterMessage(mes.location);'>
+                                                <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
+                                                    <span class="username">{{mes.username}}</span>
+                                                    <span class="location">{{locationName(mes.location);}}</span>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <span class="message">{{mes.message}}</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </span>
-                        </div>
-                        <div class="col-xs-3 no-padding">
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-lg input-lg square no-left-border no-right-border btn-search full-width no-padding" ng-click="openLink()">
-                                    Invite
-                                </button>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="scrollable-table text-field-colour set-boarder">
-                        <table class="table table-hover table-bordered set-boarder no-margin">
-                            <tbody>
-                                <tr ng-repeat="user in users">
-                                    <td>
-                                        {{user.username}}
-                                        <button type="button" class="close" aria-label="Close" ng-click="deleteUser($index)">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-block btn-lg btn-search square no-top-border" ng-click="performSearch()">SEARCH</button>
-            </div>
-            <div class="sidenav-top no-padding" ng-show="isChatting">
-                <div class="close-box">
-                    <span class="message-title">Messages</span>
-                    <button type="button" class="close" aria-label="Close" ng-click="isChatting = false;">
-                        <span aria-hidden="true" class="close-lg">&times;</span>
-                    </button>
-                </div>
-                <div scroll-glue id="message-board">
-                    <div class="panel-group">
-                        <div ng-repeat="mes in messages">
-                            <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}" ng-show='filterMessage(mes.location);'>
-                                <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
-                                    <span class="username">{{mes.username}}</span>
-                                    <span class="location">{{locationName(mes.location);}}</span>
-                                </div>
-                                <div class="panel-body">
-                                    <span class="message">{{mes.message}}</span>
+                                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                                    <div class="input-group">
+                                        <form ng-submit="sendMessage()">
+                                            <input type="text" class="form-control input-lg square" ng-model="message">
+                                            <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                                            <input type="submit" class="hide-left" tabindex="-1" />
+                                        </form>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary input-lg square" type="submit" ng-click="sendMessage();">Send</button>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
-                    <div class="input-group">
-                        <form ng-submit="sendMessage()">
-                            <input type="text" class="form-control input-lg square" ng-model="message">
-                            <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                            <input type="submit" class="hide-left" tabindex="-1" />
-                        </form>
-                        <span class="input-group-btn">
-                            <button class="btn btn-primary input-lg square" type="submit" ng-click="sendMessage();">Send</button>
-                        </span>
                     </div>
                 </div>
             </div>
