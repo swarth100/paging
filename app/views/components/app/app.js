@@ -47,21 +47,25 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             name: 'Foot',
             type: 'WALKING',
             icon: 'fa fa-male',
+            index: 1,
         },
         {
             name: 'Bicycle',
             type: 'BICYCLING',
             icon: 'fa fa-bicycle',
+            index: 2,
         },
         {
             name: 'Public',
             type: 'TRANSIT',
             icon: 'fa fa-bus',
+            index: 3,
         },
         {
             name: 'Car',
             type: 'DRIVING',
             icon: 'fa fa-car',
+            index: 0,
         },
     ];
 
@@ -131,9 +135,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     $scope.getTime = function(result, transport) {
-        console.log(result);
-        console.log(transport);
-        return '(00:00)';
+        if (result) {
+            if (result.transportTimes) {
+                return result.transportTimes.content[transport.index].travelTime[0].duration.text;
+            }
+        }
     };
 
     $scope.toggleLike = function(result) {
@@ -158,7 +164,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     <br>
                     <p style="margin: 0">{{transport.name}}</p>
                     <div ng-show=\"hasTime(getResultFromIndex(` + result + `))\">
-                        <p style="margin: 0">getTime(getResultFromIndex(` + result + `), transport)</p>
+                        <p style="margin: 0">{{getTime(getResultFromIndex(` + result + `), transport)}}</p>
                     </div>
                 </label>
             </div>
@@ -325,7 +331,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* */
     let socketUpdateTransportTime = function(transportTimes) {
-        console.log(transportTimes);
+        if (resultLocations[$scope.selectedResultIndex].id === transportTimes.id) {
+            resultLocations[$scope.selectedResultIndex].transportTimes = transportTimes;
+            $scope.$apply();
+        }
     };
 
     /*
