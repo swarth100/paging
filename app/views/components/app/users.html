@@ -1,7 +1,54 @@
 <!DOCTYPE html>
 <div class="row">
+
+    <span class="input-group-btn">
+        <button type="button" class="btn btn-block btn-lg btn-opt-search square no-border" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span >Change Colour</span>
+            <span class="caret"></span>
+        </button>
+        <div class="dropdown-menu scrollable-table dropdown-menu-right square text-field-colour">
+            <div ng-repeat="color in colors">
+                <div style="background:{{color.hex}};">
+                    <button style="width: 80%;" ng-click="changeUserColour(color.hex)">
+                        {{color.name}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </span>
+
     <!-- Users fields -->
-    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+
+
+        <div class="scrollable-table left-nav-bg no-boarder">
+            <table class="table table-hover table-bordered underline no-margin">
+                <tbody>
+                <tr ng-repeat="type in types" class="no-border">
+                    <td ng-if="type.isSelected"
+                        class="flex-row no-border"
+                        ng-click="filterByType(type.name);">
+                        <img class="type-icon-small"
+                             src="{{type.image}}">
+                        {{type.name}}
+                        <button type="button" class="close flex-right no-border" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <span class="input-group-btn">
+        <button type="button" class="btn btn-block btn-lg btn-opt-search square no-border" ng-click="openLink()">
+            Invite
+        </button>
+    </span>
+
+        <!--
         <div class="input-group full-width">
             <div class="col-xs-5 no-padding">
                 <div class="form-control input-lg square text-field-colour no-top-border">Members</div>
@@ -45,5 +92,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
+
+        -->
 </div>
