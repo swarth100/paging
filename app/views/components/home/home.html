@@ -36,24 +36,24 @@
 -->
 <div class="container-fluid search-bar">
     <div class="row search-top" ng-class="dropdownOpen ? 'raise-search-bar': 'lower-search-bar'"></div>
-    <div class="row search-bottom" ng-class="dropdownOpen ? 'large-bottom-padding' : 'small-bottom-padding'">
+    <div class="row search-bottom" id="search-bar" ng-class="dropdownOpen ? 'large-bottom-padding' : 'small-bottom-padding'">
         <form class="form-group-lg" ng-submit="submitFields()">
             <!-- LOCATION field holder -->
             <div class="col-sm-12 col-md-3 col-md-offset-2 no-padding fix-overlap-side-margin">
                 <p class="field-title">Location:</p>
-                <div class="input-group no-padding square">
-                    <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-pushpin"></span></span>
-                    <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border simplebox" placeholder="Current Location" ng-model="homeSearch.location">
+                <div class="input-group">
+                    <span class="input-group-addon search-icon square no-border"><span class="glyphicon glyphicon-pushpin"></span></span>
+                    <input places-auto-complete type="text" class="form-control input-lg square search-component no-border no-padding simplebox" placeholder="Current Location" ng-model="homeSearch.location">
                 </div>
             </div>
             <!-- RADIUS field holder -->
             <div class="col-sm-12 col-md-2 fix-overlap-side-margin">
                 <p class="field-title">Radius:</p>
                 <div class="input-group">
-                    <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-record"></span></span>
-                    <input type="number" class="form-control input-lg square text-field-colour no-left-border no-right-border no-padding simplebox" 
+                    <span class="input-group-addon search-icon square no-border"><span class="glyphicon glyphicon-record"></span></span>
+                    <input type="number" class="form-control input-lg square search-icon no-border no-padding simplebox"
                             ng-style="unitWidth()" ng-model="homeSearch.radius" ng-maxlength="18">
-                    <div class="input-group-addon text-field-colour square unit">m</div>
+                    <div class="input-group-addon search-component square unit">m</div>
                 </div>
             </div>
             <!-- OPTION field holder -->
@@ -61,9 +61,9 @@
                 <p class="field-title">Location Types:</p>
                 <div class="input-group">
                     <!-- Nasty resizing using input-lg -->
-                    <div class="form-control input-lg square text-field-colour">Options</div>
+                    <div class="form-control input-lg square search-component">Options</div>
                     <div class="input-group-btn" uib-dropdown is-open="dropdownOpen">
-                        <button type="button" class="btn input-lg square text-field-colour" uib-dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button type="button" class="btn search-btn input-lg square search-component" uib-dropdown-toggle data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="caret"></span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-types dropdown-center dropdown-right" uib-dropdown-menu ng-click="$event.stopPropagation();">
@@ -85,7 +85,7 @@
                 <p class="field-title"><br></p>
                 <div>
                     <!-- Nasty resizing using input-lg -->
-                    <button type="normal" class="btn btn-block input-lg square btn-search">Search</button>
+                    <button type="normal" class="btn btn-block input-lg square search-search-btn">SEARCH</button>
                 </div>
             </div>
         </form>
