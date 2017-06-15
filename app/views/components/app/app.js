@@ -16,7 +16,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.newSession = true;
     $scope.issueSearch = false;
     let resultLocations = [];
-    $scope.isChatting = false;
+    $scope.isChatting = true;
     $scope.message = '';
 
     Data.user.username = Data.updateUsername();
@@ -774,11 +774,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.sendMessage = () => {
         /* no empty message */
         if ($scope.message !== '') {
-            // $scope.messages.push({
-            // username: Data.user.username,
-            // location: '',
-            // message: $scope.message,
-            // });
             socket.emit('chatMessage', {
                 username: Data.user.username,
                 location: '',
@@ -786,6 +781,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             });
             $scope.message = '';
         }
+    };
+
+    /* checks if message was sent by the user */
+    $scope.isMyMessage = (username) => {
+        return username === Data.user.username;
     };
     /* -----------------------------------------------------------------------*/
 });
