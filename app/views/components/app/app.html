@@ -45,30 +45,36 @@
         <div class="sidenav-top">
             <div class="panel-group" id="accordion">
                 <bu class="panel panel-default no-border">
-                    <button class="left-nav-button" id="left-nav-options">
-                        <div class="panel-heading">
-                            <h2 class="panel-title" ng-click="setAccordionOptions('options');">Options</h2>
-                        </div>
+                    <div id="left-nav-options">
+                        <button class="left-nav-button">
+                            <div class="panel-heading">
+                                <h2 class="panel-title" ng-click="setAccordionOptions('options');">Options</h2>
+                            </div>
+                        </button>
                         <div data-ng-show="accordionOptions">
                             <div class="panel-body">
                                 <div ng-include="'/components/app/options.html'"></div>
                             </div>
                         </div>
-                    </button>
-                    <button class="left-nav-button" id="left-nav-users">
-                        <div class="panel-heading">
-                            <h2 class="panel-title" ng-click="setAccordionOptions('users');">Users</h2>
-                        </div>
+                    </div>
+                    <div id="left-nav-users">
+                        <button class="left-nav-button">
+                            <div class="panel-heading">
+                                <h2 class="panel-title" ng-click="setAccordionOptions('users');">Users</h2>
+                            </div>
+                        </button>
                         <div data-ng-show="accordionUsers">
                             <div class="panel-body">
                                 <div ng-include="'/components/app/users.html'"></div>
                             </div>
                         </div>
                     </button>
-                    <button class="left-nav-button" id="left-nav-chat">
-                        <div class="panel-heading">
-                            <h2 class="panel-title" ng-click="setAccordionOptions('chat');">Chat</h2>
-                        </div>
+                    <div id="left-nav-chat">
+                        <button class="left-nav-button">
+                            <div class="panel-heading">
+                                <h2 class="panel-title" ng-click="setAccordionOptions('chat');">Chat</h2>
+                            </div>
+                        </button>
                         <div data-ng-show="accordionChat">
                             <div class="panel-body">
                                 <div class="row">
@@ -102,7 +108,7 @@
                                 </div>
                             </div>
                         </div>
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>
