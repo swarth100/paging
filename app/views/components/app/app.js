@@ -46,7 +46,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         {
             name: 'Foot',
             type: 'WALKING',
-            icon: 'fa fa-blind',
+            icon: 'fa fa-male',
         },
         {
             name: 'Bicycle',
