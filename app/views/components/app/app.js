@@ -187,7 +187,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     </div>
                 </label>
             </div>
-            <div class="bubbleSeparator"></div>
+            <div class="bubble-separator"></div>
             <div class="like-text-field">
                 <div style="display: inline; color: blue; font-weight: bold;">Liked By: </div>
                  {{printUsers(getResultFromIndex(` + result + `).users)}}
@@ -733,6 +733,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         };
     }
 
+    function closeInfoBubble(infoBubble) {
+        infoBubble.opened = false;
+        infoBubble.close();
+        lastOpenedInfoBubble = undefined;
+    }
+
     /* TODO: Add comment */
     markerAddInfo = function(map, marker, infoBubble) {
         /* Handle mouse click events over labels */
@@ -761,10 +767,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     socketSendTimeRequest();
                 }
             } else if (infoBubble.opened) {
-                infoBubble.opened = false;
-                infoBubble.close();
-                lastOpenedInfoBubble = undefined;
+                closeInfoBubble(infoBubble);
             }
+        });
+
+        google.maps.event.addListener(infoBubble, 'closeclick', function() {
+            closeInfoBubble(infoBubble);
         });
 
         /* Handle mouse hovering over labels */
