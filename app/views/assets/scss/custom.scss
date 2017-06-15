@@ -8,8 +8,8 @@ $search-btn-bg: rgb(209, 136, 91);
 $search-btn-border: $search-btn-bg;
 $search-btn-highlight: rgb(189, 116, 71);
 
-$search-btn-opt-bg: #37474f;
-$search-btn-opt-highlight: #546e7a;
+$search-btn-opt-bg: #546e7a;
+$search-btn-opt-highlight:#78909c;
 
 $like-btn-text: rgb(255, 255, 255);
 $like-btn-bg: rgb(0, 0, 179);
@@ -305,7 +305,7 @@ input[type="checkbox"]:checked + label {
     padding-left: 0px;
     border-right: none;
     text-align: left;
-    width:100%; 
+    width:100%;
     overflow: hidden
 }
 /************************************************************/
