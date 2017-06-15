@@ -20,7 +20,7 @@ app.controller('homeCtrl',
     $scope.setDate();
 
     $scope.unitWidth = () => {
-        width = $scope.homeSearch.radius.toString().length * 10 + 12;
+        width = $scope.homeSearch.radius > 0 ? $scope.homeSearch.radius.toString().length * 10 + 15 : 25;
         return {'width': width + 'px'};
     };
 
