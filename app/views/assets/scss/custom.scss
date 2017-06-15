@@ -456,12 +456,15 @@ input[type="checkbox"]:checked + label {
     }
 }
 
+
+
 .sidenav-top {
     background: $left-nav-text-bg;
     border-color: $left-nav-header-border;
     border-style: solid;
     border-width: 1px;
     height: calc(100vh - 80px);
+    animation-duration: 1s;
 }
 
 #left-nav-options {
@@ -782,5 +785,10 @@ $close-box-height: 40px;
         }
     }
 }
+/************************************************************/
 
+/* Animation ************************************************/
+#navigation-bar {
+    animation-duration: 0.5s;
+}
 /************************************************************/
