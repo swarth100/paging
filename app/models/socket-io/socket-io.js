@@ -216,6 +216,17 @@ exports.start = (server) => {
                 });
             });
         });
+
+        /* */
+        socket.on('calculateTransportTime', (data) => {
+            googlemaps.getTravelTime(data.source, data.destination, function(res) {
+                /* Package result into JSON format with ID for client verification */
+                let resultJSON = {};
+                resultJSON.content = res;
+                resultJSON.id = data.destination.id;
+                socket.emit('receiveTransportTime', resultJSON);
+            });
+        });
     });
 
     function findRoom(roomID, cb) {

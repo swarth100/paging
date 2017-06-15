@@ -411,5 +411,6 @@ module.exports = {
     findInDatabase,
     saveInDatabase,
     findName,
+    getTravelTime,
 };
 

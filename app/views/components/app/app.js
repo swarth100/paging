@@ -46,22 +46,26 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         {
             name: 'Foot',
             type: 'WALKING',
-            icon: 'fa fa-blind',
+            icon: 'fa fa-male',
+            index: 1,
         },
         {
             name: 'Bicycle',
             type: 'BICYCLING',
             icon: 'fa fa-bicycle',
+            index: 2,
         },
         {
             name: 'Public',
             type: 'TRANSIT',
             icon: 'fa fa-bus',
+            index: 3,
         },
         {
             name: 'Car',
             type: 'DRIVING',
             icon: 'fa fa-car',
+            index: 0,
         },
     ];
 
@@ -123,35 +127,53 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return '';
     };
 
+    $scope.hasTime = function(result) {
+        if (result) {
+            return result.transportTimes;
+        }
+        return false;
+    };
+
+    $scope.getTime = function(result, transport) {
+        if (result) {
+            if (result.transportTimes) {
+                return result.transportTimes.content[transport.index].travelTime[0].duration.text;
+            }
+        }
+    };
+
     $scope.toggleLike = function(result) {
         changeMarkers(result);
     };
 
     let generateInfoBubbleTemplate = function(result) {
         return (
-        '<div>' +
-            `<div class="input-group">
+        `<div>
+            <div class="input-group">
                 <span class="input-group-btn bubble-header">
                     <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
                         <i class="fa fa-thumbs-up"></i>
                     </button>
                 </span>
-                <div type="text" class="form-control centre-text text-field-colour input-lg square">{{getResultFromIndex(` + result + `).name}}</div>
+                <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
             </div>
-            <div class="bubbleSeparator"></div>` +
-            '<div class="btn-group btn-group-justified">' +
-                '<label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">' +
-                    '<i class="{{transport.icon}}"></i>' +
-                    '<br>' +
-                    '{{transport.name}}' +
-                '</label>' +
-            '</div>' +
-            '<div class="bubbleSeparator"></div>' +
-            `<div class="like-text-field">
+            <div class="bubble-separator"></div>
+            <div class="btn-group btn-group-justified">
+                <label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
+                    <i class="{{transport.icon}}"></i>
+                    <br>
+                    <p style="margin: 0">{{transport.name}}</p>
+                    <div ng-show=\"hasTime(getResultFromIndex(` + result + `))\">
+                        <p style="margin: 0">{{getTime(getResultFromIndex(` + result + `), transport)}}</p>
+                    </div>
+                </label>
+            </div>
+            <div class="bubbleSeparator"></div>
+            <div class="like-text-field">
                 <div style="display: inline; color: blue; font-weight: bold;">Liked By: </div>
                  {{printUsers(getResultFromIndex(` + result + `).users)}}
-             </div>` +
-        '</div>'
+             </div>
+        </div>`
         );
     };
 
@@ -287,6 +309,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
+    /* */
     let socketRefresh = function(room) {
         if (!room.duration) {
             broadcastFieldsData();
@@ -298,12 +321,18 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             for (let i = 0; i < room.types.length; i++) {
                 $scope.types[i].isSelected = room.types[i].isSelected;
             }
-            // console.log($scope.types);
-            // console.log(Data.types);
 
             $scope.appSearch = Data.query;
             Data.types = $scope.types;
 
+            $scope.$apply();
+        }
+    };
+
+    /* */
+    let socketUpdateTransportTime = function(transportTimes) {
+        if (resultLocations[$scope.selectedResultIndex].id === transportTimes.id) {
+            resultLocations[$scope.selectedResultIndex].transportTimes = transportTimes;
             $scope.$apply();
         }
     };
@@ -341,6 +370,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     socket.removeAllListeners('refresh', function() {
         socket.once('refresh', socketRefresh);
+    });
+
+    socket.removeAllListeners('receiveTransportTime', function() {
+        socket.once('receiveTransportTime', socketUpdateTransportTime);
     });
 
     socket.on('joinSuccess', function(number) {
@@ -646,6 +679,16 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     lastOpenedInfoBubble.close();
                 }
                 lastOpenedInfoBubble = infoBubble;
+
+                /* */
+                if (!$scope.hasTime(resultLocations[$scope.selectedResultIndex])) {
+                    $scope.getLocation(function(currLoc) {
+                        socket.emit('calculateTransportTime', {
+                            source: currLoc,
+                            destination: resultLocations[$scope.selectedResultIndex],
+                        });
+                    });
+                }
             } else if (infoBubble.opened) {
                 infoBubble.opened = false;
                 infoBubble.close();

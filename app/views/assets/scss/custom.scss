@@ -483,6 +483,7 @@ input[type="checkbox"]:checked + label {
     background-color: $like-btn-bg;
     border-color: $like-btn-border;
     color: $like-btn-text;
+    height: 100%;
 }
 
 .btn-like:hover, .btn-like:focus, .btn-like:active {
@@ -490,13 +491,18 @@ input[type="checkbox"]:checked + label {
     color: $like-btn-text;
 }
 
-.bubbleSeparator {
+.bubbl-separator {
     height: 5px;
     background-color: $search-field-border;
 }
 
-.bubbleHeader {
-    border: 1px $search-field-border;
+.bubble-header {
+    height: 100% !important;
+}
+
+.bubbleHeaderText {
+    float: none !important;
+    position: static !important;
 }
 
 .like-text-field {
