@@ -782,6 +782,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             $scope.message = '';
         }
     };
+
+    /* checks if message was sent by the user */
+    $scope.isMyMessage = (username) => {
+        return username === Data.user.username;
+    };
     /* -----------------------------------------------------------------------*/
 });
 
