@@ -41,6 +41,9 @@ $search-padding-top: 70px;
 $bottom-padding: calc(100vh - 50px - 70px - 82px - 9vh);
 /*************************************************************/
 
+body{
+      font-family: 'Roboto', sans-serif;
+}
 /* Button and Field *****************************************/
 .text-field-colour {
     background-color: $search-field-bg;
@@ -76,6 +79,10 @@ $bottom-padding: calc(100vh - 50px - 70px - 82px - 9vh);
     box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
 }
 
+.no-border {
+    border: none;
+}
+
 .fix-overlap-side-margin {
     padding-left: 0px;
     padding-right: 0px;
@@ -109,7 +116,7 @@ $bottom-padding: calc(100vh - 50px - 70px - 82px - 9vh);
 
 /* Navbar ***************************************************/
 .navbar-default {
-    background: $nav-bg;
+    background: #263238; //$nav-bg;
     border-width: 0;
     .navbar-nav > li > a {
         color: $nav-text;
@@ -120,6 +127,7 @@ $bottom-padding: calc(100vh - 50px - 70px - 82px - 9vh);
     }
     .navbar-brand {
         color: $nav-text-brand;
+        font-size: 30px;
     }
 }
 
@@ -174,10 +182,10 @@ input[type="checkbox"]:checked + label {
 }
 
 @media (max-width:992px){
-   .dropdown-right {
-       right:0;
-       left:auto;
-   }
+    .dropdown-right {
+        right:0;
+        left:auto;
+    }
 }
 
 .type-icon {
@@ -284,11 +292,6 @@ input[type="checkbox"]:checked + label {
     background-size: 100px 100px;
 }
 
-.sidenav-top {
-    background: $search-field-bg;
-    height: calc(100vh - 50px);
-}
-
 .left-bar-field {
     padding-right: 0;
     padding-left: 0;
@@ -347,18 +350,69 @@ input[type="checkbox"]:checked + label {
 #accordion {
     h2 {
         font-size: 20px;
-    }
-    .panel-heading {
-        background: $search-field-bg;
-        border: 2px solid;
-        border-color: rgb(214, 147, 100);
-        border-top: none;
-        border-right: none;
-        border-left: none;
+        color: white;
     }
     .panel-body{
         padding-top: 0px;
         padding-bottom: 0px;
+    }
+}
+
+$left-nav-header: #455a64;
+$left-nav-header-border: #37474f;
+$left-nav-text-bg: #eceff1;
+
+.sidenav-top {
+    background: $left-nav-text-bg;
+    border-color: $left-nav-header-border;
+    border-style: solid;
+    border-width: 1px;
+    height: calc(100vh - 50px);
+}
+
+#left-nav-options {
+    .panel-heading {
+        @extend .square;
+        border-color: $left-nav-header-border;
+        border-style: solid;
+        border-width: 1px;
+        background: $left-nav-header;
+        border: none;
+    }
+    .panel-body{
+        background: $left-nav-text-bg;
+    }
+}
+
+#left-nav-users{
+    .panel-heading {
+        @extend .square;
+        border-color: $left-nav-header-border;
+        border-style: solid;
+        border-width: 1px;
+        background: $left-nav-header;
+        border-right: none;
+        border-bottom: none;
+        border-left: none;
+    }
+    .panel-body{
+        background: $left-nav-text-bg;
+    }
+}
+
+#left-nav-chat{
+    .panel-heading {
+        @extend .square;
+        border-color: $left-nav-header-border;
+        border-style: solid;
+        border-width: 1px;
+        background: $left-nav-header;
+        border-right: none;
+        border-bottom: none;
+        border-left: none;
+    }
+    .panel-body{
+        background: $left-nav-text-bg;
     }
 }
 
