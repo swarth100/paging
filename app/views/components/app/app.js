@@ -621,7 +621,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             strokeOpacity: 0.8,
             strokeWeight: 1,
             fillColor: user.color,
-            fillOpacity: 0.3,
+            fillOpacity: 0.1,
             map: map,
             center: location,
             radius: user.radius,
