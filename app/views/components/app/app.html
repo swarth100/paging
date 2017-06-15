@@ -57,32 +57,10 @@
                     <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
                     <input type="submit" class="hide-left" tabindex="-1" />
                 </form>
-                <form ng-submit="submitFields()">
-                    <!-- ROW div for the left search bar -->
-
-                    <!-- Date and Time input field -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
-                        <div class="input-group">
-                            <span class="input-group-addon text-field-colour square no-bottom-border"><span class="glyphicon glyphicon-calendar"></span></span>
-                            <input type="datetime" class="form-control input-lg square text-field-colour no-left-border no-bottom-border simplebox" ng-model="appSearch.datetime">
-                        </div>
-                    </div>
-
-                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                    <input type="submit" class="hide-left" tabindex="-1" />
-                </form>
 
                 <!-- Duration input field and Radius input field -->
                 <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
                     <div class="input-group">
-                        <span class="input-group-addon text-field-colour square no-bottom-border"><span class="glyphicon glyphicon-time"></span></span>
-                        <form ng-submit="submitFields()">
-                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-bottom-border no-padding simplebox" ng-model="appSearch.duration">
-
-                            <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                            <input type="submit" class="hide-left" tabindex="-1" />
-                        </form>
-
                         <span class="input-group-addon text-field-colour square no-left-border no-right-border no-bottom-border"><span class="glyphicon glyphicon-record"></span></span>
                         <form ng-submit="submitLocation()">
                                 <input type="number" class="form-control input-lg square text-field-colour no-left-border no-bottom-border simplebox no-right-border" ng-model="appSearch.radius">
