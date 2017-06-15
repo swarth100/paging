@@ -38,14 +38,14 @@
     8
 
 -->
-<div class="container-fluid no-padding">
+<div class="container-fluid no-padding" xmlns="http://www.w3.org/1999/html">
     <!-- ROW div for the search bar -->
     <!-- Left search bar holder -->
     <div class = "col-sm-4 col-md-3 no-padding">
         <div class="sidenav-top">
             <div class="panel-group" id="accordion">
-                <div class="panel panel-default no-border">
-                    <div id="left-nav-options">
+                <bu class="panel panel-default no-border">
+                    <button class="left-nav-button" id="left-nav-options">
                         <div class="panel-heading">
                             <h2 class="panel-title" ng-click="setAccordionOptions('options');">Options</h2>
                         </div>
@@ -54,8 +54,8 @@
                                 <div ng-include="'/components/app/options.html'"></div>
                             </div>
                         </div>
-                    </div>
-                    <div id="left-nav-users">
+                    </button>
+                    <button class="left-nav-button" id="left-nav-users">
                         <div class="panel-heading">
                             <h2 class="panel-title" ng-click="setAccordionOptions('users');">Users</h2>
                         </div>
@@ -64,8 +64,8 @@
                                 <div ng-include="'/components/app/users.html'"></div>
                             </div>
                         </div>
-                    </div>
-                    <div id="left-nav-chat">
+                    </button>
+                    <button class="left-nav-button" id="left-nav-chat">
                         <div class="panel-heading">
                             <h2 class="panel-title" ng-click="setAccordionOptions('chat');">Chat</h2>
                         </div>
@@ -102,7 +102,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </button>
                 </div>
             </div>
         </div>
