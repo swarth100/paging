@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<div class="row">
+    <form>
+        <!-- ROW div for the left search bar -->
+        <!-- Location input field -->
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="input-group">
+                <span class="input-group-addon left-nav-bg square no-border"><span class="glyphicon glyphicon-pushpin"></span></span>
+                <input places-auto-complete type="text"
+                       class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline" placeholder="Current Location" ng-model="appSearch.location" ng-model-options="{debounce: 1300}" ng-change="submitLocation()">
+            </div>
+        </div>
+
+        <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+        <input type="submit" class="hide-left" tabindex="-1" />
+    </form>
+
+
+    <!-- Duration input field and Radius input field -->
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="input-group">
+            <span class="input-group-addon left-nav-bg square no-border simplebox"><span class="glyphicon glyphicon-record"></span></span>
+            <form>
+                <input type="number" class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline" ng-style="unitWidth()" ng-model="appSearch.radius" ng-blur="submitLocation()">
+                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                <input type="submit" class="hide-left" tabindex="-1" />
+            </form>
+            <span class="input-group-addon left-nav-bg square unit no-border underline">m</span>
+        </div>
+    </div>
+
+    <form ng-submit="submitFields()">
+        <!-- Option fields -->
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="input-group">
+                <button class="form-control input-lg square left-nav-bg no-border simplebox" style="text-align: left;" data-toggle="dropdown" data-target="#typeOptionsMenu">Location Types</button>
+                <span class="input-group-btn">
+                    <button type="button" class="btn input-lg dropdown-toggle square left-nav-bg no-border" data-toggle="dropdown" data-target="#typeOptionsMenu" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                    </button>
+                    <div class="dropdown" id="typeOptionsMenu">
+                        <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();" role="typeOptionsMenu">
+                            <div ng-repeat="type in types">
+                                <!--<input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">-->
+                                <label class="std-font check-box-not-clicked" for="{{type.name}}" ng-if="!type.isSelected" ng-click="toggleSelected($index); submitFields()">
+                                    <img class="type-icon-small" src="{{type.image}}">
+                                    {{type.name}}
+                                </label>
+                                <label class="std-font check-box-clicked" for="{{type.name}}" ng-if="type.isSelected" ng-click="toggleSelected($index); submitFields()">
+                                    <img class="type-icon-small" src="{{type.image}}">
+                                    {{type.name}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </span>
+            </div>
+            <div class="scrollable-table-options left-nav-bg no-boarder">
+                <table class="table table-hover table-bordered underline no-margin">
+                    <tbody>
+                        <tr ng-repeat="type in types" class="no-border">
+                            <td ng-if="type.isSelected"
+                                class="flex-row no-border"
+                                ng-click="filterByType(type.name);">
+                                <img class="type-icon-small"
+                                     src="{{type.image}}">
+                                {{type.name}}
+                                <button type="button" class="close flex-right no-border" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+    <button type="button" class="btn btn-block btn-lg btn-opt-search square no-border" ng-click="performSearch()">SEARCH</button>
+</div>

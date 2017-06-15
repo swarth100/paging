@@ -9,5 +9,6 @@ module.exports = {
         "no-unused-vars": 0,
         "eol-last": 0,
         "guard-for-in": 0,
+        "prefer-spread": 0,
     }
 };

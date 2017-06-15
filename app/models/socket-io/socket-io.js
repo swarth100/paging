@@ -1,6 +1,7 @@
 
 let mongooseRoom = require('../mongoose/rooms');
 let googlemaps = require('../googlemaps/googlemaps');
+const _ = require('underscore');
 
 let colours = {
     grey: '#737373',
@@ -156,7 +157,7 @@ exports.start = (server) => {
                             for (let k = 0; k < room.results[i].users.length; k ++) {
                                 if (room.results[i].users[k] === changedLocations[j].username) {
                                     found = true;
-                                    room.results[i].users.splice(k);
+                                    room.results[i].users.splice(k, 1);
                                 }
                             }
                             if (!found) {
@@ -170,8 +171,6 @@ exports.start = (server) => {
                     .then(function(res) {
                         /* Room already exists in the DB */
                         console.log('Update success upon change');
-
-                        console.log(room);
 
                         io.in(socket.room).emit('updateMarkers', room.results);
                     })
@@ -203,7 +202,11 @@ exports.start = (server) => {
             findRoom(socket.room, function(room) {
                 findRoom(room._id, (r) => {
                     /* Gets the messages in the room, push the new message and save */
-                    r.messages.push(message);
+                    if (!_.isEmpty(message)) {
+                        /* check for null as on join we send empty message to
+                         * update the messages */
+                        r.messages.push(message);
+                    }
                     mongooseRoom.updateMessage(room._id, r.messages).then(() => {
                         io.in(socket.room).emit('recieveChatMessage', r.messages);
                     })
@@ -211,6 +214,17 @@ exports.start = (server) => {
                         console.log('Error, failed to update message in the room');
                     });
                 });
+            });
+        });
+
+        /* */
+        socket.on('calculateTransportTime', (data) => {
+            googlemaps.getTravelTime(data.source, data.destination, function(res) {
+                /* Package result into JSON format with ID for client verification */
+                let resultJSON = {};
+                resultJSON.content = res;
+                resultJSON.id = data.destination.id;
+                socket.emit('receiveTransportTime', resultJSON);
             });
         });
     });
