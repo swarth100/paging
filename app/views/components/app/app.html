@@ -173,7 +173,7 @@
                                 <tr ng-repeat="user in users">
                                     <td>
                                         {{user.username}}
-                                            <button type="button" class="close" aria-label="Close" ng-click="deleteUser($index)">
+                                        <button type="button" class="close" aria-label="Close" ng-click="deleteUser($index)">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </td>
@@ -191,11 +191,19 @@
                     </button>
                 </div>
                 <div scroll-glue id="message-board">
-                    <div class="message-box" ng-repeat="mes in messages">
-                        <span class="username">{{mes.username}}: </span>
-                        <!--<span class="location">@{{mes.location}}</span>-->
-                        <br>
-                        <span class="message">{{mes.message}}</span>
+                    <div ng-repeat="mes in messages">
+                        <div class="panel panel-default message-box my-message" ng-show="isMyMessage(mes.username)">
+                            <span class="username">{{mes.username}}: </span>
+                            <!--<span class="location">@{{mes.location}}</span>-->
+                            <br>
+                            <span class="message">{{mes.message}}</span>
+                        </div>
+                        <div class="panel panel-default message-box others-message" ng-show="!isMyMessage(mes.username)">
+                            <span class="username">{{mes.username}}: </span>
+                            <!--<span class="location">@{{mes.location}}</span>-->
+                            <br>
+                            <span class="message">{{mes.message}}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
@@ -216,9 +224,9 @@
     <div class="col-sm-8 col-md-9 no-padding">
         <!-- The following is the controller for the post location -->
         <!-- The div nesting was done so that we could have the rotating gif
-        when a search is commensed. -->
-        <div class="map-dimensions">
-            <div id="map" class="map-dimensions" ng-show="!issueSearch"></div>
-        </div>
+            when a search is commensed. -->
+            <div class="map-dimensions">
+                <div id="map" class="map-dimensions" ng-show="!issueSearch"></div>
+            </div>
     </div>
 </div>
