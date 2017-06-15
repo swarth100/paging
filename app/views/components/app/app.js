@@ -941,6 +941,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         for (let i = 0; i < markers.length; i++) {
             markers[i].setOpacity(1);
             markers[i].typeMarker.setOpacity(1);
+            for (let j = 0; j < markers[i].colouredDots.length; j++) {
+                markers[i].colouredDots[j].setOpacity(1);
+            }
         }
 
         if (filterByType.lastSelectedType !== type) {
@@ -948,6 +951,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 if (markers[i].type !== type) {
                     markers[i].setOpacity(0.2);
                     markers[i].typeMarker.setOpacity(0.2);
+                    for (let j = 0; j < markers[i].colouredDots.length; j++) {
+                        markers[i].colouredDots[j].setOpacity(0.2);
+                    }
                 }
             }
 
