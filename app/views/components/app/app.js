@@ -18,6 +18,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let resultLocations = [];
     $scope.isChatting = true;
     $scope.message = '';
+    /* message location is which location this message belongs */
+    $scope.messageLocation = '';
+    /* this one is for which location to filter the message for */
+    $scope.currentSelectedLocation = '';
 
     Data.user.username = Data.updateUsername();
 
@@ -897,11 +901,27 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     }
 
     /* -----------------------------------------------------------------------*/
-    /* Functions to handle message authentication checking */
+    /* Functions to handle messages */
 
     /* checks if message was sent by the user */
     $scope.isMyMessage = (username) => {
         return username === Data.user.username;
+    };
+
+    /* checks if location is relavant*/
+    $scope.filterMessage = (location) => {
+        if ($scope.currentSelectedLocation === '') {
+            return true;
+        }
+        return $scope.currentSelectedLocation === location;
+    };
+
+    /* return formatted location name */
+    $scope.locationName = (location) => {
+        if (location === '') {
+            return location;
+        }
+        return '@' + location;
     };
     /* -----------------------------------------------------------------------*/
 });
