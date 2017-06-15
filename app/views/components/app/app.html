@@ -55,9 +55,55 @@
                             </div>
                         </div>
                     </div>
+<<<<<<< HEAD
                     <div id="left-nav-users">
                         <div class="panel-heading">
                             <h2 class="panel-title" ng-click="setAccordionOptions('users');">Users</h2>
+=======
+
+                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                    <input type="submit" class="hide-left" tabindex="-1" />
+                </form>
+
+                <!-- Duration input field and Radius input field -->
+                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                    <div class="input-group">
+                        <span class="input-group-addon text-field-colour square no-left-border no-right-border no-bottom-border"><span class="glyphicon glyphicon-record"></span></span>
+                        <form ng-submit="submitLocation()">
+                                <input type="number" class="form-control input-lg square text-field-colour no-left-border no-right-border no-padding simplebox no-right-border" 
+                                        ng-style="unitWidth()" ng-model="appSearch.radius">
+
+                                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                                <input type="submit" class="hide-left" tabindex="-1" />
+                        </form>
+                        <span class="input-group-addon text-field-colour square unit no-bottom-border">m</span>
+                    </div>
+                </div>
+
+                <form ng-submit="submitFields()">
+                    <!-- Option fields -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                        <div class="input-group">
+                            <div class="form-control input-lg square text-field-colour">Options</div>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="caret"></span>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();">
+                                    <div ng-repeat="type in types">
+                                        <!--<input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">-->
+                                        <label class="std-font check-box-not-clicked" for="{{type.name}}" ng-if="!type.isSelected" ng-click="toggleSelected($index); submitFields()">
+                                            <img class="type-icon-small" src="{{type.image}}">
+                                            {{type.name}}
+                                        </label>
+                                        <label class="std-font check-box-clicked" for="{{type.name}}" ng-if="type.isSelected" ng-click="toggleSelected($index); submitFields()">
+                                            <img class="type-icon-small" src="{{type.image}}">
+                                            {{type.name}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </span>
+>>>>>>> 8777e6c... app.html: Make unit sit next to radius
                         </div>
                         <div data-ng-show="accordionUsers">
                             <div class="panel-body">
