@@ -143,8 +143,10 @@ body{
 .navbar-default {
     background: #263238; //$nav-bg;
     border-width: 0;
+    height: 80px;
     .navbar-nav > li > a {
         color: $nav-text;
+        padding-top: 30px;
     }
     .navbar-nav > li > a:hover,
     .navbar-nav > li > a:focus  {
@@ -153,6 +155,7 @@ body{
     .navbar-brand {
         color: $nav-text-brand;
         font-size: 30px;
+        padding-top: 25%;
     }
 }
 
