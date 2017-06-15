@@ -586,6 +586,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             // The optimized property is needed for the zIndex to work.
             optimized: false,
             zIndex: 0,
+            // Prevents this marker from capturing the cursor when a user is
+            // hovering over a location marker.
+            clickable: false,
         });
 
         return marker;
@@ -723,7 +726,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 for (let i = 0; i < usersWhoClicked.length; i++) {
                     // Generate the offset of the coloured dot for the
                     // current user in the loop.
-                    let anchor = new google.maps.Point(-3 * (middleUserIndex - i), 10);
+                    let anchor = new google.maps.Point(-3 * (middleUserIndex - i), 12);
 
                     let colouredDot = generateColouredDot(currentMarker, anchor, usersWhoClicked[i]);
 
@@ -736,9 +739,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     // Generate the offset of the coloured dot for the
                     // current user in the loop.
                     if (i < middleUserIndex) {
-                        anchor = new google.maps.Point(2 - (3 * (middleUserIndex - i)), 10);
+                        anchor = new google.maps.Point(2 - (3 * (middleUserIndex - i)), 12);
                     } else {
-                        anchor = new google.maps.Point(2 + 3 * (i - middleUserIndex), 10);
+                        anchor = new google.maps.Point(2 + 3 * (i - middleUserIndex), 12);
                     }
 
                     let colouredDot = generateColouredDot(currentMarker, anchor, usersWhoClicked[i]);
