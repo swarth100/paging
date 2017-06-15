@@ -25,7 +25,7 @@ function temporaryFunction(room, cb) {
      * 4. Return results.
      */
     users = room.users;
-    let tmpResults = [];
+    let tmpResults;
 
     /* Override the types array for the purpose of googlemaps */
     let parseTypes = function(condFunc) {
@@ -149,17 +149,20 @@ function searchAroundLocation(queryData, cb) {
 
             if (responses.length > 0) {
                 // Flatten the array of arrays into an array of results.
-                finalPlaces = [].concat.apply(...responses);
+                finalPlaces = [].concat.apply([], responses);
             }
+
             getTravelTime(queryData.location, finalPlaces[0], (res) => {
             });
 
             /* Set the users field for each location to empty */
             /* TODO: Refactor so that users are sent around searches */
             for (let i = 0; i < finalPlaces.length; i ++) {
-                // The conversion to JSON has been moved to the second .then
-                // in queryOnce, because the type was required to be added
-                // to the location.
+                /*
+                 * The conversion to JSON has been moved to the second .then
+                 * in queryOnce, because the type was required to be added
+                 * to the location.
+                 */
                 // finalPlaces[i] = finalPlaces[i].toJSON();
                 finalPlaces[i].users = [];
             }
@@ -199,10 +202,8 @@ function queryOnce(query, radius) {
         })
     .then(function(responses) {
         for (let i = 0; i < responses.length; i++) {
-            // console.log(responses[i]);
             responses[i] = responses[i].toJSON();
             responses[i].type = type;
-            // console.log(responses[i]);
         }
 
         // Return an always resolving promise.
