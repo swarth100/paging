@@ -162,7 +162,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 <label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
                     <i class="{{transport.icon}}"></i>
                     <br>
-                    <p style="margin: 0">{{transport.name}}</p>
+                    <div ng-show=\"!hasTime(getResultFromIndex(` + result + `))\">
+                        <p style="margin: 0">{{transport.name}}</p>
+                    </div>
                     <div ng-show=\"hasTime(getResultFromIndex(` + result + `))\">
                         <p style="margin: 0">{{getTime(getResultFromIndex(` + result + `), transport)}}</p>
                     </div>
@@ -181,6 +183,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let compiledHoveredHTML = $compile(generateInfoBubbleTemplate('hoveredResultIndex'))($scope);
 
     /* -----------------------------------------------------------------------*/
+    /* Handle type toggleing */
 
     $scope.toggleSelected = ((index) => {
         $scope.types[index].isSelected = !$scope.types[index].isSelected;
@@ -195,7 +198,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             $scope.issueSearch = true;
             socket.emit('changeColour', {username: Data.user.username,
                                       colour: colour});
-        };
+        }
     });
 
     /* -----------------------------------------------------------------------*/
@@ -253,7 +256,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     }
 
     /* -----------------------------------------------------------------------*/
-    /* Broadcast information to socket.io room */
+    /* Send information to socket.io room */
 
     /* Private controller function
      * Broadcasts the user data (username, location and radius) to the socket's room */
@@ -353,6 +356,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    /* On recieve */
+    function socketRecieveMessage(messages) {
+        $scope.messages = messages;
+        $scope.$apply();
+    }
+
     /* -----------------------------------------------------------------------*/
     /* Socket.io LISTENERS */
 
@@ -374,6 +383,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     socket.removeAllListeners('receiveTransportTime', function() {
         socket.once('receiveTransportTime', socketUpdateTransportTime);
+    });
+
+    /* Add socket listener for messaging */
+    socket.removeAllListeners('recieveChatMessage', function() {
+        socket.once('recieveChatMessage', socketRecieveMessage);
     });
 
     socket.on('joinSuccess', function(number) {
@@ -434,6 +448,28 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         // console.log($scope.users[index].username);
         socket.emit('deleteUser', $scope.users[index].username);
     };
+
+    /* handle message exhange */
+    $scope.sendMessage = () => {
+        /* no empty message */
+        if ($scope.message !== '') {
+            socket.emit('chatMessage', {
+                username: Data.user.username,
+                location: '',
+                message: $scope.message,
+            });
+            $scope.message = '';
+        }
+    };
+
+    function changeMarkers(result) {
+        let packagedData = [{
+            id: result.id,
+            username: Data.user.username,
+        }];
+
+        socket.emit('changeMarkers', packagedData);
+    }
 
     /* -----------------------------------------------------------------------*/
     /* Functions called upon entry */
@@ -718,15 +754,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         });
     };
-
-    function changeMarkers(result) {
-        let packagedData = [{
-            id: result.id,
-            username: Data.user.username,
-        }];
-
-        socket.emit('changeMarkers', packagedData);
-    }
     /* -----------------------------------------------------------------------*/
     $scope.openLink = function() {
         $uibModal.open({
@@ -839,30 +866,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     }
 
     /* -----------------------------------------------------------------------*/
-
-    /* On recieve */
-    function socketRecieveMessage(messages) {
-        $scope.messages = messages;
-        $scope.$apply();
-    }
-
-    /* Add socket listener for messaging */
-    socket.removeAllListeners('recieveChatMessage', function() {
-        socket.once('recieveChatMessage', socketRecieveMessage);
-    });
-
-    /* handle message exhange */
-    $scope.sendMessage = () => {
-        /* no empty message */
-        if ($scope.message !== '') {
-            socket.emit('chatMessage', {
-                username: Data.user.username,
-                location: '',
-                message: $scope.message,
-            });
-            $scope.message = '';
-        }
-    };
+    /* */
 
     /* checks if message was sent by the user */
     $scope.isMyMessage = (username) => {
