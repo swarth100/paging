@@ -558,7 +558,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         }
 
-        // Draws coloured dots over locations if needed.
+        /* Draws coloured dots over locations if needed. */
         for (let i = 0; i < room.results.length; i++) {
             changeColoursOfMarkers(i, room.results[i].users);
         }
@@ -919,7 +919,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return username === Data.user.username;
     };
 
-    /* checks if location is relavant*/
+    /* checks if location is relavant */
     $scope.filterMessage = (location) => {
         if ($scope.currentSelectedLocation === '') {
             return true;
@@ -943,24 +943,31 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      */
     $scope.filterByType = filterByType;
 
+    /*
+     * Since functions are objects, a property has been added to this
+     * function (lastSelectedType) to perform the functions of a static
+     * variable (not chaning between function calls).
+     */
     function filterByType(typeName) {
         let type = typeName.toLowerCase().split(' ').join('_');
 
         for (let i = 0; i < markers.length; i++) {
-            markers[i].setOpacity(1);
-            markers[i].typeMarker.setOpacity(1);
+            let maximumOpacity = 1;
+            markers[i].setOpacity(maximumOpacity);
+            markers[i].typeMarker.setOpacity(maximumOpacity);
             for (let j = 0; j < markers[i].colouredDots.length; j++) {
-                markers[i].colouredDots[j].setOpacity(1);
+                markers[i].colouredDots[j].setOpacity(maximumOpacity);
             }
         }
 
         if (filterByType.lastSelectedType !== type) {
             for (let i = 0; i < markers.length; i++) {
                 if (markers[i].type !== type) {
-                    markers[i].setOpacity(0.2);
-                    markers[i].typeMarker.setOpacity(0.2);
+                    let fadeOutOpacity = 0.2;
+                    markers[i].setOpacity(fadeOutOpacity);
+                    markers[i].typeMarker.setOpacity(fadeOutOpacity);
                     for (let j = 0; j < markers[i].colouredDots.length; j++) {
-                        markers[i].colouredDots[j].setOpacity(0.2);
+                        markers[i].colouredDots[j].setOpacity(fadeOutOpacity);
                     }
                 }
             }
