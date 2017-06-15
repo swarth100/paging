@@ -567,14 +567,47 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             position: result.location,
             map: map,
             icon: icon,
+            // The optimized property is needed for the zIndex to work.
+            optimized: false,
+            zIndex: 0,
+
         });
 
         // This property is used to keep track of the colours used to
         // represent which users have clicked on the marker.
         marker['colouredDots'] = [];
 
+        /* Generate additional type markers. */
+        let typeIcon = createTypeIcon(result.type);
+        let typeMarker = new google.maps.Marker({
+            position: result.location,
+            map: map,
+            icon: typeIcon,
+            // The optimized property is needed for the zIndex to work.
+            optimized: false,
+            zIndex: 0,
+        });
+
         return marker;
     };
+
+    function createTypeIcon(type) {
+        return {
+            url: findImageByType(type),
+            anchor: new google.maps.Point(11, 35),
+            scaledSize: new google.maps.Size(20, 20),
+        };
+    }
+
+    function findImageByType(type) {
+        let types = $scope.types;
+
+        for (let i = 0; i < types.length; i++) {
+            if (type === types[i].name.toLowerCase().split(' ').join('_')) {
+                return types[i].image;
+            }
+        }
+    }
 
     let pathToIcon = 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z';
 
@@ -584,9 +617,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             fillColor: '#ff3700',
             fillOpacity: 1,
             anchor: new google.maps.Point(250, 400),
-            labelOrigin: new google.maps.Point(240, 150),
             strokeWeight: 1,
-            scale: .08,
+            scale: .10,
         };
     }
 
