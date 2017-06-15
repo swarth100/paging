@@ -8,6 +8,9 @@ $search-btn-bg: rgb(209, 136, 91);
 $search-btn-border: $search-btn-bg;
 $search-btn-highlight: rgb(189, 116, 71);
 
+$search-btn-opt-bg: #37474f;
+$search-btn-opt-highlight: #546e7a;
+
 $like-btn-text: rgb(255, 255, 255);
 $like-btn-bg: rgb(0, 0, 179);
 $like-btn-border: rgb(0, 0, 77);
@@ -33,6 +36,12 @@ $option-border: $search-field-border;
 
 /* Colour pallet for app *** ********************************/
 $table-border: $search-field-border;
+
+$left-nav-header: #455a64;
+$left-nav-header-border: #37474f;
+$left-nav-text-bg: #eceff1;
+$left-nav-option-bg: $left-nav-text-bg;
+$left-nav-option-select-bg: #cfd8dc;
 /************************************************************/
 
 /* Search bar padding ***************************************/
@@ -69,6 +78,17 @@ body{
     background-color: $search-btn-highlight;
 }
 
+.btn-opt-search {
+    background-color:$search-btn-opt-bg;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-opt-search:hover, .btn-opt-search:focus, .btn-opt-search:active {
+    background-color: $search-btn-opt-highlight;
+    color: white;
+}
+
 .no-left-border {
     border-left: none !important;
     box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
@@ -77,6 +97,11 @@ body{
 .no-right-border {
     border-right: none !important;
     box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
+}
+
+.no-side-border {
+    @extend .no-left-border;
+    @extend .no-right-border;
 }
 
 .no-border {
@@ -332,18 +357,17 @@ input[type="checkbox"]:checked + label {
 }
 
 .check-box-not-clicked {
-    background-color: $option-bg;
-    border-color:$option-border;
+    background-color: $left-nav-option-bg;
+    border-color:$left-nav-header-border;
     margin-bottom: 0;
     min-width: 100%;
     border-style: solid;
     border-width: 1px;
-
 }
 
 .check-box-clicked {
-    background-color: $option-select-bg;
-    border-color:$option-border;
+    background-color: $left-nav-option-select-bg;
+    border-color:$left-nav-header-border;
     margin-bottom: 0;
     min-width: 100%;
     border-style: solid;
@@ -360,10 +384,6 @@ input[type="checkbox"]:checked + label {
         padding-bottom: 0px;
     }
 }
-
-$left-nav-header: #455a64;
-$left-nav-header-border: #37474f;
-$left-nav-text-bg: #eceff1;
 
 .sidenav-top {
     background: $left-nav-text-bg;
@@ -384,6 +404,12 @@ $left-nav-text-bg: #eceff1;
     }
     .panel-body{
         background: $left-nav-text-bg;
+    }
+    .left-nav-bg {
+        background: $left-nav-text-bg;
+    }
+    .underline {
+        border-bottom: 1px solid #b0bec5;
     }
 }
 
