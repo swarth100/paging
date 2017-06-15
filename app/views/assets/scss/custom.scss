@@ -563,6 +563,10 @@ input[type="checkbox"]:checked + label {
     margin-top:0;
 }
 
+.no-margin-important {
+    margin: 0 !important;
+}
+
 .no-padding {
     padding:0;
 }
