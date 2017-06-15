@@ -84,16 +84,6 @@ function determineSearchRadius(limits) {
         return users[0].radius;
     }
 
-    /*
-    let difference = geolib.getDistance({
-        latitude: limits.minLat,
-        longitude: limits.minLng,
-    }, {
-        latitude: limits.maxLat,
-        longitude: limits.maxLng,
-    });
-    */
-
     let min = Infinity;
     users.forEach((user, index) => {
         if (min > user.radius) {
@@ -139,13 +129,6 @@ function fromNormalToRidiculous(location) {
     };
 }
 
-function fromRidiculousToNormal(location) {
-    return {
-        lat: location.latitude,
-        lng: location.lng,
-    };
-}
-
 /*
  * Given a location JSON and a callback function,
  * Performs a radar search via the Google API, updates the database and
@@ -174,7 +157,10 @@ function searchAroundLocation(queryData, cb) {
             /* Set the users field for each location to empty */
             /* TODO: Refactor so that users are sent around searches */
             for (let i = 0; i < finalPlaces.length; i ++) {
-                finalPlaces[i] = finalPlaces[i].toJSON();
+                // The conversion to JSON has been moved to the second .then
+                // in queryOnce, because the type was required to be added
+                // to the location.
+                // finalPlaces[i] = finalPlaces[i].toJSON();
                 finalPlaces[i].users = [];
             }
 
@@ -191,35 +177,34 @@ function searchAroundLocation(queryData, cb) {
 function queryOnce(query, radius) {
     let results;
 
+    let type;
+
     return googleMapsClient.placesNearby(query).asPromise()
         .then(function(value) {
             results = value.json.results;
 
-            /* Find the distances for all of the given results's coordinates */
-            // let response = findDistances(results);
-
-            let type = query.name.split(' ').join('_');
+            // When looking for the type replace whitespaces with underscores.
+            type = query.name.split(' ').join('_');
             let convertedPlaces = convertFormatOfPlaces(results, type);
 
             /* Limit the actual number of results used */
-            // let prunedResults = pruneResults(results, response, radius);
             let prunedResults = pruneRenewed(convertedPlaces);
 
             /* Pick a max amount of places from the pruned results */
             let randomPlaces = chooseRandomPlaces(prunedResults);
 
-            // When looking for the type replace whitespaces with underscores.
-            // let type = query.name.split(' ').join('_');
-            // let convertedPlaces = convertFormatOfPlaces(randomPlaces, type);
-
-            // return Promise.all(convertedPlaces.map(function(convertedPlace) {
-            //     return findInDatabase(convertedPlace);
-            // }));
-            return Promise.all(randomPlaces.map(function(convertedPlace) {
-                return findInDatabase(convertedPlace);
+            return Promise.all(randomPlaces.map(function(randomPlace) {
+                return findInDatabase(randomPlace);
             }));
         })
     .then(function(responses) {
+        for (let i = 0; i < responses.length; i++) {
+            // console.log(responses[i]);
+            responses[i] = responses[i].toJSON();
+            responses[i].type = type;
+            // console.log(responses[i]);
+        }
+
         // Return an always resolving promise.
         return Promise.resolve(responses);
     })
@@ -240,16 +225,14 @@ function exportQueryData(location, radius, types) {
 }
 
 function extractQueryData(queryData) {
-    /* TODO: Previous version is better? */
     location = queryData.location;
-    // location = JSON.parse(queryData.location);
 
     let queries = [];
 
     for (let i = 0; i < queryData.type.length; i++) {
         queries.push({
             /* TODO: Previous version is better? */
-            location: queryData.location, // JSON.parse(queryData.location),
+            location: queryData.location,
             radius: queryData.radius,
             name: queryData.type[i].toLowerCase(),
         });
@@ -353,6 +336,7 @@ function findInDatabase(randomPlace) {
 
     return promiseOfLocation
         .then(function(result) {
+            result['type'] = 'faceless-one';
             return result;
         })
     .catch(function(err) {
