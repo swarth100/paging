@@ -101,6 +101,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return resultLocations[index];
     };
 
+    /* Given an index of a location  */
+    $scope.getMarkerFromIndex = function(index) {
+        return markers[index];
+    };
+
     /* Diplays the like status of a location
      * DEPRECATED */
     $scope.displayLike = function(result) {
@@ -131,19 +136,19 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return '';
     };
 
-    /* Determines if a location has had the travel times determined already */
-    $scope.hasTime = function(result) {
-        if (result) {
-            return result.transportTimes;
+    /* Determines if a marker has had the travel times determined already */
+    $scope.hasTime = function(marker) {
+        if (marker) {
+            return marker.transportTimes;
         }
         return false;
     };
 
-    /* Determines the content of the travel time to a location */
-    $scope.getTime = function(result, transport) {
-        if (result) {
-            if (result.transportTimes) {
-                return result.transportTimes.content[transport.index].travelTime[0].duration.text;
+    /* Determines the content of the travel time to a marker */
+    $scope.getTime = function(marker, transport) {
+        if (marker) {
+            if (marker.transportTimes) {
+                return marker.transportTimes.content[transport.index].travelTime[0].duration.text;
             }
         }
     };
@@ -170,11 +175,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 <label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
                     <i class="{{transport.icon}}"></i>
                     <br>
-                    <div ng-show=\"!hasTime(getResultFromIndex(` + result + `))\">
+                    <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
                         <p style="margin: 0">{{transport.name}}</p>
                     </div>
-                    <div ng-show=\"hasTime(getResultFromIndex(` + result + `))\">
-                        <p style="margin: 0">{{getTime(getResultFromIndex(` + result + `), transport)}}</p>
+                    <div ng-show=\"hasTime(getMarkerFromIndex(` + result + `))\">
+                        <p style="margin: 0">{{getTime(getMarkerFromIndex(` + result + `), transport)}}</p>
                     </div>
                 </label>
             </div>
@@ -344,7 +349,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* */
     let socketUpdateTransportTime = function(transportTimes) {
         if (resultLocations[$scope.selectedResultIndex].id === transportTimes.id) {
-            resultLocations[$scope.selectedResultIndex].transportTimes = transportTimes;
+            markers[$scope.selectedResultIndex].transportTimes = transportTimes;
             $scope.$apply();
         }
     };
@@ -357,8 +362,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let issueOneByOne = function(locationData) {
         resultLocations = locationData;
         $scope.$apply();
-
-        console.log(locationData);
 
         for (let i = 0; i < locationData.length; i++) {
             changeColoursOfMarkers(i, locationData[i].users);
