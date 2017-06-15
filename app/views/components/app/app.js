@@ -78,7 +78,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     ];
 
     $scope.unitWidth = () => {
-        width = $scope.appSearch.radius.toString().length * 10 + 12;
+        width = $scope.appSearch.radius > 0 ? $scope.appSearch.radius.toString().length * 10 + 15 : 25;
         return {'width': width + 'px'};
     };
 
