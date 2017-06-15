@@ -85,11 +85,11 @@
 
                         <span class="input-group-addon text-field-colour square no-left-border no-right-border no-bottom-border"><span class="glyphicon glyphicon-record"></span></span>
                         <form ng-submit="submitLocation()">
-                            <input type="number" class="form-control input-lg square text-field-colour no-left-border no-bottom-border simplebox" ng-model="appSearch.radius">
-
-                            <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                            <input type="submit" class="hide-left" tabindex="-1" />
+                                <input type="number" class="form-control input-lg square text-field-colour no-left-border no-bottom-border simplebox no-right-border" ng-model="appSearch.radius">
+                                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                                <input type="submit" class="hide-left" tabindex="-1" />
                         </form>
+                        <span class="input-group-addon text-field-colour square unit no-bottom-border">m</span>
                     </div>
                 </div>
 
