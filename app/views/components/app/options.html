@@ -3,11 +3,11 @@
     <form>
         <!-- ROW div for the left search bar -->
         <!-- Location input field -->
-        <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+        <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="input-group">
-                <span class="input-group-addon text-field-colour square no-bottom-border"><span class="glyphicon glyphicon-pushpin"></span></span>
+                <span class="input-group-addon left-nav-bg square no-border"><span class="glyphicon glyphicon-pushpin"></span></span>
                 <input places-auto-complete type="text"
-                       class="form-control input-lg square text-field-colour no-left-border no-bottom-border no-padding simplebox" placeholder="Current Location" ng-model="appSearch.location" ng-blur="submitLocation()">
+                                            class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline" placeholder="Current Location" ng-model="appSearch.location" ng-blur="submitLocation()">
             </div>
         </div>
 
@@ -17,27 +17,27 @@
 
 
     <!-- Duration input field and Radius input field -->
-    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+    <div class="col-xs-12 col-sm-12 col-md-12">
         <div class="input-group">
-            <span class="input-group-addon text-field-colour square no-left-border no-right-border no-bottom-border"><span class="glyphicon glyphicon-record"></span></span>
+            <span class="input-group-addon left-nav-bg square no-border simplebox"><span class="glyphicon glyphicon-record"></span></span>
             <form ng-submit="submitLocation()">
-                    <input type="number" class="form-control input-lg square text-field-colour no-left-border no-right-border no-padding simplebox no-right-border" 
-                            ng-style="unitWidth()" ng-model="appSearch.radius">
+                <input type="number" class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline"
+                                     ng-style="unitWidth()" ng-model="appSearch.radius">
 
-                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                    <input type="submit" class="hide-left" tabindex="-1" />
+                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                <input type="submit" class="hide-left" tabindex="-1" />
             </form>
-            <span class="input-group-addon text-field-colour square unit no-bottom-border">m</span>
+            <span class="input-group-addon left-nav-bg square unit no-border underline">m</span>
         </div>
     </div>
 
     <form ng-submit="submitFields()">
         <!-- Option fields -->
-        <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+        <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="input-group">
-                <div class="form-control input-lg square text-field-colour">Options</div>
+                <div class="form-control input-lg square left-nav-bg no-border simplebox">Location Types</div>
                 <span class="input-group-btn">
-                    <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn input-lg dropdown-toggle square left-nav-bg no-border" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();">
@@ -55,17 +55,17 @@
                     </div>
                 </span>
             </div>
-            <div class="scrollable-table text-field-colour set-boarder">
-                <table class="table table-hover table-bordered set-boarder no-bottom-border no-margin">
+            <div class="scrollable-table left-nav-bg no-boarder">
+                <table class="table table-hover table-bordered underline no-margin">
                     <tbody>
-                        <tr ng-repeat="type in types" class="no-right-border no-left-border">
+                        <tr ng-repeat="type in types" class="no-border">
                             <td ng-if="type.isSelected"
-                                class="flex-row"
+                                class="flex-row no-border"
                                 ng-click="filterByType(type.name);">
                                 <img class="type-icon-small"
                                      src="{{type.image}}">
                                 {{type.name}}
-                                <button type="button" class="close flex-right" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
+                                <button type="button" class="close flex-right no-border" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </td>
@@ -75,5 +75,5 @@
             </div>
         </div>
     </form>
-    <button type="button" class="btn btn-block btn-lg btn-search square no-top-border" ng-click="performSearch()">SEARCH</button>
+    <button type="button" class="btn btn-block btn-lg btn-opt-search square no-border" ng-click="performSearch()">SEARCH</button>
 </div>
