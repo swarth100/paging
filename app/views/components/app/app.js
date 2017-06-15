@@ -77,6 +77,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     },
     ];
 
+    $scope.unitWidth = () => {
+        width = $scope.appSearch.radius.toString().length * 10 + 12;
+        return {'width': width + 'px'};
+    };
+
     /* -----------------------------------------------------------------------*/
     /* Scope HTML templates for labels. Must be precompiled to inject angular correctly down */
 
