@@ -44,54 +44,60 @@
     <div class = "col-sm-4 col-md-3 no-padding">
         <div class="sidenav-top">
             <div class="panel-group" id="accordion">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h2 class="panel-title" ng-click="setAccordionOptions('options');">Options</h2>
-                    </div>
-                    <div data-ng-show="accordionOptions">
-                        <div class="panel-body">
-                            <div ng-include="'/components/app/options.html'"></div>
+                <div class="panel panel-default no-border">
+                    <div id="left-nav-options">
+                        <div class="panel-heading">
+                            <h2 class="panel-title" ng-click="setAccordionOptions('options');">Options</h2>
+                        </div>
+                        <div data-ng-show="accordionOptions">
+                            <div class="panel-body">
+                                <div ng-include="'/components/app/options.html'"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="panel-heading">
-                        <h2 class="panel-title" ng-click="setAccordionOptions('users');">Users</h2>
-                    </div>
-                    <div data-ng-show="accordionUsers">
-                        <div class="panel-body">
-                            <div ng-include="'/components/app/users.html'"></div>
+                    <div id="left-nav-users">
+                        <div class="panel-heading">
+                            <h2 class="panel-title" ng-click="setAccordionOptions('users');">Users</h2>
+                        </div>
+                        <div data-ng-show="accordionUsers">
+                            <div class="panel-body">
+                                <div ng-include="'/components/app/users.html'"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="panel-heading">
-                        <h2 class="panel-title" ng-click="setAccordionOptions('chat');">Chat</h2>
-                    </div>
-                    <div data-ng-show="accordionChat">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div scroll-glue id="message-board">
-                                    <div class="panel-group">
-                                        <div ng-repeat="mes in messages">
-                                            <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}" ng-show='filterMessage(mes.location);'>
-                                                <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
-                                                    <span class="username">{{mes.username}}</span>
-                                                    <span class="location">{{locationName(mes.location);}}</span>
-                                                </div>
-                                                <div class="panel-body">
-                                                    <span class="message">{{mes.message}}</span>
+                    <div id="left-nav-chat">
+                        <div class="panel-heading">
+                            <h2 class="panel-title" ng-click="setAccordionOptions('chat');">Chat</h2>
+                        </div>
+                        <div data-ng-show="accordionChat">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div scroll-glue id="message-board">
+                                        <div class="panel-group">
+                                            <div ng-repeat="mes in messages">
+                                                <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}" ng-show='filterMessage(mes.location);'>
+                                                    <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
+                                                        <span class="username">{{mes.username}}</span>
+                                                        <span class="location">{{locationName(mes.location);}}</span>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <span class="message">{{mes.message}}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
-                                    <div class="input-group">
-                                        <form ng-submit="sendMessage()">
-                                            <input type="text" class="form-control input-lg square" ng-model="message">
-                                            <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                                            <input type="submit" class="hide-left" tabindex="-1" />
-                                        </form>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-primary input-lg square" type="submit" ng-click="sendMessage();">Send</button>
-                                        </span>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+                                        <div class="input-group">
+                                            <form ng-submit="sendMessage()">
+                                                <input type="text" class="form-control input-lg square" ng-model="message">
+                                                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                                                <input type="submit" class="hide-left" tabindex="-1" />
+                                            </form>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary input-lg square" type="submit" ng-click="sendMessage();">Send</button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
