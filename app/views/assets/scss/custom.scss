@@ -266,6 +266,7 @@ input[type="checkbox"]:checked + label {
         border: 1px solid $search-bar-border;
         border-left: none;
         background: $left-nav-text-bg;
+        text-align: left;
     }
     .search-icon {
         border: 1px solid $search-bar-border;
@@ -324,7 +325,7 @@ input[type="checkbox"]:checked + label {
 
 .search-bar-footer-div {
     height: 5px;
-    background: rgb(214, 147, 100);
+    background: $left-nav-text-bg;
 }
 
 .search-bar-footer{
@@ -332,17 +333,18 @@ input[type="checkbox"]:checked + label {
     bottom: 0px;
     height: 10%;
     width: 100vw;
-    background: $search-field-bg;
+    background: $left-nav-header;
 }
 
 .icon-credits{
+    color: white;
     position: absolute;
     bottom: 3%;
     right:2%;
 }
 
-.black-link{
-    color: black;
+.white-link, .white-link:hover{
+    color: $user-dd-bg;
 }
 
 .unit{
