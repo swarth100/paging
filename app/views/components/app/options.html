@@ -7,7 +7,7 @@
             <div class="input-group">
                 <span class="input-group-addon left-nav-bg square no-border"><span class="glyphicon glyphicon-pushpin"></span></span>
                 <input places-auto-complete type="text"
-                                            class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline" placeholder="Current Location" ng-model="appSearch.location" ng-blur="submitLocation()">
+                     class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline" placeholder="Current Location" ng-model="appSearch.location" ng-blur="submitLocation()">
             </div>
         </div>
 
@@ -23,7 +23,6 @@
             <form ng-submit="submitLocation()">
                 <input type="number" class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline"
                                      ng-style="unitWidth()" ng-model="appSearch.radius">
-
                 <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
                 <input type="submit" class="hide-left" tabindex="-1" />
             </form>
