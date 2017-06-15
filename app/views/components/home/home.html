@@ -39,40 +39,11 @@
     <div class="row search-bottom" ng-class="dropdownOpen ? 'large-bottom-padding' : 'small-bottom-padding'">
         <form class="form-group-lg" ng-submit="submitFields()">
             <!-- LOCATION field holder -->
-            <div class="col-sm-12 col-md-2 no-padding fix-overlap-side-margin">
+            <div class="col-sm-12 col-md-3 col-md-offset-2 no-padding fix-overlap-side-margin">
                 <p class="field-title">Location:</p>
                 <div class="input-group no-padding square">
                     <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-pushpin"></span></span>
                     <input places-auto-complete type="text" class="form-control input-lg square text-field-colour no-left-border simplebox" placeholder="Current Location" ng-model="homeSearch.location">
-                </div>
-            </div>
-            <!-- DATETIME field holder -->
-            <div class="col-sm-12 col-md-3 no-padding fix-overlap-side-margin">
-                <p class="field-title">Date and Time:</p>
-                <div class="input-group">
-                    <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-calendar"></span></span>
-                    <input type="text" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="homeSearch.datetime">
-                    <span class="input-group-btn">
-                        <button type="button" class="btn input-lg dropdown-toggle square text-field-colour" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right no-padding" ng-click="$event.stopPropagation();" role="menu">
-                            <div uib-datepicker ng-model="tmpDate" ng-click="setDate()" class="well well-sm no-margin" datepicker-options="options"></div>
-                            <div class="row">
-                                <div class="col-sm-8 col-sm-offset-2 no-padding">
-                                    <div uib-timepicker ng-model="tmpTime" ng-change="changed()" ng-click="setDate()" show-meridian="ismeridian"></div>
-                                </div>
-                            </div>
-                        </ul>
-                    </span>
-                </div>
-            </div>
-            <!-- DURATION field holder -->
-            <div class="col-sm-12 col-md-2 fix-overlap-side-margin">
-                <p class="field-title">Duration:</p>
-                <div class="input-group">
-                    <span class="input-group-addon text-field-colour square"><span class="glyphicon glyphicon-time"></span></span>
-                    <input type="number" class="form-control input-lg square text-field-colour no-left-border no-padding simplebox" ng-model="homeSearch.duration">
                 </div>
             </div>
             <!-- RADIUS field holder -->
