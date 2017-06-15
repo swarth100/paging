@@ -248,14 +248,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     let broadcastFieldsData = function() {
-        console.log('Gonna broadcast types');
+        // console.log('Gonna broadcast types');
 
         let toSend = {
             'types': angular.toJson(Data.types),
             'duration': Data.query.duration,
             'date': Data.query.datetime,
         };
-        console.log(toSend);
+        // console.log(toSend);
         /* Broadcast location to all socket listeners */
         socket.emit('options', toSend);
     };
@@ -298,8 +298,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             for (let i = 0; i < room.types.length; i++) {
                 $scope.types[i].isSelected = room.types[i].isSelected;
             }
-            console.log($scope.types);
-            console.log(Data.types);
+            // console.log($scope.types);
+            // console.log(Data.types);
 
             $scope.appSearch = Data.query;
             Data.types = $scope.types;
@@ -316,6 +316,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let issueOneByOne = function(locationData) {
         resultLocations = locationData;
         $scope.$apply();
+
+        console.log(locationData);
 
         for (let i = 0; i < locationData.length; i++) {
             changeColoursOfMarkers(i, locationData[i].users);
@@ -393,7 +395,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     $scope.deleteUser = (index) => {
-        console.log($scope.users[index].username);
+        // console.log($scope.users[index].username);
         socket.emit('deleteUser', $scope.users[index].username);
     };
 
@@ -669,8 +671,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     function changeColoursOfMarkers(index, usersWhoClicked) {
         // Find the marker, whose dots need to be updated.
         let currentMarker = markers[index];
-
-        console.log(currentMarker.colouredDots);
 
         clearPreviousColouredDots(currentMarker);
 
