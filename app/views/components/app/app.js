@@ -350,6 +350,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             Data.user.username = 'Guest-' + number;
         }
 
+        /* update the messages */
+        socket.emit('chatMessage', {});
+
         broadcastUserData();
     });
 
