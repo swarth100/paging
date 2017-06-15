@@ -123,35 +123,46 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return '';
     };
 
+    $scope.hasTime = function(result) {
+        if (result) {
+            return true;
+            // return result.transportTimes;
+        }
+        return false;
+    };
+
     $scope.toggleLike = function(result) {
         changeMarkers(result);
     };
 
     let generateInfoBubbleTemplate = function(result) {
         return (
-        '<div>' +
-            `<div class="input-group">
+        `<div>
+            <div class="input-group">
                 <span class="input-group-btn bubble-header">
                     <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
                         <i class="fa fa-thumbs-up"></i>
                     </button>
                 </span>
-                <div type="text" class="form-control centre-text text-field-colour input-lg square">{{getResultFromIndex(` + result + `).name}}</div>
+                <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
             </div>
-            <div class="bubbleSeparator"></div>` +
-            '<div class="btn-group btn-group-justified">' +
-                '<label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">' +
-                    '<i class="{{transport.icon}}"></i>' +
-                    '<br>' +
-                    '{{transport.name}}' +
-                '</label>' +
-            '</div>' +
-            '<div class="bubbleSeparator"></div>' +
-            `<div class="like-text-field">
+            <div class="bubble-separator"></div>
+            <div class="btn-group btn-group-justified">
+                <label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
+                    <i class="{{transport.icon}}"></i>
+                    <br>
+                    <p style="margin: 0">{{transport.name}}</p>
+                    <div ng-show=\"hasTime(getResultFromIndex(` + result + `))\">
+                        <p style="margin: 0">(00:00)</p>
+                    </div>
+                </label>
+            </div>
+            <div class="bubbleSeparator"></div>
+            <div class="like-text-field">
                 <div style="display: inline; color: blue; font-weight: bold;">Liked By: </div>
                  {{printUsers(getResultFromIndex(` + result + `).users)}}
-             </div>` +
-        '</div>'
+             </div>
+        </div>`
         );
     };
 
