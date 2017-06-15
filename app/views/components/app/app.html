@@ -193,8 +193,8 @@
                 <div scroll-glue id="message-board">
                     <div ng-repeat="mes in messages">
                         <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}">
-                            <div class="panel-heading">
-                                <span class="username">{{mes.username}}: </span>
+                            <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
+                                <span class="username">{{mes.username}}</span>
                                 <!--<span class="location">@{{mes.location}}</span>-->
                             </div>
                             <div class="panel-body">
