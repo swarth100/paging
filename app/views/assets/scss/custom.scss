@@ -478,7 +478,6 @@ input[type="checkbox"]:checked + label {
         border-color: $left-nav-header-border;
         border-style: solid;
         border-width: 1px;
-        background: $left-nav-header;
         border: none;
     }
     .panel-body{
@@ -498,7 +497,6 @@ input[type="checkbox"]:checked + label {
         border-color: $left-nav-header-border;
         border-style: solid;
         border-width: 1px;
-        background: $left-nav-header;
         border-right: none;
         border-bottom: none;
         border-left: none;
@@ -514,7 +512,6 @@ input[type="checkbox"]:checked + label {
         border-color: $left-nav-header-border;
         border-style: solid;
         border-width: 1px;
-        background: $left-nav-header;
         border-right: none;
         border-bottom: none;
         border-left: none;
@@ -524,17 +521,19 @@ input[type="checkbox"]:checked + label {
     }
 }
 
-.left-nav-button {
+.left-nav-button, .left-nav-button:focus {
     display: block;
     color: $nav-text;
     padding: 0;
     border: none;
     width: 100%;
     text-align: left;
+    background: $left-nav-header;
 }
 
-.left-nav-button:focus, .left-nav-button:hover {
+.left-nav-button:hover {
     color: $nav-text-highlight;
+    background: $search-btn-opt-bg;
 }
 
 .centre-modal {
