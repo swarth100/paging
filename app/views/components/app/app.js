@@ -538,6 +538,26 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.getLocation(function(currLoc) {
         map = createMap(currLoc);
         directionsDisplay.setMap(map);
+
+        /* Add click event listener. Used to allow user to change their
+         location just by clicking. */
+        google.maps.event.addListener(map, 'click', function(event) {
+            let latLng = event.latLng;
+
+            geocoder.geocode({'location': latLng}, function(results, status) {
+                if (status === 'OK') {
+                    if (results[1]) {
+                        /* Used to update the location field. */
+                        Data.query.location = results[0].formatted_address;
+                        broadcastUserData();
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    // window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+        });
     });
 
     /* -----------------------------------------------------------------------*/
@@ -584,26 +604,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
             markerAddInfo(map, marker, userBubble);
         }
-
-        /* Add click event listener. Used to allow user to change their
-         location just by clicking. */
-        google.maps.event.addListener(map, 'click', function(event) {
-            let latLng = event.latLng;
-
-            geocoder.geocode({'location': latLng}, function(results, status) {
-                if (status === 'OK') {
-                    if (results[1]) {
-                        /* Used to update the location field. */
-                        Data.query.location = results[0].formatted_address;
-                        broadcastUserData();
-                    } else {
-                        window.alert('No results found');
-                    }
-                } else {
-                     // window.alert('Geocoder failed due to: ' + status);
-                }
-            });
-        });
 
         /*
          * This code iterates through all returned positions, setting them up on
