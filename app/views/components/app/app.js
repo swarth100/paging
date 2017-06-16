@@ -384,9 +384,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* On recieve */
     function socketRecieveMessage(messages) {
+        if ($scope.messages.length === messages.length) {
+            return;
+        }
+        console.log(messages.slice(-1)[0].isFirst);
         let initial = false;
-        if ($scope.messages.length === 0) {
-            initial = true;
+        if ($scope.messages.length === 0 && messages.length >= 1) {
+            initial = !messages.slice(-1)[0].isFirst;
         }
         $scope.messages = messages;
         if (!initial && $scope.messages.slice(-1)[0].username !== Data.user.username) {
