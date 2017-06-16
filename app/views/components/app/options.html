@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <div class="row">
-    <form>
+    <form ng-submit="submitLocation()">
         <!-- ROW div for the left search bar -->
         <!-- Location input field -->
         <div class="col-xs-12 col-sm-12 col-md-12">
@@ -17,17 +17,19 @@
 
 
     <!-- Duration input field and Radius input field -->
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="input-group">
-            <span class="input-group-addon left-nav-bg square no-border simplebox"><span class="glyphicon glyphicon-record"></span></span>
-            <form>
-                <input type="number" class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline" ng-style="unitWidth()" ng-model="appSearch.radius" ng-blur="submitLocation()">
-                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                <input type="submit" class="hide-left" tabindex="-1" />
-            </form>
-            <span class="input-group-addon left-nav-bg square unit no-border underline">m</span>
+    <form ng-submit="submitLocation()">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="input-group">
+                <span class="input-group-addon left-nav-bg square no-border simplebox"><span class="glyphicon glyphicon-record"></span></span>
+                <form>
+                    <input type="number" class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline" ng-style="unitWidth()" ng-model="appSearch.radius" ng-model-options="{debounce: 1300}" ng-change="submitLocation()">
+                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                    <input type="submit" class="hide-left" tabindex="-1" />
+                </form>
+                <span class="input-group-addon left-nav-bg square unit no-border underline">m</span>
+            </div>
         </div>
-    </div>
+    </form>
 
     <form ng-submit="submitFields()">
         <!-- Option fields -->
