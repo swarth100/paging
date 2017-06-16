@@ -53,7 +53,7 @@
                     <span class="input-group-addon search-icon square no-border"><span class="glyphicon glyphicon-record"></span></span>
                     <input type="number" class="form-control input-lg square search-icon no-border no-padding simplebox"
                             ng-style="unitWidth()" ng-model="homeSearch.radius" ng-maxlength="18">
-                    <div class="input-group-addon search-component square unit">m</div>
+                    <div class="input-group-addon search-component square unit"><p class="unit-text">m</p></div>
                 </div>
             </div>
             <!-- OPTION field holder -->
@@ -61,10 +61,10 @@
                 <p class="field-title">Location Types:</p>
                 <div class="input-group" uib-dropdown is-open="dropdownOpen">
                     <!-- Nasty resizing using input-lg -->
-                    <button class="form-control input-lg square search-component simplebox"  uib-dropdown-toggle data-toggle="dropdown" data-target="#homeOptionsMenu">Options</button>
                     <div class="input-group-btn">
-                        <button type="button" class="btn search-btn input-lg square search-component simplebox" uib-dropdown-toggle data-toggle="dropdown" data-target="#homeOptionsMenu" aria-haspopup="true" aria-expanded="false">
-                            <span class="caret"></span>
+                        <button type="button" class="btn search-btn input-lg square search-component simplebox full-width" uib-dropdown-toggle data-toggle="dropdown" data-target="#homeOptionsMenu" aria-haspopup="true" aria-expanded="false">
+                            Options
+                            <span class="caret options-caret"></span>
                         </button>
                         <div class="dropdown" id="homeOptionsMenu">
                             <div class="dropdown-menu dropdown-menu-types dropdown-center dropdown-right" uib-dropdown-menu ng-click="$event.stopPropagation();">
