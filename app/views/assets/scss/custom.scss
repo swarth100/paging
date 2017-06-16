@@ -201,9 +201,9 @@ body{
 }
 
 input[type="checkbox"] + label {
-    background-color: $option-bg;
+    background-color: $left-nav-text-bg;
     font-variant: small-caps;
-    border-color:$option-border;
+    border-color:$search-bar-border;
     margin-bottom: 0;
     min-width: 100%;
     border-style: solid;
@@ -211,7 +211,7 @@ input[type="checkbox"] + label {
 }
 
 input[type="checkbox"]:checked + label {
-    background-color: $option-select-bg;
+    background-color: $left-nav-option-select-bg;
 }
 
 .dropdown-menu-types {
