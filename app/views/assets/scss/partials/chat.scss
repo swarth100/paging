@@ -1,0 +1,85 @@
+#left-nav-chat{
+    .panel-heading {
+        border-radius: 0;
+        border-color: $left-nav-header-border;
+        border-style: solid;
+        border-width: 1px;
+        border-right: none;
+        border-bottom: none;
+        border-left: none;
+    }
+    .panel-body{
+        background: $left-nav-text-bg;
+    }
+}
+
+/* Messages *************************************************/
+.close-lg {
+    font-size: 30px;
+}
+
+$close-box-height: 40px;
+.close-box {
+    height: $close-box-height;
+}
+
+
+.message-title {
+    font-size: 30px;
+    padding-left: 20px;
+}
+
+#message-board {
+    height: calc(100vh - 256px);
+    overflow: auto;
+    padding-top: 10px;
+    padding-right: 20px;
+    padding-left: 20px;
+    .panel-group {
+        .panel {
+            margin-bottom: 10px;
+            max-width: 80%;
+        }
+        .panel-heading {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background: #b0bec5;
+            border-top-right-radius: 3px;
+            border-top-left-radius: 3px;
+            border: none;
+        }
+        .panel-body {
+            background: white;
+            border-radius: 3px
+        }
+    }
+    .message-box {
+        display: inline-block;
+        padding: 3px 30px;
+        font-size: 16px;
+    }
+    .location {
+        word-wrap: break-word;
+    }
+    .message {
+        word-wrap: break-word;
+    }
+    .username {
+        word-wrap: break-word;
+        display: block;
+    }
+    .my-message {
+        float: right;
+        clear: both;
+    }
+    .others-message {
+        float: left;
+        clear: both;
+        .username {
+            text-align: left;
+        }
+    }
+    .large-icon {
+        font-size: 150px
+    }
+}

@@ -13,12 +13,12 @@
     "precommit": "lint-staged",
     "test": "./node_modules/.bin/mocha",
     "lint": "./node_modules/.bin/eslint .",
-    "build": "./node_modules/node-sass/bin/node-sass app/views/assets/scss -o app/views/assets/css",
+    "build": "./node_modules/node-sass/bin/node-sass app/views/assets/scss/custom.scss -o app/views/assets/css",
     "prestart": "npm run build",
     "start": "node server",
     "predev": "npm run build",
     "dev": "npm run watch-sass | npm run watch-node",
-    "watch-sass": "./node_modules/node-sass/bin/node-sass --watch  app/views/assets/scss -o app/views/assets/css",
+    "watch-sass": "./node_modules/node-sass/bin/node-sass --watch app/views/assets/scss/custom.scss -o app/views/assets/css",
     "watch-node": "nodemon server.js"
   },
   "repository": {

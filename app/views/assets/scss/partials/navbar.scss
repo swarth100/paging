@@ -1,0 +1,39 @@
+/* Navbar ***************************************************/
+.navbar-default {
+    background: #263238; //$nav-bg;
+    border-width: 0;
+    height: 80px;
+    .navbar-nav > li > a {
+        color: $nav-text;
+        padding-top: 30px;
+    }
+    .navbar-nav > li > a:hover,
+    .navbar-nav > li > a:focus  {
+        color: $nav-text-highlight;
+    }
+    .navbar-brand {
+        color: $nav-text;
+        font-size: 30px;
+        padding-top: 25%;
+    }
+    .navbar-brand:focus, .navbar-brand:hover {
+        color: $nav-text-highlight;
+    }
+}
+
+#user-dd {
+    min-width: 250px;
+    padding: 14px 14px 0;
+    overflow: hidden;
+    background: $user-dd-bg;
+    .bottom {
+        background-color:$user-dd-bottom-bg;
+        clear: both;
+        padding: 14px;
+    }
+}
+/* Animation ************************************************/
+#navigation-bar {
+    animation-duration: 0.5s;
+}
+/************************************************************/

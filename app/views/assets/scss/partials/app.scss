@@ -1,0 +1,208 @@
+/* App ******************************************************/
+.hide-left {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+}
+
+.map-dimensions {
+    overflow: hidden;
+    height: calc(100vh - 80px);
+    width: 100%;
+    background: url(../images/loading.gif) no-repeat center center;
+    background-size: 100px 100px;
+}
+
+.left-bar-field {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.left-bar-field-button {
+    padding-top: 10px;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.scrollable-table-users {
+    height: calc(100vh - 256px - 40px);
+    overflow: auto;
+    width: 100%;
+}
+
+.scrollable-table-options {
+    height: calc(100vh - 256px - 45px - 45px - 45px);
+    overflow: auto;
+    width: 100%;
+}
+
+
+.set-boarder {
+    border-style: solid;
+    border-width: 1px;
+    border-top: none;
+    border-color: $table-border;
+}
+
+.type-icon-small {
+    max-width: 13%;
+    display: inline;
+    padding: 0 5px;
+}
+
+.dropdown-menu-types-small {
+    width: 15vw !important;
+    padding: 0px 0px;
+    background-color: transparent;
+}
+
+.dropdown-menu-types-tiny {
+    padding: 0px 0px;
+    background-color: transparent;
+}
+
+.check-box-not-clicked {
+    background-color: $left-nav-option-bg;
+    border-color:$left-nav-header-border;
+    margin-bottom: 0;
+    min-width: 100%;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.check-box-clicked {
+    background-color: $left-nav-option-select-bg;
+    border-color:$left-nav-header-border;
+    margin-bottom: 0;
+    min-width: 100%;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.check-box-button {
+    background-color: $left-nav-option-bg;
+    border-color:$left-nav-header-border;
+    margin-bottom: 0;
+    border-style: solid;
+    border-width: 1px;
+    text-align: left;
+}
+
+.check-box-button:focus, .check-box-button:hover {
+    background-color: $left-nav-option-select-bg;
+}
+
+#accordion {
+    h2 {
+        font-size: 20px;
+    }
+    .panel-body{
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+}
+
+.sidenav-top {
+    background: $left-nav-text-bg;
+    border-color: $left-nav-header-border;
+    border-style: solid;
+    border-width: 1px;
+    height: calc(100vh - 80px);
+    animation-duration: 1s;
+}
+
+#left-nav-options {
+    .panel-heading {
+        border-radius: 0;
+        border-color: $left-nav-header-border;
+        border-style: solid;
+        border-width: 1px;
+        border: none;
+    }
+    .panel-body{
+        background: $left-nav-text-bg;
+    }
+    .left-nav-bg {
+        background: $left-nav-text-bg;
+    }
+    .underline {
+        border-bottom: 1px solid $search-bar-border;
+    }
+}
+
+#left-nav-users{
+    .panel-heading {
+        border-radius: 0;
+        border-color: $left-nav-header-border;
+        border-style: solid;
+        border-width: 1px;
+        border-right: none;
+        border-bottom: none;
+        border-left: none;
+    }
+    .panel-body{
+        background: $left-nav-text-bg;
+    }
+}
+
+.left-nav-button, .left-nav-button:focus {
+    display: block;
+    color: $nav-text;
+    padding: 0;
+    border: none;
+    width: 100%;
+    text-align: left;
+    background: $left-nav-header;
+}
+
+.left-nav-button:hover {
+    color: $nav-text-highlight;
+    background: $left-nav-header-selected;
+}
+
+.centre-modal {
+    position: fixed;
+    top: 20%;
+    left: 18.5%;
+    z-index: 1050;
+    width: 80%;
+    height: 80%;
+    margin-left: -10%;
+}
+
+.raise-search-bar {
+    animation: raise 1s;
+    -webkit-animation: raise 1s;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+}
+
+@keyframes raise {
+    0% {height: 60%;};
+    100% {height: 0%};
+}
+
+@-webkit-keyframes raise {
+    0% {height: 60%;};
+    100% {height: 0%};
+}
+
+.lower-search-bar {
+    animation: lower 1s;
+    -webkit-animation: lower 1s;
+}
+
+@keyframes lower {
+    0% {height: 0%;};
+    100% {height: 60%};
+}
+
+@-webkit-keyframes lower {
+    0% {height: 0%;};
+    100% {height: 60%};
+}
+
+
+/************************************************************/
+
