@@ -1,0 +1,38 @@
+/* GoogleMaps ***********************************************/
+.infoBubbleText {
+    background-color: $search-field-bg;
+}
+
+.infoBubbleLocation {
+    padding-left: 5px;
+}
+
+.infoBubbleUser {
+    padding-left: 5px;
+}
+.bubble-separator {
+    height: 5px;
+    background-color: $search-bar-border;
+    border: none;
+}
+
+.bubble-header {
+    height: 100% !important;
+}
+
+.bubbleHeaderText {
+    float: none !important;
+    position: static !important;
+}
+
+.like-text-field {
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 140%;
+    border: none;
+
+    background-color: $left-nav-text-bg;
+    // color: $search-field-text;
+    opacity: 1;
+}
+
