@@ -415,6 +415,11 @@ input[type="checkbox"]:checked + label {
     background-color: transparent;
 }
 
+.dropdown-menu-types-tiny {
+    padding: 0px 0px;
+    background-color: transparent;
+}
+
 .check-box-not-clicked {
     background-color: $left-nav-option-bg;
     border-color:$left-nav-header-border;
