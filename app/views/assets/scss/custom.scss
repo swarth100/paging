@@ -505,6 +505,7 @@ input[type="checkbox"]:checked + label {
 
 #left-nav-chat{
     .panel-heading {
+        border-radius: 0;
         border-color: $left-nav-header-border;
         border-style: solid;
         border-width: 1px;

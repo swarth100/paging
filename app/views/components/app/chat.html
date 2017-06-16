@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<div class="row">
+    <div scroll-glue id="message-board">
+        <div class="panel-group">
+            <div ng-repeat="mes in messages">
+                <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}" ng-show='filterMessage(mes.location);'>
+                    <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
+                        <span class="username">{{mes.username}}</span>
+                        <span class="location">{{locationName(mes.location);}}</span>
+                    </div>
+                    <div class="panel-body">
+                        <span class="message">{{mes.message}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+        <div class="input-group">
+            <form ng-submit="sendMessage();">
+                <input type="text" class="form-control input-lg square no-border simplebox" ng-model="$parent.message">
+                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                <input type="submit" class="hide-left" tabindex="-1" />
+            </form>
+            <span class="input-group-btn">
+                <button class="btn send-btn input-lg no-border square" type="submit" ng-click="sendMessage();"><strong>SEND</strong></button>
+            </span>
+        </div>
+    </div>
+</div>
