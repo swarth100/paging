@@ -193,7 +193,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     </div>
                     <div class="bubble-separator"></div>
                     <div class="btn-group btn-group-justified">
-                        <label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
+                        <label class="btn bubble-btn square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
                             <i class="{{transport.icon}}"></i>
                             <br>
                             <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
@@ -206,7 +206,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     </div>
                     <div class="bubble-separator"></div>
                     <div class="like-text-field">
-                        <div style="display: inline; color: blue; font-weight: bold;">Liked By: </div>
+                        <div style="display: inline; color: blue;">Liked By: </div>
                         {{printUsers(getResultFromIndex(` + result + `).users)}}
                     </div>
                 </div>`
@@ -730,11 +730,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             content: '',
             shadowStyle: 0,
             padding: 0,
-            backgroundColor: 'rgb(193, 173, 150)',
+            backgroundColor: 'rgb(236, 239, 241)',
             borderRadius: 0,
             arrowSize: 10,
-            borderWidth: 0,
-            borderColor: 'rgb(193, 173, 150)',
+            borderWidth: 1,
+            borderColor: 'rgb(120, 144, 156)',
             maxWidth: 300,
             minHeight: 'calc(100% + 2px)',
             disableAutoPan: true,
