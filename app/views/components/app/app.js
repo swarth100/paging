@@ -45,6 +45,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let users;
     let lastOpenedInfoBubble = undefined;
 
+    /*
+     * This is the marker of the user. Used to update his location upon
+     * click events.
+     */
+    let userMarker;
+
     /* -----------------------------------------------------------------------*/
     /* Scope fields for handling location labels */
 
@@ -555,12 +561,33 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             let marker = markUser(radLoc, users[i], map);
 
             /* Initialise the radius */
-            let radius = initRadius(radLoc, users[i], map);
+            // let radius = initRadius(radLoc, users[i], map);
+            let radius = initRadius(radLoc, users[i], map, marker);
 
             let userBubble = createUserInfoBubble(users[i]);
 
             markerAddInfo(map, marker, userBubble);
         }
+
+        /* Add click event listener. Used to allow user to change their
+         location just by clicking. */
+        google.maps.event.addListener(map, 'click', function(event) {
+            let latLng = event.latLng;
+
+            geocoder.geocode({'location': latLng}, function(results, status) {
+                if (status === 'OK') {
+                    if (results[1]) {
+                        /* Used to update the location field. */
+                        Data.query.location = results[0].formatted_address;
+                        broadcastUserData();
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+        });
 
         /*
          * This code iterates through all returned positions, setting them up on
@@ -616,21 +643,38 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             path: 'M365.027,44.5c-30-29.667-66.333-44.5-109-44.5s-79,14.833-109,44.5s-45,65.5-45,107.5c0,25.333,12.833,67.667,38.5,127c25.667,59.334,51.333,113.334,77,162s38.5,72.334,38.5,71c4-7.334,9.5-17.334,16.5-30s19.333-36.5,37-71.5s33.167-67.166,46.5-96.5c13.334-29.332,25.667-59.667,37-91s17-55,17-71C410.027,110,395.027,74.167,365.027,44.5z M289.027,184c-9.333,9.333-20.5,14-33.5,14c-13,0-24.167-4.667-33.5-14s-14-20.5-14-33.5s4.667-24,14-33c9.333-9,20.5-13.5,33.5-13.5c13,0,24.167,4.5,33.5,13.5s14,20,14,33S298.36,174.667,289.027,184z',
             fillColor: user.color,
             fillOpacity: 1,
-            anchor: new google.maps.Point(250, 400),
+            anchor: new google.maps.Point(255, 510),
             strokeWeight: 1,
             scale: .12,
         };
 
-        return new google.maps.Marker({
+        let marker = new google.maps.Marker({
             position: location,
             map: map,
             icon: icon,
+            opacity: 0.2,
+            // optimized: false,
+            // zIndex: 0,
         });
+
+        // let marker2 = new google.maps.Marker({
+        //     position: location,
+        //     map: map,
+        //     optimized: false,
+        //     zIndex: 1,
+        //     // icon: icon,
+        // });
+
+        if (Data.user.username === user.username) {
+            userMarker = marker;
+        }
+
+        return marker;
     };
 
     /* TODO: Add comment */
-    initRadius = function(location, user, map) {
-        return new google.maps.Circle({
+    initRadius = function(location, user, map, marker) {
+        let circle = new google.maps.Circle({
             strokeColor: user.color,
             strokeOpacity: 0.8,
             strokeWeight: 1,
@@ -639,7 +683,24 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             map: map,
             center: location,
             radius: user.radius,
+            /* Clickable is set to false, because otherwise the circle
+             prevents the user from clicking on POIs inside the circle. */
+            /* The above comment held true until we decided that we would
+             like to use this as a fail-safe feature. Furthermore, it is
+             needed if the user's pin is going to fade in and out upon
+             hovering over the circle.*/
+            clickable: true,
         });
+
+        circle.addListener('mouseover', function() {
+            marker.setOpacity(0.8);
+        });
+
+        circle.addListener('mouseout', function() {
+            marker.setOpacity(0.2);
+        });
+
+        return circle;
     };
 
     /* TODO: Add comment */
