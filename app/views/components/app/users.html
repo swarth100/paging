@@ -19,13 +19,14 @@
         </div>
         -->
 
-        <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();">
+        <div class="dropdown-menu dropdown-menu-types-tiny dropdown-menu-right" ng-click="$event.stopPropagation();">
             <div ng-repeat="color in colors">
-
-                <div style="background:{{color.hex}};" ng-click="changeUserColour(color.hex)">
-                    <button type="button" style="width: 80%;" class="btn btn-block square std-font check-box-button no-padding simplebox" ng-click="changeUserColour(color.hex)">
-                        {{color.name}}
-                    </button>
+                <div class="row no-margin" style="background:{{color.hex}};" ng-click="changeUserColour(color.hex)">
+                    <div class="col-xs-10 col-xs-offset-2 no-padding">
+                        <button type="button" class="btn btn-block square std-font check-box-button no-padding simplebox" ng-click="changeUserColour(color.hex)">
+                            {{color.name}}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

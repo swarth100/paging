@@ -18,6 +18,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let resultLocations = [];
     $scope.isChatting = true;
     $scope.message = '';
+    $scope.numMessages = 0;
     /* message location is which location this message belongs */
     $scope.messageLocation = '';
     /* this one is for which location to filter the message for */
@@ -41,8 +42,15 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      * changing the coloured dots over locations.
      */
     let markers = [];
+    let mapObjects = [];
     let users;
     let lastOpenedInfoBubble = undefined;
+
+    /*
+     * This is the marker of the user. Used to update his location upon
+     * click events.
+     */
+    let userMarker;
 
     /* -----------------------------------------------------------------------*/
     /* Scope fields for handling location labels */
@@ -185,7 +193,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     </div>
                     <div class="bubble-separator"></div>
                     <div class="btn-group btn-group-justified">
-                        <label class="btn btn-primary square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
+                        <label class="btn bubble-btn square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
                             <i class="{{transport.icon}}"></i>
                             <br>
                             <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
@@ -198,7 +206,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     </div>
                     <div class="bubble-separator"></div>
                     <div class="like-text-field">
-                        <div style="display: inline; color: blue; font-weight: bold;">Liked By: </div>
+                        <div style="display: inline; color: blue;">Liked By: </div>
                         {{printUsers(getResultFromIndex(` + result + `).users)}}
                     </div>
                 </div>`
@@ -260,8 +268,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
                             callback(location);
                         } else {
-                            alert('Geocode was not successful for the following' +
-                                    ' reason: ' + status);
+                            // alert('Geocode was not successful for the following' +
+                                    // ' reason: ' + status);
                         }
                     });
         }
@@ -356,6 +364,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             Data.types = $scope.types;
 
             $scope.$apply();
+
+            if (room.users.length === 1 && $scope.newSession) {
+                $scope.newSession = false;
+                $scope.performSearch();
+            }
         }
     };
 
@@ -383,7 +396,22 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* On recieve */
     function socketRecieveMessage(messages) {
+        /* if there is no update in message, reject */
+        if ($scope.messages.length === messages.length) {
+            return;
+        }
+        let initial = false;
+        if ($scope.messages.length === 0 && messages.length >= 1) {
+            /* differentiate between the first message recieved and initial message recieve on refresh */
+            initial = !messages.slice(-1)[0].isFirst;
+        }
         $scope.messages = messages;
+        if (!initial && $scope.messages.slice(-1)[0].username !== Data.user.username) {
+            /* only increment if you are not the sender and you don't have chat open */
+            if (!$scope.accordionChat) {
+                $scope.numMessages += 1;
+            }
+        }
         $scope.$apply();
     }
 
@@ -511,19 +539,45 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Functions called upon entry */
 
     $scope.joinRoom();
+    let map;
+    $scope.getLocation(function(currLoc) {
+        map = createMap(currLoc);
+        directionsDisplay.setMap(map);
+
+        /* Add click event listener. Used to allow user to change their
+         location just by clicking. */
+        google.maps.event.addListener(map, 'click', function(event) {
+            let latLng = event.latLng;
+
+            geocoder.geocode({'location': latLng}, function(results, status) {
+                if (status === 'OK') {
+                    if (results[1]) {
+                        /* Used to update the location field. */
+                        Data.query.location = results[0].formatted_address;
+                        broadcastUserData();
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    // window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+        });
+
+        document.getElementById('map').style.visibility = 'hidden';
+    });
 
     /* -----------------------------------------------------------------------*/
     /* Map rendering functions with helpers */
 
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
-        document.getElementById('map').style.visibility = 'visible';
+        for (let i = 0; i < mapObjects.length; i++) {
+            mapObjects[i].setMap(null);
+        }
 
-        /* Initialise the map via the Google API */
-        map = createMap(location);
 
         /* Hook for rendering of directions API */
-        directionsDisplay.setMap(map);
         directionsDisplay.setDirections({routes: []});
 
         users = room.users;
@@ -541,7 +595,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             let marker = markUser(radLoc, users[i], map);
 
             /* Initialise the radius */
-            let radius = initRadius(radLoc, users[i], map);
+            // let radius = initRadius(radLoc, users[i], map);
+            let radius = initRadius(radLoc, users[i], map, marker);
+
+            mapObjects.push(marker);
+            mapObjects.push(radius);
 
             let userBubble = createUserInfoBubble(users[i]);
 
@@ -553,6 +611,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
          * the map.
          */
         if (room.results) {
+            for (let i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+                markers[i].typeMarker.setMap(null);
+                for (let j = 0; j < markers[i].colouredDots.length; j++) {
+                    markers[i].colouredDots[j].setMap(null);
+                }
+            }
+
             /* Reset the markers array when new results are received. */
             markers = [];
 
@@ -571,10 +637,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         for (let i = 0; i < room.results.length; i++) {
             changeColoursOfMarkers(i, room.results[i].users);
         }
-
-        if (users.length === 1 && $scope.newSession) {
-            $scope.newSession = false;
-            $scope.performSearch();
+        /* Initialise the map via the Google API */
+        if (!(room.users.length === 1 && $scope.newSession)) {
+            console.log('Here?');
+            document.getElementById('map').style.visibility = 'visible';
         }
     };
 
@@ -602,21 +668,38 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             path: 'M365.027,44.5c-30-29.667-66.333-44.5-109-44.5s-79,14.833-109,44.5s-45,65.5-45,107.5c0,25.333,12.833,67.667,38.5,127c25.667,59.334,51.333,113.334,77,162s38.5,72.334,38.5,71c4-7.334,9.5-17.334,16.5-30s19.333-36.5,37-71.5s33.167-67.166,46.5-96.5c13.334-29.332,25.667-59.667,37-91s17-55,17-71C410.027,110,395.027,74.167,365.027,44.5z M289.027,184c-9.333,9.333-20.5,14-33.5,14c-13,0-24.167-4.667-33.5-14s-14-20.5-14-33.5s4.667-24,14-33c9.333-9,20.5-13.5,33.5-13.5c13,0,24.167,4.5,33.5,13.5s14,20,14,33S298.36,174.667,289.027,184z',
             fillColor: user.color,
             fillOpacity: 1,
-            anchor: new google.maps.Point(250, 400),
+            anchor: new google.maps.Point(255, 510),
             strokeWeight: 1,
             scale: .12,
         };
 
-        return new google.maps.Marker({
+        let marker = new google.maps.Marker({
             position: location,
             map: map,
             icon: icon,
+            opacity: 0.2,
+            // optimized: false,
+            // zIndex: 0,
         });
+
+        // let marker2 = new google.maps.Marker({
+        //     position: location,
+        //     map: map,
+        //     optimized: false,
+        //     zIndex: 1,
+        //     // icon: icon,
+        // });
+
+        if (Data.user.username === user.username) {
+            userMarker = marker;
+        }
+
+        return marker;
     };
 
     /* TODO: Add comment */
-    initRadius = function(location, user, map) {
-        return new google.maps.Circle({
+    initRadius = function(location, user, map, marker) {
+        let circle = new google.maps.Circle({
             strokeColor: user.color,
             strokeOpacity: 0.8,
             strokeWeight: 1,
@@ -625,7 +708,24 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             map: map,
             center: location,
             radius: user.radius,
+            /* Clickable is set to false, because otherwise the circle
+             prevents the user from clicking on POIs inside the circle. */
+            /* The above comment held true until we decided that we would
+             like to use this as a fail-safe feature. Furthermore, it is
+             needed if the user's pin is going to fade in and out upon
+             hovering over the circle.*/
+            clickable: true,
         });
+
+        circle.addListener('mouseover', function() {
+            marker.setOpacity(0.8);
+        });
+
+        circle.addListener('mouseout', function() {
+            marker.setOpacity(0.2);
+        });
+
+        return circle;
     };
 
     /* TODO: Add comment */
@@ -634,11 +734,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             content: '',
             shadowStyle: 0,
             padding: 0,
-            backgroundColor: 'rgb(193, 173, 150)',
+            backgroundColor: 'rgb(236, 239, 241)',
             borderRadius: 0,
             arrowSize: 10,
-            borderWidth: 0,
-            borderColor: 'rgb(193, 173, 150)',
+            borderWidth: 1,
+            borderColor: 'rgb(120, 144, 156)',
             maxWidth: 300,
             minHeight: 'calc(100% + 2px)',
             disableAutoPan: true,
@@ -999,6 +1099,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         } else if(type === 'users') {
             $scope.accordionUsers = true;
         } else if(type === 'chat') {
+            $scope.numMessages = 0;
             $scope.accordionChat = true;
         } else {
             console.log('accordion type mismatch');

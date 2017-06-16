@@ -201,10 +201,19 @@ exports.start = (server) => {
         socket.on('chatMessage', (message) => {
             findRoom(socket.room, function(room) {
                 findRoom(room._id, (r) => {
-                    /* Gets the messages in the room, push the new message and save */
-                    if (!_.isEmpty(message)) {
+                    if (_.isEmpty(message)) {
+                        if (r.messages.length > 0) {
+                            r.messages.slice(-1)[0].isFirst = false;
+                        }
+                    } else {
+                        /* Gets the messages in the room, push the new message and save */
                         /* check for null as on join we send empty message to
                          * update the messages */
+                        message.isFirst = false;
+                        if (r.messages.length === 0) {
+                            /* this is the first message */
+                            message.isFirst = true;
+                        }
                         r.messages.push(message);
                     }
                     mongooseRoom.updateMessage(room._id, r.messages).then(() => {
