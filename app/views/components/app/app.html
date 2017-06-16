@@ -72,7 +72,9 @@
                     <div id="left-nav-chat">
                         <button class="left-nav-button simplebox">
                             <div class="panel-heading">
-                                <h2 class="panel-title" ng-click="setAccordionOptions('chat');">Chat</h2>
+                                <h2 class="panel-title" ng-click="setAccordionOptions('chat');">
+                                    Chat <span class="badge pull-right" ng-show="numMessages > 0;">{{numMessages}}</span>
+                                </h2>
                             </div>
                         </button>
                         <div class="chat" ng-show="accordionChat">

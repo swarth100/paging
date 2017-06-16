@@ -18,6 +18,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let resultLocations = [];
     $scope.isChatting = true;
     $scope.message = '';
+    $scope.numMessages = 0;
     /* message location is which location this message belongs */
     $scope.messageLocation = '';
     /* this one is for which location to filter the message for */
@@ -383,7 +384,16 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* On recieve */
     function socketRecieveMessage(messages) {
+        let initial = false;
+        if ($scope.messages.length === 0) {
+            initial = true;
+        }
         $scope.messages = messages;
+        if ($scope.messages.slice(-1)[0].username !== Data.user.username) {
+            if (!$scope.accordionChat && !initial) {
+                $scope.numMessages += 1;
+            }
+        }
         $scope.$apply();
     }
 
@@ -999,6 +1009,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         } else if(type === 'users') {
             $scope.accordionUsers = true;
         } else if(type === 'chat') {
+            $scope.numMessages = 0;
             $scope.accordionChat = true;
         } else {
             console.log('accordion type mismatch');
