@@ -390,16 +390,18 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* On recieve */
     function socketRecieveMessage(messages) {
+        /* if there is no update in message, reject */
         if ($scope.messages.length === messages.length) {
             return;
         }
-        console.log(messages.slice(-1)[0].isFirst);
         let initial = false;
         if ($scope.messages.length === 0 && messages.length >= 1) {
+            /* differentiate between the first message recieved and initial message recieve on refresh */
             initial = !messages.slice(-1)[0].isFirst;
         }
         $scope.messages = messages;
         if (!initial && $scope.messages.slice(-1)[0].username !== Data.user.username) {
+            /* only increment if you are not the sender and you don't have chat open */
             if (!$scope.accordionChat) {
                 $scope.numMessages += 1;
             }
@@ -537,6 +539,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
+        if (room.users.length === 1 && $scope.newSession) {
+            $scope.newSession = false;
+            $scope.performSearch();
+            return;
+        }
         document.getElementById('map').style.visibility = 'visible';
 
         /* Initialise the map via the Google API */
@@ -611,11 +618,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* Draws coloured dots over locations if needed. */
         for (let i = 0; i < room.results.length; i++) {
             changeColoursOfMarkers(i, room.results[i].users);
-        }
-
-        if (users.length === 1 && $scope.newSession) {
-            $scope.newSession = false;
-            $scope.performSearch();
         }
     };
 
