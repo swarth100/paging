@@ -44,6 +44,8 @@ $left-nav-text-bg: #eceff1;
 $left-nav-option-bg: $left-nav-text-bg;
 $left-nav-option-select-bg: #cfd8dc;
 
+$info-bubble-border: $search-btn-opt-highlight;
+
 $search-bar-border: #b0bec5;
 /************************************************************/
 
@@ -58,9 +60,9 @@ body{
 }
 /* Button and Field *****************************************/
 .text-field-colour {
-    background-color: $search-field-bg;
-    border-color:$search-field-border;
-    color: $search-field-text;
+    background-color: $left-nav-text-bg;
+    border: none;
+    // color: $search-field-text;
     opacity: 1;
 }
 
@@ -701,7 +703,7 @@ input[type="checkbox"]:checked + label {
 .btn-like {
     @extend .square;
     background-color: $like-btn-bg;
-    border-color: $like-btn-border;
+    border: none;
     color: $like-btn-text;
     height: 100%;
 }
@@ -711,9 +713,21 @@ input[type="checkbox"]:checked + label {
     color: $like-btn-text;
 }
 
+.bubble-btn {
+    color: $nav-text;
+    background: $search-btn-opt-bg;
+    border: none;
+}
+
+.bubble-btn:focus, .bubble-btn:hover {
+    color: $nav-text-highlight;
+    background: $search-btn-opt-highlight;
+}
+
 .bubble-separator {
     height: 5px;
-    background-color: $search-field-border;
+    background-color: $search-bar-border;
+    border: none;
 }
 
 .bubble-header {
@@ -729,9 +743,11 @@ input[type="checkbox"]:checked + label {
     padding-left: 5px;
     padding-right: 5px;
     font-size: 140%;
-    border: 1px;
-    border-style: solid;
-    border-color: $search-field-border;
+    border: none;
+
+    background-color: $left-nav-text-bg;
+    // color: $search-field-text;
+    opacity: 1;
 }
 
 /************************************************************/
