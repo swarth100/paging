@@ -268,8 +268,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
                             callback(location);
                         } else {
-                            alert('Geocode was not successful for the following' +
-                                    ' reason: ' + status);
+                            // alert('Geocode was not successful for the following' +
+                                    // ' reason: ' + status);
                         }
                     });
         }
@@ -600,7 +600,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                         window.alert('No results found');
                     }
                 } else {
-                    window.alert('Geocoder failed due to: ' + status);
+                     // window.alert('Geocoder failed due to: ' + status);
                 }
             });
         });
