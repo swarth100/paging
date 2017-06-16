@@ -42,6 +42,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      * changing the coloured dots over locations.
      */
     let markers = [];
+    let mapObjects = [];
     let users;
     let lastOpenedInfoBubble = undefined;
 
@@ -533,6 +534,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Functions called upon entry */
 
     $scope.joinRoom();
+    let map;
+    $scope.getLocation(function(currLoc) {
+        map = createMap(currLoc);
+        directionsDisplay.setMap(map);
+    });
 
     /* -----------------------------------------------------------------------*/
     /* Map rendering functions with helpers */
@@ -544,13 +550,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             $scope.performSearch();
             return;
         }
-        document.getElementById('map').style.visibility = 'visible';
 
-        /* Initialise the map via the Google API */
-        map = createMap(location);
+        for (let i = 0; i < mapObjects.length; i++) {
+            mapObjects[i].setMap(null);
+        }
+
 
         /* Hook for rendering of directions API */
-        directionsDisplay.setMap(map);
         directionsDisplay.setDirections({routes: []});
 
         users = room.users;
@@ -570,6 +576,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             /* Initialise the radius */
             // let radius = initRadius(radLoc, users[i], map);
             let radius = initRadius(radLoc, users[i], map, marker);
+
+            mapObjects.push(marker);
+            mapObjects.push(radius);
 
             let userBubble = createUserInfoBubble(users[i]);
 
@@ -601,6 +610,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
          * the map.
          */
         if (room.results) {
+            for (let i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+                markers[i].typeMarker.setMap(null);
+                for (let j = 0; j < markers[i].colouredDots.length; j++) {
+                    markers[i].colouredDots[j].setMap(null);
+                }
+            }
+
             /* Reset the markers array when new results are received. */
             markers = [];
 
@@ -619,6 +636,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         for (let i = 0; i < room.results.length; i++) {
             changeColoursOfMarkers(i, room.results[i].users);
         }
+        /* Initialise the map via the Google API */
+        document.getElementById('map').style.visibility = 'visible';
     };
 
     /* InitMap helper functions: */
