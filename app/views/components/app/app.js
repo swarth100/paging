@@ -389,8 +389,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             initial = true;
         }
         $scope.messages = messages;
-        if ($scope.messages.slice(-1)[0].username !== Data.user.username) {
-            if (!$scope.accordionChat && !initial) {
+        if (!initial && $scope.messages.slice(-1)[0].username !== Data.user.username) {
+            if (!$scope.accordionChat) {
                 $scope.numMessages += 1;
             }
         }
