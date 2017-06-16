@@ -201,9 +201,9 @@ body{
 }
 
 input[type="checkbox"] + label {
-    background-color: $option-bg;
+    background-color: $left-nav-text-bg;
     font-variant: small-caps;
-    border-color:$option-border;
+    border-color:$search-bar-border;
     margin-bottom: 0;
     min-width: 100%;
     border-style: solid;
@@ -211,7 +211,7 @@ input[type="checkbox"] + label {
 }
 
 input[type="checkbox"]:checked + label {
-    background-color: $option-select-bg;
+    background-color: $left-nav-option-select-bg;
 }
 
 .dropdown-menu-types {
@@ -415,6 +415,11 @@ input[type="checkbox"]:checked + label {
     background-color: transparent;
 }
 
+.dropdown-menu-types-tiny {
+    padding: 0px 0px;
+    background-color: transparent;
+}
+
 .check-box-not-clicked {
     background-color: $left-nav-option-bg;
     border-color:$left-nav-header-border;
@@ -473,7 +478,6 @@ input[type="checkbox"]:checked + label {
         border-color: $left-nav-header-border;
         border-style: solid;
         border-width: 1px;
-        background: $left-nav-header;
         border: none;
     }
     .panel-body{
@@ -493,7 +497,6 @@ input[type="checkbox"]:checked + label {
         border-color: $left-nav-header-border;
         border-style: solid;
         border-width: 1px;
-        background: $left-nav-header;
         border-right: none;
         border-bottom: none;
         border-left: none;
@@ -509,7 +512,6 @@ input[type="checkbox"]:checked + label {
         border-color: $left-nav-header-border;
         border-style: solid;
         border-width: 1px;
-        background: $left-nav-header;
         border-right: none;
         border-bottom: none;
         border-left: none;
@@ -519,17 +521,19 @@ input[type="checkbox"]:checked + label {
     }
 }
 
-.left-nav-button {
+.left-nav-button, .left-nav-button:focus {
     display: block;
     color: $nav-text;
     padding: 0;
     border: none;
     width: 100%;
     text-align: left;
+    background: $left-nav-header;
 }
 
-.left-nav-button:focus, .left-nav-button:hover {
+.left-nav-button:hover {
     color: $nav-text-highlight;
+    background: $search-btn-opt-bg;
 }
 
 .centre-modal {
