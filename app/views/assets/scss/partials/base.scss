@@ -1,0 +1,127 @@
+/* Base file, use for global setting across project */
+body{
+    font-family: 'Roboto', sans-serif;
+}
+
+.fix-overlap-side-margin {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-right: -1px;
+    // margin-left: -1px;
+}
+
+.fix-overlap-top-margin {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-top: -1px;
+}
+
+.simplebox {
+    outline: none;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.square {
+    border-radius: 0!important;
+}
+
+.no-left-margin {
+    margin-left: 0;
+}
+
+.no-right-margin {
+    margin-right: 0;
+}
+
+.no-side-margin {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.no-margin {
+    @extend .no-side-margin;
+    margin-bottom:0;
+    margin-top:0;
+}
+
+.no-margin-important {
+    margin: 0 !important;
+}
+
+.no-padding {
+    padding:0;
+}
+
+.search-top-offset {
+    margin-top: 55vh;
+}
+
+.panel-top-offset {
+    margin-top: 10vh;
+}
+
+.text-align-left {
+    text-align: left !important;
+}
+
+.centre-text {
+    text-align: center;
+}
+
+.std-font {
+    font-weight: normal !important;
+    font-variant: none !important;
+    font-size: 14px !important;
+}
+
+.no-left-border {
+    border-left: none !important;
+    box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
+}
+
+.no-right-border {
+    border-right: none !important;
+    box-shadow: inset 0px 1px 0 rgba(0,0,0,.075);
+}
+
+.no-side-border {
+    @extend .no-left-border;
+    @extend .no-right-border;
+}
+
+.no-top-border {
+    border-top: none;
+}
+
+.no-bottom-border {
+    border-bottom: none;
+}
+
+.no-border {
+    border: none;
+}
+
+
+
+.full-width {
+    width: 100%;
+}
+
+.flexcontainer {
+    display: -webkit-flex;
+    display: flex;
+}
+
+.flex-row {
+    @extend .flexcontainer;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    align-items: center;
+}
+
+.flex-right {
+    margin-left: auto;
+}
+/************************************************************/
