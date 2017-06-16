@@ -38,6 +38,7 @@ $option-border: $search-field-border;
 $table-border: $search-field-border;
 
 $left-nav-header: #455a64;
+$left-nav-header-selected: #496069;
 $left-nav-header-border: #37474f;
 $left-nav-text-bg: #eceff1;
 $left-nav-option-bg: $left-nav-text-bg;
@@ -544,7 +545,7 @@ input[type="checkbox"]:checked + label {
 
 .left-nav-button:hover {
     color: $nav-text-highlight;
-    background: $search-btn-opt-bg;
+    background: $left-nav-header-selected;
 }
 
 .centre-modal {
