@@ -360,6 +360,11 @@ input[type="checkbox"]:checked + label {
     width:100%;
     overflow: hidden
 }
+
+.unit-text {
+    position:relative;
+    top: 7px;
+}
 /************************************************************/
 
 /* App ******************************************************/
