@@ -1055,35 +1055,36 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /*
      * Since functions are objects, a property has been added to this
      * function (lastSelectedType) to perform the functions of a static
-     * variable (not chaning between function calls).
+     * variable (not changing between function calls).
      */
     function filterByType(typeName) {
         let type = typeName.toLowerCase().split(' ').join('_');
 
-        for (let i = 0; i < markers.length; i++) {
-            let maximumOpacity = 1;
-            markers[i].setOpacity(maximumOpacity);
-            markers[i].typeMarker.setOpacity(maximumOpacity);
-            for (let j = 0; j < markers[i].colouredDots.length; j++) {
-                markers[i].colouredDots[j].setOpacity(maximumOpacity);
-            }
+        if (filterByType.lastSelectedTypes === undefined) {
+            filterByType.lastSelectedTypes = [];
         }
 
-        if (filterByType.lastSelectedType !== type) {
-            for (let i = 0; i < markers.length; i++) {
-                if (markers[i].type !== type) {
-                    let fadeOutOpacity = 0.2;
-                    markers[i].setOpacity(fadeOutOpacity);
-                    markers[i].typeMarker.setOpacity(fadeOutOpacity);
-                    for (let j = 0; j < markers[i].colouredDots.length; j++) {
-                        markers[i].colouredDots[j].setOpacity(fadeOutOpacity);
-                    }
-                }
+        let index = filterByType.lastSelectedTypes.indexOf(type);
+
+        if (index === (-1)) {
+            filterByType.lastSelectedTypes.push(type);
+        } else {
+            filterByType.lastSelectedTypes.splice(index, 1);
+        }
+
+        for (let i = 0; i < markers.length; i++) {
+            let fadeOutOpacity = 1;
+
+            if (filterByType.lastSelectedTypes.length !== 0 &&
+                filterByType.lastSelectedTypes.indexOf(markers[i].type) === (-1)) {
+                fadeOutOpacity = 0.2;
             }
 
-            filterByType.lastSelectedType = type;
-        } else {
-            filterByType.lastSelectedType = undefined;
+            markers[i].setOpacity(fadeOutOpacity);
+            markers[i].typeMarker.setOpacity(fadeOutOpacity);
+            for (let j = 0; j < markers[i].colouredDots.length; j++) {
+                markers[i].colouredDots[j].setOpacity(fadeOutOpacity);
+            }
         }
     }
 

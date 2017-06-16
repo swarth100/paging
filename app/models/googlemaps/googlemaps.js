@@ -4,8 +4,8 @@ let geolib = require('geolib');
 const co = require('co');
 
 let googleMapsClient = require('@google/maps').createClient({
-    key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
-    // key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
+    // key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
+    key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
     // key: 'AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU',
     // key: 'AIzaSyD7c_7yNAAQc6mhE_JremnfrnUyxvFvfz4',
     Promise: Promise,
@@ -101,20 +101,45 @@ function pruneRenewed(results) {
      * 3. If true push.
      */
 
+    let numberOfCoincidingCirlces = 1;
+
+    let comparisonUserPoint = fromNormalToRidiculous(users[0]);
+    let comparisonUserRadius = users[0].radius;
+
+    /* Find the maximum number of coinciding circles. */
+    for (let i = 1; i < users.length; i++) {
+        let comparedUserPoint = fromNormalToRidiculous(users[i]);
+        let comparedUserRadius = users[i].radius;
+
+        if (geolib.getDistance(comparisonUserPoint, comparedUserPoint) < Math.abs(comparisonUserRadius + comparedUserRadius)) {
+            numberOfCoincidingCirlces++;
+        }
+    }
+
     let prunedResults = [];
 
     for (let i = 0; i < results.length; i++) {
-        let inAll = true;
+        // let inAll = true;
+        let inHowManyCircles = 0;
         for (let j = 0; j < users.length; j++) {
             let point = fromNormalToRidiculous(results[i].location);
             let center = fromNormalToRidiculous(users[j]);
             let radius = users[j].radius;
-            if (!geolib.isPointInCircle(point, center, radius)) {
-                inAll = false;
+            // if (!geolib.isPointInCircle(point, center, radius)) {
+            if (geolib.isPointInCircle(point, center, radius)) {
+                // inAll = false;
+                /* Count how many circles is the location part of. */
+                inHowManyCircles++;
             }
         }
 
-        if (inAll) {
+        // if (inAll) {
+        /* If the location is in as many circles as the maximum number of
+         coinciding circles, then return the location. */
+        if (inHowManyCircles === numberOfCoincidingCirlces) {
+            // console.log('inHowManyCircles ' + inHowManyCircles);
+            // console.log('numberOfCoincidingCirlces ' + numberOfCoincidingCirlces);
+
             prunedResults.push(results[i]);
         }
     }
