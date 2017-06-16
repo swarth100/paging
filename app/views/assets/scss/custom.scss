@@ -210,6 +210,12 @@ input[type="checkbox"] + label {
     border-width: 1px;
 }
 
+.options-caret {
+    float: right;
+    position: relative;
+    top: 8px;
+}
+
 input[type="checkbox"]:checked + label {
     background-color: $left-nav-option-select-bg;
 }
@@ -222,7 +228,7 @@ input[type="checkbox"]:checked + label {
 
 @media (min-width:993px){
     .dropdown-center {
-        transform: translate(-78%, 0);
+        transform: translate(-61%, 0);
     }
 }
 
