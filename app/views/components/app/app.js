@@ -364,6 +364,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             Data.types = $scope.types;
 
             $scope.$apply();
+
+            if (room.users.length === 1 && $scope.newSession) {
+                $scope.newSession = false;
+                $scope.performSearch();
+            }
         }
     };
 
@@ -558,6 +563,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 }
             });
         });
+
+        document.getElementById('map').style.visibility = 'hidden';
     });
 
     /* -----------------------------------------------------------------------*/
@@ -565,12 +572,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Initialise the client-sided rendering of the map */
     $scope.initMap = function(location, room) {
-        if (room.users.length === 1 && $scope.newSession) {
-            $scope.newSession = false;
-            $scope.performSearch();
-            return;
-        }
-
         for (let i = 0; i < mapObjects.length; i++) {
             mapObjects[i].setMap(null);
         }
@@ -637,7 +638,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             changeColoursOfMarkers(i, room.results[i].users);
         }
         /* Initialise the map via the Google API */
-        document.getElementById('map').style.visibility = 'visible';
+        if (!(room.users.length === 1 && $scope.newSession)) {
+            console.log('Here?');
+            document.getElementById('map').style.visibility = 'visible';
+        }
     };
 
     /* InitMap helper functions: */
