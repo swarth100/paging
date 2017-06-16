@@ -1055,7 +1055,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /*
      * Since functions are objects, a property has been added to this
      * function (lastSelectedType) to perform the functions of a static
-     * variable (not chaning between function calls).
+     * variable (not changing between function calls).
      */
     function filterByType(typeName) {
         let type = typeName.toLowerCase().split(' ').join('_');
@@ -1075,7 +1075,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         for (let i = 0; i < markers.length; i++) {
             let fadeOutOpacity = 1;
 
-            if (filterByType.lastSelectedTypes.indexOf(markers[i].type) === (-1)) {
+            if (filterByType.lastSelectedTypes.length !== 0 &&
+                filterByType.lastSelectedTypes.indexOf(markers[i].type) === (-1)) {
                 fadeOutOpacity = 0.2;
             }
 
