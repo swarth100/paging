@@ -73,7 +73,7 @@
             </div>
         </div>
     </div>
-    <div ng-class="{'col-sm-8 col-md-9 no-padding': mapSize, 'col-sm-4 col-md-6 no-padding': !mapSize}">
+    <div ng-class="{'col-sm-8 col-md-9 no-padding': getMapSize() == 1, 'col-sm-4 col-md-6 no-padding': getMapSize() == 2}">
     <!--div class="col-sm-4 col-md-6 no-padding"-->
         <!-- The following is the controller for the post location -->
         <!-- The div nesting was done so that we could have the rotating gif
@@ -85,7 +85,7 @@
             TOGGLE MAP
         </button>
     </div>
-    <div id="rightNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideBarShow">
+    <div id="rightNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideRightBarShow">
         <!-- animate slideInRight -->
         <div class="sidenav-top custom-animate">
             <button id="tmpButton" class="btn left-nav-toggle-button simplebox" ng-click="toggleMapSize()">
