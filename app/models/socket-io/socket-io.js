@@ -1,4 +1,3 @@
-
 let mongooseRoom = require('../mongoose/rooms');
 let googlemaps = require('../googlemaps/googlemaps');
 const _ = require('underscore');
@@ -158,10 +157,18 @@ exports.start = (server) => {
                                 if (room.results[i].users[k] === changedLocations[j].username) {
                                     found = true;
                                     room.results[i].users.splice(k, 1);
+
+                                    /* Added to enable location pinning. */
+                                    if (room.results[i].users.length === 0) {
+                                        room.results[i].pinned = false;
+                                    }
                                 }
                             }
                             if (!found) {
                                 room.results[i].users.push(changedLocations[j].username);
+
+                                /* Added to enable location pinning. */
+                                room.results[i].pinned = true;
                             }
                         }
                     }

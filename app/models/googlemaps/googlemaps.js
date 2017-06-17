@@ -13,11 +13,25 @@ let googleMapsClient = require('@google/maps').createClient({
 
 let location;
 
-const numberOfResults = 5;
+let numberOfResults = 5;
 
 let users;
 
+/* Added to enable location pinning. */
+let pinnedList;
+
 function temporaryFunction(room, cb) {
+    /* Reset the numberOfResults and the pinnedList on each search. */
+    numberOfResults = 5;
+    pinnedList = [];
+
+    /* Added to enable location pinning. */
+    for (let i = 0; i < room.results.length; i++) {
+        if (room.results[i].pinned) {
+            pinnedList.push(room.results[i]);
+        }
+    }
+
     /*
      * 1. Find center point.
      * 2. Find bounds.
@@ -103,6 +117,17 @@ function pruneRenewed(results) {
      * 3. If true push.
      */
 
+    /* Added to enable location pinning.
+     * This is used to remove results from the search that are already
+     * pinned. */
+    for (let i = 0; i < results.length; i++) {
+        for (let j = 0; j < pinnedList.length; j++) {
+            if (results[i].id === pinnedList[j].id) {
+                results.splice(i, 1);
+            }
+        }
+    }
+
     let overallNumberOfCoincidingCircles = 0;
 
     for (let j = 0; j < users.length; j++) {
@@ -186,6 +211,9 @@ function searchAroundLocation(queryData, cb) {
                 finalPlaces = [].concat.apply([], responses);
             }
 
+            /* Added to enable location pinning. */
+            finalPlaces = finalPlaces.concat(pinnedList);
+
             getTravelTime(queryData.location, finalPlaces[0], (res) => {
             });
 
@@ -198,7 +226,14 @@ function searchAroundLocation(queryData, cb) {
                  * to the location.
                  */
                 // finalPlaces[i] = finalPlaces[i].toJSON();
-                finalPlaces[i].users = [];
+                if (finalPlaces[i].users === undefined) {
+                    finalPlaces[i].users = [];
+                }
+
+                /* Added to enable location pinning. */
+                if (finalPlaces[i].pinned === undefined) {
+                    finalPlaces[i].pinned = false;
+                }
             }
 
             cb(finalPlaces);
@@ -228,7 +263,7 @@ function queryOnce(query) {
             let prunedResults = pruneRenewed(convertedPlaces);
 
             /* Pick a max amount of places from the pruned results */
-            let randomPlaces = chooseRandomPlaces(prunedResults);
+            let randomPlaces = chooseRandomPlaces(prunedResults, type);
 
             return Promise.all(randomPlaces.map(function(randomPlace) {
                 return findInDatabase(randomPlace);
@@ -304,11 +339,22 @@ function findDistances(results) {
 /*
  * Chooses random places from the results returned by Google.
  */
-function chooseRandomPlaces(results) {
+function chooseRandomPlaces(results, type) {
     let randomPlaces = [];
 
-    let loopCeiling = Math.min(numberOfResults, results.length);
-    // let loopCeiling = results.length;
+    /* Added to enable location pinning.
+     * Decide how many results need to be chosen based on how many results
+     * of the same type have already been pinned. */
+    for (let i = 0; i < pinnedList.length; i++) {
+        if (pinnedList[i].type === type) {
+            numberOfResults--;
+        }
+    }
+
+     let loopCeiling = Math.min(numberOfResults, results.length);
+
+    /* Restore the original value of numberOfResults */
+    numberOfResults = 5;
 
     for (let i = 0; i < loopCeiling; i++) {
         let randomIndex = Math.floor(Math.random() * (results.length - 1));
