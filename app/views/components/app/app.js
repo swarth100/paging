@@ -8,7 +8,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Initialise fields used by the controller */
     console.log(location.href);
-    $scope.messages = [];
     $scope.types = Data.types;
     $scope.colors = Data.colors;
     $scope.appSearch = Data.query;
@@ -16,13 +15,22 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.newSession = true;
     $scope.issueSearch = false;
     let resultLocations = [];
+    /* Checks if chat window is open */
     $scope.isChatting = true;
+    /* the global list of all messages */
+    $scope.messages = [];
+    /* message the user is sending */
     $scope.message = '';
+    /* messages specific to the current room */
+    $scope.roomMessages = [];
+    /* number of unread messages */
     $scope.numMessages = 0;
-    /* message location is which location this message belongs */
-    $scope.messageLocation = '';
-    /* this one is for which location to filter the message for */
-    $scope.currentSelectedLocation = '';
+    /* the users room which one is inside now */
+    $scope.currentRoom = 'General';
+    /* list of message rooms we have currently */
+    $scope.messageRooms = ['General', 'Location'];
+    /* determine whether to be in room list view or be inside chat view */
+    $scope.insideRoom = false;
 
     $scope.accordionOptions = true;
     $scope.accordionUsers = false;
@@ -405,6 +413,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             /* differentiate between the first message recieved and initial message recieve on refresh */
             initial = !messages.slice(-1)[0].isFirst;
         }
+        /* number of messages received */
+        let diff = $scope.messages.length - messages.length;
+        messages.slice(diff).forEach((mes, i) => {
+            if (mes.location === $scope.currentRoom) {
+                $scope.roomMessages.push(mes);
+            }
+        });
         $scope.messages = messages;
         if (!initial && $scope.messages.slice(-1)[0].username !== Data.user.username) {
             /* only increment if you are not the sender and you don't have chat open */
@@ -508,7 +523,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         if ($scope.message !== '') {
             socket.emit('chatMessage', {
                 username: Data.user.username,
-                location: '',
+                location: $scope.currentRoom,
                 message: $scope.message,
             });
             $scope.message = '';
@@ -1028,21 +1043,23 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return username === Data.user.username;
     };
 
-    /* checks if location is relavant */
-    $scope.filterMessage = (location) => {
-        if ($scope.currentSelectedLocation === '') {
-            return true;
-        }
-        return $scope.currentSelectedLocation === location;
+    /* Functions to handle room entry */
+    $scope.enterRoom = (index) => {
+        let room = $scope.messageRooms[index];
+        $scope.currentRoom = room;
+        /* empty the room messages */
+        $scope.roomMessages = [];
+        $scope.messages.forEach((mes, i) => {
+            /* fill the messages with relavant ones */
+            if (mes.location === room) {
+                console.log('hi');
+                $scope.roomMessages.push(mes);
+            }
+        });
+        /* switch view to room */
+        $scope.insideRoom = true;
     };
-
-    /* return formatted location name */
-    $scope.locationName = (location) => {
-        if (location === '') {
-            return location;
-        }
-        return '@' + location;
-    };
+    /* -----------------------------------------------------------------------*/
     /* -----------------------------------------------------------------------*/
 
     /*
@@ -1106,7 +1123,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             console.log('accordion type mismatch');
         }
     };
-    /* -----------------------------------------------------------------------*/
 });
 
 /* */
