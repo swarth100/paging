@@ -42,21 +42,11 @@ function temporaryFunction(room, cb) {
         return elem.isSelected;
     });
 
-    // if (!tmpResults.length) {
-    //     tmpResults = parseTypes(function(elem) {
-    //         return true;
-    //     });
-    // }
-
     room.types = tmpResults;
 
     let allUserLocations = getAllLocations(room.users);
 
     let center = geolib.getCenter(allUserLocations);
-
-    // let limits = geolib.getBounds(allUserLocations);
-
-    // let radius = determineSearchRadius(limits);
 
     let radius = determineSearchRadiusRenewed(center, allUserLocations, users);
 
@@ -71,14 +61,8 @@ function getAllLocations(users) {
     for (let i = 0; i < users.length; i++) {
         let temporaryLocation = users[i];
         let convertedLocation = {
-            /* This has been converted for the new implementation of the
-             server search. */
             latitude: temporaryLocation.lat,
             longitude: temporaryLocation.lng,
-            // location: {latitude: temporaryLocation.lat, longitude: temporaryLocation.lng},
-            /* This has been added for the new implementation of the server
-             search. */
-            // radius: temporaryLocation.radius,
         };
 
         locations.push(convertedLocation);
@@ -111,25 +95,11 @@ function determineSearchRadiusRenewed(center, allUserLocations, users) {
     return radius;
 }
 
-function determineSearchRadius(limits) {
-    if (users.length === 1) {
-        return users[0].radius;
-    }
-
-    let min = Infinity;
-    users.forEach((user, index) => {
-        if (min > user.radius) {
-            min = user.radius;
-        }
-    });
-
-    return min;
-}
-
 function pruneRenewed(results) {
     /*
-     * 1. Iterate through results.
-     * 2. For each check whether it is part of all user's circles.
+     * 1. Find the maximum number of coinciding circles.
+     * 2. For each result check whether it falls in as many circles as the
+     * maximum number of coinciding circles.
      * 3. If true push.
      */
 
@@ -163,7 +133,6 @@ function pruneRenewed(results) {
     let prunedResults = [];
 
     for (let i = 0; i < results.length; i++) {
-        // let inAll = true;
         let inHowManyCircles = 0;
         for (let j = 0; j < users.length; j++) {
             let point = fromNormalToRidiculous(results[i].location);
@@ -172,13 +141,11 @@ function pruneRenewed(results) {
             // if (!geolib.isPointInCircle(point, center, radius)) {
 
             if (geolib.isPointInCircle(point, center, radius)) {
-                // inAll = false;
                 /* Count how many circles is the location part of. */
                 inHowManyCircles++;
             }
         }
 
-        // if (inAll) {
         /* If the location is in as many circles as the maximum number of
          coinciding circles, then return the location. */
         if (inHowManyCircles === overallNumberOfCoincidingCircles) {
@@ -299,7 +266,6 @@ function extractQueryData(queryData) {
 
     for (let i = 0; i < queryData.type.length; i++) {
         queries.push({
-            /* TODO: Previous version is better? */
             location: queryData.location,
             radius: queryData.radius,
             name: queryData.type[i].toLowerCase(),
@@ -333,18 +299,6 @@ function findDistances(results) {
     }
 
     return arrayLocation;
-}
-
-function pruneResults(results, response, radius) {
-    let prunedResults = [];
-
-    for (let i = 0; i < response.length; i++) {
-        if (response[i] <= radius) {
-            prunedResults.push(results[i]);
-        }
-    }
-
-    return prunedResults;
 }
 
 /*
@@ -471,7 +425,6 @@ module.exports = {
     searchAroundLocation,
     extractQueryData,
     findDistances,
-    pruneResults,
     chooseRandomPlaces,
     convertFormat,
     convertFormatOfPlaces,
