@@ -593,6 +593,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             mapObjects[i].setMap(null);
         }
 
+        /* Obtain new map bounds. */
+        let mapBounds = new google.maps.LatLngBounds(null);
 
         /* Hook for rendering of directions API */
         directionsDisplay.setDirections({routes: []});
@@ -612,8 +614,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             let marker = markUser(radLoc, users[i], map);
 
             /* Initialise the radius */
-            // let radius = initRadius(radLoc, users[i], map);
             let radius = initRadius(radLoc, users[i], map, marker);
+
+            /* Add the radius to the map bounds in order to control the map
+             zoom. */
+            mapBounds = mapBounds.union(radius.getBounds());
 
             mapObjects.push(marker);
             mapObjects.push(radius);
@@ -659,6 +664,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             console.log('Here?');
             document.getElementById('map').style.visibility = 'visible';
         }
+
+        /* Update the map bounds to incorporate all users in the viewport. */
+        map.fitBounds(mapBounds);
     };
 
     /* InitMap helper functions: */
