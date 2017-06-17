@@ -6,11 +6,11 @@
                 <button class="btn btn-room simplebox" ng-click="enterRoom($index);">
                     <div class="panel panel-default message-room">
                         <img class="type-icon-small"
-                             src="../../assets/images/types/cafe.png"
-                             ng-show="room !== 'General'">
+                             src="{{room.image}}"
+                             ng-show="room.name !== 'General'">
                         <i class="fa fa-comments" aria-hidden="true"
-                                                             ng-show="room === 'General'"></i>
-                        {{room}}
+                                                             ng-show="room.name === 'General'"></i>
+                        {{room.name}}
                     </div>
                 </button>
             </div>
