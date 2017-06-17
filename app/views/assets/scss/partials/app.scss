@@ -46,6 +46,13 @@
 }
 
 .type-icon-small {
+    max-width: 10%;
+    display: inline-block;
+    vertical-align: middle;
+    padding-right: 10px;
+}
+
+.type-icon-tiny {
     max-width: 13%;
     display: inline;
     padding: 0 5px;

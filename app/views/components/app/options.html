@@ -44,12 +44,8 @@
                         <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();" role="typeOptionsMenu">
                             <div ng-repeat="type in types">
                                 <!--<input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">-->
-                                <label class="std-font check-box-not-clicked" for="{{type.name}}" ng-if="!type.isSelected" ng-click="toggleSelected($index); submitFields()">
-                                    <img class="type-icon-small" src="{{type.image}}">
-                                    {{type.name}}
-                                </label>
-                                <label class="std-font check-box-clicked" for="{{type.name}}" ng-if="type.isSelected" ng-click="toggleSelected($index); submitFields()">
-                                    <img class="type-icon-small" src="{{type.image}}">
+                                <label class="std-font" ng-class="{'check-box-not-clicked': !types.isSelected, 'check-box-clicked': type.isSelected}" for="{{type.name}}" ng-click="toggleSelected($index); submitFields()">
+                                    <img class="type-icon-tiny" src="{{type.image}}">
                                     {{type.name}}
                                 </label>
                             </div>

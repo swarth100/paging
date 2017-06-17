@@ -50,7 +50,7 @@ $close-box-height: 40px;
         }
         .panel-body {
             background: white;
-            border-radius: 3px
+            border-radius: 3px;
         }
     }
     .message-box {
@@ -80,6 +80,34 @@ $close-box-height: 40px;
         }
     }
     .large-icon {
-        font-size: 150px
+        font-size: 150px;
+    }
+}
+
+#message-board-entry {
+    .panel {
+        border: none;
+    }
+    .type-icon-small {
+        padding-right: 0;
+        max-width: 30px;
+    }
+    .message-room {
+        @extend .square;
+        padding-left: 15px;
+        font-size: 30px;
+    }
+    .btn-room, .btn-room:focus {
+        display: block;
+        color: black;
+        padding: 0;
+        border: none;
+        width: 100%;
+        text-align: left;
+        background: $left-nav-header;
+    }
+    .btn-room:hover {
+        color: black;
+        background: $left-nav-header-selected;
     }
 }

@@ -8,7 +8,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Initialise fields used by the controller */
     console.log(location.href);
-    $scope.messages = [];
     $scope.types = Data.types;
     $scope.colors = Data.colors;
     $scope.appSearch = Data.query;
@@ -16,13 +15,22 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.newSession = true;
     $scope.issueSearch = false;
     let resultLocations = [];
+    /* Checks if chat window is open */
     $scope.isChatting = true;
+    /* the global list of all messages */
+    $scope.messages = [];
+    /* message the user is sending */
     $scope.message = '';
+    /* messages specific to the current room */
+    $scope.roomMessages = [];
+    /* number of unread messages */
     $scope.numMessages = 0;
-    /* message location is which location this message belongs */
-    $scope.messageLocation = '';
-    /* this one is for which location to filter the message for */
-    $scope.currentSelectedLocation = '';
+    /* the users room which one is inside now */
+    $scope.currentRoom = 'General';
+    /* list of message rooms we have currently */
+    $scope.messageRooms = ['General'];
+    /* determine whether to be in room list view or be inside chat view */
+    $scope.insideRoom = false;
 
     $scope.accordionOptions = true;
     $scope.accordionUsers = false;
@@ -387,6 +395,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      */
     let issueOneByOne = function(locationData) {
         resultLocations = locationData;
+        /* when the likes update, we need to update the room as well */
+        addRooms();
         $scope.$apply();
 
         for (let i = 0; i < locationData.length; i++) {
@@ -405,6 +415,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             /* differentiate between the first message recieved and initial message recieve on refresh */
             initial = !messages.slice(-1)[0].isFirst;
         }
+        /* number of messages received */
+        let diff = $scope.messages.length - messages.length;
+        messages.slice(diff).forEach((mes, i) => {
+            if (mes.location === $scope.currentRoom) {
+                $scope.roomMessages.push(mes);
+            }
+        });
         $scope.messages = messages;
         if (!initial && $scope.messages.slice(-1)[0].username !== Data.user.username) {
             /* only increment if you are not the sender and you don't have chat open */
@@ -508,7 +525,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         if ($scope.message !== '') {
             socket.emit('chatMessage', {
                 username: Data.user.username,
-                location: '',
+                location: $scope.currentRoom,
                 message: $scope.message,
             });
             $scope.message = '';
@@ -1028,21 +1045,53 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return username === Data.user.username;
     };
 
-    /* checks if location is relavant */
-    $scope.filterMessage = (location) => {
-        if ($scope.currentSelectedLocation === '') {
-            return true;
-        }
-        return $scope.currentSelectedLocation === location;
+    /* Functions to handle room entry */
+    $scope.enterRoom = (index) => {
+        let room = $scope.messageRooms[index].name;
+        $scope.currentRoom = room;
+        /* empty the room messages */
+        $scope.roomMessages = [];
+        $scope.messages.forEach((mes, i) => {
+            /* fill the messages with relavant ones */
+            if (mes.location === room) {
+                $scope.roomMessages.push(mes);
+            }
+        });
+        /* switch view to room */
+        $scope.insideRoom = true;
     };
 
-    /* return formatted location name */
-    $scope.locationName = (location) => {
-        if (location === '') {
-            return location;
+    const getImageURL = (type) => {
+        for (let i = 0; i < Data.types.length; i++) {
+            let t = Data.types[i];
+            t.name = t.name.split(' ').join('_').toLowerCase();
+            if(t.name === type) {
+                return t.image;
+            }
         }
-        return '@' + location;
+        console.log('could not find the image url');
+        return '';
     };
+
+    const addRooms = () => {
+        $scope.messageRooms = [
+            {
+                name: 'General',
+                image: '',
+            },
+        ];
+        resultLocations.forEach((l, i) => {
+            if (l.users.length > 0) {
+                let url = getImageURL(l.type);
+                console.log(url);
+                $scope.messageRooms.push({
+                    name: l.name,
+                    image: url,
+                });
+            }
+        });
+    };
+    /* -----------------------------------------------------------------------*/
     /* -----------------------------------------------------------------------*/
 
     /*
@@ -1092,6 +1141,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Functions to handle accordion */
     /* allow only one type at a type */
     $scope.setAccordionOptions = (type) => {
+        $scope.insideRoom = false;
         $scope.accordionOptions = false;
         $scope.accordionUsers = false;
         $scope.accordionChat = false;
@@ -1102,11 +1152,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         } else if(type === 'chat') {
             $scope.numMessages = 0;
             $scope.accordionChat = true;
+            addRooms();
         } else {
             console.log('accordion type mismatch');
         }
     };
-    /* -----------------------------------------------------------------------*/
 });
 
 /* */

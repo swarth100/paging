@@ -1,40 +1,56 @@
 <!DOCTYPE html>
-
 <div class="row">
-    <div scroll-glue id="message-board">
-        <div class="panel-group">
-            <div ng-show="messages.length > 0">
-                <div ng-repeat="mes in messages">
-                    <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}" ng-show='filterMessage(mes.location);'>
-                        <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
-                            <span class="username">{{mes.username}}</span>
-                            <span class="location">{{locationName(mes.location);}}</span>
-                        </div>
-                        <div class="panel-body">
-                            <span class="message">{{mes.message}}</span>
-                        </div>
+    <div ng-show="!insideRoom">
+        <div id="message-board-entry">
+            <div ng-repeat="room in messageRooms">
+                <button class="btn btn-room simplebox" ng-click="enterRoom($index);">
+                    <div class="panel panel-default message-room">
+                        <img class="type-icon-small"
+                             src="{{room.image}}"
+                             ng-show="room.name !== 'General'">
+                        <i class="fa fa-comments" aria-hidden="true"
+                                                             ng-show="room.name === 'General'"></i>
+                        {{room.name}}
                     </div>
-                </div>
-            </div>
-            <div ng-show="messages.length === 0">
-                <div class="centre-text">
-                    <i class="fa fa-comments large-icon" aria-hidden="true"></i>
-                    <h2>No Conversation Yet!</h2>
-                    Start a new conversation!
-                </div>
+                </button>
             </div>
         </div>
     </div>
-    <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
-        <div class="input-group">
-            <form ng-submit="sendMessage();">
-                <input type="text" class="form-control input-lg square no-border simplebox" ng-model="$parent.message">
-                <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
-                <input type="submit" class="hide-left" tabindex="-1" />
-            </form>
-            <span class="input-group-btn">
-                <button class="btn send-btn input-lg no-border square" type="submit" ng-click="sendMessage();"><strong>SEND</strong></button>
-            </span>
+    <div ng-show="insideRoom">
+        <div scroll-glue id="message-board">
+            <div class="panel-group">
+                <div ng-show="roomMessages.length > 0">
+                    <div ng-repeat="mes in roomMessages">
+                        <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}">
+                            <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
+                                <span class="username">{{mes.username}}</span>
+                            </div>
+                            <div class="panel-body">
+                                <span class="message">{{mes.message}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="roomMessages.length === 0">
+                    <div class="centre-text">
+                        <i class="fa fa-comments large-icon" aria-hidden="true"></i>
+                        <h2><strong>No Conversation Yet!</strong></h2>
+                        Start a new conversation!
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 left-bar-field">
+            <div class="input-group">
+                <form ng-submit="sendMessage();">
+                    <input type="text" class="form-control input-lg square no-border simplebox" ng-model="$parent.message">
+                    <!-- Submit button. Must be pushed OUT OF BOUNDS and prevented from being tabbed to -->
+                    <input type="submit" class="hide-left" tabindex="-1" />
+                </form>
+                <span class="input-group-btn">
+                    <button class="btn send-btn input-lg no-border square" type="submit" ng-click="sendMessage();"><strong>SEND</strong></button>
+                </span>
+            </div>
         </div>
     </div>
 </div>
