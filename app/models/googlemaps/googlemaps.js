@@ -5,8 +5,8 @@ const co = require('co');
 
 let googleMapsClient = require('@google/maps').createClient({
     // key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
-    key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
-    // key: 'AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU',
+    // key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
+    key: 'AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU',
     // key: 'AIzaSyD7c_7yNAAQc6mhE_JremnfrnUyxvFvfz4',
     Promise: Promise,
 });
@@ -54,9 +54,11 @@ function temporaryFunction(room, cb) {
 
     let center = geolib.getCenter(allUserLocations);
 
-    let limits = geolib.getBounds(allUserLocations);
+    // let limits = geolib.getBounds(allUserLocations);
 
-    let radius = determineSearchRadius(limits);
+    // let radius = determineSearchRadius(limits);
+
+    let radius = determineSearchRadiusRenewed(center, allUserLocations, users);
 
     let queryData = exportQueryData(center, radius, room.types);
 
@@ -69,14 +71,44 @@ function getAllLocations(users) {
     for (let i = 0; i < users.length; i++) {
         let temporaryLocation = users[i];
         let convertedLocation = {
+            /* This has been converted for the new implementation of the
+             server search. */
             latitude: temporaryLocation.lat,
             longitude: temporaryLocation.lng,
+            // location: {latitude: temporaryLocation.lat, longitude: temporaryLocation.lng},
+            /* This has been added for the new implementation of the server
+             search. */
+            // radius: temporaryLocation.radius,
         };
 
         locations.push(convertedLocation);
     }
 
     return locations;
+}
+
+function determineSearchRadiusRenewed(center, allUserLocations, users) {
+    /* Both center and allUserLocations should be in the format used by
+     geolib. */
+
+    /* Used to store the distances between the center and allUserLocations. */
+    let distances = [];
+
+    for (let i = 0; i < allUserLocations.length; i++) {
+        distances.push(geolib.getDistance(center, allUserLocations[i]));
+    }
+
+    let radius = 0;
+
+    for (let i = 0; i < distances.length; i++) {
+        let concideredRadius = distances[i] + users[i].radius;
+
+        if (concideredRadius > radius) {
+            radius = concideredRadius;
+        }
+    }
+
+    return radius;
 }
 
 function determineSearchRadius(limits) {
@@ -101,18 +133,30 @@ function pruneRenewed(results) {
      * 3. If true push.
      */
 
-    let numberOfCoincidingCirlces = 1;
+    let overallNumberOfCoincidingCircles = 0;
 
-    let comparisonUserPoint = fromNormalToRidiculous(users[0]);
-    let comparisonUserRadius = users[0].radius;
+    for (let j = 0; j < users.length; j++) {
+        let numberOfCoincidingCircles = 1;
 
-    /* Find the maximum number of coinciding circles. */
-    for (let i = 1; i < users.length; i++) {
-        let comparedUserPoint = fromNormalToRidiculous(users[i]);
-        let comparedUserRadius = users[i].radius;
+        let comparisonUserPoint = fromNormalToRidiculous(users[j]);
+        let comparisonUserRadius = users[j].radius;
 
-        if (geolib.getDistance(comparisonUserPoint, comparedUserPoint) < Math.abs(comparisonUserRadius + comparedUserRadius)) {
-            numberOfCoincidingCirlces++;
+        /* Find the maximum number of coinciding circles. */
+        for (let i = 0; i < users.length; i++) {
+            if (users[j] === users[i]) {
+                continue;
+            }
+
+            let comparedUserPoint = fromNormalToRidiculous(users[i]);
+            let comparedUserRadius = users[i].radius;
+
+            if (geolib.getDistance(comparisonUserPoint, comparedUserPoint) < Math.abs(comparisonUserRadius + comparedUserRadius)) {
+                numberOfCoincidingCircles++;
+            }
+        }
+
+        if (numberOfCoincidingCircles > overallNumberOfCoincidingCircles) {
+            overallNumberOfCoincidingCircles = numberOfCoincidingCircles;
         }
     }
 
@@ -126,6 +170,7 @@ function pruneRenewed(results) {
             let center = fromNormalToRidiculous(users[j]);
             let radius = users[j].radius;
             // if (!geolib.isPointInCircle(point, center, radius)) {
+
             if (geolib.isPointInCircle(point, center, radius)) {
                 // inAll = false;
                 /* Count how many circles is the location part of. */
@@ -136,10 +181,7 @@ function pruneRenewed(results) {
         // if (inAll) {
         /* If the location is in as many circles as the maximum number of
          coinciding circles, then return the location. */
-        if (inHowManyCircles === numberOfCoincidingCirlces) {
-            // console.log('inHowManyCircles ' + inHowManyCircles);
-            // console.log('numberOfCoincidingCirlces ' + numberOfCoincidingCirlces);
-
+        if (inHowManyCircles === overallNumberOfCoincidingCircles) {
             prunedResults.push(results[i]);
         }
     }
@@ -165,7 +207,7 @@ function searchAroundLocation(queryData, cb) {
     let promises = [];
 
     for (let i = 0; i < queries.length; i++) {
-        promises.push(queryOnce(queries[i], queryData.radius));
+        promises.push(queryOnce(queries[i]));
     }
 
     Promise.all(promises)
@@ -202,12 +244,12 @@ function searchAroundLocation(queryData, cb) {
 /*
  * This function is not tested.
  */
-function queryOnce(query, radius) {
+function queryOnce(query) {
     let results;
 
     let type;
 
-    return googleMapsClient.placesNearby(query).asPromise()
+    return googleMapsClient.placesRadar(query).asPromise()
         .then(function(value) {
             results = value.json.results;
 
@@ -362,7 +404,6 @@ function findInDatabase(randomPlace) {
 
     return promiseOfLocation
         .then(function(result) {
-            result['type'] = 'faceless-one';
             return result;
         })
     .catch(function(err) {
