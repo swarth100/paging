@@ -1,0 +1,21 @@
+#login {
+    @extend .no-border;
+    .panel-heading {
+        @extend .square;
+        background: $left-nav-header;
+        color: white;
+    }
+    .panel-title {
+        font-size: 30px;
+    }
+    .panel-body {
+        background: $left-nav-text-bg;
+    }
+    .btn-info {
+        @extend .send-btn;
+        @extend .no-border;
+    }
+    .btn-info:hover {
+        @extend .send-btn:hover;
+    }
+}
