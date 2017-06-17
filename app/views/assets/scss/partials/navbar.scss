@@ -21,28 +21,45 @@
     .navbar-nav > li > a:focus  {
         color: $nav-text-highlight;
     }
+
+    .navbar-nav > .dropdown > a,
+    .navbar-nav > .dropdown > a:focus {
+        color: white;
+        background: #263238;
+    }
+
     .navbar-brand {
         height: 80px;
         color: $nav-text;
         font-size: 30px;
         padding-top: 25%;
     }
+
     .navbar-brand:focus, .navbar-brand:hover {
         color: $nav-text-highlight;
     }
+
 }
 
 #user-dd {
+    @extend .square;
     position: absolute;
     z-index: 1000 !important;
     min-width: 250px;
     padding: 14px 14px 0;
     overflow: hidden;
     background: $user-dd-bg;
+    border: none;
     .bottom {
+        border: none;
+        border-top: solid 3px;
+        border-color: $user-dd-border;
         background-color:$user-dd-bottom-bg;
         clear: both;
         padding: 14px;
+    }
+    .bottom > a {
+        color: black;
     }
 }
 /* Animation ************************************************/
