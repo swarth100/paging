@@ -37,8 +37,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.accordionChat = false;
 
     $scope.mapSize = true;
-    $scope.sideBarShow = false;
-    $scope.sideBarOpening = false;
+    $scope.sideRightBarShow = false;
+    $scope.sideRightBarOpening = false;
+    $scope.sideRightBarAnimating = false;
+    $scope.sideLeftBarShow = false;
+    $scope.sideLeftBarOpening = false;
+    $scope.sideLeftBarAnimating = false;
 
     Data.user.username = Data.updateUsername();
 
@@ -1181,27 +1185,43 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Side nav-bar helpers */
 
-    /* Handles toggleing of rightNav */
-    $scope.toggleMapSize = function() {
-        addRooms();
+    /* */
+    $scope.getMapSize = function() {
+        let count = 0;
 
-        /* Set the opening status accordingly and ng-show the navbar */
-        $scope.sideBarOpening = !$scope.sideBarOpening;
-        $scope.sideBarShow = true;
-
-        /* Resize the map accordingly */
-        if (!$scope.mapSize) {
-            $scope.mapSize = true;
+        if ($scope.sideRightBarShow && !$scope.sideRightBarAnimating) {
+            count ++;
         }
 
+        if ($scope.sideLeftBarShow && !$scope.sideLeftBarAnimating) {
+            count ++;
+        }
+
+        return count;
+    };
+
+    /* Handles toggleing of rightNav */
+    $scope.toggleRightNav = function() {
+        console.log('right click');
+
+        /* When rightNavbar is opened, refresh roomms */
+        addRooms();
+
+        /* */
+        $scope.sideRightBarAnimating = true;
+
+        /* Set the opening status accordingly and ng-show the navbar */
+        $scope.sideRightBarOpening = !$scope.sideRightBarOpening;
+        $scope.sideRightBarShow = true;
+
         /* Toggle the navBar into absolute mode for animating */
-        $('#rightNav').toggleClass('side-nav-absolute');
+        $('#rightNav').toggleClass('right-nav-absolute');
 
         /* Accordingly set the animation to slide-in/out for the navbar */
-        if ($scope.sideBarOpening) {
-            $('.custom-animate').addClass('slide-in').removeClass('slide-out');
+        if ($scope.sideRightBarOpening) {
+            $('.nav-right-animate').addClass('slide-in-right').removeClass('slide-out-right');
         } else {
-            $('.custom-animate').addClass('slide-out').removeClass('slide-in');
+            $('.nav-right-animate').addClass('slide-out-right').removeClass('slide-in-right');
         }
     };
 
@@ -1216,19 +1236,66 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Listener bound to animationEnds */
     rightNav.addEventListener('animationend', function() {
         /* Trigger the ng-show of the navBar. If it was closing, hide it */
-        $scope.sideBarShow = $scope.sideBarOpening;
+        $scope.sideRightBarShow = $scope.sideRightBarOpening;
 
-        /* Accordingly style the map */
-        if ($scope.mapSize && $scope.sideBarShow) {
-            $scope.mapSize = false;
-        }
+        /* */
+        $scope.sideRightBarAnimating = false;
 
         /* Remove absolute properties from the navBar. Needed for animation */
-        $('#rightNav').toggleClass('side-nav-absolute');
+        $('#rightNav').toggleClass('right-nav-absolute');
 
         /* Apply the changes to the scope. Triggers ng-shows */
         $scope.$apply();
     });
+
+    /* -----------------------------------------------------------------------*/
+
+    /* Handles toggleing of leftNav */
+    $scope.toggleLeftNav = function() {
+        console.log('left click');
+
+        /* */
+        $scope.sideLeftBarAnimating = true;
+
+        /* Set the opening status accordingly and ng-show the navbar */
+        $scope.sideLeftBarOpening = !$scope.sideLeftBarOpening;
+        $scope.sideLeftBarShow = true;
+
+        /* Toggle the navBar into absolute mode for animating */
+        $('#leftNav').toggleClass('left-nav-absolute');
+
+        /* Accordingly set the animation to slide-in/out for the navbar */
+        if ($scope.sideLeftBarOpening) {
+            $('.nav-left-animate').addClass('slide-in-left').removeClass('slide-out-left');
+        } else {
+            $('.nav-left-animate').addClass('slide-out-left').removeClass('slide-in-left');
+        }
+    };
+
+    /* Select the leftBavBar by ID to add listeners */
+    let leftNav = document.querySelector('#leftNav');
+
+    /* Listener bound to animationStarts */
+    leftNav.addEventListener('animationstart', function(e) {
+        /* Triggered by the start of an animation. Might be useful in the future */
+    }, false);
+
+    /* Listener bound to animationEnds */
+    leftNav.addEventListener('animationend', function() {
+        /* Trigger the ng-show of the navBar. If it was closing, hide it */
+        $scope.sideLeftBarShow = $scope.sideLeftBarOpening;
+
+        /* */
+        $scope.sideLeftBarAnimating = false;
+
+        /* Remove absolute properties from the navBar. Needed for animation */
+        $('#leftNav').toggleClass('left-nav-absolute');
+
+        /* Apply the changes to the scope. Triggers ng-shows */
+        $scope.$apply();
+    });
+
+    $scope.toggleLeftNav();
 
     /* -----------------------------------------------------------------------*/
 });

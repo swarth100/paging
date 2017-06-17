@@ -38,6 +38,7 @@ describe('GoogleMaps', function() {
     //     });
     // });
 
+    /*
     describe('chooseRandomPlaces', function() {
         it('should choose places at random', function() {
             let dummyPlaces = ['e1', 'e2', 'e3', 'e4', 'e5'];
@@ -47,7 +48,7 @@ describe('GoogleMaps', function() {
             dummyResult.should.have.length(dummyPlaces.length);
             dummyResult.should.containDeep(dummyPlaces);
         });
-    });
+    }); */
 
     describe('convertFormat', function() {
         it('should convert properly', function() {

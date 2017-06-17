@@ -41,8 +41,12 @@
 <div class="container-fluid no-padding" xmlns="http://www.w3.org/1999/html">
     <!-- ROW div for the search bar -->
     <!-- Left search bar holder -->
-    <div class = "col-sm-4 col-md-3 no-padding">
-        <div class="sidenav-top animate slideInLeft">
+    <div id="leftNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideLeftBarShow" style="z-index: 1;">
+        <!-- animate slideInRLeft -->
+        <div class="sidenav-top nav-left-animate">
+            <button class="btn left-nav-toggle-button simplebox" ng-click="toggleLeftNav()">
+                TOGGLE LEFT
+            </button>
             <div class="panel-group no-margin" id="accordion">
                 <div class="panel panel-default no-border">
                     <div id="left-nav-options">
@@ -73,7 +77,7 @@
             </div>
         </div>
     </div>
-    <div ng-class="{'col-sm-8 col-md-9 no-padding': mapSize, 'col-sm-4 col-md-6 no-padding': !mapSize}">
+    <div ng-class="{'col-sm-8 col-md-9 no-padding': getMapSize() == 1, 'col-sm-4 col-md-6 no-padding': getMapSize() == 2}">
     <!--div class="col-sm-4 col-md-6 no-padding"-->
         <!-- The following is the controller for the post location -->
         <!-- The div nesting was done so that we could have the rotating gif
@@ -81,15 +85,18 @@
         <div class="map-dimensions">
             <div id="map" class="map-dimensions" ng-show="!issueSearch"></div>
         </div>
-        <button id="tmpButton" class="btn left-nav-toggle-button-map" ng-click="toggleMapSize()">
-            TOGGLE MAP
+        <button class="btn left-nav-toggle-button-map simplebox" ng-click="toggleLeftNav()">
+            TOGGLE LEFT
+        </button>
+        <button class="btn right-nav-toggle-button-map simplebox" ng-click="toggleRightNav()">
+            TOGGLE RIGHT
         </button>
     </div>
-    <div id="rightNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideBarShow">
+    <div id="rightNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideRightBarShow">
         <!-- animate slideInRight -->
-        <div class="sidenav-top custom-animate">
-            <button id="tmpButton" class="btn left-nav-toggle-button" ng-click="toggleMapSize()">
-                TOGGLE MAP
+        <div class="sidenav-top nav-right-animate">
+            <button class="btn right-nav-toggle-button simplebox" ng-click="toggleRightNav()">
+                TOGGLE RIGHT
             </button>
             <div class="panel-group no-margin" id="accordion">
                 <div class="panel panel-default no-border">
