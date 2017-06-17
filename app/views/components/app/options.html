@@ -57,9 +57,10 @@
                 <table class="table table-hover table-bordered underline no-margin">
                     <tbody>
                         <tr ng-repeat="type in types" class="no-border">
-                            <td ng-if="type.isSelected"
+                            <td ng-show="type.isSelected"
                                 class="flex-row no-border"
-                                ng-click="filterByType(type.name);">
+                                ng-click="filterByType(type.name); toggleHighlight($index);"
+                                ng-class="{'highlight-option': type.isHighlighted}">
                                 <img class="type-icon-small"
                                      src="{{type.image}}">
                                 {{type.name}}
