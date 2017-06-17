@@ -69,6 +69,12 @@ let roomsSchema = new Schema({
         default: [],
     },
 
+    /* Destroy the room 24 hours after its creation. */
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        expires: 60 * 60 * 24,
+    },
 });
 
 /*
