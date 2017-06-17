@@ -278,7 +278,7 @@
     transition: 1s linear;
     opacity: 1; */
 
-    transform: translateX(100%);
+    transform: translateX(-100%);
 }
 
 .slide-in-left {
@@ -295,17 +295,17 @@
 .left-nav-absolute {
     position: fixed;
     bottom: 0;
-    right: 0;
+    left: 0;
 }
 
 @keyframes slide-in-left {
-    0% { transform: translateX(100%); }
+    0% { transform: translateX(-100%); }
     100% { transform: translateX(0%); }
 }
 
 @keyframes slide-out-left {
     0% { transform: translateX(0%); }
-    100% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
 }
 
 .left-nav-toggle-button {
