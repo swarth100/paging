@@ -26,7 +26,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* number of unread messages */
     $scope.numMessages = 0;
     /* the users room which one is inside now */
-    $scope.currentRoom = 'General';
+    $scope.currentRoom = 'Chat';
     /* list of message rooms we have currently */
     $scope.messageRooms = ['General'];
     /* determine whether to be in room list view or be inside chat view */
@@ -669,6 +669,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             document.getElementById('map').style.visibility = 'visible';
         }
 
+        /* update chat-room with the new results */
+        addRooms();
+
         /* Update the map bounds to incorporate all users in the viewport. */
         map.fitBounds(mapBounds);
     };
@@ -1170,7 +1173,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         } else if(type === 'chat') {
             $scope.numMessages = 0;
             $scope.accordionChat = true;
-            addRooms();
         } else {
             console.log('accordion type mismatch');
         }
@@ -1181,7 +1183,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Handles toggleing of rightNav */
     $scope.toggleMapSize = function() {
-        console.log('click');
+        addRooms();
 
         /* Set the opening status accordingly and ng-show the navbar */
         $scope.sideBarOpening = !$scope.sideBarOpening;
