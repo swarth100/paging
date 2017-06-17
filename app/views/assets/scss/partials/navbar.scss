@@ -1,9 +1,19 @@
 /* Navbar ***************************************************/
+.nav-bar-padding {
+    height: 80px;
+}
 .navbar-default {
+    position: fixed;
+    z-index: 10000;
+    width: 100%;
     background: #263238; //$nav-bg;
     border-width: 0;
     height: 80px;
+    .navbar-header {
+        height: 80px;
+    }
     .navbar-nav > li > a {
+        height: 80px;
         color: $nav-text;
         padding-top: 30px;
     }
@@ -12,6 +22,7 @@
         color: $nav-text-highlight;
     }
     .navbar-brand {
+        height: 80px;
         color: $nav-text;
         font-size: 30px;
         padding-top: 25%;
@@ -22,6 +33,8 @@
 }
 
 #user-dd {
+    position: absolute;
+    z-index: 1000 !important;
     min-width: 250px;
     padding: 14px 14px 0;
     overflow: hidden;
