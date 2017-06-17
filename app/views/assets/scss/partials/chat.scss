@@ -50,7 +50,7 @@ $close-box-height: 40px;
         }
         .panel-body {
             background: white;
-            border-radius: 3px
+            border-radius: 3px;
         }
     }
     .message-box {
@@ -80,7 +80,7 @@ $close-box-height: 40px;
         }
     }
     .large-icon {
-        font-size: 150px
+        font-size: 150px;
     }
 }
 
@@ -90,6 +90,7 @@ $close-box-height: 40px;
     }
     .type-icon-small {
         padding-right: 0;
+        max-width: 30px;
     }
     .message-room {
         @extend .square;
