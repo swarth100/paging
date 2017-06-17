@@ -236,15 +236,27 @@
     /*background-color: blue;
     opacity: 0.3; */
 
-    animation: slide-in 0.5s forwards;
-    -webkit-animation: slide-in 0.5s forwards;
+    animation: slide-in 2s forwards;
+    -webkit-animation: slide-in 2s forwards;
 
     /* width: 300px; */
 }
 
 .slide-out {
-    animation: slide-out 0.5s forwards;
-    -webkit-animation: slide-out 0.5s forwards;
+    animation: slide-out 2s forwards;
+    -webkit-animation: slide-out 2s forwards;
+}
+
+.side-nav-absolute {
+    /*
+    position: fixed;
+    left: 100%;
+    top: 10%;
+    margin-left: -300px; */
+
+    position: fixed;
+    bottom: 0;
+    right: 0;
 }
 
 /*
