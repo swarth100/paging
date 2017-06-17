@@ -28,7 +28,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* the users room which one is inside now */
     $scope.currentRoom = 'General';
     /* list of message rooms we have currently */
-    $scope.messageRooms = ['General', 'Location'];
+    $scope.messageRooms = ['General'];
     /* determine whether to be in room list view or be inside chat view */
     $scope.insideRoom = false;
 
@@ -395,6 +395,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      */
     let issueOneByOne = function(locationData) {
         resultLocations = locationData;
+        /* when the likes update, we need to update the room as well */
+        addRooms();
         $scope.$apply();
 
         for (let i = 0; i < locationData.length; i++) {
@@ -1045,19 +1047,49 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Functions to handle room entry */
     $scope.enterRoom = (index) => {
-        let room = $scope.messageRooms[index];
+        let room = $scope.messageRooms[index].name;
         $scope.currentRoom = room;
         /* empty the room messages */
         $scope.roomMessages = [];
         $scope.messages.forEach((mes, i) => {
             /* fill the messages with relavant ones */
             if (mes.location === room) {
-                console.log('hi');
                 $scope.roomMessages.push(mes);
             }
         });
         /* switch view to room */
         $scope.insideRoom = true;
+    };
+
+    const getImageURL = (type) => {
+        for (let i = 0; i < Data.types.length; i++) {
+            let t = Data.types[i];
+            t.name = t.name.split(' ').join('_').toLowerCase();
+            if(t.name === type) {
+                return t.image;
+            }
+        }
+        console.log('could not find the image url');
+        return '';
+    };
+
+    const addRooms = () => {
+        $scope.messageRooms = [
+            {
+                name: 'General',
+                image: '',
+            },
+        ];
+        resultLocations.forEach((l, i) => {
+            if (l.users.length > 0) {
+                let url = getImageURL(l.type);
+                console.log(url);
+                $scope.messageRooms.push({
+                    name: l.name,
+                    image: url,
+                });
+            }
+        });
     };
     /* -----------------------------------------------------------------------*/
     /* -----------------------------------------------------------------------*/
@@ -1109,6 +1141,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Functions to handle accordion */
     /* allow only one type at a type */
     $scope.setAccordionOptions = (type) => {
+        $scope.insideRoom = false;
         $scope.accordionOptions = false;
         $scope.accordionUsers = false;
         $scope.accordionChat = false;
@@ -1119,6 +1152,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         } else if(type === 'chat') {
             $scope.numMessages = 0;
             $scope.accordionChat = true;
+            addRooms();
         } else {
             console.log('accordion type mismatch');
         }
