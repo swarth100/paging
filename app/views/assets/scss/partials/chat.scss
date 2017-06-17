@@ -93,21 +93,22 @@ $close-box-height: 40px;
         max-width: 30px;
     }
     .message-room {
+    }
+    .btn-room, .btn-room:focus {
         @extend .square;
         padding-left: 15px;
         font-size: 30px;
-    }
-    .btn-room, .btn-room:focus {
+
+        background: $left-nav-text-bg;
         display: block;
-        color: black;
-        padding: 0;
         border: none;
         width: 100%;
         text-align: left;
-        background: $left-nav-header;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
+
     .btn-room:hover {
-        color: black;
-        background: $left-nav-header-selected;
+        background: #fafafa
     }
 }
