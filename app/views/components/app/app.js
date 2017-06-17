@@ -1184,16 +1184,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.sideBarOpening = !$scope.sideBarOpening;
         $scope.sideBarShow = true;
 
-        console.log($scope.sideBarOpening);
+        $('#rightNav').toggleClass('side-nav-absolute');
 
         if ($scope.sideBarOpening) {
-            console.log('Slide in');
             $('.custom-animate').addClass('slide-in').removeClass('slide-out');
         } else {
             $('.custom-animate').addClass('slide-out').removeClass('slide-in');
         }
-
-        $scope.mapSize = !$scope.mapSize;
     };
 
     let monkey = document.querySelector('#rightNav');
@@ -1207,8 +1204,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         $scope.sideBarShow = $scope.sideBarOpening;
 
-        console.log($scope.sideBarOpening);
-        console.log($scope.sideBarShow);
+        $scope.mapSize = !$scope.mapSize;
+
+        $('#rightNav').toggleClass('side-nav-absolute');
 
         $scope.$apply();
     };
