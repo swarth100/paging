@@ -1184,6 +1184,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.sideBarOpening = !$scope.sideBarOpening;
         $scope.sideBarShow = true;
 
+        if (!$scope.mapSize) {
+            $scope.mapSize = true;
+        }
+
         $('#rightNav').toggleClass('side-nav-absolute');
 
         if ($scope.sideBarOpening) {
@@ -1204,7 +1208,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         $scope.sideBarShow = $scope.sideBarOpening;
 
-        $scope.mapSize = !$scope.mapSize;
+        if ($scope.mapSize && $scope.sideBarShow) {
+            $scope.mapSize = false;
+        }
 
         $('#rightNav').toggleClass('side-nav-absolute');
 
