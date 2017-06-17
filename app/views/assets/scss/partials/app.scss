@@ -221,7 +221,7 @@
  * https://stackoverflow.com/questions/16989585/css-3-slide-in-from-left-transition
  */
 
-.custom-animate {
+.nav-right-animate {
     /* -webkit-transition: 1s linear;
     transition: 1s linear;
     opacity: 1; */
@@ -229,41 +229,41 @@
     transform: translateX(100%);
 }
 
-.slide-in{
+.slide-in-right{
     /*background-color: blue;
     opacity: 0.3; */
 
-    animation: slide-in 1s forwards;
+    animation: slide-in-right 1s forwards;
 }
 
-.slide-out {
-    animation: slide-out 1s forwards;
+.slide-out-right {
+    animation: slide-out-right 1s forwards;
 }
 
-.side-nav-absolute {
+.right-nav-absolute {
     position: fixed;
     bottom: 0;
     right: 0;
 }
 
-@keyframes slide-in {
+@keyframes slide-in-right {
     0% { transform: translateX(100%); }
     100% { transform: translateX(0%); }
 }
 
-@keyframes slide-out {
+@keyframes slide-out-right {
     0% { transform: translateX(0%); }
     100% { transform: translateX(100%); }
 }
 
-.left-nav-toggle-button {
+.right-nav-toggle-button {
     margin-left: -75px;
     position: fixed;
     transform: rotate(270deg);
     top: calc(40vh);
 }
 
-.left-nav-toggle-button-map {
+.right-nav-toggle-button-map {
     margin-left: -75px;
     position: fixed;
     left: 100%;
