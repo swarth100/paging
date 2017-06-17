@@ -69,22 +69,6 @@
                             </div>
                         </div>
                     </div>
-                    <div id="left-nav-chat">
-                        <button class="left-nav-button simplebox">
-                            <div class="panel-heading">
-                                <h2 class="panel-title" ng-click="setAccordionOptions('chat');">
-                                    Chat
-                                    <span class="badge pull-right" ng-show="numMessages > 0 && !insideRoom;">{{numMessages}}</span>
-                                    <i class="fa fa-chevron-left pull-right " ng-show="insideRoom;"></i>
-                                </h2>
-                            </div>
-                        </button>
-                        <div class="chat" ng-show="accordionChat">
-                            <div class="panel-body">
-                                <div ng-include="'/components/app/chat.html'"></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -109,39 +93,17 @@
             </button>
             <div class="panel-group no-margin" id="accordion">
                 <div class="panel panel-default no-border">
-                    <div id="left-nav-options">
-                        <button class="left-nav-button simplebox">
-                            <div class="panel-heading">
-                                <h2 class="panel-title" ng-click="setAccordionOptions('options');">Options</h2>
-                            </div>
-                        </button>
-                        <div ng-show="accordionOptions" class="option">
-                            <div class="panel-body">
-                                <div ng-include="'/components/app/options.html'"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="left-nav-users">
-                        <button class="left-nav-button simplebox">
-                            <div class="panel-heading">
-                                <h2 class="panel-title" ng-click="setAccordionOptions('users');">Users</h2>
-                            </div>
-                        </button>
-                        <div class="user" ng-show="accordionUsers">
-                            <div class="panel-body">
-                                <div ng-include="'/components/app/users.html'"></div>
-                            </div>
-                        </div>
-                    </div>
                     <div id="left-nav-chat">
                         <button class="left-nav-button simplebox">
                             <div class="panel-heading">
-                                <h2 class="panel-title" ng-click="setAccordionOptions('chat');">
-                                    Chat <span class="badge pull-right" ng-show="numMessages > 0;">{{numMessages}}</span>
+                                <h2 class="panel-title" ng-click="insideRoom = false; currentRoom = 'Chat'">
+                                    {{currentRoom}}
+                                    <span class="badge pull-right" ng-show="numMessages > 0 && !insideRoom;">{{numMessages}}</span>
+                                    <i class="fa fa-chevron-left pull-right " ng-show="insideRoom;"></i>
                                 </h2>
                             </div>
                         </button>
-                        <div class="chat" ng-show="accordionChat">
+                        <div class="chat">
                             <div class="panel-body">
                                 <div ng-include="'/components/app/chat.html'"></div>
                             </div>

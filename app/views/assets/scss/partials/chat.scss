@@ -25,12 +25,12 @@ $close-box-height: 40px;
 
 
 .message-title {
-    font-size: 30px;
+    font-size: 18px;
     padding-left: 20px;
 }
 
 #message-board {
-    height: calc(100vh - 256px);
+    height: calc(100vh - 170px);
     overflow: auto;
     padding-top: 10px;
     padding-right: 20px;
@@ -90,14 +90,14 @@ $close-box-height: 40px;
     }
     .type-icon-small {
         padding-right: 0;
-        max-width: 30px;
+        max-width: 18px;
     }
     .message-room {
     }
     .btn-room, .btn-room:focus {
         @extend .square;
         padding-left: 15px;
-        font-size: 30px;
+        font-size: 18px;
 
         background: $left-nav-text-bg;
         display: block;
