@@ -36,6 +36,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.accordionUsers = false;
     $scope.accordionChat = false;
 
+    $scope.mapSize = true;
+
     Data.user.username = Data.updateUsername();
 
     let geocoder = new google.maps.Geocoder();
@@ -1171,6 +1173,35 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             console.log('accordion type mismatch');
         }
     };
+
+    /* -----------------------------------------------------------------------*/
+
+    $scope.toggleMapSize = function() {
+        $scope.mapSize = !$scope.mapSize;
+    };
+
+    let monkey = document.querySelector('#rightNav');
+
+    monkey.addEventListener('animationstart', function(e) {
+        console.log('log at start of monkey animation');
+    }, false);
+
+    const myScript = function() {
+        console.log('log at end of monkey animation');
+    };
+
+    monkey.addEventListener('webkitAnimationEnd', myScript);
+    monkey.addEventListener('animationend', myScript);
+
+    monkey.addEventListener('animationiteration', function(e) {
+        console.log('log at beginning of each subsequent iteration');
+    }, false);
+
+    $('#tmpButton').click(function() {
+        $('.custom-animate').toggleClass('slide-in');
+    });
+
+    /* -----------------------------------------------------------------------*/
 });
 
 /* */
