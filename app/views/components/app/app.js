@@ -699,6 +699,54 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return $scope.map;
     };
 
+    /* Helper function to hook the map when expanding it to the left */
+    let mapHookCenter = function(sign) {
+        if (map) {
+            /* Kind gift of:
+             * https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window
+             *  */
+
+            let ratio = 0;
+
+            /* Determine the bootstrap environment and accordingly switch for the radius */
+            switch(findBootstrapEnvironment()) {
+                case 'lg':
+                case 'md':
+                    ratio = 4;
+                    break;
+                case 'sm':
+                    ratio = 3;
+                    break;
+                case 'xs':
+                    ratio = 1;
+                    break;
+            }
+
+            if (!sign) {
+                ratio *= -1;
+            }
+
+            let latlng = map.getCenter();
+
+            let offsetx = $(window).width() / ratio;
+            let offsety = 0;
+
+            let scale = Math.pow(2, map.getZoom());
+
+            let worldCoordinateCenter = map.getProjection().fromLatLngToPoint(latlng);
+            let pixelOffset = new google.maps.Point((offsetx / scale) || 0, (offsety / scale) || 0);
+
+            let worldCoordinateNewCenter = new google.maps.Point(
+                worldCoordinateCenter.x - pixelOffset.x,
+                worldCoordinateCenter.y + pixelOffset.y
+            );
+
+            let newCenter = map.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
+
+            map.setCenter(newCenter);
+        }
+    };
+
     /* TODO: Add comment */
     markUser = function(location, user, map) {
         let icon = {
@@ -1113,7 +1161,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
     /* -----------------------------------------------------------------------*/
-    /* -----------------------------------------------------------------------*/
 
     /*
      * This function is called when a user clicks on a type which has
@@ -1182,6 +1229,29 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             console.log('accordion type mismatch');
         }
     };
+
+    /* -----------------------------------------------------------------------*/
+    /* Credits:
+     * https://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
+     * */
+
+    /* */
+    function findBootstrapEnvironment() {
+        let envs = ['xs', 'sm', 'md', 'lg'];
+
+        let $el = $('<div>');
+        $el.appendTo($('body'));
+
+        for (let i = envs.length - 1; i >= 0; i--) {
+            let env = envs[i];
+
+            $el.addClass('hidden-'+env);
+            if ($el.is(':hidden')) {
+                $el.remove();
+                return env;
+            }
+        }
+    }
 
     /* -----------------------------------------------------------------------*/
     /* Side nav-bar helpers */
@@ -1255,40 +1325,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.toggleLeftNav = function() {
         console.log('left click');
 
-        /** **********************************************/
-
-        /* Kind gift of:
-         * https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window
-         *  */
-
-        if (map) {
-            // latlng is the apparent centre-point
-            // offsetx is the distance you want that point to move to the right, in pixels
-            // offsety is the distance you want that point to move upwards, in pixels
-            // offset can be negative
-            // offsetx and offsety are both optional
-
-            let latlng = map.getCenter();
-
-            let offsetx = $(window).width()/4;
-            let offsety = 0;
-
-            let scale = Math.pow(2, map.getZoom());
-
-            let worldCoordinateCenter = map.getProjection().fromLatLngToPoint(latlng);
-            let pixelOffset = new google.maps.Point((offsetx / scale) || 0, (offsety / scale) || 0);
-
-            let worldCoordinateNewCenter = new google.maps.Point(
-                worldCoordinateCenter.x - pixelOffset.x,
-                worldCoordinateCenter.y + pixelOffset.y
-            );
-
-            let newCenter = map.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
-
-            map.setCenter(newCenter);
+        /* */
+        if ($scope.sideLeftBarShow) {
+            mapHookCenter(true);
         }
-
-        /** **********************************************/
 
         /* */
         $scope.sideLeftBarAnimating = true;
@@ -1320,6 +1360,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     leftNav.addEventListener('animationend', function() {
         /* Trigger the ng-show of the navBar. If it was closing, hide it */
         $scope.sideLeftBarShow = $scope.sideLeftBarOpening;
+
+        /* */
+        if ($scope.sideLeftBarShow) {
+            mapHookCenter(false);
+        }
 
         /* */
         $scope.sideLeftBarAnimating = false;
