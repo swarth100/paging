@@ -39,8 +39,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.mapSize = true;
     $scope.sideRightBarShow = false;
     $scope.sideRightBarOpening = false;
-    $scope.sideLeftBarShow = true;
     $scope.sideRightBarAnimating = false;
+    $scope.sideLeftBarShow = true;
+    $scope.sideLeftBarOpening = false;
     $scope.sideLeftBarAnimating = false;
 
     Data.user.username = Data.updateUsername();
@@ -1211,13 +1212,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.sideRightBarShow = true;
 
         /* Toggle the navBar into absolute mode for animating */
-        $('#rightNav').toggleClass('side-nav-absolute');
+        $('#rightNav').toggleClass('right-nav-absolute');
 
         /* Accordingly set the animation to slide-in/out for the navbar */
         if ($scope.sideRightBarOpening) {
-            $('.custom-animate').addClass('slide-in').removeClass('slide-out');
+            $('.nav-right-animate').addClass('slide-in-right').removeClass('slide-out-right');
         } else {
-            $('.custom-animate').addClass('slide-out').removeClass('slide-in');
+            $('.nav-right-animate').addClass('slide-out-right').removeClass('slide-in-right');
         }
     };
 
@@ -1238,7 +1239,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.sideRightBarAnimating = false;
 
         /* Remove absolute properties from the navBar. Needed for animation */
-        $('#rightNav').toggleClass('side-nav-absolute');
+        $('#rightNav').toggleClass('right-nav-absolute');
 
         /* Apply the changes to the scope. Triggers ng-shows */
         $scope.$apply();
