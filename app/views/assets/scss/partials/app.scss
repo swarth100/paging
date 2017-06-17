@@ -257,14 +257,15 @@
     margin-left: -75px;
     position: fixed;
     transform: rotate(270deg);
-    top: 50%;
+    top: calc(40vh);
 }
 
 .left-nav-toggle-button-map {
     margin-left: -75px;
     position: fixed;
+    left: 100%;
     transform: rotate(270deg);
-    top: 50%;
+    top: calc(40vh + 80px);
 }
 
 
