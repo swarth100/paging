@@ -40,7 +40,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.sideRightBarShow = false;
     $scope.sideRightBarOpening = false;
     $scope.sideRightBarAnimating = false;
-    $scope.sideLeftBarShow = true;
+    $scope.sideLeftBarShow = false;
     $scope.sideLeftBarOpening = false;
     $scope.sideLeftBarAnimating = false;
 
@@ -1294,6 +1294,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* Apply the changes to the scope. Triggers ng-shows */
         $scope.$apply();
     });
+
+    $scope.toggleLeftNav();
 
     /* -----------------------------------------------------------------------*/
 });
