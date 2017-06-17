@@ -572,7 +572,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Add click event listener. Used to allow user to change their
          location just by clicking. */
-        google.maps.event.addListener(map, 'click', function(event) {
+        google.maps.event.addListener(map, 'dblclick', function(event) {
             let latLng = event.latLng;
 
             geocoder.geocode({'location': latLng}, function(results, status) {
@@ -700,7 +700,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* Helper function to hook the map when expanding it to the left */
-    let mapHookCenter = function(sign) {
+    $scope.mapHookCenter = function(sign) {
         if (map) {
             /* Kind gift of:
              * https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window
@@ -1327,7 +1327,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* */
         if ($scope.sideLeftBarShow) {
-            mapHookCenter(true);
+            $scope.mapHookCenter(true);
         }
 
         /* */
@@ -1363,7 +1363,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* */
         if ($scope.sideLeftBarShow) {
-            mapHookCenter(false);
+            $scope.mapHookCenter(false);
         }
 
         /* */
