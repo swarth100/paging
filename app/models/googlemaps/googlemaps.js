@@ -32,8 +32,6 @@ function temporaryFunction(room, cb) {
         }
     }
 
-    numberOfResults = numberOfResults - pinnedList.length;
-
     /*
      * 1. Find center point.
      * 2. Find bounds.
@@ -265,7 +263,7 @@ function queryOnce(query) {
             let prunedResults = pruneRenewed(convertedPlaces);
 
             /* Pick a max amount of places from the pruned results */
-            let randomPlaces = chooseRandomPlaces(prunedResults);
+            let randomPlaces = chooseRandomPlaces(prunedResults, type);
 
             return Promise.all(randomPlaces.map(function(randomPlace) {
                 return findInDatabase(randomPlace);
@@ -341,11 +339,22 @@ function findDistances(results) {
 /*
  * Chooses random places from the results returned by Google.
  */
-function chooseRandomPlaces(results) {
+function chooseRandomPlaces(results, type) {
     let randomPlaces = [];
 
-    let loopCeiling = Math.min(numberOfResults, results.length);
-    // let loopCeiling = results.length;
+    /* Added to enable location pinning.
+     * Decide how many results need to be chosen based on how many results
+     * of the same type have already been pinned. */
+    for (let i = 0; i < pinnedList.length; i++) {
+        if (pinnedList[i].type === type) {
+            numberOfResults--;
+        }
+    }
+
+     let loopCeiling = Math.min(numberOfResults, results.length);
+
+    /* Restore the original value of numberOfResults */
+    numberOfResults = 5;
 
     for (let i = 0; i < loopCeiling; i++) {
         let randomIndex = Math.floor(Math.random() * (results.length - 1));
