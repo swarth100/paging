@@ -1070,10 +1070,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     const getImageURL = (type) => {
-        for (let i = 0; i < Data.types.length; i++) {
-            let t = Data.types[i];
+        let ts = angular.copy(Data.types);
+        for (let i = 0; i < ts.length; i++) {
+            let t = ts[i];
             t.name = t.name.split(' ').join('_').toLowerCase();
             if(t.name === type) {
+                console.log(Data.types);
                 return t.image;
             }
         }
@@ -1091,7 +1093,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         resultLocations.forEach((l, i) => {
             if (l.users.length > 0) {
                 let url = getImageURL(l.type);
-                console.log(url);
                 $scope.messageRooms.push({
                     name: l.name,
                     image: url,
