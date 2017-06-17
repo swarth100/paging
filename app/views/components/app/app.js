@@ -1188,9 +1188,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         if ($scope.sideBarOpening) {
             console.log('Slide in');
-            $('.custom-animate').toggleClass('slide-in');
+            $('.custom-animate').addClass('slide-in').removeClass('slide-out');
         } else {
-            $('.custom-animate').toggleClass('slide-out');
+            $('.custom-animate').addClass('slide-out').removeClass('slide-in');
         }
 
         $scope.mapSize = !$scope.mapSize;
