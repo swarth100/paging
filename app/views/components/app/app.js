@@ -36,6 +36,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.accordionUsers = false;
     $scope.accordionChat = false;
 
+    $scope.mapSize = true;
+    $scope.sideBarShow = false;
+    $scope.sideBarOpening = false;
+
     Data.user.username = Data.updateUsername();
 
     let geocoder = new google.maps.Geocoder();
@@ -1171,6 +1175,60 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             console.log('accordion type mismatch');
         }
     };
+
+    /* -----------------------------------------------------------------------*/
+    /* Side nav-bar helpers */
+
+    /* Handles toggleing of rightNav */
+    $scope.toggleMapSize = function() {
+        console.log('click');
+
+        /* Set the opening status accordingly and ng-show the navbar */
+        $scope.sideBarOpening = !$scope.sideBarOpening;
+        $scope.sideBarShow = true;
+
+        /* Resize the map accordingly */
+        if (!$scope.mapSize) {
+            $scope.mapSize = true;
+        }
+
+        /* Toggle the navBar into absolute mode for animating */
+        $('#rightNav').toggleClass('side-nav-absolute');
+
+        /* Accordingly set the animation to slide-in/out for the navbar */
+        if ($scope.sideBarOpening) {
+            $('.custom-animate').addClass('slide-in').removeClass('slide-out');
+        } else {
+            $('.custom-animate').addClass('slide-out').removeClass('slide-in');
+        }
+    };
+
+    /* Select the rightBavBar by ID to add listeners */
+    let rightNav = document.querySelector('#rightNav');
+
+    /* Listener bound to animationStarts */
+    rightNav.addEventListener('animationstart', function(e) {
+        /* Triggered by the start of an animation. Might be useful in the future */
+    }, false);
+
+    /* Listener bound to animationEnds */
+    rightNav.addEventListener('animationend', function() {
+        /* Trigger the ng-show of the navBar. If it was closing, hide it */
+        $scope.sideBarShow = $scope.sideBarOpening;
+
+        /* Accordingly style the map */
+        if ($scope.mapSize && $scope.sideBarShow) {
+            $scope.mapSize = false;
+        }
+
+        /* Remove absolute properties from the navBar. Needed for animation */
+        $('#rightNav').toggleClass('side-nav-absolute');
+
+        /* Apply the changes to the scope. Triggers ng-shows */
+        $scope.$apply();
+    });
+
+    /* -----------------------------------------------------------------------*/
 });
 
 /* */
