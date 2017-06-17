@@ -37,6 +37,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.accordionChat = false;
 
     $scope.mapSize = true;
+    $scope.sideBarShow = false;
+    $scope.sideBarOpening = false;
 
     Data.user.username = Data.updateUsername();
 
@@ -1177,6 +1179,20 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
 
     $scope.toggleMapSize = function() {
+        console.log('click');
+
+        $scope.sideBarOpening = !$scope.sideBarOpening;
+        $scope.sideBarShow = true;
+
+        console.log($scope.sideBarOpening);
+
+        if ($scope.sideBarOpening) {
+            console.log('Slide in');
+            $('.custom-animate').toggleClass('slide-in');
+        } else {
+            $('.custom-animate').toggleClass('slide-out');
+        }
+
         $scope.mapSize = !$scope.mapSize;
     };
 
@@ -1188,6 +1204,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     const myScript = function() {
         console.log('log at end of monkey animation');
+
+        $scope.sideBarShow = $scope.sideBarOpening;
+
+        console.log($scope.sideBarOpening);
+        console.log($scope.sideBarShow);
+
+        $scope.$apply();
     };
 
     monkey.addEventListener('webkitAnimationEnd', myScript);
