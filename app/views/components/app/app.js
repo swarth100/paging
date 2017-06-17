@@ -1146,6 +1146,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     }
 
+    $scope.toggleHighlight = (index) => {
+        /* toggle is highlighted */
+        console.log('highlight');
+        $scope.types[index].isHighlighted = !$scope.types[index].isHighlighted;
+    };
     /* -----------------------------------------------------------------------*/
     /* Functions to handle accordion */
     /* allow only one type at a type */
