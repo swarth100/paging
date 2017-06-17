@@ -444,14 +444,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Socket.io LISTENERS */
 
-    /* DO NOT
-     * UNDER ANY CIRCUMSTANCE
-     * NOT EVEN IF DRUNK
-     * EVER
-     * REMOVE
-     * THIS
-     * FUNCTION
-     * It removes and re-adds the update listener. It just works, OKAY? Now go back to work. */
+    /* Listener handlers. Listeners for multiple identical messages handled as follows: */
     socket.removeAllListeners('update', function() {
         socket.once('update', socketUpdate);
     });
@@ -564,7 +557,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Functions called upon entry */
 
+    /* Joins the given socket.IO room */
     $scope.joinRoom();
+
+    /* Upon Entry, toggle the Left NavBar to be opened */
+    $scope.toggleLeftNav();
 
     $scope.getLocation(function(currLoc) {
         map = createMap(currLoc);
@@ -670,11 +667,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
         /* Initialise the map via the Google API */
         if (!(room.users.length === 1 && $scope.newSession)) {
-            console.log('Here?');
             document.getElementById('map').style.visibility = 'visible';
         }
 
-        /* update chat-room with the new results */
+        /* Update chat-room with the new results */
         addRooms();
 
         /* Update the map bounds to incorporate all users in the viewport. */
@@ -702,10 +698,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Helper function to hook the map when expanding it to the left */
     $scope.mapHookCenter = function(sign) {
         if (map) {
-            /* Kind gift of:
-             * https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window
-             *  */
-
+            /* Credits to:
+             * https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window */
             let ratio = 0;
 
             /* Determine the bootstrap environment and accordingly switch for the radius */
@@ -722,27 +716,35 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     break;
             }
 
+            /* Adjust the sign for positive/negative shifts */
             if (!sign) {
                 ratio *= -1;
             }
 
+            /* Retrieve the current center form the map */
             let latlng = map.getCenter();
 
+            /* Determine the offsets */
             let offsetx = $(window).width() / ratio;
             let offsety = 0;
 
+            /* Mathemagical scaling magic */
             let scale = Math.pow(2, map.getZoom());
 
+            /* Convert to real world locations and scale */
             let worldCoordinateCenter = map.getProjection().fromLatLngToPoint(latlng);
             let pixelOffset = new google.maps.Point((offsetx / scale) || 0, (offsety / scale) || 0);
 
+            /* Create a new gMaps scale dpoint */
             let worldCoordinateNewCenter = new google.maps.Point(
                 worldCoordinateCenter.x - pixelOffset.x,
                 worldCoordinateCenter.y + pixelOffset.y
             );
 
+            /* Adjust that as a new centre */
             let newCenter = map.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
 
+            /* Apply the new center */
             map.setCenter(newCenter);
         }
     };
@@ -965,6 +967,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         });
 
+        /* Redirect clicks to the closing 'X' in infoBubbles */
         google.maps.event.addListener(infoBubble, 'closeclick', function() {
             closeInfoBubble(infoBubble);
         });
@@ -1256,18 +1259,23 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* -----------------------------------------------------------------------*/
     /* Side nav-bar helpers */
 
-    /* */
+    /* Determine which size the map should have
+     * All navbar elements increase the size of the map by one. Higher the 'size', the smaller the map.
+     * Counter-intuitive? Yeah. */
     $scope.getMapSize = function() {
         let count = 0;
 
+        /* Checks if the rightNavBar has been expanded */
         if ($scope.sideRightBarShow && !$scope.sideRightBarAnimating) {
             count ++;
         }
 
+        /* Checks if the leftNavBar has been expanded */
         if ($scope.sideLeftBarShow && !$scope.sideLeftBarAnimating) {
             count ++;
         }
 
+        /* Returns the determined count */
         return count;
     };
 
@@ -1278,7 +1286,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* When rightNavbar is opened, refresh roomms */
         addRooms();
 
-        /* */
+        /* Sets the rightNavBar to a true animating state */
         $scope.sideRightBarAnimating = true;
 
         /* Set the opening status accordingly and ng-show the navbar */
@@ -1309,7 +1317,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* Trigger the ng-show of the navBar. If it was closing, hide it */
         $scope.sideRightBarShow = $scope.sideRightBarOpening;
 
-        /* */
+        /* Sets the rightNavBar to a false animating state */
         $scope.sideRightBarAnimating = false;
 
         /* Remove absolute properties from the navBar. Needed for animation */
@@ -1325,12 +1333,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.toggleLeftNav = function() {
         console.log('left click');
 
-        /* */
+        /* Recalculated the map's centre in order to hook it.
+         * This prevents the map from being shifted after the recalculation of the navBar */
         if ($scope.sideLeftBarShow) {
             $scope.mapHookCenter(true);
         }
 
-        /* */
+        /* Sets the leftNavBar to a true animating state */
         $scope.sideLeftBarAnimating = true;
 
         /* Set the opening status accordingly and ng-show the navbar */
@@ -1361,12 +1370,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* Trigger the ng-show of the navBar. If it was closing, hide it */
         $scope.sideLeftBarShow = $scope.sideLeftBarOpening;
 
-        /* */
+        /* Recalculated the map's centre in order to hook it.
+         * This prevents the map from being shifted after the recalculation of the navBar */
         if ($scope.sideLeftBarShow) {
             $scope.mapHookCenter(false);
         }
 
-        /* */
+        /* Sets the leftNavBar to a false animating state */
         $scope.sideLeftBarAnimating = false;
 
         /* Remove absolute properties from the navBar. Needed for animation */
@@ -1375,8 +1385,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* Apply the changes to the scope. Triggers ng-shows */
         $scope.$apply();
     });
-
-    $scope.toggleLeftNav();
 
     /* -----------------------------------------------------------------------*/
 });
