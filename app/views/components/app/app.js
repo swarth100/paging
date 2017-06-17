@@ -1201,7 +1201,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* Handles toggleing of rightNav */
-    $scope.toggleMapSize = function() {
+    $scope.toggleRightNav = function() {
+        console.log('right click');
+
+        /* When rightNavbar is opened, refresh roomms */
         addRooms();
 
         /* */
