@@ -73,7 +73,9 @@
                         <button class="left-nav-button simplebox">
                             <div class="panel-heading">
                                 <h2 class="panel-title" ng-click="setAccordionOptions('chat');">
-                                    Chat <span class="badge pull-right" ng-show="numMessages > 0;">{{numMessages}}</span>
+                                    Chat
+                                    <span class="badge pull-right" ng-show="numMessages > 0 && !insideRoom;">{{numMessages}}</span>
+                                    <i class="fa fa-chevron-left pull-right " ng-show="insideRoom;"></i>
                                 </h2>
                             </div>
                         </button>
