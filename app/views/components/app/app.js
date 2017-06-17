@@ -5,75 +5,68 @@
  */
 
 app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibModal, $location, $compile, socket, Data) {
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Initialise fields used by the controller */
-    console.log(location.href);
-    $scope.types = Data.types;
-    $scope.colors = Data.colors;
-    $scope.appSearch = Data.query;
-    $scope.roomID = $routeParams.room;
-    $scope.newSession = true;
-    $scope.issueSearch = false;
-    let resultLocations = [];
-    /* Checks if chat window is open */
-    $scope.isChatting = true;
-    /* the global list of all messages */
-    $scope.messages = [];
-    /* message the user is sending */
-    $scope.message = '';
-    /* messages specific to the current room */
-    $scope.roomMessages = [];
-    /* number of unread messages */
-    $scope.numMessages = 0;
-    /* the users room which one is inside now */
-    $scope.currentRoom = 'Chat';
-    /* list of message rooms we have currently */
-    $scope.messageRooms = ['General'];
-    /* determine whether to be in room list view or be inside chat view */
-    $scope.insideRoom = false;
 
-    $scope.accordionOptions = true;
-    $scope.accordionUsers = false;
-    $scope.accordionChat = false;
+    $scope.types = Data.types;            /* Array. Keeps tract of the active types of the room */
+    $scope.colors = Data.colors;          /* Array. Holds available colors */
+    $scope.appSearch = Data.query;        /* ?? */
+    Data.user.username = '';              /* String. Holds current user's username */
 
-    $scope.mapSize = true;
-    $scope.sideRightBarShow = false;
-    $scope.sideRightBarOpening = false;
-    $scope.sideRightBarAnimating = false;
-    $scope.sideLeftBarShow = false;
-    $scope.sideLeftBarOpening = false;
-    $scope.sideLeftBarAnimating = false;
+    $scope.newSession = true;             /* Boolean. Initialised to true upon entry */
+    $scope.issueSearch = false;           /* Boolean. ?? */
+    $scope.isChatting = true;             /* Boolean. Checks if chat window is open */
+    $scope.insideRoom = false;            /* Boolean. Determines whether to be in room list view or be inside chat view */
 
-    Data.user.username = Data.updateUsername();
+    $scope.numMessages = 0;               /* Integer. Holds number of unread messages */
+    $scope.selectedResultIndex = 0;       /* Integer. Holds the result of the selected infoBubble */
+    $scope.hoveredResultIndex = 0;        /* Integer. Holds the result of the hovered upon infoBubble */
 
-    let geocoder = new google.maps.Geocoder();
-    let directionsDisplay = new google.maps.DirectionsRenderer(
-            {
-                suppressMarkers: true,
-            });
-    let directionsService = new google.maps.DirectionsService;
+    $scope.roomID = $routeParams.room;    /* String. Socket.io roomID */
+    $scope.message = '';                  /* String. The message the user is sending */
+    $scope.currentRoom = 'Chat';          /* String. Holds the users room which one is inside now */
+    $scope.transportType = 'Null';        /* String. Holds the user-selected transport type */
 
-    /*
-     * As far as observed, these global variables are used in conjunction of
-     * changing the coloured dots over locations.
-     */
-    let markers = [];
+    $scope.messages = [];                 /* Array. Holds the global list of all messages */
+    $scope.roomMessages = [];             /* Array. Lists messages specific to the current room */
+    $scope.transports = [];               /* Array. Holds list of available transport types */
+    $scope.messageRooms = ['General'];    /* Array. Contains list of message rooms we have currently */
+
+    $scope.accordionOptions = true;       /* Boolean. ?? */
+    $scope.accordionUsers = false;        /* Boolean. ?? */
+    $scope.accordionChat = false;         /* Boolean. ?? */
+
+    $scope.sideRightBarShow = false;      /* Boolean. Stores ng-show for rightNavBar */
+    $scope.sideRightBarOpening = false;   /* Boolean. Stores opening status for rightNavBar */
+    $scope.sideRightBarAnimating = false; /* Boolean. Stores animation status of rightNavBar */
+    $scope.sideLeftBarShow = false;       /* Boolean. Stores ng-show for leftNavBar */
+    $scope.sideLeftBarOpening = false;    /* Boolean. Stores opening status for leftNavBar */
+    $scope.sideLeftBarAnimating = false;  /* Boolean. Stores animation status of leftNavBar */
+
+    let resultLocations = [];             /* Array. Contains displayed resulted locations */
+    let markers = [];                     /* Array. Contains list of live markers */
     let mapObjects = [];
-    let users;
-    let lastOpenedInfoBubble = undefined;
 
-    /*
-     * This is the marker of the user. Used to update his location upon
-     * click events.
-     */
-    let userMarker;
+    let userMarker;                       /* ?? */
+    let users;                            /* ?? */
+    let map;                              /* Object. Contains an instance of the map */
+    let lastOpenedInfoBubble;             /* Object. Contains last opened infoBubble */
 
-    /* -----------------------------------------------------------------------*/
+    let geocoder;                         /* Object. Used by googleMaps */
+    let directionsDisplay;                /* Object. Used by googleMaps */
+    let directionsService;                /* Object. Used by googleMaps */
+
+    let compiledSelectedHTML;             /* HTML. Precompiled for infoBubbles */
+    let compiledHoveredHTML;              /* HTML. Precompiled for infoBubbles */
+
+    let rightNav;                         /* Object. Holds instance of rightNavBar */
+    let leftNav;                          /* Object. Holds instance of leftNavBar */
+
+    /* ---------------------------------------------------------------------------------------------------------------*/
+
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Scope fields for handling location labels */
 
-    $scope.selectedResultIndex = 0;
-    $scope.hoveredResultIndex = 0;
-    $scope.transportType = 'Null';
     $scope.transports = [
     {
         name: 'Foot',
@@ -106,11 +99,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return {'width': width + 'px'};
     };
 
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Scope HTML templates for labels. Must be precompiled to inject angular correctly down */
 
     /* Displays a given route onto the map */
-    function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+    const calculateAndDisplayRoute = function(directionsService, directionsDisplay) {
         $scope.getLocation(function(currLoc) {
             directionsService.route({
                 origin: currLoc,
@@ -124,7 +117,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 }
             });
         });
-    }
+    };
 
     /* Handles clicking on the submit button
      * Submission also occurs via pressing enter */
@@ -196,7 +189,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* Template according to which precompile infoBubble */
-    let generateInfoBubbleTemplate = function(result) {
+    const generateInfoBubbleTemplate = function(result) {
         return (
                 `<div>
                     <div class="input-group">
@@ -229,11 +222,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             );
     };
 
-    /* Precompile HTML files for infoBubble */
-    let compiledSelectedHTML = $compile(generateInfoBubbleTemplate('selectedResultIndex'))($scope);
-    let compiledHoveredHTML = $compile(generateInfoBubbleTemplate('hoveredResultIndex'))($scope);
-
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Handle type toggleing */
 
     $scope.toggleSelected = ((index) => {
@@ -241,7 +230,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         Data.types = $scope.types;
     });
 
-    /* ------------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* A function to change the users colour */
 
     $scope.changeUserColour = ((colour) => {
@@ -252,7 +241,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     });
 
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* getLocation monster function */
 
     /* Generalised getLocation function for A GIVE USER
@@ -294,7 +283,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /*
      * Error handler used in conjunction with the geolocation function above.
      */
-    function errorHandler(error) {
+    const errorHandler = function(error) {
         switch(error.code) {
             case error.PERMISSION_DENIED:
                 alert('If you want to use your current location you will' +
@@ -304,14 +293,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 alert('Unhandled error.');
                 break;
         }
-    }
+    };
 
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Send information to socket.io room */
 
     /* Private controller function
      * Broadcasts the user data (username, location and radius) to the socket's room */
-    let broadcastUserData = function() {
+    const broadcastUserData = function() {
         /* Broadcast location to all socket listeners */
         $scope.getLocation(function(location) {
             socket.emit('location', {
@@ -323,7 +312,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
-    let broadcastFieldsData = function() {
+    const broadcastFieldsData = function() {
         // console.log('Gonna broadcast types');
 
         let toSend = {
@@ -336,13 +325,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         socket.emit('options', toSend);
     };
 
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Helper functions for update/refresh listeners */
 
     /* Redefine socket fields for updatingLocation */
 
     /* Socket update helper function */
-    let socketUpdate = function(room) {
+    const socketUpdate = function(room) {
         $scope.issueSearch = false;
         $scope.users = room.users;
         if (Data.user.username !== '') {
@@ -364,7 +353,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* */
-    let socketRefresh = function(room) {
+    const socketRefresh = function(room) {
         if (!room.duration) {
             broadcastFieldsData();
         } else {
@@ -389,7 +378,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* */
-    let socketUpdateTransportTime = function(transportTimes) {
+    const socketUpdateTransportTime = function(transportTimes) {
         if (resultLocations[$scope.selectedResultIndex].id === transportTimes.id) {
             markers[$scope.selectedResultIndex].transportTimes = transportTimes;
             $scope.$apply();
@@ -401,7 +390,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      * refreshed. Sends them one by one to the function which takes care of
      * actually refreshing the coloured dots.
      */
-    let issueOneByOne = function(locationData) {
+    const issueOneByOne = function(locationData) {
         resultLocations = locationData;
         /* when the likes update, we need to update the room as well */
         addRooms();
@@ -413,7 +402,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* On recieve */
-    function socketRecieveMessage(messages) {
+    const socketRecieveMessage = function(messages) {
         /* if there is no update in message, reject */
         if ($scope.messages.length === messages.length) {
             return;
@@ -438,19 +427,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         }
         $scope.$apply();
-    }
+    };
 
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Socket.io LISTENERS */
 
-    /* DO NOT
-     * UNDER ANY CIRCUMSTANCE
-     * NOT EVEN IF DRUNK
-     * EVER
-     * REMOVE
-     * THIS
-     * FUNCTION
-     * It removes and re-adds the update listener. It just works, OKAY? Now go back to work. */
+    /* Listener handlers. Listeners for multiple identical messages handled as follows: */
     socket.removeAllListeners('update', function() {
         socket.once('update', socketUpdate);
     });
@@ -491,7 +473,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         socket.once('updateMarkers', issueOneByOne);
     });
 
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Socket.io helper wrappers */
 
     /* Joins a room upon entry.
@@ -541,58 +523,26 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* */
-    function changeMarkers(result) {
+    const changeMarkers = function(result) {
         let packagedData = [{
             id: result.id,
             username: Data.user.username,
         }];
 
         socket.emit('changeMarkers', packagedData);
-    }
+    };
 
     /* */
-    function socketSendTimeRequest() {
+    const socketSendTimeRequest = function() {
         $scope.getLocation(function(currLoc) {
             socket.emit('calculateTransportTime', {
                 source: currLoc,
                 destination: resultLocations[$scope.selectedResultIndex],
             });
         });
-    }
+    };
 
-    /* -----------------------------------------------------------------------*/
-    /* Functions called upon entry */
-
-    $scope.joinRoom();
-    let map;
-    $scope.getLocation(function(currLoc) {
-        map = createMap(currLoc);
-        directionsDisplay.setMap(map);
-
-        /* Add click event listener. Used to allow user to change their
-         location just by clicking. */
-        google.maps.event.addListener(map, 'click', function(event) {
-            let latLng = event.latLng;
-
-            geocoder.geocode({'location': latLng}, function(results, status) {
-                if (status === 'OK') {
-                    if (results[1]) {
-                        /* Used to update the location field. */
-                        Data.query.location = results[0].formatted_address;
-                        broadcastUserData();
-                    } else {
-                        window.alert('No results found');
-                    }
-                } else {
-                    // window.alert('Geocoder failed due to: ' + status);
-                }
-            });
-        });
-
-        document.getElementById('map').style.visibility = 'hidden';
-    });
-
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Map rendering functions with helpers */
 
     /* Initialise the client-sided rendering of the map */
@@ -669,11 +619,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
         /* Initialise the map via the Google API */
         if (!(room.users.length === 1 && $scope.newSession)) {
-            console.log('Here?');
             document.getElementById('map').style.visibility = 'visible';
         }
 
-        /* update chat-room with the new results */
+        /* Update chat-room with the new results */
         addRooms();
 
         /* Update the map bounds to incorporate all users in the viewport. */
@@ -681,7 +630,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* InitMap helper functions: */
-    createMap = function(location) {
+    const createMap = function(location) {
         let zoom = 14;
 
         /* TODO: Fix centering upon refresh */
@@ -698,8 +647,62 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return $scope.map;
     };
 
+    /* Helper function to hook the map when expanding it to the left */
+    $scope.mapHookCenter = function(sign) {
+        if (map) {
+            /* Credits to:
+             * https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window */
+            let ratio = 0;
+
+            /* Determine the bootstrap environment and accordingly switch for the radius */
+            switch(findBootstrapEnvironment()) {
+                case 'lg':
+                case 'md':
+                    ratio = 4;
+                    break;
+                case 'sm':
+                    ratio = 3;
+                    break;
+                case 'xs':
+                    ratio = 1;
+                    break;
+            }
+
+            /* Adjust the sign for positive/negative shifts */
+            if (!sign) {
+                ratio *= -1;
+            }
+
+            /* Retrieve the current center form the map */
+            let latlng = map.getCenter();
+
+            /* Determine the offsets */
+            let offsetx = $(window).width() / ratio;
+            let offsety = 0;
+
+            /* Mathemagical scaling magic */
+            let scale = Math.pow(2, map.getZoom());
+
+            /* Convert to real world locations and scale */
+            let worldCoordinateCenter = map.getProjection().fromLatLngToPoint(latlng);
+            let pixelOffset = new google.maps.Point((offsetx / scale) || 0, (offsety / scale) || 0);
+
+            /* Create a new gMaps scale dpoint */
+            let worldCoordinateNewCenter = new google.maps.Point(
+                worldCoordinateCenter.x - pixelOffset.x,
+                worldCoordinateCenter.y + pixelOffset.y
+            );
+
+            /* Adjust that as a new centre */
+            let newCenter = map.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
+
+            /* Apply the new center */
+            map.setCenter(newCenter);
+        }
+    };
+
     /* TODO: Add comment */
-    markUser = function(location, user, map) {
+    const markUser = function(location, user, map) {
         let icon = {
             path: 'M365.027,44.5c-30-29.667-66.333-44.5-109-44.5s-79,14.833-109,44.5s-45,65.5-45,107.5c0,25.333,12.833,67.667,38.5,127c25.667,59.334,51.333,113.334,77,162s38.5,72.334,38.5,71c4-7.334,9.5-17.334,16.5-30s19.333-36.5,37-71.5s33.167-67.166,46.5-96.5c13.334-29.332,25.667-59.667,37-91s17-55,17-71C410.027,110,395.027,74.167,365.027,44.5z M289.027,184c-9.333,9.333-20.5,14-33.5,14c-13,0-24.167-4.667-33.5-14s-14-20.5-14-33.5s4.667-24,14-33c9.333-9,20.5-13.5,33.5-13.5c13,0,24.167,4.5,33.5,13.5s14,20,14,33S298.36,174.667,289.027,184z',
             fillColor: user.color,
@@ -734,7 +737,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* TODO: Add comment */
-    initRadius = function(location, user, map, marker) {
+    const initRadius = function(location, user, map, marker) {
         let circle = new google.maps.Circle({
             strokeColor: user.color,
             strokeOpacity: 0.8,
@@ -765,7 +768,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* TODO: Add comment */
-    createDefaultInfoBubble = function() {
+    const createDefaultInfoBubble = function() {
         return new InfoBubble({
             content: '',
             shadowStyle: 0,
@@ -788,7 +791,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* TODO: Add comment */
-    createLocationInfoBubble = function(index) {
+    const createLocationInfoBubble = function(index) {
         let infoBubble = createDefaultInfoBubble();
 
         infoBubble.index = index;
@@ -798,7 +801,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* TODO: Add comment */
-    createUserInfoBubble = function(user) {
+    const createUserInfoBubble = function(user) {
         let infoBubble = createDefaultInfoBubble();
 
         infoBubble.content = '<div class="infoBubbleUser" style=\"color: ' + user.color + '\">' + user.username + '</div>';
@@ -807,7 +810,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* TODO: Add comment */
-    markResult = function(result, map) {
+    const markResult = function(result, map) {
         let icon = createDefaultRedIcon();
 
         let marker = new google.maps.Marker({
@@ -845,16 +848,16 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* TODO: Add comment */
-    function createTypeIcon(type) {
+    const createTypeIcon = function(type) {
         return {
             url: findImageByType(type),
             anchor: new google.maps.Point(11, 35),
             scaledSize: new google.maps.Size(20, 20),
         };
-    }
+    };
 
     /* TODO: Add comment */
-    function findImageByType(type) {
+    const findImageByType = function(type) {
         let types = $scope.types;
 
         for (let i = 0; i < types.length; i++) {
@@ -862,12 +865,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 return types[i].image;
             }
         }
-    }
+    };
 
     let pathToIcon = 'M238,0c-40,0-74,13.833-102,41.5S94,102.334,94,141c0,23.333,13.333,65.333,40,126s48,106,64,136s29.333,54.667,40,74c10.667-19.333,24-44,40-74s37.5-75.333,64.5-136S383,164.333,383,141c0-38.667-14.167-71.833-42.5-99.5S278,0,238,0L238,0z';
 
     /* TODO: Add comment */
-    function createDefaultRedIcon() {
+    const createDefaultRedIcon = function() {
         return {
             path: pathToIcon,
             fillColor: '#ff3700',
@@ -876,16 +879,17 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             strokeWeight: 1,
             scale: .10,
         };
-    }
+    };
 
-    function closeInfoBubble(infoBubble) {
+    /* TODO: Add comment */
+    const closeInfoBubble = function(infoBubble) {
         infoBubble.opened = false;
         infoBubble.close();
         lastOpenedInfoBubble = undefined;
-    }
+    };
 
     /* TODO: Add comment */
-    markerAddInfo = function(map, marker, infoBubble) {
+    const markerAddInfo = function(map, marker, infoBubble) {
         /* Handle mouse click events over labels */
         google.maps.event.addListener(marker, 'click', function() {
             if (!infoBubble.opened) {
@@ -916,6 +920,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         });
 
+        /* Redirect clicks to the closing 'X' in infoBubbles */
         google.maps.event.addListener(infoBubble, 'closeclick', function() {
             closeInfoBubble(infoBubble);
         });
@@ -942,7 +947,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         });
     };
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* TODO: Add comment */
 
     /* TODO: Add comment */
@@ -960,14 +965,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Functions used in order to change colours of markers. */
 
     /*
      * Handles the chaning of the coloured dots above a marker
      * denoting a location.
      */
-    function changeColoursOfMarkers(index, usersWhoClicked) {
+    const changeColoursOfMarkers = function(index, usersWhoClicked) {
         /* Find the marker, whose dots need to be updated. */
         let currentMarker = markers[index];
 
@@ -1013,34 +1018,34 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
 
         currentMarker.colouredDots = colouredDots;
-    }
+    };
 
     /*
      * Clears the previous array of coloured dots on a specific location.
      */
-    function clearPreviousColouredDots(currentMarker) {
+    const clearPreviousColouredDots = function(currentMarker) {
         let colouredDots = currentMarker.colouredDots;
 
         for (let i = 0; i < colouredDots.length; i++) {
             colouredDots[i].setMap(null);
         }
-    }
+    };
 
     /*
      * Finds the colour of the user who clicked on a specific location.
      */
-    function findColourOfUserWhoClicked(username) {
+    const findColourOfUserWhoClicked = function(username) {
         for (let i = 0; i < users.length; i++) {
             if (users[i].username === username) {
                 return users[i].color;
             }
         }
-    }
+    };
 
     /*
      * Generates a new coloured dot over the currentMarker at anchor offset.
      */
-    function generateColouredDot(currentMarker, anchor, userWhoClicked) {
+    const generateColouredDot = function(currentMarker, anchor, userWhoClicked) {
         return new google.maps.Marker({
             position: currentMarker.getPosition(),
             icon: {
@@ -1054,9 +1059,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             },
             map: currentMarker.getMap(),
         });
-    }
+    };
 
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Functions to handle messages */
 
     /* checks if message was sent by the user */
@@ -1111,41 +1116,40 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         });
     };
-    /* -----------------------------------------------------------------------*/
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
 
     /*
      * This function is called when a user clicks on a type which has
      * already been selected as a search criteria. It fades out all markers
      * not belonging to the type.
      */
-    $scope.filterByType = filterByType;
+    // $scope.filterByType = filterByType;
 
     /*
      * Since functions are objects, a property has been added to this
      * function (lastSelectedType) to perform the functions of a static
      * variable (not changing between function calls).
      */
-    function filterByType(typeName) {
+    $scope.filterByType = function(typeName) {
         let type = typeName.toLowerCase().split(' ').join('_');
 
-        if (filterByType.lastSelectedTypes === undefined) {
-            filterByType.lastSelectedTypes = [];
+        if ($scope.filterByType.lastSelectedTypes === undefined) {
+            $scope.filterByType.lastSelectedTypes = [];
         }
 
-        let index = filterByType.lastSelectedTypes.indexOf(type);
+        let index = $scope.filterByType.lastSelectedTypes.indexOf(type);
 
         if (index === (-1)) {
-            filterByType.lastSelectedTypes.push(type);
+            $scope.filterByType.lastSelectedTypes.push(type);
         } else {
-            filterByType.lastSelectedTypes.splice(index, 1);
+            $scope.filterByType.lastSelectedTypes.splice(index, 1);
         }
 
         for (let i = 0; i < markers.length; i++) {
             let fadeOutOpacity = 1;
 
-            if (filterByType.lastSelectedTypes.length !== 0 &&
-                filterByType.lastSelectedTypes.indexOf(markers[i].type) === (-1)) {
+            if ($scope.filterByType.lastSelectedTypes.length !== 0 &&
+                $scope.filterByType.lastSelectedTypes.indexOf(markers[i].type) === (-1)) {
                 fadeOutOpacity = 0.2;
             }
 
@@ -1155,16 +1159,17 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 markers[i].colouredDots[j].setOpacity(fadeOutOpacity);
             }
         }
-    }
+    };
 
+    /* TODO: Add comment */
     $scope.toggleHighlight = (index) => {
-        /* toggle is highlighted */
-        console.log('highlight');
+        /* Toggle is highlighted */
         $scope.types[index].isHighlighted = !$scope.types[index].isHighlighted;
     };
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Functions to handle accordion */
-    /* allow only one type at a type */
+
+    /* Allow only one type at a type */
     $scope.setAccordionOptions = (type) => {
         $scope.insideRoom = false;
         $scope.accordionOptions = false;
@@ -1182,21 +1187,50 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
+    /* Bootstrap helper functions */
+
+    /* Determines the size of the current bootstrap environment.
+     * Should be dynamic */
+    const findBootstrapEnvironment = function() {
+        /* Credits:
+         * https://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api */
+        let envs = ['xs', 'sm', 'md', 'lg'];
+
+        let $el = $('<div>');
+        $el.appendTo($('body'));
+
+        for (let i = envs.length - 1; i >= 0; i--) {
+            let env = envs[i];
+
+            $el.addClass('hidden-'+env);
+            if ($el.is(':hidden')) {
+                $el.remove();
+                return env;
+            }
+        }
+    };
+
+    /* ---------------------------------------------------------------------------------------------------------------*/
     /* Side nav-bar helpers */
 
-    /* */
+    /* Determine which size the map should have
+     * All navbar elements increase the size of the map by one. Higher the 'size', the smaller the map.
+     * Counter-intuitive? Yeah. */
     $scope.getMapSize = function() {
         let count = 0;
 
+        /* Checks if the rightNavBar has been expanded */
         if ($scope.sideRightBarShow && !$scope.sideRightBarAnimating) {
             count ++;
         }
 
+        /* Checks if the leftNavBar has been expanded */
         if ($scope.sideLeftBarShow && !$scope.sideLeftBarAnimating) {
             count ++;
         }
 
+        /* Returns the determined count */
         return count;
     };
 
@@ -1207,7 +1241,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* When rightNavbar is opened, refresh roomms */
         addRooms();
 
-        /* */
+        /* Sets the rightNavBar to a true animating state */
         $scope.sideRightBarAnimating = true;
 
         /* Set the opening status accordingly and ng-show the navbar */
@@ -1226,7 +1260,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* Select the rightBavBar by ID to add listeners */
-    let rightNav = document.querySelector('#rightNav');
+    rightNav = document.querySelector('#rightNav');
 
     /* Listener bound to animationStarts */
     rightNav.addEventListener('animationstart', function(e) {
@@ -1238,7 +1272,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* Trigger the ng-show of the navBar. If it was closing, hide it */
         $scope.sideRightBarShow = $scope.sideRightBarOpening;
 
-        /* */
+        /* Sets the rightNavBar to a false animating state */
         $scope.sideRightBarAnimating = false;
 
         /* Remove absolute properties from the navBar. Needed for animation */
@@ -1248,13 +1282,19 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.$apply();
     });
 
-    /* -----------------------------------------------------------------------*/
+    /* ---------------------------------------------------------------------------------------------------------------*/
 
     /* Handles toggleing of leftNav */
     $scope.toggleLeftNav = function() {
         console.log('left click');
 
-        /* */
+        /* Recalculated the map's centre in order to hook it.
+         * This prevents the map from being shifted after the recalculation of the navBar */
+        if ($scope.sideLeftBarShow) {
+            $scope.mapHookCenter(true);
+        }
+
+        /* Sets the leftNavBar to a true animating state */
         $scope.sideLeftBarAnimating = true;
 
         /* Set the opening status accordingly and ng-show the navbar */
@@ -1273,7 +1313,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* Select the leftBavBar by ID to add listeners */
-    let leftNav = document.querySelector('#leftNav');
+    leftNav = document.querySelector('#leftNav');
 
     /* Listener bound to animationStarts */
     leftNav.addEventListener('animationstart', function(e) {
@@ -1285,7 +1325,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* Trigger the ng-show of the navBar. If it was closing, hide it */
         $scope.sideLeftBarShow = $scope.sideLeftBarOpening;
 
-        /* */
+        /* Recalculated the map's centre in order to hook it.
+         * This prevents the map from being shifted after the recalculation of the navBar */
+        if ($scope.sideLeftBarShow) {
+            $scope.mapHookCenter(false);
+        }
+
+        /* Sets the leftNavBar to a false animating state */
         $scope.sideLeftBarAnimating = false;
 
         /* Remove absolute properties from the navBar. Needed for animation */
@@ -1295,9 +1341,58 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.$apply();
     });
 
+    /* ---------------------------------------------------------------------------------------------------------------*/
+    /* Functions called upon entry */
+
+    /* Initialise the username field */
+    Data.user.username = Data.updateUsername();
+
+    /* Initialise googleMaps required fields */
+    geocoder = new google.maps.Geocoder();
+    directionsDisplay = new google.maps.DirectionsRenderer(
+        {
+            suppressMarkers: true,
+        });
+    directionsService = new google.maps.DirectionsService;
+
+    /* Precompile HTML files for infoBubble */
+    compiledSelectedHTML = $compile(generateInfoBubbleTemplate('selectedResultIndex'))($scope);
+    compiledHoveredHTML = $compile(generateInfoBubbleTemplate('hoveredResultIndex'))($scope);
+
+    /* Joins the given socket.IO room */
+    $scope.joinRoom();
+
+    /* Upon Entry, toggle the Left NavBar to be opened */
     $scope.toggleLeftNav();
 
-    /* -----------------------------------------------------------------------*/
+    $scope.getLocation(function(currLoc) {
+        map = createMap(currLoc);
+        directionsDisplay.setMap(map);
+
+        /* Add click event listener. Used to allow user to change their
+         location just by clicking. */
+        google.maps.event.addListener(map, 'dblclick', function(event) {
+            let latLng = event.latLng;
+
+            geocoder.geocode({'location': latLng}, function(results, status) {
+                if (status === 'OK') {
+                    if (results[1]) {
+                        /* Used to update the location field. */
+                        Data.query.location = results[0].formatted_address;
+                        broadcastUserData();
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    // window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+        });
+
+        document.getElementById('map').style.visibility = 'hidden';
+    });
+
+    /* ---------------------------------------------------------------------------------------------------------------*/
 });
 
 /* */
