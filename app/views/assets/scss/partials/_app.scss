@@ -158,6 +158,9 @@
         border-left: none;
     }
     .panel-body{
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
         background: $left-nav-text-bg;
     }
 }
@@ -170,6 +173,12 @@
         border-right: none;
         border-bottom: none;
         border-left: none;
+    }
+    .panel-body{
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+        background: $left-nav-text-bg;
     }
     .grey-text {
         color: grey;
