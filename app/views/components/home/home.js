@@ -1,6 +1,5 @@
 /* Controller to handle the search bar on the home screen */
-app.controller('homeCtrl',
-    function($scope, $filter, $http, $location, Data, NgMap) {
+app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgMap) {
     $scope.setDate = function() {
         $scope.homeSearch.datetime = $filter('date')(new Date(
             $scope.tmpDate.getFullYear(),
@@ -23,6 +22,15 @@ app.controller('homeCtrl',
         width = $scope.homeSearch.radius > 0 ? $scope.homeSearch.radius.toString().length * 10 + 15 : 25;
         width += 36;
         return {'width': width + 'px'};
+    };
+
+    $scope.isSmallScreen = function() {
+        switch (findBootstrapEnvironment()) {
+            case 'sm':
+            case 'xs':
+                return true;
+        }
+        return false;
     };
 
     $scope.dropDownToggle = function() {
@@ -76,5 +84,30 @@ app.controller('homeCtrl',
 
     $scope.editOptions = (type) => {
         type.isSelected = !type.isSelected;
+    };
+
+    $(window).resize(function() {
+        $scope.$apply();
+    });
+
+    /* Determines the size of the current bootstrap environment.
+     * Should be dynamic */
+    const findBootstrapEnvironment = function() {
+        /* Credits:
+         * https://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api */
+        let envs = ['xs', 'sm', 'md', 'lg'];
+
+        let $el = $('<div>');
+        $el.appendTo($('body'));
+
+        for (let i = envs.length - 1; i >= 0; i--) {
+            let env = envs[i];
+
+            $el.addClass('hidden-'+env);
+            if ($el.is(':hidden')) {
+                $el.remove();
+                return env;
+            }
+        }
     };
 });

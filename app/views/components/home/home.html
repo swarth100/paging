@@ -35,8 +35,8 @@
 
 -->
 <div class="container-fluid search-bar">
-    <div class="row search-top" ng-class="dropdownOpen ? 'raise-search-bar': 'lower-search-bar'"></div>
-    <div id="search-bar" class="row search-bottom" ng-class="dropdownOpen ? 'large-bottom-padding' : 'small-bottom-padding'">
+    <div class="row" ng-class="{'search-top': !isSmallScreen(), 'search-top-sm': isSmallScreen(), 'raise-search-bar': dropdownOpen && !isSmallScreen(), 'lower-search-bar': !dropdownOpen && !isSmallScreen(), 'raise-search-bar-sm': dropdownOpen && isSmallScreen(), 'lower-search-bar-sm': !dropdownOpen && isSmallScreen()}"></div>
+    <div id="search-bar" class="row" ng-class="{'search-bottom': !isSmallScreen(), 'search-bottom-sm': isSmallScreen(), 'large-bottom-padding': dropdownOpen, 'small-bottom-padding': !dropdownOpen}">
         <form class="form-group-lg" ng-submit="submitFields()">
             <!-- LOCATION field holder -->
             <div class="col-sm-12 col-md-3 col-md-offset-2 no-padding">
