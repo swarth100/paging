@@ -208,28 +208,19 @@ exports.start = (server) => {
         socket.on('chatMessage', (message) => {
             findRoom(socket.room, (r) => {
                 if (_.isEmpty(message)) {
-                    if (r.messages.length > 0) {
-                        r.messages.slice(-1)[0].isFirst = false;
-                    }
+                    console.log('INITIAL COMMUNICATION');
+                    socket.emit('recieveChatMessage', r.messages);
                 } else {
-                    /* Gets the messages in the room, push the new message and save */
-                    /* check for null as on join we send empty message to
-                     * update the messages */
-                    message.isFirst = false;
-                    if (r.messages.length === 0) {
-                        /* this is the first message */
-                        message.isFirst = true;
-                    }
+                    console.log('NOT INITIAL COMMUNICATION');
                     let isAdded = false;
                     for (let i = 0; i < r.messages.length; i++) {
                         if (r.messages[i].location === message.location) {
-                            console.log(r.messages[i]);
                             r.messages[i].messages.push(message.messages);
                             isAdded = true;
                         }
                     }
                     if (!isAdded) {
-                        r.messages.push( {
+                        r.messages.push({
                             location: message.location,
                             messages: [message.messages],
                             isFirst: message.isFirst,
@@ -237,10 +228,10 @@ exports.start = (server) => {
                     }
                 }
                 mongooseRoom.updateMessage(r.id, r.messages).then(() => {
-                    console.log(r.messages);
-                    io.in(socket.room).emit('recieveChatMessage', r.messages);
+                    io.in(socket.room).emit('recieveChatMessage', message);
                 })
-                .catch(() =>{
+                .catch((err) =>{
+                    console.log(err);
                     console.log('Error, failed to update message in the room');
                 });
             });
