@@ -38,7 +38,7 @@
     8
 
 -->
-<div class="container-fluid no-padding" xmlns="http://www.w3.org/1999/html">
+<div class="container-fluid no-padding" xmlns="http://www.w3.org/1999/html" style="position: absolute">
     <!-- ROW div for the search bar -->
     <!-- Left search bar holder -->
     <div id="leftNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideLeftBarShow" style="z-index: 1;">
@@ -93,8 +93,10 @@
             </div>
         </div>
     </div>
-    <div ng-class="{'col-sm-8 col-md-9 no-padding': getMapSize() == 1, 'col-sm-4 col-md-6 no-padding': getMapSize() == 2}">
-        <!--div class="col-sm-4 col-md-6 no-padding"-->
+</div>
+<div class="container-fluid no-padding" xmlns="http://www.w3.org/1999/html">
+    <div ng-class="{'col-sm-12 col-md-12 no-padding': getMapSize() == 0, 'col-sm-8 col-md-9 no-padding': getMapSize() == 1, 'col-sm-4 col-md-6 no-padding': getMapSize() == 2}">
+    <!--div class="col-sm-4 col-md-6 no-padding"-->
         <!-- The following is the controller for the post location -->
         <!-- The div nesting was done so that we could have the rotating gif
             when a search is commensed. -->
