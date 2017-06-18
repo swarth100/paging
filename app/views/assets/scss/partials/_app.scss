@@ -342,6 +342,16 @@ animation: slide-in-left 1s forwards;
     top: calc(40vh + 80px);
 }
 
+a[href^="https://maps.google.com/maps"]{
+    position: relative !important;
+    left: 1600% !important;
+}
+
+.gm-style-mtc {
+    display:none;
+}
+
+
 
 .modal-content  {
     -webkit-border-radius: 0px !important;

@@ -56,6 +56,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let directionsDisplay;                /* Object. Used by googleMaps */
     let directionsService;                /* Object. Used by googleMaps */
 
+    let discardInitialUpdate = true;
+
     let compiledSelectedHTML;             /* HTML. Precompiled for infoBubbles */
     let compiledHoveredHTML;              /* HTML. Precompiled for infoBubbles */
 
@@ -290,7 +292,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                         ' need to share your current location.');
                 break;
             default:
-                alert('Unhandled error.');
+                alert('Unhandled error: ' + error);
                 break;
         }
     };
@@ -348,7 +350,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
         $scope.$apply();
         $scope.getLocation(function(location) {
-            $scope.initMap(location, room);
+            /* On update refresh the data */
+            socketRefresh(room);
+
+            /* Discarding initial refresh (for submission), update the Map */
+            if (!discardInitialUpdate) {
+                $scope.initMap(location, room);
+            }
+            discardInitialUpdate = false;
         });
     };
 
@@ -558,8 +567,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         users = room.users;
         resultLocations = room.results;
 
-        socketRefresh(room);
-
         for (i = 0; i < users.length; i++) {
             let radLoc = {
                 'lat': users[i].lat,
@@ -625,6 +632,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Update the map bounds to incorporate all users in the viewport. */
         map.fitBounds(mapBounds);
+        $scope.mapHookCenter(true, 2);
     };
 
     /* InitMap helper functions: */
@@ -646,7 +654,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     /* Helper function to hook the map when expanding it to the left */
-    $scope.mapHookCenter = function(sign) {
+    $scope.mapHookCenter = function(sign, value) {
         if (map) {
             /* Credits to:
              * https://stackoverflow.com/questions/3437786/get-the-size-of-the-screen-current-web-page-and-browser-window */
@@ -664,6 +672,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 case 'xs':
                     ratio = 1;
                     break;
+            }
+
+            ratio *= value;
+
+            /* Scale accordingly if right navBar is open */
+            if ($scope.sideRightBarShow) {
+                ratio *= ratio;
+                ratio *= ratio;
             }
 
             /* Adjust the sign for positive/negative shifts */
@@ -1222,11 +1238,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             count ++;
         }
 
-        /* Checks if the leftNavBar has been expanded */
-        if ($scope.sideLeftBarShow && !$scope.sideLeftBarAnimating) {
-            count ++;
-        }
-
         /* Returns the determined count */
         return count;
     };
@@ -1287,9 +1298,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Recalculated the map's centre in order to hook it.
          * This prevents the map from being shifted after the recalculation of the navBar */
-        if ($scope.sideLeftBarShow) {
-            $scope.mapHookCenter(true);
-        }
+        // if ($scope.sideLeftBarShow) {
+        //     $scope.mapHookCenter(true, 1);
+        // }
 
         /* Sets the leftNavBar to a true animating state */
         $scope.sideLeftBarAnimating = true;
@@ -1324,9 +1335,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Recalculated the map's centre in order to hook it.
          * This prevents the map from being shifted after the recalculation of the navBar */
-        if ($scope.sideLeftBarShow) {
-            $scope.mapHookCenter(false);
-        }
+        // if ($scope.sideLeftBarShow) {
+        //     $scope.mapHookCenter(false, 1);
+        // }
 
         /* Sets the leftNavBar to a false animating state */
         $scope.sideLeftBarAnimating = false;
@@ -1387,6 +1398,17 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
 
         document.getElementById('map').style.visibility = 'hidden';
+
+        google.maps.event.addListenerOnce(map, 'idle', function() {
+            /* Triggered on complete initialisation */
+            /* map.addListener('center_changed', function() {
+                console.log('Centre Changed');
+            }); */
+        });
+
+        google.maps.event.addListenerOnce(map, 'projection_changed', function() {
+            /* Triggered when projection viewport can be called */
+        });
     });
 
     /* ---------------------------------------------------------------------------------------------------------------*/
