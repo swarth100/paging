@@ -41,7 +41,7 @@
                         <span class="caret"></span>
                     </button>
                     <div class="dropdown" id="typeOptionsMenu">
-                        <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right" ng-click="$event.stopPropagation();" role="typeOptionsMenu">
+                        <div class="dropdown-menu dropdown-menu-types-small dropdown-menu-right animated fadeIn" ng-click="$event.stopPropagation();" role="typeOptionsMenu">
                             <div ng-repeat="type in types">
                                 <!--<input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">-->
                                 <label class="std-font" ng-class="{'check-box-not-clicked': !types.isSelected, 'check-box-clicked': type.isSelected}" for="{{type.name}}" ng-click="toggleSelected($index); submitFields()">
