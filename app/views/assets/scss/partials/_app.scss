@@ -288,16 +288,16 @@ animation: slide-in-right 1s forwards;
 
 .right-nav-toggle-button {
     @extend .basic-toggle-button;
-    margin-left: -79px;
+    margin-left: -49px;
     transform: rotate(270deg);
     top: calc(40vh);
 }
 
 .right-nav-toggle-button-map {
     @extend .basic-toggle-button;
-    margin-left: -78px;
+    margin-left: -48px;
     left: 100%;
-    transform: rotate(270deg);
+    transform: rotate(270deg) scale(1);
     top: calc(40vh + 80px);
 }
 
@@ -339,7 +339,7 @@ animation: slide-in-left 1s forwards;
 
 .left-nav-toggle-button {
     @extend .basic-toggle-button;
-    margin-left: -39px;
+    margin-left: -18px;
     transform: rotate(90deg);
     top: calc(40vh);
     left: 100%;
@@ -347,8 +347,8 @@ animation: slide-in-left 1s forwards;
 
 .left-nav-toggle-button-map {
     @extend .basic-toggle-button;
-    margin-left: -40px;
-    transform: rotate(90deg);
+    margin-left: -19px;
+    transform: rotate(90deg) scale(1);
     top: calc(40vh + 80px);
 }
 
