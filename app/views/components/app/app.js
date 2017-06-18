@@ -1138,7 +1138,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Functions to handle room entry */
     $scope.exitRoom = (index) => {
         let room = $scope.currentRoom;
-        $scope.roomMap.clear(room);
+        $scope.roomMap.delete(room);
         $scope.currentRoom = 'Chat';
         $scope.roomMessages = [];
         addRooms();
