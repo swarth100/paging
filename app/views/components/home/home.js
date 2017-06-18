@@ -87,7 +87,7 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
     };
 
     $(window).resize(function() {
-        console.log('resize');
+        $scope.$apply();
     });
 
     /* Determines the size of the current bootstrap environment.
