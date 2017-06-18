@@ -1232,11 +1232,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             count ++;
         }
 
-        /* Checks if the leftNavBar has been expanded */
-        if ($scope.sideLeftBarShow && !$scope.sideLeftBarAnimating) {
-            count ++;
-        }
-
         /* Returns the determined count */
         return count;
     };
@@ -1297,9 +1292,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Recalculated the map's centre in order to hook it.
          * This prevents the map from being shifted after the recalculation of the navBar */
-        if ($scope.sideLeftBarShow) {
+        /* if ($scope.sideLeftBarShow) {
             $scope.mapHookCenter(true, 1);
-        }
+        } */
 
         /* Sets the leftNavBar to a true animating state */
         $scope.sideLeftBarAnimating = true;
@@ -1334,9 +1329,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Recalculated the map's centre in order to hook it.
          * This prevents the map from being shifted after the recalculation of the navBar */
-        if ($scope.sideLeftBarShow) {
+        /* if ($scope.sideLeftBarShow) {
             $scope.mapHookCenter(false, 1);
-        }
+        } */
 
         /* Sets the leftNavBar to a false animating state */
         $scope.sideLeftBarAnimating = false;
@@ -1400,9 +1395,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         google.maps.event.addListenerOnce(map, 'idle', function() {
             /* Triggered on complete initialisation */
-            map.addListener('center_changed', function() {
+            /* map.addListener('center_changed', function() {
                 console.log('Centre Changed');
-            });
+            }); */
         });
 
         google.maps.event.addListenerOnce(map, 'projection_changed', function() {
