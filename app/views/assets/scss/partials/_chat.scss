@@ -97,6 +97,7 @@ $close-box-height: 40px;
         max-width: 18px;
     }
     .message-room {
+        background: $left-nav-text-bg;
     }
     .btn-room, .btn-room:focus {
         @extend .square;
