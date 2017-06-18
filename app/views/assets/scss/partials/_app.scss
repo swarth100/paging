@@ -134,7 +134,7 @@
         text-overflow: ellipsis;
     }
     .panel-body{
-        max-height: 0;
+        max-height: auto;
         overflow: hidden;
         transition: max-height 0.2s ease-out;
         background: $left-nav-text-bg;
