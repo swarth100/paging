@@ -114,11 +114,19 @@ $close-box-height: 40px;
         border: none;
         width: 100%;
         text-align: left;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     .btn-room:hover {
         background: #fafafa
     }
+    .add-space-for-badge {
+        width: 90%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+    }
+    .badge {
+        margin-top: 2px;
+    }
+
 }
