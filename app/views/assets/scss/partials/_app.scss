@@ -130,6 +130,8 @@
         border-style: solid;
         border-width: 1px;
         border: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .panel-body{
         background: $left-nav-text-bg;
