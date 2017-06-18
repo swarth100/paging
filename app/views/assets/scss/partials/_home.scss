@@ -89,6 +89,14 @@ input[type="checkbox"]:checked + label {
     padding-right: 20px;
 }
 
+.search-bottom-sm {
+    min-height: 80%;
+    background: rgba(0, 0, 0, 0.8);
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
 #search-bar {
     /* From ******************************************************************************/
     /* https://stackoverflow.com/questions/18838964/add-bootstrap-glyphicon-to-input-box */
