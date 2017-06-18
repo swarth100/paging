@@ -123,6 +123,8 @@
     animation-duration: 1s;
 }
 
+$accordion-speed: 0.8s;
+
 #left-nav-options {
     .panel-heading {
         border-radius: 0;
@@ -136,7 +138,7 @@
     .panel-body{
         max-height: auto;
         overflow: hidden;
-        transition: max-height 0.2s ease-out;
+        transition: max-height $accordion-speed ease-out;
         background: $left-nav-text-bg;
     }
     .left-nav-bg {
@@ -160,7 +162,7 @@
     .panel-body{
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.2s ease-out;
+        transition: max-height $accordion-speed ease-out;
         background: $left-nav-text-bg;
     }
 }
@@ -177,7 +179,7 @@
     .panel-body{
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.2s ease-out;
+        transition: max-height $accordion-speed ease-out;
         background: $left-nav-text-bg;
     }
     .grey-text {
