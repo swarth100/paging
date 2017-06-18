@@ -433,12 +433,24 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             $scope.roomMap.clear();
             /* put messages accordingly into rooms */
             $scope.messages.forEach((m, i) => {
-                let prev = $scope.roomMap.get(m.location);
                 if (m.location === $scope.currentRoom) {
                     $scope.roomMessages = m.messages;
                 }
             });
         } else {
+            let isIncluded = false;
+            for (let i = 0; i < $scope.messages.length; i++) {
+                if ($scope.messages[i].location === messages.location) {
+                    isIncluded = true;
+                    break;
+                }
+            }
+            if (!isIncluded) {
+                $scope.messages.push({
+                    location: messages.location,
+                    messages: [],
+                });
+            }
             /* this is a indivisual messages */
             $scope.messages.forEach((m, i) => {
                 if (m.location === messages.location) {
@@ -1130,7 +1142,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.exitRoom = (index) => {
         let room = $scope.currentRoom;
         $scope.roomMap.clear(room);
-        $scope.currentRoom = 'chat';
+        $scope.currentRoom = 'Chat';
         $scope.roomMessages = [];
         addRooms();
         /* switch view to room */
