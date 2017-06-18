@@ -253,7 +253,14 @@ exports.start = (server) => {
                 console.log(err);
             }
         });
+
+        socket.on('getPlaceDetails', (location) => {
+            googlemaps.getPlaceDetails(location, function(res) {
+                socket.emit('receivePlaceDetails', res.json.result);
+            });
+        });
     });
+
 
     function findRoom(roomID, cb) {
         mongooseRoom.find({'id': roomID})
