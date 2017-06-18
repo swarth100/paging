@@ -190,6 +190,11 @@ $accordion-speed: 0.8s;
     .grey-text > a {
         color: grey;
     }
+    .credit-padding {
+        background: $left-nav-text-bg;
+        height: calc(100vh - 80px - 43px - 42px);
+    }
+
 }
 
 .left-nav-button, .left-nav-button:focus {
