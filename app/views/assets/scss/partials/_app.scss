@@ -136,7 +136,7 @@ $accordion-speed: 0.8s;
         text-overflow: ellipsis;
     }
     .panel-body{
-        max-height: auto;
+        max-height: calc(100vh - 80px - 43px - 43px);
         overflow: hidden;
         transition: max-height $accordion-speed ease-out;
         background: $left-nav-text-bg;
