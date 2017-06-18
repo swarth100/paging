@@ -77,8 +77,12 @@ input[type="checkbox"]:checked + label {
     height: 60%;
 }
 
+.search-top-sm {
+    height: 20%;
+}
+
 .search-bottom {
-    min-height: 30%;
+    min-height: 40%;
     background: rgba(0, 0, 0, 0.8);
     padding-top: 70px;
     padding-left: 20px;
@@ -177,6 +181,8 @@ input[type="checkbox"]:checked + label {
     100% {height: 100%};
 }
 
+/*************************/
+
 .raise-search-bar {
     animation: raise 1s;
     animation-fill-mode: forwards;
@@ -195,6 +201,29 @@ input[type="checkbox"]:checked + label {
     0% {height: 0%;};
     100% {height: 60%};
 }
+
+/*************************/
+
+.raise-search-bar-sm {
+    animation: raise-sm 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes raise-sm {
+    0% {height: 20%};
+    100% {height: 0%};
+}
+
+.lower-search-bar-sm {
+    animation: lower-sm 1s;
+}
+
+@keyframes lower-sm {
+    0% {height: 0%;};
+    100% {height: 20%};
+}
+
+/*************************/
 
 .search-bar-footer-div {
     height: 5px;
