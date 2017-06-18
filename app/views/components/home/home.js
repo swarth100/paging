@@ -25,6 +25,27 @@ app.controller('homeCtrl',
         return {'width': width + 'px'};
     };
 
+    $scope.dropDownToggle = function() {
+        /* Clicks on the button disable body overflowing temporarily */
+        $('#body').toggleClass('hide-overflow');
+    };
+
+    /* Select the leftBavBar by ID to add listeners */
+    let searchBar = document.querySelector('#search-bar');
+
+    /* Listener bound to animationStarts */
+    searchBar.addEventListener('animationstart', function(e) {
+        /* Must check in case animation was triggered by offClick and not by button click */
+        if (!$('#body').hasClass('hide-overflow')) {
+            $('#body').toggleClass('hide-overflow');
+        }
+    }, false);
+
+    /* Listener bound to animationEnds */
+    searchBar.addEventListener('animationend', function() {
+        $('#body').toggleClass('hide-overflow');
+    }, false);
+
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
 
