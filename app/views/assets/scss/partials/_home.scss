@@ -154,38 +154,46 @@ input[type="checkbox"]:checked + label {
     }
 }
 
-.large-bottom-padding {
-    animation: increase-padding 0s;
-    -webkit-animation: increase-padding 0s;
-    animation-fill-mode: forwards;
-    -webkit-animation-fill-mode: forwards;
-}
-
-
-@keyframes increase-padding {
-    0% {padding-bottom: $search-padding-bottom};
-    100% {padding-bottom: $bottom-padding};
-}
-
-@-webkit-keyframes increase-padding {
-    0% {padding-bottom: $search-padding-bottom};
-    100% {padding-bottom: $bottom-padding};
+.hide-overflow {
+    overflow: hidden;
 }
 
 .small-bottom-padding {
-    animation: decrease-padding 5s;
-    -webkit-animation: decrease-padding 5s;
+    animation: decrease-height 1s;
 }
 
-@keyframes decrease-padding {
-    0% {padding-bottom: $bottom-padding};
-    100% {padding-bottom: $search-padding-bottom};
+@keyframes decrease-height {
+    0% {height: 100%};
+    100% {height: 40%};
 }
 
-@-webkit-keyframes decrease-padding {
-    0% {padding-bottom: $bottom-padding};
-    100% {padding-bottom: $search-padding-bottom};
+.large-bottom-padding {
+    animation: increase-height 1s;
+    animation-fill-mode: forwards;
+}
 
+@keyframes increase-height {
+    0% {height: 40%};
+    100% {height: 100%};
+}
+
+.raise-search-bar {
+    animation: raise 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes raise {
+    0% {height: 60%};
+    100% {height: 0%};
+}
+
+.lower-search-bar {
+    animation: lower 1s;
+}
+
+@keyframes lower {
+    0% {height: 0%;};
+    100% {height: 60%};
 }
 
 .search-bar-footer-div {
