@@ -455,6 +455,13 @@ const getTravelTime = co.wrap(function* (origin, dest, callback) {
     callback(results);
 });
 
+/* function to get the place details of a location */
+const getPlaceDetails = co.wrap(function* (location, callback) {
+    result = googleMapsClient.place({placeid: location.id}).asPromise();
+    result = yield result;
+    callback(result);
+});
+
 /*
  * This function is not tested.
  */
@@ -474,5 +481,6 @@ module.exports = {
     saveInDatabase,
     findName,
     getTravelTime,
+    getPlaceDetails,
 };
 
