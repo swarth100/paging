@@ -5,12 +5,14 @@
             <div ng-repeat="room in messageRooms">
                 <div class="panel panel-default message-room">
                     <button class="btn btn-room simplebox" ng-click="enterRoom($index);">
-                        <img class="type-icon-small"
-                             src="{{room.image}}"
-                             ng-show="room.name !== 'General'">
-                        <i class="fa fa-comments" aria-hidden="true"
-                                                  ng-show="room.name === 'General'"></i>
-                        <span class="wrap-text">{{room.name}}</span>
+                        <div class="add-space-for-badge">
+                            <img class="type-icon-small"
+                                 src="{{room.image}}"
+                                 ng-show="room.name !== 'General'">
+                            <i class="fa fa-comments" aria-hidden="true"
+                                                      ng-show="room.name === 'General'"></i>
+                            <span class="wrap-text">{{room.name}}</span>
+                        </div>
                         <span class="badge pull-right" ng-show="room.count > 0">{{room.count}}</span>
                     </button>
                 </div>
