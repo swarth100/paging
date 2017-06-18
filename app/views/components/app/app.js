@@ -1254,6 +1254,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.accordionCredit = false;
         if (type === 'options') {
             $scope.accordionOptions = true;
+            let height = document.getElementById('options-body').scrollHeight;
+            console.log(height.toString() + 'px');
+            $('#left-nav-options > .option > .panel-body').css('max-height', height.toString() + 'px');
         } else if(type === 'users') {
             $scope.accordionUsers = true;
         } else if(type === 'credit') {
