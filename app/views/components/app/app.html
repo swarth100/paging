@@ -56,9 +56,9 @@
                                 <h2 class="panel-title" ng-click="setAccordionOptions('options');">Options</h2>
                             </div>
                         </button>
-                        <div ng-show="accordionOptions" class="option">
+                        <div class="option">
                             <div class="panel-body">
-                                <div ng-include="'/components/app/options.html'"></div>
+                                <div id="options-body" ng-include="'/components/app/options.html'"></div>
                             </div>
                         </div>
                     </div>
@@ -68,8 +68,8 @@
                                 <h2 class="panel-title" ng-click="setAccordionOptions('users');">Users</h2>
                             </div>
                         </button>
-                        <div class="user" ng-show="accordionUsers">
-                            <div class="panel-body">
+                        <div class="user">
+                            <div id="users-body" class="panel-body">
                                 <div ng-include="'/components/app/users.html'"></div>
                             </div>
                         </div>
@@ -80,15 +80,17 @@
                                 <h2 class="panel-title" ng-click="setAccordionOptions('credit');">Credits</h2>
                             </div>
                         </button>
-                        <div class="credit" ng-show="accordionCredit">
-                            <div class="panel-body">
-                                <!-- Magical Span. Sets the correct width -->
-                                <span class="input-group-addon left-nav-bg square no-border"></span>
-                                <p class="grey-text">Icons made by
+                        <div class="credit">
+                            <div id="credits-body" class="panel-body">
+                                <div class="credit-padding">
+                                    <!-- Magical Span. Sets the correct width -->
+                                    <span class="input-group-addon left-nav-bg square no-border"></span>
+                                    <p class="grey-text">Icons made by
                                     <a href="http://www.freepik.com" target="_blank">Freepik</a> and
                                     <a href="http://www.scottdejonge.com" target="_blank">Scott de Jonge</a> from
                                     <a href="https://www.flaticon.com" target="_blank"> www.flaticon.com </a>
-                                </p>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -99,21 +101,21 @@
 </div>
 <div class="container-fluid no-padding" xmlns="http://www.w3.org/1999/html">
     <div ng-class="{'col-sm-12 col-md-12 no-padding': getMapSize() == 0, 'col-sm-8 col-md-9 no-padding': getMapSize() == 1, 'col-sm-4 col-md-6 no-padding': getMapSize() == 2}">
-    <!--div class="col-sm-4 col-md-6 no-padding"-->
+        <!--div class="col-sm-4 col-md-6 no-padding"-->
         <!-- The following is the controller for the post location -->
         <!-- The div nesting was done so that we could have the rotating gif
             when a search is commensed. -->
-        <div class="map-dimensions">
-            <div id="map" class="map-dimensions" ng-show="!issueSearch"></div>
-        </div>
-        <button class="btn left-nav-toggle-button-map no-padding simplebox" ng-click="toggleLeftNav()" style="width: 80px">
-            <i class="fa fa-chevron-up" aria-hidden="true"></i>
-            <div style="text-align: center;">OPTIONS</div>
-        </button>
-        <button class="btn right-nav-toggle-button-map no-padding simplebox" ng-click="toggleRightNav()" style="width: 80px">
-            <i class="fa fa-chevron-up" aria-hidden="true"></i>
-            <div style="text-align: center;">CHAT</div>
-        </button>
+            <div class="map-dimensions">
+                <div id="map" class="map-dimensions" ng-show="!issueSearch"></div>
+            </div>
+            <button class="btn left-nav-toggle-button-map no-padding simplebox" ng-click="toggleLeftNav()" style="width: 80px">
+                <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                <div style="text-align: center;">OPTIONS</div>
+            </button>
+            <button class="btn right-nav-toggle-button-map no-padding simplebox" ng-click="toggleRightNav()" style="width: 80px">
+                <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                <div style="text-align: center;">CHAT</div>
+            </button>
     </div>
     <div id="rightNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideRightBarShow">
         <!-- animate slideInRight -->

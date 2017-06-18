@@ -62,11 +62,13 @@
     width: 15vw !important;
     padding: 0px 0px;
     background-color: transparent;
+    animation-duration: 0.3s !important;
 }
 
 .dropdown-menu-types-tiny {
     padding: 0px 0px;
     background-color: transparent;
+    animation-duration: 0.3s !important;
 }
 
 .check-box-not-clicked {
@@ -123,6 +125,8 @@
     animation-duration: 1s;
 }
 
+$accordion-speed: 0.8s;
+
 #left-nav-options {
     .panel-heading {
         border-radius: 0;
@@ -134,6 +138,9 @@
         text-overflow: ellipsis;
     }
     .panel-body{
+        max-height: calc(100vh - 80px - 43px - 43px);
+        overflow: hidden;
+        transition: max-height $accordion-speed ease-out;
         background: $left-nav-text-bg;
     }
     .left-nav-bg {
@@ -155,6 +162,9 @@
         border-left: none;
     }
     .panel-body{
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height $accordion-speed ease-out;
         background: $left-nav-text-bg;
     }
 }
@@ -168,6 +178,12 @@
         border-bottom: none;
         border-left: none;
     }
+    .panel-body{
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height $accordion-speed ease-out;
+        background: $left-nav-text-bg;
+    }
     .grey-text {
         color: grey;
         width: 90%;
@@ -176,6 +192,11 @@
     .grey-text > a {
         color: grey;
     }
+    .credit-padding {
+        background: $left-nav-text-bg;
+        height: calc(100vh - 80px - 43px - 43px - 42px);
+    }
+
 }
 
 .left-nav-button, .left-nav-button:focus {

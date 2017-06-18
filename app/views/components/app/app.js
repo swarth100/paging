@@ -37,10 +37,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.messageCount =
         [{location: 'General', count: 0}]; /* Array. Contains list of message rooms we have currently */
 
-    $scope.accordionOptions = true;        /* Boolean. Is options window open? */
-    $scope.accordionUsers = false;         /* Boolean. Is users window open? */
-    $scope.accordionCredit = false;        /* Boolean. Is credit window open? */
-
     $scope.sideRightBarShow = false;       /* Boolean. Stores ng-show for rightNavBar */
     $scope.sideRightBarOpening = false;    /* Boolean. Stores opening status for rightNavBar */
     $scope.sideRightBarAnimating = false;  /* Boolean. Stores animation status of rightNavBar */
@@ -1248,20 +1244,29 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Allow only one type at a type */
     $scope.setAccordionOptions = (type) => {
-        $scope.insideRoom = false;
-        $scope.accordionOptions = false;
-        $scope.accordionUsers = false;
-        $scope.accordionCredit = false;
         if (type === 'options') {
-            $scope.accordionOptions = true;
+            let height = document.getElementById('options-body').scrollHeight;
+            $('#left-nav-options > .option > .panel-body').css('max-height', height.toString() + 'px');
+
+            $('#left-nav-users > .user > .panel-body').css('max-height', '0px');
+            $('#left-nav-credit > .credit > .panel-body').css('max-height', '0px');
         } else if(type === 'users') {
-            $scope.accordionUsers = true;
+            let height = document.getElementById('users-body').scrollHeight;
+            $('#left-nav-users > .user > .panel-body').css('max-height', height.toString() + 'px');
+
+            $('#left-nav-options > .option > .panel-body').css('max-height', '0px');
+            $('#left-nav-credit > .credit > .panel-body').css('max-height', '0px');
         } else if(type === 'credit') {
-            $scope.accordionCredit = true;
+            let height = document.getElementById('credits-body').scrollHeight;
+            $('#left-nav-credit > .credit > .panel-body').css('max-height', height.toString() + 'px');
+
+            $('#left-nav-options > .option > .panel-body').css('max-height', '0px');
+            $('#left-nav-users > .user > .panel-body').css('max-height', '0px');
         } else {
             console.log('accordion type mismatch');
         }
     };
+
 
     /* ---------------------------------------------------------------------------------------------------------------*/
     /* Bootstrap helper functions */
