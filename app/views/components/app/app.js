@@ -632,7 +632,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Update the map bounds to incorporate all users in the viewport. */
         map.fitBounds(mapBounds);
-        $scope.mapHookCenter(false, 2);
+        $scope.mapHookCenter(true, 2);
     };
 
     /* InitMap helper functions: */
@@ -674,12 +674,18 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     break;
             }
 
+            ratio *= value;
+
+            /* Scale accordingly if right navBar is open */
+            if ($scope.sideRightBarShow) {
+                ratio *= ratio;
+                ratio *= ratio;
+            }
+
             /* Adjust the sign for positive/negative shifts */
             if (!sign) {
                 ratio *= -1;
             }
-
-            ratio *= value;
 
             /* Retrieve the current center form the map */
             let latlng = map.getCenter();
@@ -1292,9 +1298,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Recalculated the map's centre in order to hook it.
          * This prevents the map from being shifted after the recalculation of the navBar */
-        /* if ($scope.sideLeftBarShow) {
-            $scope.mapHookCenter(true, 1);
-        } */
+        // if ($scope.sideLeftBarShow) {
+        //     $scope.mapHookCenter(true, 1);
+        // }
 
         /* Sets the leftNavBar to a true animating state */
         $scope.sideLeftBarAnimating = true;
@@ -1329,9 +1335,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Recalculated the map's centre in order to hook it.
          * This prevents the map from being shifted after the recalculation of the navBar */
-        /* if ($scope.sideLeftBarShow) {
-            $scope.mapHookCenter(false, 1);
-        } */
+        // if ($scope.sideLeftBarShow) {
+        //     $scope.mapHookCenter(false, 1);
+        // }
 
         /* Sets the leftNavBar to a false animating state */
         $scope.sideLeftBarAnimating = false;
