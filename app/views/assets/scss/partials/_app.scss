@@ -26,13 +26,13 @@
 }
 
 .scrollable-table-users {
-    height: calc(100vh - 293px);
+    height: calc(100vh - 308px);
     overflow: auto;
     width: 100%;
 }
 
 .scrollable-table-options {
-    height: calc(100vh - 388px);
+    height: calc(100vh - 390px);
     overflow: auto;
     width: 100%;
 }
@@ -312,7 +312,6 @@ animation: slide-in-left 1s forwards;
 }
 
 .left-nav-absolute {
-    position: fixed;
     bottom: 0;
     left: 0;
 }
@@ -343,8 +342,9 @@ animation: slide-in-left 1s forwards;
 }
 
 a[href^="https://maps.google.com/maps"]{
-    position: relative !important;
-    left: 1600% !important;
+    position: fixed !important;
+    left: 50% !important;
+    bottom: 0 !important;
 }
 
 .gm-style-mtc {
