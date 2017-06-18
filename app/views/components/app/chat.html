@@ -5,12 +5,14 @@
             <div ng-repeat="room in messageRooms">
                 <div class="panel panel-default message-room">
                     <button class="btn btn-room simplebox" ng-click="enterRoom($index);">
-                        <img class="type-icon-small"
-                             src="{{room.image}}"
-                             ng-show="room.name !== 'General'">
-                        <i class="fa fa-comments" aria-hidden="true"
-                                                  ng-show="room.name === 'General'"></i>
-                        <span class="wrap-text">{{room.name}}</span>
+                        <div class="add-space-for-badge">
+                            <img class="type-icon-small"
+                                 src="{{room.image}}"
+                                 ng-show="room.name !== 'General'">
+                            <i class="fa fa-comments" aria-hidden="true"
+                                                      ng-show="room.name === 'General'"></i>
+                            <span class="wrap-text">{{room.name}}</span>
+                        </div>
                         <span class="badge pull-right" ng-show="room.count > 0">{{room.count}}</span>
                     </button>
                 </div>
@@ -33,9 +35,9 @@
                     </div>
                 </div>
                 <div ng-show="roomMessages.length === 0">
-                    <div class="centre-text no-conversation animated bounceIn">
+                    <div class="centre-text no-conversation animated fadeIn">
                         <i class="fa fa-comments large-icon" aria-hidden="true"></i>
-                        <h2><strong>No Conversation Yet!</strong></h2>
+                        <h2><strong>No Conversation Yet!</strong></h2><br/>
                         Start a new conversation!
                     </div>
                 </div>

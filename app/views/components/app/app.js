@@ -4,7 +4,7 @@
  * location analysis
  */
 
-app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibModal, $location, $compile, socket, Data) {
+app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibModal, $location, $compile, $timeout, socket, Data) {
     /* ---------------------------------------------------------------------------------------------------------------*/
     /* Initialise fields used by the controller */
 
@@ -1123,6 +1123,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return username === Data.user.username;
     };
 
+    /* Function to dynamically set height of chat bar */
+    const setChatBodyHeight = () => {
+        let height = 'calc(100vh - 170px - ' + ($('#chat-title').height() - 42).toString() + 'px)';
+        console.log(height);
+        $('#message-board').css('height', height);
+    };
+
+
     /* Functions to handle room entry */
     $scope.enterRoom = (index) => {
         let room = $scope.messageRooms[index].name;
@@ -1133,6 +1141,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             }
         }
         $scope.insideRoom = true;
+        $timeout(function() {
+            setChatBodyHeight();
+        }, 0, false);
     };
 
     /* Functions to handle room entry */
@@ -1144,6 +1155,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         addRooms();
         /* switch view to room */
         $scope.insideRoom = false;
+        setChatBodyHeight();
     };
 
     const getImageURL = (type) => {
@@ -1449,8 +1461,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         google.maps.event.addListenerOnce(map, 'idle', function() {
             /* Triggered on complete initialisation */
             /* map.addListener('center_changed', function() {
-                console.log('Centre Changed');
-            }); */
+               console.log('Centre Changed');
+               }); */
         });
 
         google.maps.event.addListenerOnce(map, 'projection_changed', function() {
