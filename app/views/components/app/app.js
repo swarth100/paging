@@ -10,11 +10,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     $scope.types = Data.types;            /* Array. Keeps tract of the active types of the room */
     $scope.colors = Data.colors;          /* Array. Holds available colors */
-    $scope.appSearch = Data.query;        /* ?? */
+    $scope.appSearch = Data.query;        /* Copy over the query made in home page */
     Data.user.username = '';              /* String. Holds current user's username */
 
     $scope.newSession = true;             /* Boolean. Initialised to true upon entry */
-    $scope.issueSearch = false;           /* Boolean. ?? */
+    $scope.issueSearch = false;           /* Boolean. Use to load loading GIF whilst search is conducted */
     $scope.isChatting = true;             /* Boolean. Checks if chat window is open */
     $scope.insideRoom = false;            /* Boolean. Determines whether to be in room list view or be inside chat view */
 
@@ -32,9 +32,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.transports = [];               /* Array. Holds list of available transport types */
     $scope.messageRooms = ['General'];    /* Array. Contains list of message rooms we have currently */
 
-    $scope.accordionOptions = true;       /* Boolean. ?? */
-    $scope.accordionUsers = false;        /* Boolean. ?? */
-    $scope.accordionChat = false;         /* Boolean. ?? */
+    $scope.accordionOptions = true;       /* Boolean. Is options window open? */
+    $scope.accordionUsers = false;        /* Boolean. Is users window open? */
+    $scope.accordionCredit = false;         /* Boolean. Is credit window open? */
 
     $scope.sideRightBarShow = false;      /* Boolean. Stores ng-show for rightNavBar */
     $scope.sideRightBarOpening = false;   /* Boolean. Stores opening status for rightNavBar */
@@ -422,9 +422,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.messages = messages;
         if (!initial && $scope.messages.slice(-1)[0].username !== Data.user.username) {
             /* only increment if you are not the sender and you don't have chat open */
-            if (!$scope.accordionChat) {
-                $scope.numMessages += 1;
-            }
+            $scope.numMessages += 1;
         }
         $scope.$apply();
     };
@@ -1174,14 +1172,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         $scope.insideRoom = false;
         $scope.accordionOptions = false;
         $scope.accordionUsers = false;
-        $scope.accordionChat = false;
+        $scope.accordionCredit = false;
         if (type === 'options') {
             $scope.accordionOptions = true;
         } else if(type === 'users') {
             $scope.accordionUsers = true;
-        } else if(type === 'chat') {
-            $scope.numMessages = 0;
-            $scope.accordionChat = true;
+        } else if(type === 'credit') {
+            $scope.accordionCredit = true;
         } else {
             console.log('accordion type mismatch');
         }
