@@ -412,27 +412,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* On recieve */
     const socketRecieveMessage = function(messages) {
-        /* if there is no update in message, reject */
-        if ($scope.messages.length === messages.length) {
-            return;
-        }
-        let initial = false;
-        if ($scope.messages.length === 0 && messages.length >= 1) {
-            /* differentiate between the first message recieved and initial message recieve on refresh */
-            initial = !messages.slice(-1)[0].isFirst;
-        }
-        /* number of messages received */
-        let diff = $scope.messages.length - messages.length;
-        messages.slice(diff).forEach((mes, i) => {
-            if (mes.location === $scope.currentRoom) {
-                $scope.roomMessages.push(mes);
+        $scope.messages = messages;
+        $scope.messages.forEach((m, i) => {
+            if (m.location === $scope.currentRoom) {
+                $scope.roomMessages = m.messages;
             }
         });
-        $scope.messages = messages;
-        if (!initial && $scope.messages.slice(-1)[0].username !== Data.user.username) {
-            /* only increment if you are not the sender and you don't have chat open */
-            $scope.numMessages += 1;
-        }
         $scope.$apply();
     };
 
@@ -521,9 +506,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* no empty message */
         if ($scope.message !== '') {
             socket.emit('chatMessage', {
-                username: Data.user.username,
                 location: $scope.currentRoom,
-                message: $scope.message,
+                messages: {
+                    username: Data.user.username,
+                    message: $scope.message,
+                },
             });
             $scope.message = '';
         }
@@ -1087,12 +1074,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.enterRoom = (index) => {
         let room = $scope.messageRooms[index].name;
         $scope.currentRoom = room;
-        /* empty the room messages */
         $scope.roomMessages = [];
-        $scope.messages.forEach((mes, i) => {
-            /* fill the messages with relavant ones */
-            if (mes.location === room) {
-                $scope.roomMessages.push(mes);
+        $scope.messages.forEach((m, i) => {
+            if (m.location === $scope.currentRoom) {
+                $scope.roomMessages = m.messages;
             }
         });
         /* switch view to room */
@@ -1105,7 +1090,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             let t = ts[i];
             t.name = t.name.split(' ').join('_').toLowerCase();
             if(t.name === type) {
-                console.log(Data.types);
                 return t.image;
             }
         }
@@ -1244,8 +1228,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Handles toggleing of rightNav */
     $scope.toggleRightNav = function() {
-        console.log('right click');
-
         /* When rightNavbar is opened, refresh roomms */
         addRooms();
 
@@ -1294,8 +1276,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Handles toggleing of leftNav */
     $scope.toggleLeftNav = function() {
-        console.log('left click');
-
         /* Recalculated the map's centre in order to hook it.
          * This prevents the map from being shifted after the recalculation of the navBar */
         // if ($scope.sideLeftBarShow) {
@@ -1416,7 +1396,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
 /* */
 app.controller('modalController', function($scope, $location) {
-    console.log('location: ', location.href);
     $scope.message = location.href;
 });
 
