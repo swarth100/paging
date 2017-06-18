@@ -1258,7 +1258,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             $('#left-nav-credits > .credit > .panel-body').css('max-height', '0px');
         } else if(type === 'credit') {
             let height = document.getElementById('credits-body').scrollHeight;
-            $('#left-nav-credits > .credit > .panel-body').css('max-height', height.toString() + 'px');
+            $('#left-nav-credit > .credit > .panel-body').css('max-height', height.toString() + 'px');
 
             $('#left-nav-options > .option > .panel-body').css('max-height', '0px');
             $('#left-nav-users > .user > .panel-body').css('max-height', '0px');
