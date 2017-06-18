@@ -275,18 +275,31 @@ animation: slide-in-right 1s forwards;
     100% { transform: translateX(100%); }
 }
 
-.right-nav-toggle-button {
-    margin-left: -79px;
+.basic-toggle-button, .basic-toggle-button:focus {
+    color: $nav-text;
+    background: $left-nav-header;
     position: fixed;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.basic-toggle-button:hover {
+    color: $nav-text-highlight;
+    background: $left-nav-header-selected;
+}
+
+.right-nav-toggle-button {
+    @extend .basic-toggle-button;
+    margin-left: -62px;
     transform: rotate(270deg);
     top: calc(40vh);
 }
 
 .right-nav-toggle-button-map {
-    margin-left: -79px;
-    position: fixed;
+    @extend .basic-toggle-button;
+    margin-left: -61px;
     left: 100%;
-    transform: rotate(270deg);
+    transform: rotate(270deg) scale(1);
     top: calc(40vh + 80px);
 }
 
@@ -327,17 +340,17 @@ animation: slide-in-left 1s forwards;
 }
 
 .left-nav-toggle-button {
-    margin-left: -39px;
-    position: fixed;
+    @extend .basic-toggle-button;
+    margin-left: -18px;
     transform: rotate(90deg);
     top: calc(40vh);
     left: 100%;
 }
 
 .left-nav-toggle-button-map {
-    margin-left: -39px;
-    position: fixed;
-    transform: rotate(90deg);
+    @extend .basic-toggle-button;
+    margin-left: -19px;
+    transform: rotate(90deg) scale(1);
     top: calc(40vh + 80px);
 }
 

@@ -44,8 +44,9 @@
     <div id="leftNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideLeftBarShow" style="z-index: 1;">
         <!-- animate slideInRLeft -->
         <div class="sidenav-top nav-left-animate">
-            <button class="btn left-nav-toggle-button simplebox" ng-click="toggleLeftNav()">
-                TOGGLE LEFT
+            <button class="btn left-nav-toggle-button no-padding simplebox" ng-click="toggleLeftNav()" style="width: 80px">
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                <div style="text-align: center;">OPTIONS</div>
             </button>
             <div class="panel-group no-margin" id="accordion">
                 <div class="panel panel-default no-border">
@@ -102,21 +103,24 @@
         <!-- The following is the controller for the post location -->
         <!-- The div nesting was done so that we could have the rotating gif
             when a search is commensed. -->
-            <div class="map-dimensions">
-                <div id="map" class="map-dimensions" ng-show="!issueSearch"></div>
-            </div>
-            <button class="btn left-nav-toggle-button-map simplebox" ng-click="toggleLeftNav()">
-                TOGGLE LEFT
-            </button>
-            <button class="btn right-nav-toggle-button-map simplebox" ng-click="toggleRightNav()">
-                TOGGLE RIGHT
-            </button>
+        <div class="map-dimensions">
+            <div id="map" class="map-dimensions" ng-show="!issueSearch"></div>
+        </div>
+        <button class="btn left-nav-toggle-button-map no-padding simplebox" ng-click="toggleLeftNav()" style="width: 80px">
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+            <div style="text-align: center;">OPTIONS</div>
+        </button>
+        <button class="btn right-nav-toggle-button-map no-padding simplebox" ng-click="toggleRightNav()" style="width: 80px">
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+            <div style="text-align: center;">CHAT</div>
+        </button>
     </div>
     <div id="rightNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideRightBarShow">
         <!-- animate slideInRight -->
         <div class="sidenav-top nav-right-animate">
-            <button class="btn right-nav-toggle-button simplebox" ng-click="toggleRightNav()">
-                TOGGLE RIGHT
+            <button class="btn right-nav-toggle-button no-padding simplebox" ng-click="toggleRightNav()" style="width: 80px">
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                <div style="text-align: center;">CHAT</div>
             </button>
             <div class="panel-group no-margin" id="accordion">
                 <div class="panel panel-default no-border">
