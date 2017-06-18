@@ -61,8 +61,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let directionsDisplay;                 /* Object. Used by googleMaps */
     let directionsService;                 /* Object. Used by googleMaps */
 
-    let discardInitialUpdate = true;
-
     let compiledSelectedHTML;              /* HTML. Precompiled for infoBubbles */
     let compiledHoveredHTML;               /* HTML. Precompiled for infoBubbles */
 
@@ -359,10 +357,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             socketRefresh(room);
 
             /* Discarding initial refresh (for submission), update the Map */
-            if (!discardInitialUpdate) {
+            if (!room.duration) {
                 $scope.initMap(location, room);
             }
-            discardInitialUpdate = false;
         });
     };
 
