@@ -350,7 +350,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
         $scope.$apply();
         $scope.getLocation(function(location) {
-            $scope.initMap(location, room);
+            /* On update refresh the data */
+            socketRefresh(room);
+
+            /* Discarding initial refresh (for submission), update the Map */
+            if (!discardInitialUpdate) {
+                $scope.initMap(location, room);
+            }
+            discardInitialUpdate = false;
         });
     };
 
@@ -560,77 +567,72 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         users = room.users;
         resultLocations = room.results;
 
-        socketRefresh(room);
+        for (i = 0; i < users.length; i++) {
+            let radLoc = {
+                'lat': users[i].lat,
+                'lng': users[i].lng,
+            };
 
-        if (!discardInitialUpdate) {
-            for (i = 0; i < users.length; i++) {
-                let radLoc = {
-                    'lat': users[i].lat,
-                    'lng': users[i].lng,
-                };
+            /* Initialise the marker */
+            let marker = markUser(radLoc, users[i], map);
 
-                /* Initialise the marker */
-                let marker = markUser(radLoc, users[i], map);
+            /* Initialise the radius */
+            let radius = initRadius(radLoc, users[i], map, marker);
 
-                /* Initialise the radius */
-                let radius = initRadius(radLoc, users[i], map, marker);
+            /* Add the radius to the map bounds in order to control the map
+             zoom. */
+            mapBounds = mapBounds.union(radius.getBounds());
 
-                /* Add the radius to the map bounds in order to control the map
-                 zoom. */
-                mapBounds = mapBounds.union(radius.getBounds());
+            mapObjects.push(marker);
+            mapObjects.push(radius);
 
-                mapObjects.push(marker);
-                mapObjects.push(radius);
+            let userBubble = createUserInfoBubble(users[i]);
 
-                let userBubble = createUserInfoBubble(users[i]);
-
-                markerAddInfo(map, marker, userBubble);
-            }
-
-            /*
-             * This code iterates through all returned positions, setting them up on
-             * the map.
-             */
-            if (room.results) {
-                for (let i = 0; i < markers.length; i++) {
-                    markers[i].setMap(null);
-                    markers[i].typeMarker.setMap(null);
-                    for (let j = 0; j < markers[i].colouredDots.length; j++) {
-                        markers[i].colouredDots[j].setMap(null);
-                    }
-                }
-
-                /* Reset the markers array when new results are received. */
-                markers = [];
-
-                for (let i = 0; i < room.results.length; i++) {
-                    let infoBubble = createLocationInfoBubble(i);
-
-                    let marker = markResult(room.results[i], map);
-
-                    markers.push(marker);
-
-                    markerAddInfo(map, marker, infoBubble);
-                }
-            }
-
-            /* Draws coloured dots over locations if needed. */
-            for (let i = 0; i < room.results.length; i++) {
-                changeColoursOfMarkers(i, room.results[i].users);
-            }
-            /* Initialise the map via the Google API */
-            if (!(room.users.length === 1 && $scope.newSession)) {
-                document.getElementById('map').style.visibility = 'visible';
-            }
-
-            /* Update chat-room with the new results */
-            addRooms();
-
-            /* Update the map bounds to incorporate all users in the viewport. */
-            map.fitBounds(mapBounds);
-            $scope.mapHookCenter(false, 2);
+            markerAddInfo(map, marker, userBubble);
         }
-        discardInitialUpdate = false;
+
+        /*
+         * This code iterates through all returned positions, setting them up on
+         * the map.
+         */
+        if (room.results) {
+            for (let i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+                markers[i].typeMarker.setMap(null);
+                for (let j = 0; j < markers[i].colouredDots.length; j++) {
+                    markers[i].colouredDots[j].setMap(null);
+                }
+            }
+
+            /* Reset the markers array when new results are received. */
+            markers = [];
+
+            for (let i = 0; i < room.results.length; i++) {
+                let infoBubble = createLocationInfoBubble(i);
+
+                let marker = markResult(room.results[i], map);
+
+                markers.push(marker);
+
+                markerAddInfo(map, marker, infoBubble);
+            }
+        }
+
+        /* Draws coloured dots over locations if needed. */
+        for (let i = 0; i < room.results.length; i++) {
+            changeColoursOfMarkers(i, room.results[i].users);
+        }
+        /* Initialise the map via the Google API */
+        if (!(room.users.length === 1 && $scope.newSession)) {
+            document.getElementById('map').style.visibility = 'visible';
+        }
+
+        /* Update chat-room with the new results */
+        addRooms();
+
+        /* Update the map bounds to incorporate all users in the viewport. */
+        map.fitBounds(mapBounds);
+        $scope.mapHookCenter(false, 2);
     };
 
     /* InitMap helper functions: */
@@ -682,9 +684,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             /* Retrieve the current center form the map */
             let latlng = map.getCenter();
 
-            console.log(latlng.lat());
-            console.log(latlng.lng());
-
             /* Determine the offsets */
             let offsetx = $(window).width() / ratio;
             let offsety = 0;
@@ -704,9 +703,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
             /* Adjust that as a new centre */
             let newCenter = map.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
-
-            console.log(newCenter.lat());
-            console.log(newCenter.lng());
 
             /* Apply the new center */
             map.setCenter(newCenter);
@@ -1403,13 +1399,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         document.getElementById('map').style.visibility = 'hidden';
 
         google.maps.event.addListenerOnce(map, 'idle', function() {
-
+            /* Triggered on complete initialisation */
+            map.addListener('center_changed', function() {
+                console.log('Centre Changed');
+            });
         });
 
         google.maps.event.addListenerOnce(map, 'projection_changed', function() {
-            map.addListener('center_changed', function() {
-                console.log('Bobby');
-            });
+            /* Triggered when projection viewport can be called */
         });
     });
 
