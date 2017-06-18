@@ -7,9 +7,17 @@
         border-right: none;
         border-bottom: none;
         border-left: none;
+        vertical-align: middle;
     }
     .panel-body{
         background: $left-nav-text-bg;
+    }
+    .chat-header {
+        display: inline-block;
+        width: 90%;
+    }
+    .fa.pull-right {
+        padding-top: 2px;
     }
 }
 
