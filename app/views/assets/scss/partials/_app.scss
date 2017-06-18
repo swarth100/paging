@@ -26,13 +26,13 @@
 }
 
 .scrollable-table-users {
-    height: calc(100vh - 256px - 40px);
+    height: calc(100vh - 293px);
     overflow: auto;
     width: 100%;
 }
 
 .scrollable-table-options {
-    height: calc(100vh - 256px - 45px - 45px - 45px);
+    height: calc(100vh - 388px);
     overflow: auto;
     width: 100%;
 }
@@ -154,6 +154,25 @@
     }
     .panel-body{
         background: $left-nav-text-bg;
+    }
+}
+
+#left-nav-credit {
+    .panel-heading {
+        border-color: $left-nav-header-border;
+        border-style: solid;
+        border-width: 1px;
+        border-right: none;
+        border-bottom: none;
+        border-left: none;
+    }
+    .grey-text {
+        color: grey;
+        width: 90%;
+        margin: 0 auto;
+    }
+    .grey-text > a {
+        color: grey;
     }
 }
 
@@ -323,19 +342,6 @@ animation: slide-in-left 1s forwards;
     top: calc(40vh + 80px);
 }
 
-#credit {
-    height: 43px;
-    border: none;
-    background: $left-nav-text-bg !important;
-    .grey-text {
-        color: grey;
-        width: 90%;
-        margin: 0 auto;
-    }
-    .grey-text > a {
-        color: grey;
-    }
-}
 
 .modal-content  {
     -webkit-border-radius: 0px !important;
