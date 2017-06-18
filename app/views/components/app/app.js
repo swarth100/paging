@@ -8,61 +8,66 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* ---------------------------------------------------------------------------------------------------------------*/
     /* Initialise fields used by the controller */
 
-    $scope.types = Data.types;            /* Array. Keeps tract of the active types of the room */
-    $scope.colors = Data.colors;          /* Array. Holds available colors */
-    $scope.appSearch = Data.query;        /* Copy over the query made in home page */
-    Data.user.username = '';              /* String. Holds current user's username */
+    $scope.types = Data.types;             /* Array. Keeps tract of the active types of the room */
+    $scope.colors = Data.colors;           /* Array. Holds available colors */
+    $scope.appSearch = Data.query;         /* Copy over the query made in home page */
+    Data.user.username = '';               /* String. Holds current user's username */
 
-    $scope.newSession = true;             /* Boolean. Initialised to true upon entry */
-    $scope.issueSearch = false;           /* Boolean. Use to load loading GIF whilst search is conducted */
-    $scope.isChatting = true;             /* Boolean. Checks if chat window is open */
-    $scope.insideRoom = false;            /* Boolean. Determines whether to be in room list view or be inside chat view */
+    $scope.newSession = true;              /* Boolean. Initialised to true upon entry */
+    $scope.issueSearch = false;            /* Boolean. Use to load loading GIF whilst search is conducted */
+    $scope.isChatting = true;              /* Boolean. Checks if chat window is open */
+    $scope.insideRoom = false;             /* Boolean. Determines whether to be in room list view or be inside chat view */
 
-    $scope.numMessages = 0;               /* Integer. Holds number of unread messages */
-    $scope.selectedResultIndex = 0;       /* Integer. Holds the result of the selected infoBubble */
-    $scope.hoveredResultIndex = 0;        /* Integer. Holds the result of the hovered upon infoBubble */
+    $scope.numMessages = 0;                /* Integer. Holds number of unread messages */
+    $scope.selectedResultIndex = 0;        /* Integer. Holds the result of the selected infoBubble */
+    $scope.hoveredResultIndex = 0;         /* Integer. Holds the result of the hovered upon infoBubble */
 
-    $scope.roomID = $routeParams.room;    /* String. Socket.io roomID */
-    $scope.message = '';                  /* String. The message the user is sending */
-    $scope.currentRoom = 'Chat';          /* String. Holds the users room which one is inside now */
-    $scope.transportType = 'Null';        /* String. Holds the user-selected transport type */
+    $scope.roomID = $routeParams.room;     /* String. Socket.io roomID */
+    $scope.message = '';                   /* String. The message the user is sending */
+    $scope.currentRoom = 'Chat';           /* String. Holds the users room which one is inside now */
+    $scope.transportType = 'Null';         /* String. Holds the user-selected transport type */
 
-    $scope.messages = [];                 /* Array. Holds the global list of all messages */
-    $scope.roomMessages = [];             /* Array. Lists messages specific to the current room */
-    $scope.transports = [];               /* Array. Holds list of available transport types */
-    $scope.messageRooms = ['General'];    /* Array. Contains list of message rooms we have currently */
+    $scope.messages = [];                  /* Array. Holds the global list of all messages */
+    $scope.roomMessages = [];              /* Array. Lists messages specific to the current room */
+    $scope.transports = [];                /* Array. Holds list of available transport types */
+    $scope.roomMap = new Map();            /* Holds mapping between location and message count */
+    $scope.roomMap.set('General', 0);
+    $scope.messageRooms =                  /* Array. Contains list of message rooms we have currently */
+        [{name: 'General', image: '', count: 0}];
+    $scope.messageCount =
+        [{location: 'General', count: 0}]; /* Array. Contains list of message rooms we have currently */
 
-    $scope.accordionOptions = true;       /* Boolean. Is options window open? */
-    $scope.accordionUsers = false;        /* Boolean. Is users window open? */
-    $scope.accordionCredit = false;         /* Boolean. Is credit window open? */
+    $scope.accordionOptions = true;        /* Boolean. Is options window open? */
+    $scope.accordionUsers = false;         /* Boolean. Is users window open? */
+    $scope.accordionCredit = false;        /* Boolean. Is credit window open? */
 
-    $scope.sideRightBarShow = false;      /* Boolean. Stores ng-show for rightNavBar */
-    $scope.sideRightBarOpening = false;   /* Boolean. Stores opening status for rightNavBar */
-    $scope.sideRightBarAnimating = false; /* Boolean. Stores animation status of rightNavBar */
-    $scope.sideLeftBarShow = false;       /* Boolean. Stores ng-show for leftNavBar */
-    $scope.sideLeftBarOpening = false;    /* Boolean. Stores opening status for leftNavBar */
-    $scope.sideLeftBarAnimating = false;  /* Boolean. Stores animation status of leftNavBar */
+    $scope.sideRightBarShow = false;       /* Boolean. Stores ng-show for rightNavBar */
+    $scope.sideRightBarOpening = false;    /* Boolean. Stores opening status for rightNavBar */
+    $scope.sideRightBarAnimating = false;  /* Boolean. Stores animation status of rightNavBar */
+    $scope.sideLeftBarShow = false;        /* Boolean. Stores ng-show for leftNavBar */
+    $scope.sideLeftBarOpening = false;     /* Boolean. Stores opening status for leftNavBar */
+    $scope.sideLeftBarAnimating = false;   /* Boolean. Stores animation status of leftNavBar */
 
-    let resultLocations = [];             /* Array. Contains displayed resulted locations */
-    let markers = [];                     /* Array. Contains list of live markers */
+    let resultLocations = [];              /* Array. Contains displayed resulted locations */
+    let markers = [];                      /* Array. Contains list of live markers */
     let mapObjects = [];
 
-    let userMarker;                       /* ?? */
-    let users;                            /* ?? */
-    let map;                              /* Object. Contains an instance of the map */
-    let lastOpenedInfoBubble;             /* Object. Contains last opened infoBubble */
+    let userMarker;                        /* ?? */
+    let users;                             /* ?? */
+    let map;                               /* Object. Contains an instance of the map */
+    let lastOpenedInfoBubble;              /* Object. Contains last opened infoBubble */
 
-    let geocoder;                         /* Object. Used by googleMaps */
-    let directionsDisplay;                /* Object. Used by googleMaps */
-    let directionsService;                /* Object. Used by googleMaps */
+    let geocoder;                          /* Object. Used by googleMaps */
+    let directionsDisplay;                 /* Object. Used by googleMaps */
+    let directionsService;                 /* Object. Used by googleMaps */
 
     let discardInitialUpdate = true;
 
-    let compiledSelectedHTML;             /* HTML. Precompiled for infoBubbles */
-    let compiledHoveredHTML;              /* HTML. Precompiled for infoBubbles */
+    let compiledSelectedHTML;              /* HTML. Precompiled for infoBubbles */
+    let compiledHoveredHTML;               /* HTML. Precompiled for infoBubbles */
 
-    let rightNav;                         /* Object. Holds instance of rightNavBar */
-    let leftNav;                          /* Object. Holds instance of leftNavBar */
+    let rightNav;                          /* Object. Holds instance of rightNavBar */
+    let leftNav;                           /* Object. Holds instance of leftNavBar */
 
     /* ---------------------------------------------------------------------------------------------------------------*/
 
@@ -194,33 +199,33 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     const generateInfoBubbleTemplate = function(result) {
         return (
                 `<div>
-                    <div class="input-group">
-                        <span class="input-group-btn bubble-header">
-                            <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
-                                <i class="fa fa-thumbs-up"></i>
-                            </button>
-                        </span>
-                        <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
-                    </div>
-                    <div class="bubble-separator"></div>
-                    <div class="btn-group btn-group-justified">
-                        <label class="btn bubble-btn square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
-                            <i class="{{transport.icon}}"></i>
-                            <br>
-                            <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
-                                <p style="margin: 0">{{transport.name}}</p>
-                            </div>
-                            <div ng-show=\"hasTime(getMarkerFromIndex(` + result + `))\">
-                                <p style="margin: 0">{{getTime(getMarkerFromIndex(` + result + `), transport)}}</p>
-                            </div>
-                        </label>
-                    </div>
-                    <div class="bubble-separator"></div>
-                    <div class="like-text-field">
-                        <div style="display: inline; color: blue;">Liked By: </div>
-                        {{printUsers(getResultFromIndex(` + result + `).users)}}
-                    </div>
-                </div>`
+                <div class="input-group">
+                <span class="input-group-btn bubble-header">
+                <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
+                <i class="fa fa-thumbs-up"></i>
+                </button>
+                </span>
+                <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
+                </div>
+                <div class="bubble-separator"></div>
+                <div class="btn-group btn-group-justified">
+                <label class="btn bubble-btn square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
+                <i class="{{transport.icon}}"></i>
+                <br>
+                <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
+                <p style="margin: 0">{{transport.name}}</p>
+                </div>
+                <div ng-show=\"hasTime(getMarkerFromIndex(` + result + `))\">
+                <p style="margin: 0">{{getTime(getMarkerFromIndex(` + result + `), transport)}}</p>
+                </div>
+                </label>
+                </div>
+                <div class="bubble-separator"></div>
+                <div class="like-text-field">
+                <div style="display: inline; color: blue;">Liked By: </div>
+                {{printUsers(getResultFromIndex(` + result + `).users)}}
+        </div>
+            </div>`
             );
     };
 
@@ -276,7 +281,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                             callback(location);
                         } else {
                             // alert('Geocode was not successful for the following' +
-                                    // ' reason: ' + status);
+                            // ' reason: ' + status);
                         }
                     });
         }
@@ -412,12 +417,51 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* On recieve */
     const socketRecieveMessage = function(messages) {
-        $scope.messages = messages;
-        $scope.messages.forEach((m, i) => {
-            if (m.location === $scope.currentRoom) {
-                $scope.roomMessages = m.messages;
-            }
-        });
+        /* we have ...
+         * list of messages, one for each room
+         * message count is tracked by a set roomMap
+         * we recieve
+         * all of the messages on connection (via empty '')
+         * one message at a time after initial connection
+         */
+
+        /* on inital connection we retrive all of the messages */
+        if (Array.isArray(messages)) {
+            /* copy over the message on backend to the client */
+            $scope.messages = messages;
+            /* reset the counter for all the rooms */
+            $scope.roomMap.clear();
+            /* put messages accordingly into rooms */
+            $scope.messages.forEach((m, i) => {
+                let prev = $scope.roomMap.get(m.location);
+                if (m.location === $scope.currentRoom) {
+                    $scope.roomMessages = m.messages;
+                }
+            });
+        } else {
+            /* this is a indivisual messages */
+            $scope.messages.forEach((m, i) => {
+                if (m.location === messages.location) {
+                    m.messages.push(messages.messages);
+                    /* check if the message is sent by the user */
+                    if (m.messages[m.messages.length - 1].username !== Data.user.username) {
+                        /* if the user is inside the room, dont update the counter */
+                        if (!($scope.insideRoom && $scope.currentRoom === messages.location)) {
+                            /* do we keep the room count? if so increment */
+                            if ($scope.roomMap.has(messages.location)) {
+                                $scope.roomMap.set(messages.location, $scope.roomMap.get(messages.location) + 1);
+                            } else {
+                                $scope.roomMap.set(messages.location, 1);
+                            }
+                        }
+                    }
+                }
+                if (m.location === $scope.currentRoom) {
+                    $scope.roomMessages = m.messages;
+                }
+            });
+        }
+        addRooms();
         $scope.$apply();
     };
 
@@ -567,7 +611,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             let radius = initRadius(radLoc, users[i], map, marker);
 
             /* Add the radius to the map bounds in order to control the map
-             zoom. */
+               zoom. */
             mapBounds = mapBounds.union(radius.getBounds());
 
             mapObjects.push(marker);
@@ -690,9 +734,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
             /* Create a new gMaps scale dpoint */
             let worldCoordinateNewCenter = new google.maps.Point(
-                worldCoordinateCenter.x - pixelOffset.x,
-                worldCoordinateCenter.y + pixelOffset.y
-            );
+                    worldCoordinateCenter.x - pixelOffset.x,
+                    worldCoordinateCenter.y + pixelOffset.y
+                    );
 
             /* Adjust that as a new centre */
             let newCenter = map.getProjection().fromPointToLatLng(worldCoordinateNewCenter);
@@ -749,11 +793,11 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             center: location,
             radius: user.radius,
             /* Clickable is set to false, because otherwise the circle
-             prevents the user from clicking on POIs inside the circle. */
+               prevents the user from clicking on POIs inside the circle. */
             /* The above comment held true until we decided that we would
-             like to use this as a fail-safe feature. Furthermore, it is
-             needed if the user's pin is going to fade in and out upon
-             hovering over the circle.*/
+               like to use this as a fail-safe feature. Furthermore, it is
+               needed if the user's pin is going to fade in and out upon
+               hovering over the circle.*/
             clickable: true,
         });
 
@@ -1074,14 +1118,23 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     $scope.enterRoom = (index) => {
         let room = $scope.messageRooms[index].name;
         $scope.currentRoom = room;
-        $scope.roomMessages = [];
-        $scope.messages.forEach((m, i) => {
-            if (m.location === $scope.currentRoom) {
-                $scope.roomMessages = m.messages;
+        for (let i = 0; i < $scope.messages.length; i++) {
+            if ($scope.messages[i].location === $scope.currentRoom) {
+                $scope.roomMessages = $scope.messages[i].messages;
             }
-        });
-        /* switch view to room */
+        }
         $scope.insideRoom = true;
+    };
+
+    /* Functions to handle room entry */
+    $scope.exitRoom = (index) => {
+        let room = $scope.currentRoom;
+        $scope.roomMap.clear(room);
+        $scope.currentRoom = 'chat';
+        $scope.roomMessages = [];
+        addRooms();
+        /* switch view to room */
+        $scope.insideRoom = false;
     };
 
     const getImageURL = (type) => {
@@ -1098,18 +1151,23 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     const addRooms = () => {
-        $scope.messageRooms = [
-            {
-                name: 'General',
-                image: '',
-            },
-        ];
+        $scope.messageRooms = [{name: 'General', image: '', count: $scope.roomMap.get('General')}];
         resultLocations.forEach((l, i) => {
             if (l.users.length > 0) {
                 let url = getImageURL(l.type);
+                let count;
+                if ($scope.roomMap.has(l.name)) {
+                    count = $scope.roomMap.get(l.name);
+                    console.log($scope.roomMap);
+                } else {
+                    console.log('set!');
+                    count = 0;
+                    $scope.roomMap.set(l.name, 0);
+                }
                 $scope.messageRooms.push({
                     name: l.name,
                     image: url,
+                    count: count,
                 });
             }
         });
@@ -1147,7 +1205,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             let fadeOutOpacity = 1;
 
             if ($scope.filterByType.lastSelectedTypes.length !== 0 &&
-                $scope.filterByType.lastSelectedTypes.indexOf(markers[i].type) === (-1)) {
+                    $scope.filterByType.lastSelectedTypes.indexOf(markers[i].type) === (-1)) {
                 fadeOutOpacity = 0.2;
             }
 
@@ -1338,9 +1396,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Initialise googleMaps required fields */
     geocoder = new google.maps.Geocoder();
     directionsDisplay = new google.maps.DirectionsRenderer(
-        {
-            suppressMarkers: true,
-        });
+            {
+                suppressMarkers: true,
+            });
     directionsService = new google.maps.DirectionsService;
 
     /* Precompile HTML files for infoBubble */
@@ -1358,7 +1416,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         directionsDisplay.setMap(map);
 
         /* Add click event listener. Used to allow user to change their
-         location just by clicking. */
+           location just by clicking. */
         google.maps.event.addListener(map, 'dblclick', function(event) {
             let latLng = event.latLng;
 
