@@ -279,6 +279,8 @@ animation: slide-in-right 1s forwards;
     color: $nav-text;
     background: $left-nav-header;
     position: fixed;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .basic-toggle-button:hover {
@@ -288,14 +290,14 @@ animation: slide-in-right 1s forwards;
 
 .right-nav-toggle-button {
     @extend .basic-toggle-button;
-    margin-left: -49px;
+    margin-left: -62px;
     transform: rotate(270deg);
     top: calc(40vh);
 }
 
 .right-nav-toggle-button-map {
     @extend .basic-toggle-button;
-    margin-left: -48px;
+    margin-left: -61px;
     left: 100%;
     transform: rotate(270deg) scale(1);
     top: calc(40vh + 80px);
