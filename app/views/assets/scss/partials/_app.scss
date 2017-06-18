@@ -323,6 +323,14 @@
     top: calc(40vh + 80px);
 }
 
+.grey-text {
+    color: grey;
+    width: 90%;
+    margin: 0 auto;
+}
+.grey-text > a {
+    color: grey;
+}
 
 /************************************************************/
 

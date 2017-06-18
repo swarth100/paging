@@ -86,12 +86,54 @@ input[type="checkbox"]:checked + label {
 }
 
 #search-bar {
+    /* From ******************************************************************************/
+    /* https://stackoverflow.com/questions/18838964/add-bootstrap-glyphicon-to-input-box */
+    /* enable absolute positioning */
+    .inner-addon {
+      position: relative;
+    }
+
+    /* style glyph */
+    .inner-addon .glyphicon {
+      position: absolute;
+      padding: 16px;
+      pointer-events: none;
+    }
+
+    /* align glyph */
+    .left-addon .glyphicon  { left:  0px;}
+    .right-addon .glyphicon { right: 0px;}
+
+    /* add padding  */
+    .left-addon input  { padding-left:  36px; }
+    /****************************************************************************************/
+    .radius-inline {
+        display: inline-block;
+    }
+
+    .unit-text {
+        position: relative;
+    }
+
+    .options {
+        border-left: 1px solid $search-bar-border;
+        background: inherit;
+        text-align: left;
+    }
+    .radius {
+        @extend .no-right-padding;
+        border-left: 1px solid $search-bar-border;
+    }
+    .input-lg {
+        background: inherit;
+        display: inline-block;
+    }
     .panel-body{
         background: $left-nav-text-bg;
     }
     .search-component {
-        border: 1px solid $search-bar-border;
-        border-left: none;
+        width: 100%;
+        height: 100%;
         background: $left-nav-text-bg;
         text-align: left;
     }
@@ -102,7 +144,6 @@ input[type="checkbox"]:checked + label {
         background: $left-nav-text-bg;
     }
     .search-btn, .search-btn:hover, .search-btn:focus {
-        border: 1px solid $search-bar-border;
     }
     .search-search-btn {
         color: $nav-text;
@@ -180,10 +221,6 @@ input[type="checkbox"]:checked + label {
     text-align: left;
     width:100%;
     overflow: hidden
-}
 
-.unit-text {
-    position:relative;
-    top: 7px;
 }
 /************************************************************/

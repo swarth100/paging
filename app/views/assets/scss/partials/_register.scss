@@ -1,0 +1,15 @@
+#register {
+    animation-duration: 0.5s;
+    @extend .no-border;
+    .panel-heading {
+        @extend .square;
+        background: $left-nav-header;
+        color: white;
+    }
+    .panel-title {
+        font-size: 30px;
+    }
+    .panel-body {
+        background: $left-nav-text-bg;
+    }
+}

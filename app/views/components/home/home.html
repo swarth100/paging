@@ -36,46 +36,45 @@
 -->
 <div class="container-fluid search-bar">
     <div class="row search-top" ng-class="dropdownOpen ? 'raise-search-bar': 'lower-search-bar'"></div>
-    <div class="row search-bottom" id="search-bar" ng-class="dropdownOpen ? 'large-bottom-padding' : 'small-bottom-padding'">
+    <div id="search-bar" class="row search-bottom" ng-class="dropdownOpen ? 'large-bottom-padding' : 'small-bottom-padding'">
         <form class="form-group-lg" ng-submit="submitFields()">
             <!-- LOCATION field holder -->
-            <div class="col-sm-12 col-md-3 col-md-offset-2 no-padding fix-overlap-side-margin">
+            <div class="col-sm-12 col-md-3 col-md-offset-2 no-padding">
                 <p class="field-title">Location:</p>
-                <div class="input-group">
-                    <span class="input-group-addon search-icon square no-border"><span class="glyphicon glyphicon-pushpin"></span></span>
-                    <input places-auto-complete type="text" class="form-control input-lg square search-component no-border no-padding simplebox" placeholder="Current Location" ng-model="homeSearch.location">
+                <div class="inner-addon left-addon simplebox search-component">
+                    <i class="glyphicon glyphicon-pushpin"></i>
+                    <input places-auto-complete type="text" class="form-control input-lg square simplebox no-border" placeholder="Current Location" ng-model="homeSearch.location">
                 </div>
             </div>
-            <!-- RADIUS field holder -->
-            <div class="col-sm-12 col-md-2 fix-overlap-side-margin">
+            <!--RADIUS field holder-->
+            <div class="col-sm-12 col-md-2 no-padding">
                 <p class="field-title">Radius:</p>
-                <div class="input-group">
-                    <span class="input-group-addon search-icon square no-border"><span class="glyphicon glyphicon-record"></span></span>
-                    <input type="number" class="form-control input-lg square search-icon no-border no-padding simplebox"
-                            ng-style="unitWidth()" ng-model="homeSearch.radius" ng-maxlength="18">
-                    <div class="input-group-addon search-component square unit"><p class="unit-text">m</p></div>
+                <div class="inner-addon left-addon simplebox search-component">
+                    <i class="glyphicon glyphicon-record"></i>
+                    <input type="number" class="form-control input-lg square simplebox no-border radius"
+                                         ng-style="unitWidth()" ng-model="homeSearch.radius" ng-maxlength="12">
+
+                    <p class="unit-text radius-inline">m</p>
                 </div>
             </div>
-            <!-- OPTION field holder -->
-            <div class="col-sm-12 col-md-2 no-padding fix-overlap-side-margin">
+            <!--OPTION field holder-->
+            <div class="col-sm-12 col-md-2 no-padding">
                 <p class="field-title">Location Types:</p>
-                <div class="input-group" uib-dropdown is-open="dropdownOpen">
+                <div class="search-component" uib-dropdown is-open="dropdownOpen">
                     <!-- Nasty resizing using input-lg -->
-                    <div class="input-group-btn">
-                        <button type="button" class="btn search-btn input-lg square search-component simplebox full-width" uib-dropdown-toggle data-toggle="dropdown" data-target="#homeOptionsMenu" aria-haspopup="true" aria-expanded="false">
-                            Options
-                            <span class="caret options-caret"></span>
-                        </button>
-                        <div class="dropdown" id="homeOptionsMenu">
-                            <div class="dropdown-menu dropdown-menu-types dropdown-center dropdown-right" uib-dropdown-menu ng-click="$event.stopPropagation();">
-                                <div class="grid-element" ng-repeat="tps in types | chunkBy:6">
-                                    <div class="col-xs-2 no-padding" ng-repeat="type in tps">
-                                        <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
-                                        <label for="{{type.name}}" ng-click="editOptions(type)">
-                                            <img class="type-icon" src="{{type.image}}">
-                                            <p class="centre-text">{{type.name}}</p>
-                                        </label>
-                                    </div>
+                    <button type="button" class="btn btn-block input-lg search-btn options square simplebox no-border" uib-dropdown-toggle data-toggle="dropdown" data-target="#homeOptionsMenu" aria-haspopup="true" aria-expanded="false">
+                        Options
+                        <span class="caret options-caret"></span>
+                    </button>
+                    <div class="dropdown" id="homeOptionsMenu">
+                        <div class="dropdown-menu dropdown-menu-types dropdown-center dropdown-right" uib-dropdown-menu ng-click="$event.stopPropagation();">
+                            <div class="grid-element" ng-repeat="tps in types | chunkBy:6">
+                                <div class="col-xs-2 no-padding" ng-repeat="type in tps">
+                                    <input type="checkbox" id="{{type.name}}" autocomplete="off" ng-model="type.isSelected" class="hidden">
+                                    <label for="{{type.name}}" ng-click="editOptions(type)">
+                                        <img class="type-icon" src="{{type.image}}">
+                                        <p class="centre-text">{{type.name}}</p>
+                                    </label>
                                 </div>
                             </div>
                         </div>
