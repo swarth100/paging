@@ -21,6 +21,7 @@ app.controller('homeCtrl',
 
     $scope.unitWidth = () => {
         width = $scope.homeSearch.radius > 0 ? $scope.homeSearch.radius.toString().length * 10 + 15 : 25;
+        width += 36;
         return {'width': width + 'px'};
     };
 
