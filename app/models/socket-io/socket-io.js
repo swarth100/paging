@@ -210,6 +210,7 @@ exports.start = (server) => {
                 if (_.isEmpty(message)) {
                     console.log('INITIAL COMMUNICATION');
                     socket.emit('recieveChatMessage', r.messages);
+                    return;
                 } else {
                     console.log('NOT INITIAL COMMUNICATION');
                     let isAdded = false;
