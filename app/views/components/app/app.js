@@ -357,7 +357,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             socketRefresh(room);
 
             /* Discarding initial refresh (for submission), update the Map */
-            if (!room.duration) {
+            if (room.duration) {
                 $scope.initMap(location, room);
             }
         });
