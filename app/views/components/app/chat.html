@@ -11,6 +11,7 @@
                         <i class="fa fa-comments" aria-hidden="true"
                                                   ng-show="room.name === 'General'"></i>
                         <span class="">{{room.name}}</span>
+                        <span class="badge pull-right" ng-show="room.count > 0">{{room.count}}</span>
                     </button>
                 </div>
             </div>
@@ -32,7 +33,7 @@
                     </div>
                 </div>
                 <div ng-show="roomMessages.length === 0">
-                    <div class="centre-text">
+                    <div class="centre-text no-conversation animated fadeIn">
                         <i class="fa fa-comments large-icon" aria-hidden="true"></i>
                         <h2><strong>No Conversation Yet!</strong></h2>
                         Start a new conversation!
