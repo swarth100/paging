@@ -97,12 +97,18 @@ $close-box-height: 40px;
         max-width: 18px;
     }
     .message-room {
+        background: $left-nav-text-bg;
+    }
+    .wrap-text {
+        width: 90%;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .btn-room, .btn-room:focus {
         @extend .square;
         padding-left: 15px;
         font-size: 18px;
-
         background: $left-nav-text-bg;
         display: block;
         border: none;
