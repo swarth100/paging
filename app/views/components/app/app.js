@@ -394,6 +394,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    const socketUpdatePlaceDetails = function(placeDetails) {
+        if(resultLocations[$scope.selectedResultIndex].id === placeDetails.place_id) {
+            markers[$scope.selectedResultIndex].placeDetails = placeDetails;
+            $scope.$apply();
+        }
+    };
+
     /*
      * Receives a list of locations whose coloured dots need to be
      * refreshed. Sends them one by one to the function which takes care of
@@ -486,6 +493,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     socket.removeAllListeners('receiveTransportTime', function() {
         socket.once('receiveTransportTime', socketUpdateTransportTime);
+    });
+
+    socket.removeAllListeners('receivePlaceDetails', function() {
+        socket.once('receivePlaceDetails', socketUpdatePlaceDetails);
     });
 
     /* Add socket listener for messaging */
@@ -586,6 +597,41 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             });
         });
     };
+
+    function socketSendDetailsRequest() {
+        socket.emit('getPlaceDetails', resultLocations[$scope.selectedResultIndex]);
+    }
+
+    /* -----------------------------------------------------------------------*/
+    /* Functions called upon entry */
+
+    $scope.joinRoom();
+    $scope.getLocation(function(currLoc) {
+        map = createMap(currLoc);
+        directionsDisplay.setMap(map);
+
+        /* Add click event listener. Used to allow user to change their
+         location just by clicking. */
+        google.maps.event.addListener(map, 'click', function(event) {
+            let latLng = event.latLng;
+
+            geocoder.geocode({'location': latLng}, function(results, status) {
+                if (status === 'OK') {
+                    if (results[1]) {
+                        /* Used to update the location field. */
+                        Data.query.location = results[0].formatted_address;
+                        broadcastUserData();
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    // window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+        });
+
+        document.getElementById('map').style.visibility = 'hidden';
+    });
 
     /* ---------------------------------------------------------------------------------------------------------------*/
     /* Map rendering functions with helpers */
@@ -953,6 +999,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 if (!$scope.hasTime(resultLocations[$scope.selectedResultIndex])) {
                     socketSendTimeRequest();
                 }
+                socketSendDetailsRequest();
             } else if (infoBubble.opened) {
                 closeInfoBubble(infoBubble);
             }
