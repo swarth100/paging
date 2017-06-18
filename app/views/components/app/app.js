@@ -292,7 +292,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                         ' need to share your current location.');
                 break;
             default:
-                alert('Unhandled error.');
+                alert('Unhandled error: ' + error);
                 break;
         }
     };
