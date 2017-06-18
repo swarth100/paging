@@ -182,6 +182,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    $scope.getWebsite = function(marker) {
+        if (marker) {
+            if(marker.placeDetails) {
+                return marker.placeDetails.website;
+            }
+        }
+    };
+
     /* Function invoked whenever pressing the like button of a location */
     $scope.toggleLike = function(result) {
         changeMarkers(result);
@@ -191,33 +199,36 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     const generateInfoBubbleTemplate = function(result) {
         return (
                 `<div>
-                <div class="input-group">
-                <span class="input-group-btn bubble-header">
-                <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
-                <i class="fa fa-thumbs-up"></i>
-                </button>
-                </span>
-                <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
-                </div>
-                <div class="bubble-separator"></div>
-                <div class="btn-group btn-group-justified">
-                <label class="btn bubble-btn square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
-                <i class="{{transport.icon}}"></i>
-                <br>
-                <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
-                <p style="margin: 0">{{transport.name}}</p>
-                </div>
-                <div ng-show=\"hasTime(getMarkerFromIndex(` + result + `))\">
-                <p style="margin: 0">{{getTime(getMarkerFromIndex(` + result + `), transport)}}</p>
-                </div>
-                </label>
-                </div>
-                <div class="bubble-separator"></div>
-                <div class="like-text-field">
-                <div style="display: inline; color: blue;">Liked By: </div>
-                {{printUsers(getResultFromIndex(` + result + `).users)}}
-        </div>
-            </div>`
+                    <div class="input-group">
+                        <span class="input-group-btn bubble-header">
+                            <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
+                                <i class="fa fa-thumbs-up"></i>
+                            </button>
+                        </span>
+                        <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
+                    </div>
+                    <div class="bubble-separator"></div>
+                    <div class="btn-group btn-group-justified">
+                        <label class="btn bubble-btn square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
+                            <i class="{{transport.icon}}"></i>
+                            <br>
+                            <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
+                                <p style="margin: 0">{{transport.name}}</p>
+                            </div>
+                            <div ng-show=\"hasTime(getMarkerFromIndex(` + result + `))\">
+                                <p style="margin: 0">{{getTime(getMarkerFromIndex(` + result + `), transport)}}</p>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="bubble-separator"></div>
+                    Website: 
+                    <a href=\"{{getWebsite(getMarkerFromIndex(` + result + `))}}" target=\"_blank\">{{getWebsite(getMarkerFromIndex(` + result + `))}}</a>
+                    <div class="bubble-separator"></div>
+                    <div class="like-text-field">
+                        <div style="display: inline; color: blue;">Liked By: </div>
+                        {{printUsers(getResultFromIndex(` + result + `).users)}}
+                    </div>
+                </div>`
             );
     };
 
