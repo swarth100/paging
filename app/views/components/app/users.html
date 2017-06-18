@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <div class="row">
 
-    <button type="button" class="btn btn-block btn-lg btn-opt-search square no-border no-margin-important" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span >Change Colour</span>
-        <span class="caret"></span>
-    </button>
+    <!-- ROW div for the left search bar -->
+    <!-- Location input field -->
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="input-group" style="width: 100%">
+            <!-- Magical Span. Sets the correct width -->
+            <button type="button" class="btn btn-block btn-lg btn-opt-search square no-border no-margin-important" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span >Change Colour</span>
+                <span class="caret"></span>
+            </button>
+        </div>
+    </div>
+
+    <span class="input-group-addon left-nav-bg square no-border"></span>
 
     <!--
         <div class="dropdown-menu scrollable-table dropdown-menu-right square text-field-colour">
@@ -18,13 +27,15 @@
         </div>
     -->
 
-    <div class="dropdown-menu dropdown-menu-types-tiny dropdown-menu-right" ng-click="$event.stopPropagation();">
-        <div ng-repeat="color in colors">
-            <div class="row no-margin" style="background:{{color.hex}};" ng-click="changeUserColour(color.hex)">
-                <div class="col-xs-10 col-xs-offset-2 no-padding">
-                    <button type="button" class="btn btn-block square std-font check-box-button no-padding simplebox" ng-click="changeUserColour(color.hex)">
-                        {{color.name}}
-                    </button>
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="dropdown-menu dropdown-menu-types-tiny dropdown-menu-right" ng-click="$event.stopPropagation();">
+            <div ng-repeat="color in colors">
+                <div class="row no-margin" style="background:{{color.hex}};" ng-click="changeUserColour(color.hex)">
+                    <div class="col-xs-10 col-xs-offset-2 no-padding">
+                        <button type="button" class="btn btn-block square std-font check-box-button no-padding simplebox" ng-click="changeUserColour(color.hex)">
+                            {{color.name}}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -48,8 +59,11 @@
         </div>
 
     </div>
-    <button type="button"  class="btn btn-block btn-lg btn-opt-search square no-border no-margin-important" ng-click="openLink()">
-        INVITE
-    </button>
+
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <button type="button"  class="btn btn-block btn-lg btn-opt-search square no-border no-margin-important" ng-click="openLink()">
+            INVITE
+        </button>
+    </div>
 </div>
 
