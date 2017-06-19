@@ -2,19 +2,21 @@
 <div class="row">
     <div ng-show="!insideRoom">
         <div id="message-board-entry">
-            <div ng-repeat="room in messageRooms">
-                <div class="panel panel-default message-room">
-                    <button class="btn btn-room simplebox" ng-click="enterRoom($index);">
-                        <div class="add-space-for-badge">
-                            <img class="type-icon-small"
-                                 src="{{room.image}}"
-                                 ng-show="room.name !== 'General'">
-                            <i class="fa fa-comments" aria-hidden="true"
-                                                      ng-show="room.name === 'General'"></i>
-                            <span class="wrap-text">{{room.name}}</span>
-                        </div>
-                        <span class="badge pull-right" ng-show="room.count > 0">{{room.count}}</span>
-                    </button>
+            <div class="animated fadeIn">
+                <div ng-repeat="room in messageRooms">
+                    <div class="panel panel-default message-room">
+                        <button class="btn btn-room simplebox" ng-click="enterRoom($index);">
+                            <div class="add-space-for-badge">
+                                <img class="type-icon-small"
+                                     src="{{room.image}}"
+                                     ng-show="room.name !== 'General'">
+                                <i class="fa fa-comments" aria-hidden="true"
+                                                          ng-show="room.name === 'General'"></i>
+                                <span class="wrap-text">{{room.name}}</span>
+                            </div>
+                            <span class="badge pull-right" ng-show="room.count > 0">{{room.count}}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -22,23 +24,25 @@
     <div ng-show="insideRoom">
         <div scroll-glue id="message-board">
             <div class="panel-group">
-                <div ng-show="roomMessages.length > 0">
-                    <div ng-repeat="mes in roomMessages">
-                        <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}">
-                            <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
-                                <span class="username">{{mes.username}}</span>
-                            </div>
-                            <div class="panel-body">
-                                <span class="message">{{mes.message}}</span>
+                <div class="conversation animated fadeIn">
+                    <div ng-show="roomMessages.length > 0">
+                        <div ng-repeat="mes in roomMessages">
+                            <div class="panel panel-default" ng-class="{'my-message': isMyMessage(mes.username), 'others-message': !isMyMessage(mes.username)}">
+                                <div class="panel-heading" ng-show="!isMyMessage(mes.username)">
+                                    <span class="username">{{mes.username}}</span>
+                                </div>
+                                <div class="panel-body">
+                                    <span class="message">{{mes.message}}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div ng-show="roomMessages.length === 0">
-                    <div class="centre-text no-conversation animated fadeIn">
-                        <i class="fa fa-comments large-icon" aria-hidden="true"></i>
-                        <h2><strong>No Conversation Yet!</strong></h2><br/>
-                        Start a new conversation!
+                    <div ng-show="roomMessages.length === 0">
+                        <div class="centre-text no-conversation animated fadeIn">
+                            <i class="fa fa-comments large-icon" aria-hidden="true"></i>
+                            <h2><strong>No Conversation Yet!</strong></h2><br/>
+                            Start a new conversation!
+                        </div>
                     </div>
                 </div>
             </div>

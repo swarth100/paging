@@ -94,9 +94,13 @@ $close-box-height: 40px;
         animation-delay: 0.1s;
         animation-duration: 0.7s;
     }
+    .conversation {
+        animation-duration: 0.3s;
+    }
 }
 
 #message-board-entry {
+    animation-duration: 0.3s;
     .panel {
         border: none;
     }
@@ -136,5 +140,6 @@ $close-box-height: 40px;
     .badge {
         margin-top: 2px;
     }
+
 
 }
