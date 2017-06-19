@@ -909,7 +909,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      info bubble. */
     const createUserStyledInfoBubble = function() {
         return new InfoBubble({
-            content: '',
+            content: 'Madness',
             shadowStyle: 0,
             padding: 0,
             backgroundColor: 'rgb(236, 239, 241)',
@@ -925,7 +925,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             hideCloseButton: true,
             disableAnimation: true,
             arrowPosition: 50,
-            backgroundClassName: 'infoBubbleText',
             arrowStyle: 0,
             result: '',
         });
@@ -949,7 +948,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             '<div' +
             ' style=\"font-size: 140%;' +
             ' text-align: center;' +
-            ' background-color: #eceff1' +
+            // ' background-color: #eceff1' +
             ' padding-top: 5px;' +
             ' padding-bottom: 5px;' + '\">' +
             '<img src="../../assets/images/user.png"/>' +
