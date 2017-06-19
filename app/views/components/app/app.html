@@ -41,7 +41,7 @@
 <div class="container-fluid no-padding" xmlns="http://www.w3.org/1999/html" style="position: absolute">
     <!-- ROW div for the search bar -->
     <!-- Left search bar holder -->
-    <div id="leftNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideLeftBarShow" style="z-index: 1;">
+    <div id="leftNav" class="col-xs-4 col-md-3 no-padding" ng-show="sideLeftBarShow" style="z-index: 1;">
         <!-- animate slideInRLeft -->
         <div class="sidenav-top nav-left-animate">
             <button class="btn left-nav-toggle-button no-padding simplebox" ng-click="toggleLeftNav()" style="width: 80px">
@@ -100,7 +100,7 @@
     </div>
 </div>
 <div class="container-fluid no-padding" xmlns="http://www.w3.org/1999/html">
-    <div ng-class="{'col-sm-12 col-md-12 no-padding': getMapSize() == 0, 'col-sm-8 col-md-9 no-padding': getMapSize() == 1, 'col-sm-4 col-md-6 no-padding': getMapSize() == 2}">
+    <div ng-class="{'col-xs-12 no-padding': getMapSize() == 0, 'col-xs-8 col-md-9 no-padding': getMapSize() == 1, 'col-xs-4 col-md-6 no-padding': getMapSize() == 2}">
         <!--div class="col-sm-4 col-md-6 no-padding"-->
         <!-- The following is the controller for the post location -->
         <!-- The div nesting was done so that we could have the rotating gif
@@ -117,7 +117,7 @@
                 <div style="text-align: center;">CHAT</div>
             </button>
     </div>
-    <div id="rightNav" class="col-sm-4 col-md-3 no-padding" ng-show="sideRightBarShow">
+    <div id="rightNav" class="col-xs-4 col-md-3 no-padding" ng-show="sideRightBarShow">
         <!-- animate slideInRight -->
         <div class="sidenav-top nav-right-animate">
             <button class="btn right-nav-toggle-button no-padding simplebox" ng-click="toggleRightNav()" style="width: 80px">
