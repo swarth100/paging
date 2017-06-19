@@ -1299,24 +1299,26 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Handles toggleing of rightNav */
     $scope.toggleRightNav = function() {
-        /* When rightNavbar is opened, refresh roomms */
-        addRooms();
+        if (!$scope.sideRightBarAnimating) {
+            /* When rightNavbar is opened, refresh roomms */
+            addRooms();
 
-        /* Sets the rightNavBar to a true animating state */
-        $scope.sideRightBarAnimating = true;
+            /* Sets the rightNavBar to a true animating state */
+            $scope.sideRightBarAnimating = true;
 
-        /* Set the opening status accordingly and ng-show the navbar */
-        $scope.sideRightBarOpening = !$scope.sideRightBarOpening;
-        $scope.sideRightBarShow = true;
+            /* Set the opening status accordingly and ng-show the navbar */
+            $scope.sideRightBarOpening = !$scope.sideRightBarOpening;
+            $scope.sideRightBarShow = true;
 
-        /* Toggle the navBar into absolute mode for animating */
-        $('#rightNav').toggleClass('right-nav-absolute');
+            /* Toggle the navBar into absolute mode for animating */
+            $('#rightNav').toggleClass('right-nav-absolute');
 
-        /* Accordingly set the animation to slide-in/out for the navbar */
-        if ($scope.sideRightBarOpening) {
-            $('.nav-right-animate').addClass('slide-in-right').removeClass('slide-out-right');
-        } else {
-            $('.nav-right-animate').addClass('slide-out-right').removeClass('slide-in-right');
+            /* Accordingly set the animation to slide-in/out for the navbar */
+            if ($scope.sideRightBarOpening) {
+                $('.nav-right-animate').addClass('slide-in-right').removeClass('slide-out-right');
+            } else {
+                $('.nav-right-animate').addClass('slide-out-right').removeClass('slide-in-right');
+            }
         }
     };
 
@@ -1347,27 +1349,29 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Handles toggleing of leftNav */
     $scope.toggleLeftNav = function() {
-        /* Recalculated the map's centre in order to hook it.
-         * This prevents the map from being shifted after the recalculation of the navBar */
-        // if ($scope.sideLeftBarShow) {
-        //     $scope.mapHookCenter(true, 1);
-        // }
+        if (!$scope.sideLeftBarAnimating) {
+            /* Recalculated the map's centre in order to hook it.
+             * This prevents the map from being shifted after the recalculation of the navBar */
+            // if ($scope.sideLeftBarShow) {
+            //     $scope.mapHookCenter(true, 1);
+            // }
 
-        /* Sets the leftNavBar to a true animating state */
-        $scope.sideLeftBarAnimating = true;
+            /* Sets the leftNavBar to a true animating state */
+            $scope.sideLeftBarAnimating = true;
 
-        /* Set the opening status accordingly and ng-show the navbar */
-        $scope.sideLeftBarOpening = !$scope.sideLeftBarOpening;
-        $scope.sideLeftBarShow = true;
+            /* Set the opening status accordingly and ng-show the navbar */
+            $scope.sideLeftBarOpening = !$scope.sideLeftBarOpening;
+            $scope.sideLeftBarShow = true;
 
-        /* Toggle the navBar into absolute mode for animating */
-        $('#leftNav').toggleClass('left-nav-absolute');
+            /* Toggle the navBar into absolute mode for animating */
+            $('#leftNav').toggleClass('left-nav-absolute');
 
-        /* Accordingly set the animation to slide-in/out for the navbar */
-        if ($scope.sideLeftBarOpening) {
-            $('.nav-left-animate').addClass('slide-in-left').removeClass('slide-out-left');
-        } else {
-            $('.nav-left-animate').addClass('slide-out-left').removeClass('slide-in-left');
+            /* Accordingly set the animation to slide-in/out for the navbar */
+            if ($scope.sideLeftBarOpening) {
+                $('.nav-left-animate').addClass('slide-in-left').removeClass('slide-out-left');
+            } else {
+                $('.nav-left-animate').addClass('slide-out-left').removeClass('slide-in-left');
+            }
         }
     };
 
