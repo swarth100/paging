@@ -1,4 +1,9 @@
 /* Homepage *************************************************/
+$search-top-height: 60%;
+$search-bot-height: 40%;
+$search-top-sm-height: 40%;
+$search-bot-sm-height: 60%;
+
 .landing {
     background: url('../images/background-2.jpeg') no-repeat center center fixed;
     background-size: cover;
@@ -74,15 +79,15 @@ input[type="checkbox"]:checked + label {
 }
 
 .search-top {
-    height: 60%;
+    height: $search-top-height;
 }
 
 .search-top-sm {
-    height: 40%;
+    height: $search-top-sm-height;
 }
 
 .search-bottom {
-    min-height: 40%;
+    height: $search-bot-height;
     background: rgba(0, 0, 0, 0.8);
     padding-top: 70px;
     padding-left: 20px;
@@ -90,7 +95,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .search-bottom-sm {
-    min-height: 60%;
+    height: $search-bot-sm-height;
     background: rgba(0, 0, 0, 0.8);
     padding-top: 20px;
     padding-left: 20px;
