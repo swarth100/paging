@@ -415,8 +415,15 @@ function saveInDatabase(randomPlace) {
 
     return promiseOfName.then(function(response) {
         randomPlace['name'] = response.json.result.name;
-        randomPlace['website'] = response.json.result.website;
-        randomPlace['rating'] = response.json.result.rating;
+
+        if (response.json.result.website !== undefined) {
+            randomPlace['website'] = response.json.result.website;
+        }
+
+        if (response.json.result.rating !== undefined) {
+            randomPlace['rating'] = response.json.result.rating;
+        }
+
         return mongooseLocation.saveLocation(randomPlace);
     });
 }
