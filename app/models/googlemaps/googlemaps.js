@@ -22,7 +22,6 @@ let pinnedList;
 
 function temporaryFunction(room, cb) {
     /* Reset the numberOfResults and the pinnedList on each search. */
-    numberOfResults = 5;
     pinnedList = [];
 
     /* Added to enable location pinning. */
