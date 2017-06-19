@@ -53,11 +53,12 @@ let locationsSchema = new Schema({
     },
     website: {
         type: String,
-        required: true,
     },
     rating: {
         type: String,
-        required: true,
+    },
+    photo: {
+        type: Object,
     },
     });
 
