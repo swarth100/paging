@@ -46,6 +46,7 @@
                 <tbody>
                     <tr ng-repeat="user in users">
                         <td>
+                            <div class="user-colour" style="background:{{user.color}};"></div>
                             {{user.username}}
                             <button type="button" class="close flex-right no-border" aria-label="Close" ng-click="deleteUser($index)">
                                 <span aria-hidden="true">&times;</span>
@@ -55,11 +56,10 @@
                 </tbody>
             </table>
         </div>
-
     </div>
 
     <div class="col-xs-12 col-sm-12 col-md-12">
-        <button type="button"  class="btn btn-block btn-lg btn-opt-search square no-border no-margin-important" ng-click="openLink()">
+        <button type="button" class="btn btn-block btn-lg btn-opt-search square no-border no-margin-important" ng-click="openLink()">
             INVITE
         </button>
     </div>
