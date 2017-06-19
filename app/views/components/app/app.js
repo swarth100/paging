@@ -494,7 +494,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     });
 
     socket.on('joinSuccess', function(number) {
-        console.log('Join Success');
+        // console.log('Join Success');
 
         if (!Data.user.username) {
             Data.user.username = 'Guest-' + number;
@@ -1110,7 +1110,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Function to dynamically set height of chat bar */
     const setChatBodyHeight = () => {
         let height = 'calc(100vh - 170px - ' + ($('#chat-title').height() - 42).toString() + 'px)';
-        console.log(height);
+        // console.log(height);
         $('#message-board').css('height', height);
     };
 
@@ -1151,7 +1151,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 return t.image;
             }
         }
-        console.log('could not find the image url');
         return '';
     };
 
@@ -1163,9 +1162,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 let count;
                 if ($scope.roomMap.has(l.name)) {
                     count = $scope.roomMap.get(l.name);
-                    console.log($scope.roomMap);
                 } else {
-                    console.log('set!');
                     count = 0;
                     $scope.roomMap.set(l.name, 0);
                 }
@@ -1251,7 +1248,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             $('#left-nav-options > .option > .panel-body').css('max-height', '0px');
             $('#left-nav-users > .user > .panel-body').css('max-height', '0px');
         } else {
-            console.log('accordion type mismatch');
+            // console.log('accordion type mismatch');
         }
     };
 
