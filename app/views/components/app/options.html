@@ -7,7 +7,7 @@
             <div class="input-group">
                 <span class="input-group-addon left-nav-bg square no-border"><span class="glyphicon glyphicon-pushpin"></span></span>
                 <input places-auto-complete type="text"
-                       class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline" placeholder="Current Location" ng-model="appSearch.location" ng-model-options="{debounce: 1300}" ng-change="submitLocation()">
+                                            class="form-control input-lg square left-nav-bg no-border no-padding simplebox underline" placeholder="Current Location" ng-model="appSearch.location" ng-model-options="{debounce: 1300}" ng-change="submitLocation()">
             </div>
         </div>
 
@@ -59,12 +59,12 @@
                         <tr ng-repeat="type in types" class="no-border">
                             <td ng-show="type.isSelected"
                                 class="flex-row no-border"
-                                ng-click="filterByType(type.name); toggleHighlight($index);"
                                 ng-class="{'highlight-option': type.isHighlighted}">
-                                <img class="type-icon-small"
-                                     src="{{type.image}}">
-                                {{type.name}}
-                                <button type="button" class="close flex-right no-border" aria-label="Close" ng-click="toggleSelected($index); submitFields()">
+                                <div class="option-name"ng-click="filterByType(type.name); toggleHighlight($index);">
+                                    <img class="type-icon-large" src="{{type.image}}">
+                                    {{type.name}}
+                                </div>
+                                <button type="button" class="close flex-right no-border" aria-label="Close" ng-click="toggleSelected($index);">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </td>
