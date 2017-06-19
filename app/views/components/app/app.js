@@ -216,6 +216,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    $scope.hasPicture = function(marker) {
+        if (marker) {
+            return marker.photo;
+        }
+        return false;
+    };
+
 
     /* Function invoked whenever pressing the like button of a location */
     $scope.toggleLike = function(result) {
@@ -248,16 +255,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                         </label>
                     </div>
                     <div class="bubble-separator"></div>
-                    <!--div ng-show=\"hasRating(getMarkerFromIndex(` + result + `))\">
-                        Rating:
-                        {{getRating(getMarkerFromIndex(` + result + `))}} / 5
-                        <br>
-                    </div-->
                     <div ng-show=\"hasRating(getMarkerFromIndex(` + result + `))\">
-                        <span uib-rating ng-model="getRating(getMarkerFromIndex(` + result + `))" max="5" read-only="!isReadonly"></span>
+                        <span uib-rating ng-model="getRating(getMarkerFromIndex(` + result + `))" max="5" read-only="!isReadonly" state-on="'glyphicon-star'" style="color: darkorange; position: absolute; width: 100%; text-align: center;"></span>
+                        <div class="bubble-separator" style="padding-top: 20px"></div>
                     </div>
-                    <img class="image-center" src="{{getPicture(getMarkerFromIndex(` + result + `))}}" style="max-height: 200px; width: 100%; object-fit: cover;" />
-                    <div class="bubble-separator"></div>
+                    <div ng-show=\"hasPicture(getMarkerFromIndex(` + result + `))\">
+                        <img class="image-center" src="{{getPicture(getMarkerFromIndex(` + result + `))}}" style="max-height: 200px; width: 100%; object-fit: cover;" />
+                        <div class="bubble-separator"></div>
+                    </div>
                     <div class="like-text-field">
                         <div style="display: inline; color: blue;">Liked By: </div>
                         {{printUsers(getResultFromIndex(` + result + `).users)}}
