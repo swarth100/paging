@@ -45,6 +45,19 @@
     .ng-hide-remove {
         animation:0.3s fadeIn;
     }
+
+    .type-icon-large {
+        max-width: 15%;
+        display: inline-block;
+        vertical-align: middle;
+        padding-right: 10px;
+    }
+
+    .option-name {
+        width: 100%;
+        cursor: pointer;
+    }
+
 }
 
 
