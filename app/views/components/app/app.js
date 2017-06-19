@@ -253,6 +253,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                         {{getRating(getMarkerFromIndex(` + result + `))}} / 5
                         <br>
                     </div-->
+                    <div ng-show=\"hasRating(getMarkerFromIndex(` + result + `))\">
+                        <span uib-rating ng-model="getRating(getMarkerFromIndex(` + result + `))" max="5" read-only="!isReadonly"></span>
+                    </div>
                     <img class="image-center" src="{{getPicture(getMarkerFromIndex(` + result + `))}}" style="max-height: 200px; width: 100%; object-fit: cover;" />
                     <div class="bubble-separator"></div>
                     <div class="like-text-field">
@@ -1012,7 +1015,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         service = new google.maps.places.PlacesService(map);
         service.getDetails(request, (place, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
-                if (marker) {
+                if (marker && place.photos) {
                     marker['photo'] = (place.photos[0].getUrl({maxWidth: 300}));
                 }
             }
