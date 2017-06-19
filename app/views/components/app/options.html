@@ -64,7 +64,7 @@
                                     <img class="type-icon-large" src="{{type.image}}">
                                     {{type.name}}
                                 </div>
-                                <button type="button" class="close flex-right no-border" aria-label="Close" ng-click="toggleSelected($index);">
+                                <button type="button" class="close flex-right no-border" aria-label="Close" ng-click="toggleSelected($index); submitFields();">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </td>
