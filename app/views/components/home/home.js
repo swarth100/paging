@@ -19,6 +19,10 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
     $scope.setDate();
     $scope.dropdownOpen = false;
 
+    let savedScreen;
+
+    /* ---------------------------------------------------------------------------------------------------------------*/
+
     $scope.unitWidth = () => {
         width = $scope.homeSearch.radius > 0 ? $scope.homeSearch.radius.toString().length * 10 + 15 : 25;
         width += 36;
@@ -30,6 +34,7 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
 
     /* */
     $scope.isSmallScreen = function() {
+        let result;
         switch (findBootstrapEnvironment()) {
             case 'sm':
             case 'xs':
@@ -63,31 +68,46 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
     /* */
 
     /* */
+    const removeSmClasses = function(elem) {
+        $(elem).removeClass('lower-search-bar-sm').removeClass('small-bottom-padding-sm').removeClass('raise-search-bar-sm').removeClass('large-bottom-padding-sm');
+    };
+
+    /* */
     $scope.dropDownToggle = function() {
         /* Clicks on the button disable body overflowing temporarily */
         $('#body').toggleClass('hide-overflow');
 
-        $scope.dropdownOpen = !$scope.dropdownOpen;
-
         /* When button is clicked, toggle the animations */
-        $('.search-top-sm').removeClass('lower-search-bar-sm').addClass('raise-search-bar-sm');
-        $('.search-top').removeClass('lower-search-bar').addClass('raise-search-bar');
-        $('.search-bottom').removeClass('small-bottom-padding').addClass('large-bottom-padding');
-        $('.search-bottom-sm').removeClass('small-bottom-padding-sm').addClass('large-bottom-padding-sm');
-    };
+        if (!$scope.dropdownOpen) {
+            if ($scope.isSmallScreen()) {
+                $('.search-top-sm').removeClass('lower-search-bar-sm').addClass('raise-search-bar-sm');
+                $('.search-bottom-sm').removeClass('small-bottom-padding-sm').addClass('large-bottom-padding-sm');
+            } else {
+                removeSmClasses('.search-bottom');
+                removeSmClasses('.search-top');
+                $('.search-top').removeClass('lower-search-bar').addClass('raise-search-bar');
+                $('.search-bottom').removeClass('small-bottom-padding').addClass('large-bottom-padding');
+            }
+        }
 
-    /* 'large-bottom-padding': dropdownOpen, 'small-bottom-padding': !dropdownOpen */
+        $scope.dropdownOpen = true;
+    };
 
     /* */
     $(document).click(function() {
         console.log($scope.dropdownOpen);
         if ($scope.dropdownOpen) {
-            $('.search-top-sm').removeClass('raise-search-bar-sm').addClass('lower-search-bar-sm');
-            $('.search-top').removeClass('raise-search-bar').addClass('lower-search-bar');
-            $('.search-bottom').removeClass('large-bottom-padding').addClass('small-bottom-padding');
-            $('.search-bottom-sm').removeClass('large-bottom-padding-sm').addClass('small-bottom-padding-sm');
+            if ($scope.isSmallScreen()) {
+                $('.search-top-sm').removeClass('raise-search-bar-sm').addClass('lower-search-bar-sm');
+                $('.search-bottom-sm').removeClass('large-bottom-padding-sm').addClass('small-bottom-padding-sm');
+            } else {
+                removeSmClasses('.search-bottom');
+                removeSmClasses('.search-top');
+                $('.search-bottom').removeClass('large-bottom-padding').addClass('small-bottom-padding');
+                $('.search-top').removeClass('raise-search-bar').addClass('lower-search-bar');
+            }
 
-            $scope.dropdownOpen = !$scope.dropdownOpen;
+            $scope.dropdownOpen = false;
         }
     });
 
@@ -157,6 +177,10 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
     $scope.editOptions = (type) => {
         type.isSelected = !type.isSelected;
     };
+
+    /* ---------------------------------------------------------------------------------------------------------------*/
+
+    savedScreen = $scope.isSmallScreen();
 
     /* ---------------------------------------------------------------------------------------------------------------*/
 });
