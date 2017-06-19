@@ -48,8 +48,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let markers = [];                      /* Array. Contains list of live markers */
     let mapObjects = [];
 
-    let userMarker;                        /* ?? */
-    let users;                             /* ?? */
     let map;                               /* Object. Contains an instance of the map */
     let lastOpenedInfoBubble;              /* Object. Contains last opened infoBubble */
 
@@ -246,7 +244,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* getLocation monster function */
 
     /* Generalised getLocation function for A GIVE USER
-     * Determines, according to the current field, whether to use geolocation or parse the location field */
+     * Determines, according to the current field, whether to use
+     * geolocation or parse the location field. */
     $scope.getLocation = function(callback) {
         if (Data.query.location === '') {
             if (navigator.geolocation) {
@@ -600,20 +599,19 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         /* Hook for rendering of directions API */
         directionsDisplay.setDirections({routes: []});
 
-        users = room.users;
         resultLocations = room.results;
 
-        for (i = 0; i < users.length; i++) {
+        for (i = 0; i < $scope.users.length; i++) {
             let radLoc = {
-                'lat': users[i].lat,
-                'lng': users[i].lng,
+                'lat': $scope.users[i].lat,
+                'lng': $scope.users[i].lng,
             };
 
             /* Initialise the marker */
-            let marker = markUser(radLoc, users[i], map);
+            let marker = markUser(radLoc, $scope.users[i], map);
 
             /* Initialise the radius */
-            let radius = initRadius(radLoc, users[i], map, marker);
+            let radius = initRadius(radLoc, $scope.users[i], map, marker);
 
             /* Add the radius to the map bounds in order to control the map
                zoom. */
@@ -622,7 +620,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             mapObjects.push(marker);
             mapObjects.push(radius);
 
-            let userBubble = createUserInfoBubble(users[i]);
+            let userBubble = createUserInfoBubble($scope.users[i]);
 
             markerAddInfo(map, marker, userBubble);
         }
@@ -658,6 +656,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         for (let i = 0; i < room.results.length; i++) {
             changeColoursOfMarkers(i, room.results[i].users);
         }
+
         /* Initialise the map via the Google API */
         if (!(room.users.length === 1 && $scope.newSession)) {
             document.getElementById('map').style.visibility = 'visible';
@@ -767,21 +766,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             map: map,
             icon: icon,
             opacity: 0.2,
-            // optimized: false,
-            // zIndex: 0,
         });
-
-        // let marker2 = new google.maps.Marker({
-        //     position: location,
-        //     map: map,
-        //     optimized: false,
-        //     zIndex: 1,
-        //     // icon: icon,
-        // });
-
-        if (Data.user.username === user.username) {
-            userMarker = marker;
-        }
 
         return marker;
     };
@@ -1085,9 +1070,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
      * Finds the colour of the user who clicked on a specific location.
      */
     const findColourOfUserWhoClicked = function(username) {
-        for (let i = 0; i < users.length; i++) {
-            if (users[i].username === username) {
-                return users[i].color;
+        for (let i = 0; i < $scope.users.length; i++) {
+            if ($scope.users[i].username === username) {
+                return $scope.users[i].color;
             }
         }
     };
