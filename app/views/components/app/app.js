@@ -226,6 +226,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     $scope.toggleSelected = ((index) => {
         $scope.types[index].isSelected = !$scope.types[index].isSelected;
+        if (!$scope.types[index].isSelected) {
+            $scope.types[index].isHighlighted = false;
+        }
         Data.types = $scope.types;
     });
 
