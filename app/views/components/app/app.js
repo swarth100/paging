@@ -706,7 +706,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
             let userBubble = createUserInfoBubble($scope.users[i]);
 
-            markerAddInfo(map, marker, userBubble);
+            addHoveringListeners(map, marker, userBubble);
         }
 
         /*
@@ -909,6 +909,31 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
+    /* Styles differently the user info bubble compared to the locations
+     info bubble. */
+    const createUserStyledInfoBubble = function() {
+        return new InfoBubble({
+            content: '',
+            shadowStyle: 0,
+            padding: 0,
+            backgroundColor: 'rgb(236, 239, 241)',
+            borderRadius: 35,
+            arrowSize: 5,
+            borderWidth: 1,
+            borderColor: 'rgb(120, 144, 156)',
+            maxWidth: 300,
+            minHeight: 'calc(100% + 2px)',
+            maxHeight: 50,
+            disableAutoPan: true,
+            hideCloseButton: true,
+            disableAnimation: true,
+            arrowPosition: 50,
+            backgroundClassName: 'infoBubbleText',
+            arrowStyle: 0,
+            result: '',
+        });
+    };
+
     /* TODO: Add comment */
     const createLocationInfoBubble = function(index) {
         let infoBubble = createDefaultInfoBubble();
@@ -919,13 +944,30 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return infoBubble;
     };
 
-    /* TODO: Add comment */
+    /* Creates the info bubble which is displayed above the user's location. */
     const createUserInfoBubble = function(user) {
-        let infoBubble = createDefaultInfoBubble();
+        let infoBubble = createUserStyledInfoBubble();
 
-        infoBubble.content = '<div class="infoBubbleUser" style=\"color: ' + user.color + '\">' + user.username + '</div>';
+        infoBubble.content =
+            '<div class="infoBubbleUser"' +
+            ' style=\"font-size: 140%;' +
+            ' text-align: center;' +
+            ' color: ' + user.color + '\">' +
+            '<img src="../../assets/images/user.png"/>' +
+            '<p style="margin-bottom: 0px" class="infoBubbleUser">' +
+            conditionalUsername(user) + '</p>' + '</div>';
 
         return infoBubble;
+    };
+
+    /* If the username of the user is too long, only display part of it in the
+     user's info bubble. */
+    const conditionalUsername = function(user) {
+        if (user.username.length <= 10) {
+            return user.username;
+        } else {
+            return user.username.substring(0, 7) + '...';
+        }
     };
 
     /* TODO: Add comment */
@@ -1057,6 +1099,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             closeInfoBubble(infoBubble);
         });
 
+        addHoveringListeners(map, marker, infoBubble);
+    };
+
+    /* Adds listeners to the info bubble to monitor when a mouse is hovered
+     over the marker. */
+    const addHoveringListeners = function(map, marker, infoBubble) {
         /* Handle mouse hovering over labels */
         google.maps.event.addListener(marker, 'mouseover', function() {
             if (!infoBubble.opened) {
