@@ -1,22 +1,27 @@
 /* Navbar ***************************************************/
-.nav-bar-padding {
-    height: 80px;
-}
 .navbar-default {
     position: fixed;
     z-index: 10000;
     width: 100%;
     background: #263238; //$nav-bg;
     border-width: 0;
-    height: 80px;
+    min-height: 80px;
+
     .navbar-header {
+        width: 100px;
+        display: inline-block;
         height: 80px;
     }
+
+    .nav > li{
+        display: inline-block;
+    }
+
     .navbar-nav > li > a {
-        height: 80px;
         color: $nav-text;
         padding-top: 30px;
     }
+
     .navbar-nav > li > a:hover,
     .navbar-nav > li > a:focus  {
         color: $nav-text-highlight;
@@ -32,38 +37,41 @@
         height: 80px;
         color: $nav-text;
         font-size: 30px;
-        padding-top: 25%;
+        padding-top: 30px;
     }
 
     .navbar-brand:focus, .navbar-brand:hover {
         color: $nav-text-highlight;
     }
+    .navbar-float-right {
+        float: right !important;
+    }
 
 }
 
-#user-dd {
-    @extend .square;
-    position: absolute;
-    z-index: 1000 !important;
-    min-width: 250px;
-    padding: 14px 14px 0;
-    overflow: hidden;
-    background: $user-dd-bg;
-    border: none;
-    .bottom {
-        border: none;
-        border-top: solid 3px;
-        border-color: $user-dd-border;
-        background-color:$user-dd-bottom-bg;
-        clear: both;
-        padding: 14px;
-    }
-    .bottom > a {
-        color: black;
-    }
-}
-/* Animation ************************************************/
-#navigation-bar {
-    animation-duration: 0.5s;
-}
-/************************************************************/
+//#user-dd {
+//@extend .square;
+//position: absolute;
+//z-index: 1000 !important;
+//min-width: 250px;
+//padding: 14px 14px 0;
+//overflow: hidden;
+//background: $user-dd-bg;
+//border: none;
+//.bottom {
+//border: none;
+//border-top: solid 3px;
+//border-color: $user-dd-border;
+//background-color:$user-dd-bottom-bg;
+//clear: both;
+//padding: 14px;
+    //}
+    //.bottom > a {
+        //color: black;
+    //}
+    //}
+    //[> Animation ***********************************************<]
+    //#navigation-bar {
+        //animation-duration: 0.5s;
+        //}
+        //[>**********************************************************<]
