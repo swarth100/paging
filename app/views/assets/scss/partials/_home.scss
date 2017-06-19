@@ -1,4 +1,9 @@
 /* Homepage *************************************************/
+$search-top-height: calc(60% - 45px);
+$search-bot-height: calc(40% - 45px);
+$search-top-sm-height: calc(30% - 45px);
+$search-bot-sm-height: calc(70% - 45px);
+
 .landing {
     background: url('../images/background-2.jpeg') no-repeat center center fixed;
     background-size: cover;
@@ -74,15 +79,16 @@ input[type="checkbox"]:checked + label {
 }
 
 .search-top {
-    height: 60%;
+    height: $search-top-height;
 }
 
 .search-top-sm {
-    height: 40%;
+    height: $search-top-sm-height;
 }
 
 .search-bottom {
-    min-height: 40%;
+    height: $search-bot-height;
+    min-height: 250px;
     background: rgba(0, 0, 0, 0.8);
     padding-top: 70px;
     padding-left: 20px;
@@ -90,7 +96,8 @@ input[type="checkbox"]:checked + label {
 }
 
 .search-bottom-sm {
-    min-height: 60%;
+    height: $search-bot-sm-height;
+    min-height: 500px;
     background: rgba(0, 0, 0, 0.8);
     padding-top: 20px;
     padding-left: 20px;
@@ -176,7 +183,7 @@ input[type="checkbox"]:checked + label {
 
 @keyframes decrease-height {
     0% {height: 100%};
-    100% {height: 40%};
+    100% {height: $search-bot-height};
 }
 
 .large-bottom-padding {
@@ -185,7 +192,7 @@ input[type="checkbox"]:checked + label {
 }
 
 @keyframes increase-height {
-    0% {height: 40%};
+    0% {height: $search-bot-height};
     100% {height: 100%};
 }
 
@@ -197,7 +204,7 @@ input[type="checkbox"]:checked + label {
 
 @keyframes decrease-height-sm {
     0% {height: 100%};
-    100% {height: 60%};
+    100% {height: $search-bot-sm-height};
 }
 
 .large-bottom-padding-sm {
@@ -206,7 +213,7 @@ input[type="checkbox"]:checked + label {
 }
 
 @keyframes increase-height-sm {
-    0% {height: 60%};
+    0% {height: $search-bot-sm-height};
     100% {height: 100%};
 }
 
@@ -218,7 +225,7 @@ input[type="checkbox"]:checked + label {
 }
 
 @keyframes raise {
-    0% {height: 60%};
+    0% {height: $search-top-height};
     100% {height: 0%};
 }
 
@@ -228,7 +235,7 @@ input[type="checkbox"]:checked + label {
 
 @keyframes lower {
     0% {height: 0%;};
-    100% {height: 60%};
+    100% {height: $search-top-height};
 }
 
 /*************************/
@@ -239,7 +246,7 @@ input[type="checkbox"]:checked + label {
 }
 
 @keyframes raise-sm {
-    0% {height: 40%};
+    0% {height: $search-top-sm-height};
     100% {height: 0%};
 }
 
@@ -249,7 +256,7 @@ input[type="checkbox"]:checked + label {
 
 @keyframes lower-sm {
     0% {height: 0%;};
-    100% {height: 40%};
+    100% {height: $search-top-sm-height};
 }
 
 /*************************/
