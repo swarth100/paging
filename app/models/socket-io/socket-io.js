@@ -1,11 +1,10 @@
-
 let mongooseRoom = require('../mongoose/rooms');
 let googlemaps = require('../googlemaps/googlemaps');
 const _ = require('underscore');
 
 let colours = {
     grey: '#737373',
-    yellow: '#ffff00',
+    // yellow: '#ffff00',
     orange: '#ff9900',
     darkOrange: '#993300',
     // red: '#ff3300',
@@ -16,14 +15,15 @@ let colours = {
     blue: '#333399',
     darkBue: '#000066',
     electricBlue: '#0000ff',
-    lightBlue: '#0099ff',
-    green: '#00ff00',
+    // lightBlue: '#0099ff',
+    // green: '#00ff00',
     darkGreen: '#009933',
     darkerGreen: '#003300',
     creamGreen: '#669900',
     brown: '#996633',
     darkBrown: '#663300',
 };
+
 
 exports.start = (server) => {
     /* Starts socket.io to be listening on the specific server */
@@ -158,10 +158,18 @@ exports.start = (server) => {
                                 if (room.results[i].users[k] === changedLocations[j].username) {
                                     found = true;
                                     room.results[i].users.splice(k, 1);
+
+                                    /* Added to enable location pinning. */
+                                    if (room.results[i].users.length === 0) {
+                                        room.results[i].pinned = false;
+                                    }
                                 }
                             }
                             if (!found) {
                                 room.results[i].users.push(changedLocations[j].username);
+
+                                /* Added to enable location pinning. */
+                                room.results[i].pinned = true;
                             }
                         }
                     }
@@ -174,10 +182,10 @@ exports.start = (server) => {
 
                         io.in(socket.room).emit('updateMarkers', room.results);
                     })
-                    .catch(function(err) {
-                        /* Room must be created in the DB */
-                        console.log('Change rooms ERROR. Something horrible. Should never happen');
-                    });
+                .catch(function(err) {
+                    /* Room must be created in the DB */
+                    console.log('Change rooms ERROR. Something horrible. Should never happen');
+                });
             });
         });
 
@@ -189,9 +197,9 @@ exports.start = (server) => {
                         console.log('Changed colour of user, updating client');
                         broadcastSubmit(socket);
                     })
-                    .catch((err) => {
-                        console.log('Failed to change colour user');
-                    });
+                .catch((err) => {
+                    console.log('Failed to change colour user');
+                });
             });
         });
 
@@ -199,42 +207,51 @@ exports.start = (server) => {
          * Recieve a message for the room, broadcast it to everyone in the room
          */
         socket.on('chatMessage', (message) => {
-            findRoom(socket.room, function(room) {
-                findRoom(room._id, (r) => {
-                    if (_.isEmpty(message)) {
-                        if (r.messages.length > 0) {
-                            r.messages.slice(-1)[0].isFirst = false;
+            findRoom(socket.room, (r) => {
+                if (_.isEmpty(message)) {
+                    console.log('INITIAL COMMUNICATION');
+                    socket.emit('recieveChatMessage', r.messages);
+                    return;
+                } else {
+                    console.log('NOT INITIAL COMMUNICATION');
+                    let isAdded = false;
+                    for (let i = 0; i < r.messages.length; i++) {
+                        if (r.messages[i].location === message.location) {
+                            r.messages[i].messages.push(message.messages);
+                            isAdded = true;
                         }
-                    } else {
-                        /* Gets the messages in the room, push the new message and save */
-                        /* check for null as on join we send empty message to
-                         * update the messages */
-                        message.isFirst = false;
-                        if (r.messages.length === 0) {
-                            /* this is the first message */
-                            message.isFirst = true;
-                        }
-                        r.messages.push(message);
                     }
-                    mongooseRoom.updateMessage(room._id, r.messages).then(() => {
-                        io.in(socket.room).emit('recieveChatMessage', r.messages);
-                    })
-                    .catch(() =>{
-                        console.log('Error, failed to update message in the room');
-                    });
+                    if (!isAdded) {
+                        r.messages.push({
+                            location: message.location,
+                            messages: [message.messages],
+                            isFirst: message.isFirst,
+                        });
+                    }
+                }
+                mongooseRoom.updateMessage(r.id, r.messages).then(() => {
+                    io.in(socket.room).emit('recieveChatMessage', message);
+                })
+                .catch((err) =>{
+                    console.log(err);
+                    console.log('Error, failed to update message in the room');
                 });
             });
         });
 
         /* */
         socket.on('calculateTransportTime', (data) => {
-            googlemaps.getTravelTime(data.source, data.destination, function(res) {
-                /* Package result into JSON format with ID for client verification */
-                let resultJSON = {};
-                resultJSON.content = res;
-                resultJSON.id = data.destination.id;
-                socket.emit('receiveTransportTime', resultJSON);
-            });
+            try {
+                googlemaps.getTravelTime(data.source, data.destination, function(res) {
+                    /* Package result into JSON format with ID for client verification */
+                    let resultJSON = {};
+                    resultJSON.content = res;
+                    resultJSON.id = data.destination.id;
+                    socket.emit('receiveTransportTime', resultJSON);
+                });
+            } catch (err) {
+                console.log(err);
+            }
         });
     });
 
@@ -243,11 +260,11 @@ exports.start = (server) => {
             .then(function(room) {
                 /* Room already exists in the DB */
                 console.log('Room already exists and found');
-
                 cb(room);
             })
         .catch(function(err) {
             /* Room must be created in the DB */
+            console.log(err);
             console.log('New room has been created');
 
             /* Room must be created and saved into the DB */

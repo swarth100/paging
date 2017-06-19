@@ -1,0 +1,63 @@
+.btn:focus,.btn:active {
+    outline: none !important;
+}
+
+.btn-search {
+    background-color:$search-btn-bg;
+    border-color: $search-btn-border;
+    color: $search-btn-text;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-search:hover, .btn-search:focus, .btn-search:active {
+    background-color: $search-btn-highlight;
+}
+
+.btn-opt-search {
+    background-color:$search-btn-opt-bg;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-opt-search:hover, .btn-opt-search:focus, .btn-opt-search:active {
+    background-color: $search-btn-opt-highlight;
+    color: white;
+}
+
+.send-btn {
+    margin-left: 0 !important;
+    margin-right: -1px !important;
+    background-color:$search-btn-opt-bg;
+    color: white;
+}
+
+.send-btn:hover, .send-btn:focus, .send-btn:active {
+    background-color: $search-btn-opt-highlight;
+    color: white;
+}
+
+.btn-like {
+    @extend .square;
+    background-color: $like-btn-bg;
+    border: none;
+    color: $like-btn-text;
+    height: 100%;
+}
+
+.btn-like:hover, .btn-like:focus, .btn-like:active {
+    background-color: $like-btn-highlight;
+    color: $like-btn-text;
+}
+
+.bubble-btn {
+    color: $nav-text;
+    background: $search-btn-opt-bg;
+    border: none;
+}
+
+.bubble-btn:focus, .bubble-btn:hover {
+    color: $nav-text-highlight;
+    background: $search-btn-opt-highlight;
+}
+

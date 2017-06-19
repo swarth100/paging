@@ -1,0 +1,315 @@
+/* Homepage *************************************************/
+$search-top-height: calc(60% - 45px);
+$search-bot-height: calc(40% - 45px);
+$search-top-sm-height: calc(30% - 45px);
+$search-bot-sm-height: calc(70% - 45px);
+
+.landing {
+    background: url('../images/background-2.jpeg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.text-field-colour {
+    background-color: $left-nav-text-bg;
+    border: none;
+    // color: $search-field-text;
+    opacity: 1;
+}
+
+.field-title {
+    color: $field-title-text;
+    padding-bottom: 4px;
+    font-size: 16px;
+}
+
+.uib-time input {
+    width: 100% !important;
+}
+
+input[type="checkbox"] + label {
+    background-color: $left-nav-text-bg;
+    font-variant: small-caps;
+    border-color:$search-bar-border;
+    margin-bottom: 0;
+    min-width: 100%;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.options-caret {
+    float: right;
+    position: relative;
+    top: 8px;
+}
+
+input[type="checkbox"]:checked + label {
+    background-color: $left-nav-option-select-bg;
+}
+
+.dropdown-menu-types {
+    width: 80vw !important;
+    padding: 0px 0px;
+    background-color: transparent;
+}
+
+@media (min-width:993px){
+    .dropdown-center {
+        transform: translate(-61%, 0);
+    }
+}
+
+@media (max-width:992px){
+    .dropdown-right {
+        right:0;
+        left:auto;
+    }
+}
+
+.type-icon {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 10px;
+}
+
+.search-bar {
+    height: calc(100vh - 80px);
+}
+
+.search-top {
+    height: $search-top-height;
+}
+
+.search-top-sm {
+    height: $search-top-sm-height;
+}
+
+.search-bottom {
+    height: $search-bot-height;
+    min-height: 250px;
+    background: rgba(0, 0, 0, 0.8);
+    padding-top: 70px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.search-bottom-sm {
+    height: $search-bot-sm-height;
+    min-height: 500px;
+    background: rgba(0, 0, 0, 0.8);
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#search-bar {
+    /* From ******************************************************************************/
+    /* https://stackoverflow.com/questions/18838964/add-bootstrap-glyphicon-to-input-box */
+    /* enable absolute positioning */
+    .inner-addon {
+        position: relative;
+    }
+
+    /* style glyph */
+    .inner-addon .glyphicon {
+        position: absolute;
+        padding: 16px;
+        pointer-events: none;
+    }
+
+    /* align glyph */
+    .left-addon .glyphicon  { left:  0px;}
+    .right-addon .glyphicon { right: 0px;}
+
+    /* add padding  */
+    .left-addon input  { padding-left:  36px; }
+    /****************************************************************************************/
+    .radius-inline {
+        display: inline-block;
+    }
+
+    .options {
+        border-left: 1px solid $search-bar-border;
+        background: inherit;
+        text-align: left;
+        font-size: 18px;
+    }
+    .radius {
+        @extend .no-right-padding;
+        border-left: 1px solid $search-bar-border;
+    }
+    .input-lg {
+        background: inherit;
+        display: inline-block;
+    }
+    .panel-body{
+        background: $left-nav-text-bg;
+    }
+    .search-component {
+        width: 100%;
+        height: 100%;
+        background: $left-nav-text-bg;
+        text-align: left;
+    }
+    .search-icon {
+        border: 1px solid $search-bar-border;
+        border-left: none;
+        border-right: none;
+        background: $left-nav-text-bg;
+    }
+    .search-btn, .search-btn:hover, .search-btn:focus {
+    }
+    .search-search-btn {
+        color: $nav-text;
+        background: $search-btn-opt-bg;
+        border: none;
+    }
+
+    .search-search-btn:focus, .search-search-btn:hover {
+        color: $nav-text-highlight;
+        background: $search-btn-opt-highlight;
+    }
+}
+
+.hide-overflow {
+    overflow: hidden;
+}
+
+.small-bottom-padding {
+    animation: decrease-height 1s;
+}
+
+@keyframes decrease-height {
+    0% {height: 100%};
+    100% {height: $search-bot-height};
+}
+
+.large-bottom-padding {
+    animation: increase-height 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes increase-height {
+    0% {height: $search-bot-height};
+    100% {height: 100%};
+}
+
+/*************************/
+
+.small-bottom-padding-sm {
+    animation: decrease-height-sm 1s;
+}
+
+@keyframes decrease-height-sm {
+    0% {height: 100%};
+    100% {height: $search-bot-sm-height};
+}
+
+.large-bottom-padding-sm {
+    animation: increase-height-sm 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes increase-height-sm {
+    0% {height: $search-bot-sm-height};
+    100% {height: 100%};
+}
+
+/*************************/
+
+.raise-search-bar {
+    animation: raise 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes raise {
+    0% {height: $search-top-height};
+    100% {height: 0%};
+}
+
+.lower-search-bar {
+    animation: lower 1s;
+}
+
+@keyframes lower {
+    0% {height: 0%;};
+    100% {height: $search-top-height};
+}
+
+/*************************/
+
+.raise-search-bar-sm {
+    animation: raise-sm 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes raise-sm {
+    0% {height: $search-top-sm-height};
+    100% {height: 0%};
+}
+
+.lower-search-bar-sm {
+    animation: lower-sm 1s;
+}
+
+@keyframes lower-sm {
+    0% {height: 0%;};
+    100% {height: $search-top-sm-height};
+}
+
+/*************************/
+
+.search-bar-footer-div {
+    height: 5px;
+    background: $left-nav-text-bg;
+}
+
+.search-bar-footer{
+    position: fixed;
+    bottom: 0px;
+    height: 10%;
+    width: 100vw;
+    background: $left-nav-header;
+}
+
+.icon-credits{
+    color: white;
+    position: absolute;
+    bottom: 3%;
+    right:2%;
+}
+
+.white-link, .white-link:hover{
+    color: $user-dd-bg;
+}
+
+.unit{
+    padding-left: 0px;
+    border-right: none;
+    text-align: left;
+    width:100%;
+    overflow: hidden
+
+}
+
+.unit-text {
+    color: #555;
+    position: relative;
+}
+.unit-text-centre {
+    @extend .unit-text;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.customFadeIn {
+    animation: fadeIn 1s;
+}
+
+.customFadeInFast {
+    animation: fadeIn 0.5s;
+}
+
+/************************************************************/

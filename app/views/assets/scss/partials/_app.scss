@@ -1,0 +1,397 @@
+/* App ******************************************************/
+.hide-left {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+}
+
+.map-dimensions {
+    overflow: hidden;
+    height: calc(100vh - 80px);
+    width: 100%;
+    background: url(../images/loading.gif) no-repeat center center;
+    background-size: 100px 100px;
+}
+
+.left-bar-field {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.left-bar-field-button {
+    padding-top: 10px;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.scrollable-table-users {
+    height: calc(100vh - 307px);
+    overflow: auto;
+    width: 100%;
+    .user-colour {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        /* bit of magic */
+        border-radius: 9000px;
+    }
+}
+
+.scrollable-table-options {
+    height: calc(100vh - 391px);
+    overflow: auto;
+    width: 100%;
+
+    /* when hiding */
+    .ng-hide-add {
+        animation:0.3s fadeOut;
+    }
+
+    /* when showing */
+    .ng-hide-remove {
+        animation:0.3s fadeIn;
+    }
+
+    .type-icon-large {
+        max-width: 15%;
+        display: inline-block;
+        vertical-align: middle;
+        padding-right: 10px;
+    }
+
+    .option-name {
+        width: 100%;
+        cursor: pointer;
+    }
+
+}
+
+
+.set-boarder {
+    border-style: solid;
+    border-width: 1px;
+    border-top: none;
+    border-color: $table-border;
+}
+
+.type-icon-small {
+    max-width: 10%;
+    display: inline-block;
+    vertical-align: middle;
+    padding-right: 10px;
+}
+
+.type-icon-tiny {
+    max-width: 13%;
+    display: inline;
+    padding: 0 5px;
+}
+
+.dropdown-menu-types-small {
+    width: 15vw !important;
+    padding: 0px 0px;
+    background-color: transparent;
+    animation-duration: 0.3s !important;
+}
+
+.dropdown-menu-types-tiny {
+    padding: 0px 0px;
+    background-color: transparent;
+    animation-duration: 0.3s !important;
+}
+
+.check-box-not-clicked {
+    background-color: $left-nav-option-bg;
+    border-color:$left-nav-header-border;
+    margin-bottom: 0;
+    min-width: 100%;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.check-box-clicked {
+    background-color: $left-nav-option-select-bg;
+    border-color:$left-nav-header-border;
+    margin-bottom: 0;
+    min-width: 100%;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.check-box-button {
+    background-color: $left-nav-option-bg;
+    border-color:$left-nav-header-border;
+    margin-bottom: 0;
+    border-style: solid;
+    border-width: 1px;
+    text-align: left;
+}
+
+.check-box-button:focus, .check-box-button:hover {
+    background-color: $left-nav-option-select-bg;
+}
+
+.highlight-option {
+    background: $left-nav-option-select-bg;
+}
+
+#accordion {
+    h2 {
+        font-size: 20px;
+    }
+    .panel-body{
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+}
+
+.sidenav-top {
+    background: $left-nav-text-bg;
+    border-color: $left-nav-header-border;
+    border-style: solid;
+    border-width: 1px;
+    height: calc(100vh - 80px);
+    animation-duration: 1s;
+}
+
+$accordion-speed: 0.8s;
+
+#left-nav-options {
+    .panel-heading {
+        border-radius: 0;
+        border-color: $left-nav-header-border;
+        border-style: solid;
+        border-width: 1px;
+        border: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .panel-body{
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height $accordion-speed ease-out;
+        background: $left-nav-text-bg;
+    }
+    .left-nav-bg {
+        background: $left-nav-text-bg;
+    }
+    .underline {
+        border-bottom: 1px solid $search-bar-border;
+    }
+}
+
+#left-nav-users{
+    .panel-heading {
+        border-radius: 0;
+        border-color: $left-nav-header-border;
+        border-style: solid;
+        border-width: 1px;
+        border-right: none;
+        border-bottom: none;
+        border-left: none;
+    }
+    .panel-body{
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height $accordion-speed ease-out;
+        background: $left-nav-text-bg;
+    }
+}
+
+#left-nav-credit {
+    .panel-heading {
+        border-color: $left-nav-header-border;
+        border-style: solid;
+        border-width: 1px;
+        border-right: none;
+        border-bottom: none;
+        border-left: none;
+    }
+    .panel-body{
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height $accordion-speed ease-out;
+        background: $left-nav-text-bg;
+    }
+    .grey-text {
+        color: grey;
+        width: 90%;
+        margin: 0 auto;
+    }
+    .grey-text > a {
+        color: grey;
+    }
+    .credit-padding {
+        background: $left-nav-text-bg;
+        height: calc(100vh - 80px - 43px - 43px - 43px);
+    }
+
+}
+
+.left-nav-button, .left-nav-button:focus {
+    display: block;
+    color: $nav-text;
+    padding: 0;
+    border: none;
+    width: 100%;
+    text-align: left;
+    background: $left-nav-header;
+}
+
+.left-nav-button:hover {
+    color: $nav-text-highlight;
+    background: $left-nav-header-selected;
+}
+
+.centre-modal {
+    position: fixed;
+    top: 20%;
+    left: 18.5%;
+    z-index: 1050;
+    width: 80%;
+    height: 80%;
+    margin-left: -10%;
+}
+
+/*****************************************************************************/
+/* Scrolling animations */
+
+/* Code credit:
+ * https://stackoverflow.com/questions/16989585/css-3-slide-in-from-left-transition
+ */
+
+.nav-right-animate {
+    /* -webkit-transition: 1s linear;
+    transition: 1s linear;
+    opacity: 1; */
+
+transform: translateX(100%);
+}
+
+.slide-in-right{
+    /*background-color: blue;
+    opacity: 0.3; */
+
+animation: slide-in-right 1s forwards;
+}
+
+.slide-out-right {
+    animation: slide-out-right 1s forwards;
+}
+
+.right-nav-absolute {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+@keyframes slide-in-right {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(0%); }
+}
+
+@keyframes slide-out-right {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(100%); }
+}
+
+.basic-toggle-button, .basic-toggle-button:focus {
+    color: $nav-text;
+    background: $left-nav-header;
+    position: fixed;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.basic-toggle-button:hover {
+    color: $nav-text-highlight;
+    background: $left-nav-header-selected;
+}
+
+.right-nav-toggle-button {
+    @extend .basic-toggle-button;
+    margin-left: -62px;
+    transform: rotate(270deg);
+    top: calc(40vh);
+}
+
+.right-nav-toggle-button-map {
+    @extend .basic-toggle-button;
+    margin-left: -61px;
+    left: 100%;
+    transform: rotate(270deg) scale(1);
+    top: calc(40vh + 80px);
+}
+
+/************************************************************/
+
+.nav-left-animate {
+    /* -webkit-transition: 1s linear;
+    transition: 1s linear;
+    opacity: 1; */
+
+transform: translateX(-100%);
+}
+
+.slide-in-left {
+    /*background-color: blue;
+    opacity: 0.3; */
+
+animation: slide-in-left 1s forwards;
+}
+
+.slide-out-left {
+    animation: slide-out-left 1s forwards;
+}
+
+.left-nav-absolute {
+    bottom: 0;
+    left: 0;
+}
+
+@keyframes slide-in-left {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0%); }
+}
+
+@keyframes slide-out-left {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+}
+
+.left-nav-toggle-button {
+    @extend .basic-toggle-button;
+    margin-left: -18px;
+    transform: rotate(90deg);
+    top: calc(40vh);
+    left: 100%;
+}
+
+.left-nav-toggle-button-map {
+    @extend .basic-toggle-button;
+    margin-left: -19px;
+    transform: rotate(90deg) scale(1);
+    top: calc(40vh + 80px);
+}
+
+a[href^="https://maps.google.com/maps"]{
+    position: fixed !important;
+    left: 50% !important;
+    bottom: 0 !important;
+}
+
+.gm-style-mtc {
+    display:none;
+}
+
+
+
+.modal-content  {
+    -webkit-border-radius: 0px !important;
+    -moz-border-radius: 0px !important;
+    border-radius: 0px !important;
+}
+
+/************************************************************/
+

@@ -4,20 +4,33 @@ let geolib = require('geolib');
 const co = require('co');
 
 let googleMapsClient = require('@google/maps').createClient({
-    key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
+    // key: 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8',
     // key: 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg',
     // key: 'AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU',
-    // key: 'AIzaSyD7c_7yNAAQc6mhE_JremnfrnUyxvFvfz4',
+    key: 'AIzaSyD7c_7yNAAQc6mhE_JremnfrnUyxvFvfz4',
     Promise: Promise,
 });
 
 let location;
 
-const numberOfResults = 5;
+let numberOfResults = 5;
 
 let users;
 
+/* Added to enable location pinning. */
+let pinnedList;
+
 function temporaryFunction(room, cb) {
+    /* Reset the numberOfResults and the pinnedList on each search. */
+    pinnedList = [];
+
+    /* Added to enable location pinning. */
+    for (let i = 0; i < room.results.length; i++) {
+        if (room.results[i].pinned) {
+            pinnedList.push(room.results[i]);
+        }
+    }
+
     /*
      * 1. Find center point.
      * 2. Find bounds.
@@ -42,21 +55,13 @@ function temporaryFunction(room, cb) {
         return elem.isSelected;
     });
 
-    // if (!tmpResults.length) {
-    //     tmpResults = parseTypes(function(elem) {
-    //         return true;
-    //     });
-    // }
-
     room.types = tmpResults;
 
     let allUserLocations = getAllLocations(room.users);
 
     let center = geolib.getCenter(allUserLocations);
 
-    let limits = geolib.getBounds(allUserLocations);
-
-    let radius = determineSearchRadius(limits);
+    let radius = determineSearchRadiusRenewed(center, allUserLocations, users);
 
     let queryData = exportQueryData(center, radius, room.types);
 
@@ -79,42 +84,94 @@ function getAllLocations(users) {
     return locations;
 }
 
-function determineSearchRadius(limits) {
-    if (users.length === 1) {
-        return users[0].radius;
+function determineSearchRadiusRenewed(center, allUserLocations, users) {
+    /* Both center and allUserLocations should be in the format used by
+     geolib. */
+
+    /* Used to store the distances between the center and allUserLocations. */
+    let distances = [];
+
+    for (let i = 0; i < allUserLocations.length; i++) {
+        distances.push(geolib.getDistance(center, allUserLocations[i]));
     }
 
-    let min = Infinity;
-    users.forEach((user, index) => {
-        if (min > user.radius) {
-            min = user.radius;
-        }
-    });
+    let radius = 0;
 
-    return min;
+    for (let i = 0; i < distances.length; i++) {
+        let concideredRadius = distances[i] + users[i].radius;
+
+        if (concideredRadius > radius) {
+            radius = concideredRadius;
+        }
+    }
+
+    return radius;
 }
 
 function pruneRenewed(results) {
     /*
-     * 1. Iterate through results.
-     * 2. For each check whether it is part of all user's circles.
+     * 1. Find the maximum number of coinciding circles.
+     * 2. For each result check whether it falls in as many circles as the
+     * maximum number of coinciding circles.
      * 3. If true push.
      */
+
+    /* Added to enable location pinning.
+     * This is used to remove results from the search that are already
+     * pinned. */
+    for (let i = 0; i < results.length; i++) {
+        for (let j = 0; j < pinnedList.length; j++) {
+            if (results[i].id === pinnedList[j].id) {
+                results.splice(i, 1);
+            }
+        }
+    }
+
+    let overallNumberOfCoincidingCircles = 0;
+
+    for (let j = 0; j < users.length; j++) {
+        let numberOfCoincidingCircles = 1;
+
+        let comparisonUserPoint = fromNormalToRidiculous(users[j]);
+        let comparisonUserRadius = users[j].radius;
+
+        /* Find the maximum number of coinciding circles. */
+        for (let i = 0; i < users.length; i++) {
+            if (users[j] === users[i]) {
+                continue;
+            }
+
+            let comparedUserPoint = fromNormalToRidiculous(users[i]);
+            let comparedUserRadius = users[i].radius;
+
+            if (geolib.getDistance(comparisonUserPoint, comparedUserPoint) < Math.abs(comparisonUserRadius + comparedUserRadius)) {
+                numberOfCoincidingCircles++;
+            }
+        }
+
+        if (numberOfCoincidingCircles > overallNumberOfCoincidingCircles) {
+            overallNumberOfCoincidingCircles = numberOfCoincidingCircles;
+        }
+    }
 
     let prunedResults = [];
 
     for (let i = 0; i < results.length; i++) {
-        let inAll = true;
+        let inHowManyCircles = 0;
         for (let j = 0; j < users.length; j++) {
             let point = fromNormalToRidiculous(results[i].location);
             let center = fromNormalToRidiculous(users[j]);
             let radius = users[j].radius;
-            if (!geolib.isPointInCircle(point, center, radius)) {
-                inAll = false;
+
+            if (geolib.isPointInCircle(point, center, radius)) {
+                /* Count how many circles is the location part of. */
+                inHowManyCircles++;
             }
         }
 
-        if (inAll) {
+        /* If the location is in as many circles as the maximum number of
+         coinciding circles, then return the location. */
+        if (inHowManyCircles === overallNumberOfCoincidingCircles) {
             prunedResults.push(results[i]);
         }
     }
@@ -122,6 +179,7 @@ function pruneRenewed(results) {
     return prunedResults;
 }
 
+/* Used to convert from Google's location format to Geolib's location format. */
 function fromNormalToRidiculous(location) {
     return {
         latitude: location.lat,
@@ -140,7 +198,7 @@ function searchAroundLocation(queryData, cb) {
     let promises = [];
 
     for (let i = 0; i < queries.length; i++) {
-        promises.push(queryOnce(queries[i], queryData.radius));
+        promises.push(queryOnce(queries[i]));
     }
 
     Promise.all(promises)
@@ -152,8 +210,8 @@ function searchAroundLocation(queryData, cb) {
                 finalPlaces = [].concat.apply([], responses);
             }
 
-            getTravelTime(queryData.location, finalPlaces[0], (res) => {
-            });
+            /* Added to enable location pinning. */
+            finalPlaces = finalPlaces.concat(pinnedList);
 
             /* Set the users field for each location to empty */
             /* TODO: Refactor so that users are sent around searches */
@@ -163,8 +221,14 @@ function searchAroundLocation(queryData, cb) {
                  * in queryOnce, because the type was required to be added
                  * to the location.
                  */
-                // finalPlaces[i] = finalPlaces[i].toJSON();
-                finalPlaces[i].users = [];
+                if (finalPlaces[i].users === undefined) {
+                    finalPlaces[i].users = [];
+                }
+
+                /* Added to enable location pinning. */
+                if (finalPlaces[i].pinned === undefined) {
+                    finalPlaces[i].pinned = false;
+                }
             }
 
             cb(finalPlaces);
@@ -177,16 +241,17 @@ function searchAroundLocation(queryData, cb) {
 /*
  * This function is not tested.
  */
-function queryOnce(query, radius) {
+function queryOnce(query) {
     let results;
 
     let type;
 
-    return googleMapsClient.placesNearby(query).asPromise()
+    return googleMapsClient.placesRadar(query).asPromise()
         .then(function(value) {
             results = value.json.results;
 
-            // When looking for the type replace whitespaces with underscores.
+            /* When looking for the type replace whitespaces with
+             underscores. */
             type = query.name.split(' ').join('_');
             let convertedPlaces = convertFormatOfPlaces(results, type);
 
@@ -194,7 +259,7 @@ function queryOnce(query, radius) {
             let prunedResults = pruneRenewed(convertedPlaces);
 
             /* Pick a max amount of places from the pruned results */
-            let randomPlaces = chooseRandomPlaces(prunedResults);
+            let randomPlaces = chooseRandomPlaces(prunedResults, type);
 
             return Promise.all(randomPlaces.map(function(randomPlace) {
                 return findInDatabase(randomPlace);
@@ -206,7 +271,7 @@ function queryOnce(query, radius) {
             responses[i].type = type;
         }
 
-        // Return an always resolving promise.
+        /* Return an always resolving promise. */
         return Promise.resolve(responses);
     })
     .catch(function(error) {
@@ -232,7 +297,6 @@ function extractQueryData(queryData) {
 
     for (let i = 0; i < queryData.type.length; i++) {
         queries.push({
-            /* TODO: Previous version is better? */
             location: queryData.location,
             radius: queryData.radius,
             name: queryData.type[i].toLowerCase(),
@@ -268,26 +332,25 @@ function findDistances(results) {
     return arrayLocation;
 }
 
-function pruneResults(results, response, radius) {
-    let prunedResults = [];
-
-    for (let i = 0; i < response.length; i++) {
-        if (response[i] <= radius) {
-            prunedResults.push(results[i]);
-        }
-    }
-
-    return prunedResults;
-}
-
 /*
  * Chooses random places from the results returned by Google.
  */
-function chooseRandomPlaces(results) {
+function chooseRandomPlaces(results, type) {
     let randomPlaces = [];
 
-    let loopCeiling = Math.min(numberOfResults, results.length);
-    // let loopCeiling = results.length;
+    /* Added to enable location pinning.
+     * Decide how many results need to be chosen based on how many results
+     * of the same type have already been pinned. */
+    for (let i = 0; i < pinnedList.length; i++) {
+        if (pinnedList[i].type === type) {
+            numberOfResults--;
+        }
+    }
+
+     let loopCeiling = Math.min(numberOfResults, results.length);
+
+    /* Restore the original value of numberOfResults */
+    numberOfResults = 5;
 
     for (let i = 0; i < loopCeiling; i++) {
         let randomIndex = Math.floor(Math.random() * (results.length - 1));
@@ -337,7 +400,6 @@ function findInDatabase(randomPlace) {
 
     return promiseOfLocation
         .then(function(result) {
-            result['type'] = 'faceless-one';
             return result;
         })
     .catch(function(err) {
@@ -405,7 +467,6 @@ module.exports = {
     searchAroundLocation,
     extractQueryData,
     findDistances,
-    pruneResults,
     chooseRandomPlaces,
     convertFormat,
     convertFormatOfPlaces,
