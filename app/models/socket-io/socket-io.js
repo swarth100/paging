@@ -4,22 +4,26 @@ const _ = require('underscore');
 
 let colours = {
     grey: '#737373',
+    // yellow: '#ffff00',
     orange: '#ff9900',
     darkOrange: '#993300',
-    deepPink: '#ff1493',
+    // red: '#ff3300',
+    pink: '#ff33cc',
+    purple: '#993399',
     darkPurple: '#660066',
+    purpleBlue: '#9900cc',
     blue: '#333399',
-    darkBlue: '#000066',
+    darkBue: '#000066',
     electricBlue: '#0000ff',
+    // lightBlue: '#0099ff',
+    // green: '#00ff00',
     darkGreen: '#009933',
     darkerGreen: '#003300',
+    creamGreen: '#669900',
+    brown: '#996633',
     darkBrown: '#663300',
-    arsenic: '#3b444b',
-    blackLeatherJacket: '#253529',
-    bloodOrange: '#d1001c',
-    bronze: '#cd7f32',
-    coquelicot: '#ff3800',
 };
+
 
 exports.start = (server) => {
     /* Starts socket.io to be listening on the specific server */
