@@ -233,6 +233,6 @@ app.controller('ioCtrl', function($scope, socket) {
         // socket.broadcast('default', 'messages', 'broadcast');
     });
     socket.on('messages', function(data) {
-        console.log('Incoming message:', data);
+        // console.log('Incoming message:', data);
     });
 });
