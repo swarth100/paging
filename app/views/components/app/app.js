@@ -1331,18 +1331,21 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     }, false);
 
     /* Listener bound to animationEnds */
-    rightNav.addEventListener('animationend', function() {
-        /* Trigger the ng-show of the navBar. If it was closing, hide it */
-        $scope.sideRightBarShow = $scope.sideRightBarOpening;
+    rightNav.addEventListener('animationend', function(e) {
+        /* Only update if the animation is for slide */
+        if (e.animationName === 'slide-in-right' || e.animationName === 'slide-out-right') {
+            /* Trigger the ng-show of the navBar. If it was closing, hide it */
+            $scope.sideRightBarShow = $scope.sideRightBarOpening;
 
-        /* Sets the rightNavBar to a false animating state */
-        $scope.sideRightBarAnimating = false;
+            /* Sets the rightNavBar to a false animating state */
+            $scope.sideRightBarAnimating = false;
 
-        /* Remove absolute properties from the navBar. Needed for animation */
-        $('#rightNav').toggleClass('right-nav-absolute');
+            /* Remove absolute properties from the navBar. Needed for animation */
+            $('#rightNav').toggleClass('right-nav-absolute');
 
-        /* Apply the changes to the scope. Triggers ng-shows */
-        $scope.$apply();
+            /* Apply the changes to the scope. Triggers ng-shows */
+            $scope.$apply();
+        }
     });
 
     /* ---------------------------------------------------------------------------------------------------------------*/
@@ -1384,25 +1387,28 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     }, false);
 
     /* Listener bound to animationEnds */
-    leftNav.addEventListener('animationend', function() {
-        /* Trigger the ng-show of the navBar. If it was closing, hide it */
-        $scope.sideLeftBarShow = $scope.sideLeftBarOpening;
+    leftNav.addEventListener('animationend', function(e) {
+        /* Only update if the animation is for slide */
+        if (e.animationName === 'slide-in-left' || e.animationName === 'slide-out-left') {
+            /* Trigger the ng-show of the navBar. If it was closing, hide it */
+            $scope.sideLeftBarShow = $scope.sideLeftBarOpening;
 
-        /* Recalculated the map's centre in order to hook it.
-         * This prevents the map from being shifted after the recalculation of the navBar */
-        // if ($scope.sideLeftBarShow) {
-        //     $scope.mapHookCenter(false, 1);
-        // }
+            /* Recalculated the map's centre in order to hook it.
+             * This prevents the map from being shifted after the recalculation of the navBar */
+            // if ($scope.sideLeftBarShow) {
+            //     $scope.mapHookCenter(false, 1);
+            // }
 
-        /* Sets the leftNavBar to a false animating state */
-        $scope.sideLeftBarAnimating = false;
+            /* Sets the leftNavBar to a false animating state */
+            $scope.sideLeftBarAnimating = false;
 
-        /* Remove absolute properties from the navBar. Needed for animation */
-        $('#leftNav').toggleClass('left-nav-absolute');
+            /* Remove absolute properties from the navBar. Needed for animation */
+            $('#leftNav').toggleClass('left-nav-absolute');
 
-        /* Apply the changes to the scope. Triggers ng-shows */
-        $scope.$apply();
-        $scope.setAccordionOptions('options');
+            /* Apply the changes to the scope. Triggers ng-shows */
+            $scope.$apply();
+            $scope.setAccordionOptions('options');
+        }
     });
 
     /* ---------------------------------------------------------------------------------------------------------------*/
