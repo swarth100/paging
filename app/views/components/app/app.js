@@ -190,6 +190,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    $scope.getRating = function(marker) {
+        if(marker) {
+            if(marker.placeDetails) {
+                return marker.placeDetails.rating;
+            }
+        }
+    };
+
     /* Function invoked whenever pressing the like button of a location */
     $scope.toggleLike = function(result) {
         changeMarkers(result);
@@ -223,6 +231,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     <div class="bubble-separator"></div>
                     Website: 
                     <a href=\"{{getWebsite(getMarkerFromIndex(` + result + `))}}" target=\"_blank\">{{getWebsite(getMarkerFromIndex(` + result + `))}}</a>
+                    <br>
+                    Rating:
+                    {{getRating(getMarkerFromIndex(` + result + `))}} / 5
                     <div class="bubble-separator"></div>
                     <div class="like-text-field">
                         <div style="display: inline; color: blue;">Liked By: </div>
@@ -408,6 +419,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     const socketUpdatePlaceDetails = function(placeDetails) {
         if(resultLocations[$scope.selectedResultIndex].id === placeDetails.place_id) {
             markers[$scope.selectedResultIndex].placeDetails = placeDetails;
+            // markers[$scope.selectedResultIndex].placePhotos = placeDetails.photos;
             $scope.$apply();
         }
     };
