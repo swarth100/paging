@@ -78,7 +78,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .search-top-sm {
-    height: 20%;
+    height: 40%;
 }
 
 .search-bottom {
@@ -90,7 +90,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .search-bottom-sm {
-    min-height: 80%;
+    min-height: 60%;
     background: rgba(0, 0, 0, 0.8);
     padding-top: 20px;
     padding-left: 20px;
@@ -191,6 +191,27 @@ input[type="checkbox"]:checked + label {
 
 /*************************/
 
+.small-bottom-padding-sm {
+    animation: decrease-height-sm 1s;
+}
+
+@keyframes decrease-height-sm {
+    0% {height: 100%};
+    100% {height: 60%};
+}
+
+.large-bottom-padding-sm {
+    animation: increase-height-sm 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes increase-height-sm {
+    0% {height: 60%};
+    100% {height: 100%};
+}
+
+/*************************/
+
 .raise-search-bar {
     animation: raise 1s;
     animation-fill-mode: forwards;
@@ -218,7 +239,7 @@ input[type="checkbox"]:checked + label {
 }
 
 @keyframes raise-sm {
-    0% {height: 20%};
+    0% {height: 40%};
     100% {height: 0%};
 }
 
@@ -228,7 +249,7 @@ input[type="checkbox"]:checked + label {
 
 @keyframes lower-sm {
     0% {height: 0%;};
-    100% {height: 20%};
+    100% {height: 40%};
 }
 
 /*************************/
