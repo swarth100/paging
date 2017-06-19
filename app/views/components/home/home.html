@@ -35,8 +35,8 @@
 
 -->
 <div class="container-fluid search-bar">
-    <div class="row" ng-class="{'search-top': !isSmallScreen(), 'search-top-sm': isSmallScreen(), 'raise-search-bar': dropdownOpen && !isSmallScreen(), 'lower-search-bar': !dropdownOpen && !isSmallScreen(), 'raise-search-bar-sm': dropdownOpen && isSmallScreen(), 'lower-search-bar-sm': !dropdownOpen && isSmallScreen()}"></div>
-    <div id="search-bar" class="row" ng-class="{'search-bottom': !isSmallScreen(), 'search-bottom-sm': isSmallScreen(), 'large-bottom-padding': dropdownOpen, 'small-bottom-padding': !dropdownOpen}">
+    <div class="row" ng-class="{'search-top': !isSmallScreen(), 'search-top-sm': isSmallScreen()}"></div>
+    <div id="search-bar" class="row" ng-class="{'search-bottom': !isSmallScreen(), 'search-bottom-sm': isSmallScreen()}">
         <form class="form-group-lg" ng-submit="submitFields()">
             <!-- LOCATION field holder -->
             <div class="col-sm-12 col-md-3 col-md-offset-2 no-padding">
@@ -60,7 +60,7 @@
             <!--OPTION field holder-->
             <div class="col-sm-12 col-md-2 no-padding">
                 <p class="field-title">Location Types:</p>
-                <div class="search-component" uib-dropdown is-open="dropdownOpen">
+                <div class="search-component" uib-dropdown>
                     <!-- Nasty resizing using input-lg -->
                     <button type="button" class="btn btn-block input-lg search-btn options square simplebox no-border" ng-click="dropDownToggle()" uib-dropdown-toggle data-toggle="dropdown" data-target="#homeOptionsMenu" aria-haspopup="true" aria-expanded="false">
                         Options
@@ -91,7 +91,7 @@
             </div>
         </form>
     </div>
-    <div class="row search-bar-footer">
+    <div class="row search-bar-footer animated fadeIn">
         <div class="search-bar-footer-div"></div>
         <p class="icon-credits">Icons made by <a class="white-link" href="http://www.freepik.com/" target="_blank">Freepik</a> from <a class="white-link" href="https://www.flaticon.com" target="_blank"> www.flaticon.com </a></p>
     </div>
