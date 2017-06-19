@@ -52,6 +52,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let lastOpenedInfoBubble;              /* Object. Contains last opened infoBubble */
 
     let geocoder;                          /* Object. Used by googleMaps */
+    geocoder = new google.maps.Geocoder(); /* Initialise googleMaps required fields */
     let directionsDisplay;                 /* Object. Used by googleMaps */
     let directionsService;                 /* Object. Used by googleMaps */
 
@@ -248,7 +249,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     </div>
                     <div class="bubble-separator"></div>
                     <div ng-show=\"hasWebsite(getMarkerFromIndex(` + result + `))\">
-                        Website: 
+                        Website:
                         <a href=\"{{getWebsite(getMarkerFromIndex(` + result + `))}}" target=\"_blank\">{{getWebsite(getMarkerFromIndex(` + result + `))}}</a>
                         <br>
                     </div>
@@ -1556,8 +1557,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Initialise the username field */
     Data.user.username = Data.updateUsername();
 
-    /* Initialise googleMaps required fields */
-    geocoder = new google.maps.Geocoder();
     directionsDisplay = new google.maps.DirectionsRenderer(
             {
                 suppressMarkers: true,
