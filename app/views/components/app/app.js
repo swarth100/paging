@@ -189,23 +189,15 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     };
 
     $scope.getRating = function(marker) {
-        if(marker) {
+        if (marker) {
+            console.log(marker);
             return marker.rating;
         }
     };
 
     $scope.getPicture = function(marker) {
-        if(marker) {
-            let request = {
-                placeId: marker.id,
-            };
-
-            service = new google.maps.places.PlacesService(map);
-            service.getDetails(request, (place, status) => {
-                if (status == google.maps.places.PlacesServiceStatus.OK) {
-                    return (place.photos[0].getUrl({maxHeight: 64, maxWidth: 64}));
-                }
-            });
+        if (marker) {
+            return marker.photo;
         }
     };
 
@@ -246,6 +238,8 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     <br>
                     Rating:
                     {{getRating(getMarkerFromIndex(` + result + `))}} / 5
+                    <br>
+                    <img src="{{getPicture(getMarkerFromIndex(` + result + `))}}"/>
                     <div class="bubble-separator"></div>
                     <div class="like-text-field">
                         <div style="display: inline; color: blue;">Liked By: </div>
@@ -952,8 +946,18 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         marker['type'] = result.type;
         marker['website'] = result.website;
         marker['rating'] = result.rating;
-        marker['id'] = result.place_id;
-        console.log(marker);
+
+        let request = {
+            placeId: result.id,
+        };
+
+        service = new google.maps.places.PlacesService(map);
+        service.getDetails(request, (place, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                marker['photo'] = (place.photos[0].getUrl({maxHeight: 200}));
+            }
+        });
+
         return marker;
     };
 
