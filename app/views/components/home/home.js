@@ -67,19 +67,27 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
         /* Clicks on the button disable body overflowing temporarily */
         $('#body').toggleClass('hide-overflow');
 
-        console.log($scope.isSmallScreen());
-
         $scope.dropdownOpen = !$scope.dropdownOpen;
+
+        /* When button is clicked, toggle the animations */
         $('.search-top-sm').removeClass('lower-search-bar-sm').addClass('raise-search-bar-sm');
+        $('.search-top').removeClass('lower-search-bar').addClass('raise-search-bar');
+        $('.search-bottom').removeClass('small-bottom-padding').addClass('large-bottom-padding');
+        $('.search-bottom-sm').removeClass('small-bottom-padding-sm').addClass('large-bottom-padding-sm');
     };
 
-    /* 'raise-search-bar': dropdownOpen && !isSmallScreen(), 'lower-search-bar': !dropdownOpen && !isSmallScreen(), 'raise-search-bar-sm': dropdownOpen && isSmallScreen(), 'lower-search-bar-sm': !dropdownOpen && isSmallScreen() */
+    /* 'large-bottom-padding': dropdownOpen, 'small-bottom-padding': !dropdownOpen */
 
     /* */
     $(document).click(function() {
         console.log($scope.dropdownOpen);
         if ($scope.dropdownOpen) {
             $('.search-top-sm').removeClass('raise-search-bar-sm').addClass('lower-search-bar-sm');
+            $('.search-top').removeClass('raise-search-bar').addClass('lower-search-bar');
+            $('.search-bottom').removeClass('large-bottom-padding').addClass('small-bottom-padding');
+            $('.search-bottom-sm').removeClass('large-bottom-padding-sm').addClass('small-bottom-padding-sm');
+
+            $scope.dropdownOpen = !$scope.dropdownOpen;
         }
     });
 
