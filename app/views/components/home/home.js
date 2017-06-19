@@ -149,6 +149,8 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
 
     /* */
     $scope.submitFields = () => {
+        Data.query = $scope.homeSearch;
+        console.log(Data.query);
         $scope.$broadcast('submit');
 
         /*  */

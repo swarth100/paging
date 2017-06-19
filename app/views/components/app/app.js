@@ -52,6 +52,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     let lastOpenedInfoBubble;              /* Object. Contains last opened infoBubble */
 
     let geocoder;                          /* Object. Used by googleMaps */
+    geocoder = new google.maps.Geocoder(); /* Initialise googleMaps required fields */
     let directionsDisplay;                 /* Object. Used by googleMaps */
     let directionsService;                 /* Object. Used by googleMaps */
 
@@ -215,6 +216,13 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    $scope.hasPicture = function(marker) {
+        if (marker) {
+            return marker.photo;
+        }
+        return false;
+    };
+
 
     /* Function invoked whenever pressing the like button of a location */
     $scope.toggleLike = function(result) {
@@ -224,14 +232,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Template according to which precompile infoBubble */
     const generateInfoBubbleTemplate = function(result) {
         return (
-                `<div>
+                `<div style="background-color: #eceff1;">
                     <div class="input-group">
                         <span class="input-group-btn bubble-header">
                             <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
                                 <i class="fa fa-thumbs-up"></i>
                             </button>
                         </span>
-                        <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
+                        <a type="text" target="_blank" href="{{getWebsite(getMarkerFromIndex(` + result + `))}}" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</a>
                     </div>
                     <div class="bubble-separator"></div>
                     <div class="btn-group btn-group-justified">
@@ -247,18 +255,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                         </label>
                     </div>
                     <div class="bubble-separator"></div>
-                    <div ng-show=\"hasWebsite(getMarkerFromIndex(` + result + `))\">
-                        Website: 
-                        <a href=\"{{getWebsite(getMarkerFromIndex(` + result + `))}}" target=\"_blank\">{{getWebsite(getMarkerFromIndex(` + result + `))}}</a>
-                        <br>
-                    </div>
                     <div ng-show=\"hasRating(getMarkerFromIndex(` + result + `))\">
-                        Rating:
-                        {{getRating(getMarkerFromIndex(` + result + `))}} / 5
-                        <br>
+                        <span uib-rating ng-model="getRating(getMarkerFromIndex(` + result + `))" max="5" read-only="!isReadonly" state-on="'glyphicon-star'" style="color: darkorange; position: absolute; width: 100%; text-align: center;"></span>
+                        <div class="bubble-separator" style="padding-top: 20px"></div>
                     </div>
-                    <img class="image-center" src="{{getPicture(getMarkerFromIndex(` + result + `))}}"/>
-                    <div class="bubble-separator"></div>
+                    <div ng-show=\"hasPicture(getMarkerFromIndex(` + result + `))\">
+                        <img class="image-center" src="{{getPicture(getMarkerFromIndex(` + result + `))}}" style="max-height: 200px; width: 100%; object-fit: cover;" />
+                        <div class="bubble-separator"></div>
+                    </div>
                     <div class="like-text-field">
                         <div style="display: inline; color: blue;">Liked By: </div>
                         {{printUsers(getResultFromIndex(` + result + `).users)}}
@@ -706,7 +710,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
             let userBubble = createUserInfoBubble($scope.users[i]);
 
-            markerAddInfo(map, marker, userBubble);
+            addHoveringListeners(map, marker, userBubble);
         }
 
         /*
@@ -909,6 +913,31 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
+    /* Styles differently the user info bubble compared to the locations
+     info bubble. */
+    const createUserStyledInfoBubble = function() {
+        return new InfoBubble({
+            content: 'Madness',
+            shadowStyle: 0,
+            padding: 0,
+            backgroundColor: 'rgb(236, 239, 241)',
+            borderRadius: 35,
+            arrowSize: 5,
+            borderWidth: 1,
+            borderColor: 'rgb(120, 144, 156)',
+            minWidth: 80,
+            maxWidth: 300,
+            minHeight: 'calc(100% + 2px)',
+            maxHeight: 80,
+            disableAutoPan: true,
+            hideCloseButton: true,
+            disableAnimation: true,
+            arrowPosition: 50,
+            arrowStyle: 0,
+            result: '',
+        });
+    };
+
     /* TODO: Add comment */
     const createLocationInfoBubble = function(index) {
         let infoBubble = createDefaultInfoBubble();
@@ -919,13 +948,32 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         return infoBubble;
     };
 
-    /* TODO: Add comment */
+    /* Creates the info bubble which is displayed above the user's location. */
     const createUserInfoBubble = function(user) {
-        let infoBubble = createDefaultInfoBubble();
+        let infoBubble = createUserStyledInfoBubble();
 
-        infoBubble.content = '<div class="infoBubbleUser" style=\"color: ' + user.color + '\">' + user.username + '</div>';
+        infoBubble.content =
+            '<div' +
+            ' style=\"font-size: 140%;' +
+            ' text-align: center;' +
+            // ' background-color: #eceff1' +
+            ' padding-top: 5px;' +
+            ' padding-bottom: 5px;' + '\">' +
+            '<img src="../../assets/images/user.png"/>' +
+            '<p style="color: ' + user.color + '\">' +
+            conditionalUsername(user) + '</p>' + '</div>';
 
         return infoBubble;
+    };
+
+    /* If the username of the user is too long, only display part of it in the
+     user's info bubble. */
+    const conditionalUsername = function(user) {
+        if (user.username.length <= 10) {
+            return user.username;
+        } else {
+            return user.username.substring(0, 7) + '...';
+        }
     };
 
     /* TODO: Add comment */
@@ -972,7 +1020,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         service = new google.maps.places.PlacesService(map);
         service.getDetails(request, (place, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
-                marker['photo'] = (place.photos[0].getUrl({maxHeight: 150}));
+                if (marker && place.photos) {
+                    marker['photo'] = (place.photos[0].getUrl({maxWidth: 300}));
+                }
             }
         });
 
@@ -1057,6 +1107,12 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             closeInfoBubble(infoBubble);
         });
 
+        addHoveringListeners(map, marker, infoBubble);
+    };
+
+    /* Adds listeners to the info bubble to monitor when a mouse is hovered
+     over the marker. */
+    const addHoveringListeners = function(map, marker, infoBubble) {
         /* Handle mouse hovering over labels */
         google.maps.event.addListener(marker, 'mouseover', function() {
             if (!infoBubble.opened) {
@@ -1508,8 +1564,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     /* Initialise the username field */
     Data.user.username = Data.updateUsername();
 
-    /* Initialise googleMaps required fields */
-    geocoder = new google.maps.Geocoder();
     directionsDisplay = new google.maps.DirectionsRenderer(
             {
                 suppressMarkers: true,
