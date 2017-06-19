@@ -226,6 +226,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     $scope.toggleSelected = ((index) => {
         $scope.types[index].isSelected = !$scope.types[index].isSelected;
+        if (!$scope.types[index].isSelected) {
+            $scope.types[index].isHighlighted = false;
+        }
         Data.types = $scope.types;
     });
 
@@ -332,7 +335,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     /* Socket update helper function */
     const socketUpdate = function(room) {
-        $scope.issueSearch = false;
         $scope.users = room.users;
         if (Data.user.username !== '') {
             let i = $scope.users.reduce(( cur, val, index ) => {
@@ -356,6 +358,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 $scope.initMap(location, room);
             }
         });
+        $scope.issueSearch = false;
     };
 
     /* */
