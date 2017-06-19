@@ -162,7 +162,6 @@ function pruneRenewed(results) {
             let point = fromNormalToRidiculous(results[i].location);
             let center = fromNormalToRidiculous(users[j]);
             let radius = users[j].radius;
-            // if (!geolib.isPointInCircle(point, center, radius)) {
 
             if (geolib.isPointInCircle(point, center, radius)) {
                 /* Count how many circles is the location part of. */
@@ -180,6 +179,7 @@ function pruneRenewed(results) {
     return prunedResults;
 }
 
+/* Used to convert from Google's location format to Geolib's location format. */
 function fromNormalToRidiculous(location) {
     return {
         latitude: location.lat,
@@ -221,7 +221,6 @@ function searchAroundLocation(queryData, cb) {
                  * in queryOnce, because the type was required to be added
                  * to the location.
                  */
-                // finalPlaces[i] = finalPlaces[i].toJSON();
                 if (finalPlaces[i].users === undefined) {
                     finalPlaces[i].users = [];
                 }
@@ -251,7 +250,8 @@ function queryOnce(query) {
         .then(function(value) {
             results = value.json.results;
 
-            // When looking for the type replace whitespaces with underscores.
+            /* When looking for the type replace whitespaces with
+             underscores. */
             type = query.name.split(' ').join('_');
             let convertedPlaces = convertFormatOfPlaces(results, type);
 
@@ -271,7 +271,7 @@ function queryOnce(query) {
             responses[i].type = type;
         }
 
-        // Return an always resolving promise.
+        /* Return an always resolving promise. */
         return Promise.resolve(responses);
     })
     .catch(function(error) {
