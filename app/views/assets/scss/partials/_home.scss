@@ -304,4 +304,12 @@ input[type="checkbox"]:checked + label {
     vertical-align: middle;
 }
 
+.customFadeIn {
+    animation: fadeIn 1s;
+}
+
+.customFadeInFast {
+    animation: fadeIn 0.5s;
+}
+
 /************************************************************/
