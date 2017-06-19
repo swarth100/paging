@@ -184,19 +184,31 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     $scope.getWebsite = function(marker) {
         if (marker) {
-            if(marker.placeDetails) {
-                return marker.placeDetails.website;
-            }
+            return marker.website;
         }
     };
 
     $scope.getRating = function(marker) {
         if(marker) {
-            if(marker.placeDetails) {
-                return marker.placeDetails.rating;
-            }
+            return marker.rating;
         }
     };
+
+    $scope.getPicture = function(marker) {
+        if(marker) {
+            let request = {
+                placeId: marker.id,
+            };
+
+            service = new google.maps.places.PlacesService(map);
+            service.getDetails(request, (place, status) => {
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    return (place.photos[0].getUrl({maxHeight: 64, maxWidth: 64}));
+                }
+            });
+        }
+    };
+
 
     /* Function invoked whenever pressing the like button of a location */
     $scope.toggleLike = function(result) {
@@ -416,14 +428,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
-    const socketUpdatePlaceDetails = function(placeDetails) {
-        if(resultLocations[$scope.selectedResultIndex].id === placeDetails.place_id) {
-            markers[$scope.selectedResultIndex].placeDetails = placeDetails;
-            // markers[$scope.selectedResultIndex].placePhotos = placeDetails.photos;
-            $scope.$apply();
-        }
-    };
-
     /*
      * Receives a list of locations whose coloured dots need to be
      * refreshed. Sends them one by one to the function which takes care of
@@ -516,10 +520,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
     socket.removeAllListeners('receiveTransportTime', function() {
         socket.once('receiveTransportTime', socketUpdateTransportTime);
-    });
-
-    socket.removeAllListeners('receivePlaceDetails', function() {
-        socket.once('receivePlaceDetails', socketUpdatePlaceDetails);
     });
 
     /* Add socket listener for messaging */
@@ -950,7 +950,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         marker['typeMarker'] = typeMarker;
         marker['type'] = result.type;
-
+        marker['website'] = result.website;
+        marker['rating'] = result.rating;
+        marker['id'] = result.place_id;
+        console.log(marker);
         return marker;
     };
 
@@ -1022,7 +1025,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                 if (!$scope.hasTime(resultLocations[$scope.selectedResultIndex])) {
                     socketSendTimeRequest();
                 }
-                socketSendDetailsRequest();
             } else if (infoBubble.opened) {
                 closeInfoBubble(infoBubble);
             }
