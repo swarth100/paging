@@ -136,6 +136,7 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
     /* Listener bound to animationEnds */
     searchBar.addEventListener('animationend', function() {
         $('#body').toggleClass('hide-overflow');
+        $('.row').removeClass('animated').removeClass('fadeIn');
     }, false);
 
     /* ---------------------------------------------------------------------------------------------------------------*/
