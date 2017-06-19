@@ -1252,7 +1252,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
-
     /* ---------------------------------------------------------------------------------------------------------------*/
     /* Bootstrap helper functions */
 
@@ -1396,6 +1395,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         /* Apply the changes to the scope. Triggers ng-shows */
         $scope.$apply();
+        $scope.setAccordionOptions('options');
     });
 
     /* ---------------------------------------------------------------------------------------------------------------*/
