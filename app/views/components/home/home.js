@@ -72,6 +72,22 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
         $(elem).removeClass('lower-search-bar-sm').removeClass('small-bottom-padding-sm').removeClass('raise-search-bar-sm').removeClass('large-bottom-padding-sm');
     };
 
+    const closeOptions = function() {
+        if ($scope.dropdownOpen) {
+            if ($scope.isSmallScreen()) {
+                $('.search-top-sm').removeClass('raise-search-bar-sm').addClass('lower-search-bar-sm');
+                $('.search-bottom-sm').removeClass('large-bottom-padding-sm').addClass('small-bottom-padding-sm');
+            } else {
+                removeSmClasses('.search-bottom');
+                removeSmClasses('.search-top');
+                $('.search-bottom').removeClass('large-bottom-padding').addClass('small-bottom-padding');
+                $('.search-top').removeClass('raise-search-bar').addClass('lower-search-bar');
+            }
+
+            $scope.dropdownOpen = false;
+        }
+    };
+
     /* */
     $scope.dropDownToggle = function() {
         /* Clicks on the button disable body overflowing temporarily */
@@ -90,24 +106,14 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
             }
         }
 
+        closeOptions();
+
         $scope.dropdownOpen = true;
     };
 
     /* */
     $(document).click(function() {
-        if ($scope.dropdownOpen) {
-            if ($scope.isSmallScreen()) {
-                $('.search-top-sm').removeClass('raise-search-bar-sm').addClass('lower-search-bar-sm');
-                $('.search-bottom-sm').removeClass('large-bottom-padding-sm').addClass('small-bottom-padding-sm');
-            } else {
-                removeSmClasses('.search-bottom');
-                removeSmClasses('.search-top');
-                $('.search-bottom').removeClass('large-bottom-padding').addClass('small-bottom-padding');
-                $('.search-top').removeClass('raise-search-bar').addClass('lower-search-bar');
-            }
-
-            $scope.dropdownOpen = false;
-        }
+        closeOptions();
     });
 
     /* ---------------------------------------------------------------------------------------------------------------*/
