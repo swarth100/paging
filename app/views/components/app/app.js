@@ -917,9 +917,10 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
             arrowSize: 5,
             borderWidth: 1,
             borderColor: 'rgb(120, 144, 156)',
+            minWidth: 80,
             maxWidth: 300,
             minHeight: 'calc(100% + 2px)',
-            maxHeight: 50,
+            maxHeight: 80,
             disableAutoPan: true,
             hideCloseButton: true,
             disableAnimation: true,
@@ -945,12 +946,14 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         let infoBubble = createUserStyledInfoBubble();
 
         infoBubble.content =
-            '<div class="infoBubbleUser"' +
+            '<div' +
             ' style=\"font-size: 140%;' +
             ' text-align: center;' +
-            ' color: ' + user.color + '\">' +
+            ' background-color: #eceff1' +
+            ' padding-top: 5px;' +
+            ' padding-bottom: 5px;' + '\">' +
             '<img src="../../assets/images/user.png"/>' +
-            '<p style="margin-bottom: 0px" class="infoBubbleUser">' +
+            '<p style="color: ' + user.color + '\">' +
             conditionalUsername(user) + '</p>' + '</div>';
 
         return infoBubble;
