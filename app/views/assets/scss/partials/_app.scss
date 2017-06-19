@@ -35,6 +35,16 @@
     height: calc(100vh - 391px);
     overflow: auto;
     width: 100%;
+
+    /* when hiding */
+    .ng-hide-add {
+        animation:0.3s fadeOut;
+    }
+
+    /* when showing */
+    .ng-hide-remove {
+        animation:0.3s fadeIn;
+    }
 }
 
 
