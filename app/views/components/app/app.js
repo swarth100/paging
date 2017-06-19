@@ -182,15 +182,29 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    $scope.hasWebsite = function(marker) {
+        if(marker) {
+            console.log(marker.website);
+            return marker.website;
+        }
+        return false;
+    };
+
     $scope.getWebsite = function(marker) {
         if (marker) {
             return marker.website;
         }
     };
 
+    $scope.hasRating = function(marker) {
+        if (marker) {
+            return marker.rating;
+        }
+        return false;
+    };
+
     $scope.getRating = function(marker) {
         if (marker) {
-            console.log(marker);
             return marker.rating;
         }
     };
@@ -233,13 +247,17 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                         </label>
                     </div>
                     <div class="bubble-separator"></div>
-                    Website: 
-                    <a href=\"{{getWebsite(getMarkerFromIndex(` + result + `))}}" target=\"_blank\">{{getWebsite(getMarkerFromIndex(` + result + `))}}</a>
-                    <br>
-                    Rating:
-                    {{getRating(getMarkerFromIndex(` + result + `))}} / 5
-                    <br>
-                    <img src="{{getPicture(getMarkerFromIndex(` + result + `))}}"/>
+                    <div ng-show=\"hasWebsite(getMarkerFromIndex(` + result + `))\">
+                        Website: 
+                        <a href=\"{{getWebsite(getMarkerFromIndex(` + result + `))}}" target=\"_blank\">{{getWebsite(getMarkerFromIndex(` + result + `))}}</a>
+                        <br>
+                    </div>
+                    <div ng-show=\"hasRating(getMarkerFromIndex(` + result + `))\">
+                        Rating:
+                        {{getRating(getMarkerFromIndex(` + result + `))}} / 5
+                        <br>
+                    </div>
+                    <img class="image-center" src="{{getPicture(getMarkerFromIndex(` + result + `))}}"/>
                     <div class="bubble-separator"></div>
                     <div class="like-text-field">
                         <div style="display: inline; color: blue;">Liked By: </div>
@@ -954,7 +972,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         service = new google.maps.places.PlacesService(map);
         service.getDetails(request, (place, status) => {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
-                marker['photo'] = (place.photos[0].getUrl({maxHeight: 200}));
+                marker['photo'] = (place.photos[0].getUrl({maxHeight: 150}));
             }
         });
 
