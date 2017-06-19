@@ -95,7 +95,6 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
 
     /* */
     $(document).click(function() {
-        console.log($scope.dropdownOpen);
         if ($scope.dropdownOpen) {
             if ($scope.isSmallScreen()) {
                 $('.search-top-sm').removeClass('raise-search-bar-sm').addClass('lower-search-bar-sm');
