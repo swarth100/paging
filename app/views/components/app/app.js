@@ -182,6 +182,40 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+    $scope.hasWebsite = function(marker) {
+        if(marker) {
+            console.log(marker.website);
+            return marker.website;
+        }
+        return false;
+    };
+
+    $scope.getWebsite = function(marker) {
+        if (marker) {
+            return marker.website;
+        }
+    };
+
+    $scope.hasRating = function(marker) {
+        if (marker) {
+            return marker.rating;
+        }
+        return false;
+    };
+
+    $scope.getRating = function(marker) {
+        if (marker) {
+            return marker.rating;
+        }
+    };
+
+    $scope.getPicture = function(marker) {
+        if (marker) {
+            return marker.photo;
+        }
+    };
+
+
     /* Function invoked whenever pressing the like button of a location */
     $scope.toggleLike = function(result) {
         changeMarkers(result);
@@ -191,33 +225,45 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
     const generateInfoBubbleTemplate = function(result) {
         return (
                 `<div>
-                <div class="input-group">
-                <span class="input-group-btn bubble-header">
-                <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
-                <i class="fa fa-thumbs-up"></i>
-                </button>
-                </span>
-                <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
-                </div>
-                <div class="bubble-separator"></div>
-                <div class="btn-group btn-group-justified">
-                <label class="btn bubble-btn square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
-                <i class="{{transport.icon}}"></i>
-                <br>
-                <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
-                <p style="margin: 0">{{transport.name}}</p>
-                </div>
-                <div ng-show=\"hasTime(getMarkerFromIndex(` + result + `))\">
-                <p style="margin: 0">{{getTime(getMarkerFromIndex(` + result + `), transport)}}</p>
-                </div>
-                </label>
-                </div>
-                <div class="bubble-separator"></div>
-                <div class="like-text-field">
-                <div style="display: inline; color: blue;">Liked By: </div>
-                {{printUsers(getResultFromIndex(` + result + `).users)}}
-        </div>
-            </div>`
+                    <div class="input-group">
+                        <span class="input-group-btn bubble-header">
+                            <button class="btn btn-like input-lg" ng-click=\"toggleLike(getResultFromIndex(` + result + `))\" type="submit">
+                                <i class="fa fa-thumbs-up"></i>
+                            </button>
+                        </span>
+                        <div type="text" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</div>
+                    </div>
+                    <div class="bubble-separator"></div>
+                    <div class="btn-group btn-group-justified">
+                        <label class="btn bubble-btn square" ng-repeat="transport in transports" ng-value="transport.name" ng-click="printTransport(transport)">
+                            <i class="{{transport.icon}}"></i>
+                            <br>
+                            <div ng-show=\"!hasTime(getMarkerFromIndex(` + result + `))\">
+                                <p style="margin: 0">{{transport.name}}</p>
+                            </div>
+                            <div ng-show=\"hasTime(getMarkerFromIndex(` + result + `))\">
+                                <p style="margin: 0">{{getTime(getMarkerFromIndex(` + result + `), transport)}}</p>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="bubble-separator"></div>
+                    <div ng-show=\"hasWebsite(getMarkerFromIndex(` + result + `))\">
+                        Website: 
+                        <a href=\"{{getWebsite(getMarkerFromIndex(` + result + `))}}" target=\"_blank\">{{getWebsite(getMarkerFromIndex(` + result + `))}}</a>
+                        <br>
+                    </div>
+                    <div ng-show=\"hasRating(getMarkerFromIndex(` + result + `))\">
+                        Rating:
+                        {{getRating(getMarkerFromIndex(` + result + `))}} / 5
+                        <br>
+                    </div>
+                    <img class="image-center" src="{{getPicture(getMarkerFromIndex(` + result + `))}}"/>
+                    <div class="bubble-separator"></div>
+                    <div class="like-text-field">
+                        <div style="display: inline; color: blue;">Liked By: </div>
+                        {{printUsers(getResultFromIndex(` + result + `).users)}}
+                    </div>
+                </div>`
             );
     };
 
@@ -587,6 +633,41 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         });
     };
 
+    function socketSendDetailsRequest() {
+        socket.emit('getPlaceDetails', resultLocations[$scope.selectedResultIndex]);
+    }
+
+    /* -----------------------------------------------------------------------*/
+    /* Functions called upon entry */
+
+    $scope.joinRoom();
+    $scope.getLocation(function(currLoc) {
+        map = createMap(currLoc);
+        directionsDisplay.setMap(map);
+
+        /* Add click event listener. Used to allow user to change their
+         location just by clicking. */
+        google.maps.event.addListener(map, 'click', function(event) {
+            let latLng = event.latLng;
+
+            geocoder.geocode({'location': latLng}, function(results, status) {
+                if (status === 'OK') {
+                    if (results[1]) {
+                        /* Used to update the location field. */
+                        Data.query.location = results[0].formatted_address;
+                        broadcastUserData();
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    // window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+        });
+
+        document.getElementById('map').style.visibility = 'hidden';
+    });
+
     /* ---------------------------------------------------------------------------------------------------------------*/
     /* Map rendering functions with helpers */
 
@@ -881,6 +962,19 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
         marker['typeMarker'] = typeMarker;
         marker['type'] = result.type;
+        marker['website'] = result.website;
+        marker['rating'] = result.rating;
+
+        let request = {
+            placeId: result.id,
+        };
+
+        service = new google.maps.places.PlacesService(map);
+        service.getDetails(request, (place, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                marker['photo'] = (place.photos[0].getUrl({maxHeight: 150}));
+            }
+        });
 
         return marker;
     };
