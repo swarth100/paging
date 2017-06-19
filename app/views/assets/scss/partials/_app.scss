@@ -29,6 +29,13 @@
     height: calc(100vh - 307px);
     overflow: auto;
     width: 100%;
+    .user-colour {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        /* bit of magic */
+        border-radius: 9000px;
+    }
 }
 
 .scrollable-table-options {
