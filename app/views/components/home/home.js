@@ -17,6 +17,7 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
     $scope.homeSearch = Data.query;
     $scope.types = Data.types;
     $scope.setDate();
+    $scope.dropdownOpen = false;
 
     $scope.unitWidth = () => {
         width = $scope.homeSearch.radius > 0 ? $scope.homeSearch.radius.toString().length * 10 + 15 : 25;
@@ -24,6 +25,10 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
         return {'width': width + 'px'};
     };
 
+    /* ---------------------------------------------------------------------------------------------------------------*/
+    /* */
+
+    /* */
     $scope.isSmallScreen = function() {
         switch (findBootstrapEnvironment()) {
             case 'sm':
@@ -33,10 +38,61 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
         return false;
     };
 
+    /* Determines the size of the current bootstrap environment.
+     * Should be dynamic */
+    const findBootstrapEnvironment = function() {
+        /* Credits:
+         * https://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api */
+        let envs = ['xs', 'sm', 'md', 'lg'];
+
+        let $el = $('<div>');
+        $el.appendTo($('body'));
+
+        for (let i = envs.length - 1; i >= 0; i--) {
+            let env = envs[i];
+
+            $el.addClass('hidden-'+env);
+            if ($el.is(':hidden')) {
+                $el.remove();
+                return env;
+            }
+        }
+    };
+
+    /* ---------------------------------------------------------------------------------------------------------------*/
+    /* */
+
+    /* */
     $scope.dropDownToggle = function() {
         /* Clicks on the button disable body overflowing temporarily */
         $('#body').toggleClass('hide-overflow');
+
+        console.log($scope.isSmallScreen());
+
+        $scope.dropdownOpen = !$scope.dropdownOpen;
+        $('.search-top-sm').removeClass('lower-search-bar-sm').addClass('raise-search-bar-sm');
     };
+
+    /* 'raise-search-bar': dropdownOpen && !isSmallScreen(), 'lower-search-bar': !dropdownOpen && !isSmallScreen(), 'raise-search-bar-sm': dropdownOpen && isSmallScreen(), 'lower-search-bar-sm': !dropdownOpen && isSmallScreen() */
+
+    /* */
+    $(document).click(function() {
+        console.log($scope.dropdownOpen);
+        if ($scope.dropdownOpen) {
+            $('.search-top-sm').removeClass('raise-search-bar-sm').addClass('lower-search-bar-sm');
+        }
+    });
+
+    /* ---------------------------------------------------------------------------------------------------------------*/
+    /* */
+
+    /* */
+    $(window).resize(function() {
+        $scope.$apply();
+    });
+
+    /* ---------------------------------------------------------------------------------------------------------------*/
+    /* */
 
     /* Select the leftBavBar by ID to add listeners */
     let searchBar = document.querySelector('#search-bar');
@@ -54,6 +110,10 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
         $('#body').toggleClass('hide-overflow');
     }, false);
 
+    /* ---------------------------------------------------------------------------------------------------------------*/
+    /* */
+
+    /* */
     $scope.submitFields = () => {
         $scope.$broadcast('submit');
 
@@ -82,32 +142,13 @@ app.controller('homeCtrl', function($scope, $filter, $http, $location, Data, NgM
             });
     };
 
+    /* ---------------------------------------------------------------------------------------------------------------*/
+    /* */
+
+    /* */
     $scope.editOptions = (type) => {
         type.isSelected = !type.isSelected;
     };
 
-    $(window).resize(function() {
-        $scope.$apply();
-    });
-
-    /* Determines the size of the current bootstrap environment.
-     * Should be dynamic */
-    const findBootstrapEnvironment = function() {
-        /* Credits:
-         * https://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api */
-        let envs = ['xs', 'sm', 'md', 'lg'];
-
-        let $el = $('<div>');
-        $el.appendTo($('body'));
-
-        for (let i = envs.length - 1; i >= 0; i--) {
-            let env = envs[i];
-
-            $el.addClass('hidden-'+env);
-            if ($el.is(':hidden')) {
-                $el.remove();
-                return env;
-            }
-        }
-    };
+    /* ---------------------------------------------------------------------------------------------------------------*/
 });
