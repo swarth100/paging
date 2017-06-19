@@ -5,8 +5,9 @@
     <nav id="navigation-bar" class="navbar navbar-default square animated fadeIn" style="margin-bottom:0;">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/">
-                    <img src="/assets/images/logo.png" class="logo">
+                <a class="navbar-brand" href="/" ng-mouseover="hover = true" ng-mouseleave="hover = false">
+                    <img src="/assets/images/logo.png" class="logo" ng-show="!hover">
+                    <img src="/assets/images/logo-hover.png" class="logo" ng-show="hover">
                     Paging
                 </a>
             </div>
