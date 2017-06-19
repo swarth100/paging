@@ -51,7 +51,16 @@ let locationsSchema = new Schema({
         type: String,
         required: true,
     },
-});
+    website: {
+        type: String,
+    },
+    rating: {
+        type: String,
+    },
+    photo: {
+        type: Object,
+    },
+    });
 
 /* Plugin that validates unique entries */
 locationsSchema.plugin(uniqueValidator);

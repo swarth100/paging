@@ -255,6 +255,7 @@ exports.start = (server) => {
         });
     });
 
+
     function findRoom(roomID, cb) {
         mongooseRoom.find({'id': roomID})
             .then(function(room) {
