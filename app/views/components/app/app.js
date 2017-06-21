@@ -183,17 +183,23 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
         }
     };
 
+
     $scope.hasWebsite = function(marker) {
-        if(marker) {
-            console.log(marker.website);
-            return marker.website;
+        console.log('called has website ');
+        if (marker) {
+            if (marker.website) {
+                return true;
+            }
         }
         return false;
     };
 
     $scope.getWebsite = function(marker) {
         if (marker) {
-            return marker.website;
+            if (marker.website) {
+                return marker.website;
+            }
+            return 'https://www.google.co.uk';
         }
     };
 
@@ -239,7 +245,9 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                                 <i class="fa fa-thumbs-up"></i>
                             </button>
                         </span>
-                        <a type="text" target="_blank" href="{{getWebsite(getMarkerFromIndex(` + result + `))}}" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText">{{getResultFromIndex(` + result + `).name}}</a>
+                        <a type="text" target="_blank" href="{{getWebsite(getMarkerFromIndex(` + result + `))}}" class="form-control centre-text text-field-colour input-lg square bubbleHeaderText" ng-show=\"hasWebsite(getMarkerFromIndex(` + result + `))\">{{getResultFromIndex(` + result + `).name}}</a>
+                        <p class="form-control centre-text text-field-colour input-lg square bubbleHeaderText"
+                        ng-show=\"!hasWebsite(getMarkerFromIndex(` + result + `))\">{{getResultFromIndex(` + result + `).name}}</p>
                     </div>
                     <div class="bubble-separator"></div>
                     <div class="btn-group btn-group-justified">
