@@ -256,7 +256,7 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
                     </div>
                     <div class="bubble-separator"></div>
                     <div ng-show=\"hasRating(getMarkerFromIndex(` + result + `))\">
-                        <span uib-rating ng-model="getRating(getMarkerFromIndex(` + result + `))" max="5" read-only="!isReadonly" state-on="'glyphicon-star'" style="color: darkorange; position: absolute; width: 100%; text-align: center;"></span>
+                        <span uib-rating ng-model="getMarkerFromIndex(` + result + `).rating" max="5" read-only="!isReadonly" state-on="'glyphicon-star'" style="color: darkorange; position: absolute; width: 100%; text-align: center;"></span>
                         <div class="bubble-separator" style="padding-top: 20px"></div>
                     </div>
                     <div ng-show=\"hasPicture(getMarkerFromIndex(` + result + `))\">

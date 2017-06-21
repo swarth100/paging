@@ -105,7 +105,11 @@
         <!-- The following is the controller for the post location -->
         <!-- The div nesting was done so that we could have the rotating gif
             when a search is commensed. -->
-            <div class="map-dimensions">
+            <div class="map-bg">
+                <div id="map-gif">
+                    <div class="circle"></div>
+                    <div class="image"></div>
+                </div>
                 <div id="map" class="map-dimensions" ng-show="!issueSearch"></div>
             </div>
             <button class="btn left-nav-toggle-button-map no-padding simplebox" ng-click="toggleLeftNav()" style="width: 80px">
