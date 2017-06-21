@@ -33,6 +33,7 @@
 
     .navbar-nav > .dropdown > a,
     .navbar-nav > .dropdown > a:focus {
+        height: 80px;
         color: white;
         background: #263238;
     }
@@ -58,29 +59,32 @@
 
 }
 
-//#user-dd {
-//@extend .square;
-//position: absolute;
-//z-index: 1000 !important;
-//min-width: 250px;
-//padding: 14px 14px 0;
-//overflow: hidden;
-//background: $user-dd-bg;
-//border: none;
-//.bottom {
-//border: none;
-//border-top: solid 3px;
-//border-color: $user-dd-border;
-//background-color:$user-dd-bottom-bg;
-//clear: both;
-//padding: 14px;
-    //}
-    //.bottom > a {
-        //color: black;
-    //}
-    //}
-    //[> Animation ***********************************************<]
-    //#navigation-bar {
-        //animation-duration: 0.5s;
-        //}
-        //[>**********************************************************<]
+#user-dd {
+    @extend .square;
+    position: absolute;
+    top: 80px;
+    right: -15px;
+    left: -250px;
+    z-index: 1000 !important;
+    min-width: 250px;
+    padding: 14px 14px 0;
+    overflow: hidden;
+    background: $user-dd-bg;
+    border: none;
+    .bottom {
+        border: none;
+        border-top: solid 3px;
+        border-color: $user-dd-border;
+        background-color:$user-dd-bottom-bg;
+        clear: both;
+        padding: 14px;
+    }
+    .bottom > a {
+        color: black;
+    }
+}
+/* Animation ************************************************/
+#navigation-bar {
+    animation-duration: 0.5s;
+}
+/************************************************************/
