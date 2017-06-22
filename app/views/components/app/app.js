@@ -185,7 +185,6 @@ app.controller('appCtrl', function($scope, $http, $routeParams, $filter, $uibMod
 
 
     $scope.hasWebsite = function(marker) {
-        console.log('called has website ');
         if (marker) {
             if (marker.website) {
                 return true;

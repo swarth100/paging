@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const authentication = require('./app/models/authentication/authentication');
 const indexRoute = require('./app/routes/index');
@@ -9,6 +10,7 @@ const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const socket = require('./app/models/socket-io/socket-io');
 const friends = require('./app/models/friendlist/friendlist');
+
 /* Defines the application */
 let app = express();
 
