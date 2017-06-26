@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 const express = require('express');
 const authentication = require('./app/models/authentication/authentication');
 const indexRoute = require('./app/routes/index');
@@ -33,7 +33,7 @@ authentication.setup(app, (app) => {
     /* Sets the server to port 3000.
      * Opens port 3000 to listen for connections
      * Otherwise use heroku provided port */
-    app.set('port', (process.env.PORT || 3000));
+    app.set('port', (process.env.PORT || 3001));
     let server = app.listen(app.get('port'), () => {
         console.log('[Server] : open on port ' + app.get('port'));
     });
