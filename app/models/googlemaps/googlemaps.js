@@ -3,8 +3,20 @@ let avgTimes = require('./average-times');
 let geolib = require('geolib');
 const co = require('co');
 
+let randomKeySelector = function() {
+    let keyVal = Math.random()*4;
+    if (keyVal < 1) {
+        return 'AIzaSyCAYorWuqzvRAPmNRs8C95Smp7hhdATzc8';
+    } else if (keyVal < 2) {
+        return 'AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg';
+    } else if (keyVal < 3) {
+        return 'AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU';
+    }
+    return 'AIzaSyD7c_7yNAAQc6mhE_JremnfrnUyxvFvfz4';
+};
+
 let googleMapsClient = require('@google/maps').createClient({
-    key: process.env.GOOGLE_API_KEY,
+    key: randomKeySelector(),
     Promise: Promise,
 });
 
