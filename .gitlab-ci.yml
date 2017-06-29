@@ -16,6 +16,7 @@ deploy_project:
   variables:
     publication_branch_name: "publish-to-heroku"
   script:
+    - hostname
     - ssh ubuntu@spina.me
     - cd paging/current
     - pm2 deploy ecosystem.config.js dev
