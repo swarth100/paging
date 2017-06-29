@@ -13,12 +13,7 @@ run_tests:
 
 deploy_project:
   stage: deploy
-  variables:
-    publication_branch_name: "publish-to-heroku"
   script:
-    - hostname
-    - ssh ubuntu@spina.me
-    - cd paging/current
-    - pm2 deploy ecosystem.config.js dev
+    - pm2 deploy ecosystem.config.js ci
   only:
     - dev
