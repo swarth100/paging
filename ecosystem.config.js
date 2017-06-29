@@ -16,7 +16,7 @@ module.exports = {
         ci: {
             'user': 'ubuntu',
             'host': 'spina.me',
-            'ref': 'origin/dev',
+            'ref': 'origin/master',
             'repo': 'git@gitlab.doc.ic.ac.uk:as12015/paging.git',
             'path': '/home/ubuntu/paging',
             'post-deploy': 'npm install && npm run build && pm2 startOrRestart ecosystem.config.js',
