@@ -20,7 +20,7 @@ module.exports = {
             'repo': 'git@gitlab.doc.ic.ac.uk:as12015/paging.git',
             'path': '/home/ubuntu/paging',
             'pre-deploy': 'git fetch --all',
-            'post-deploy': 'npm install && npm run build && pm2 startOrRestart ecosystem.config.js',
+            'post-deploy': 'git checkout master && npm install && npm run build && pm2 startOrRestart ecosystem.config.js',
         },
     },
 };
