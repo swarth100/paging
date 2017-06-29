@@ -13,5 +13,13 @@ module.exports = {
             'path': '/home/ubuntu/paging',
             'post-deploy': 'npm install && npm run build && pm2 startOrRestart ecosystem.config.js',
         },
+        ci: {
+            'user': 'ubuntu',
+            'host': 'spina.me',
+            'ref': 'origin/master',
+            'repo': 'git@gitlab.doc.ic.ac.uk:as12015/paging.git',
+            'path': '/home/ubuntu/paging',
+            'post-deploy': 'npm install && npm run build && pm2 startOrRestart ecosystem.config.js',
+        },
     },
 };
