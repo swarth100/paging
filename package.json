@@ -31,7 +31,7 @@
   "dependencies": {
     "@google/maps": "^0.3.1",
     "angular-filter": "^0.5.16",
-    "bcrypt": "^1.0.2",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "chai": "^4.0.1",
     "co": "^4.6.0",
