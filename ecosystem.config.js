@@ -13,7 +13,7 @@ module.exports = {
             'path': '/home/ubuntu/paging',
             'post-deploy': 'npm install && npm run build && pm2 startOrRestart ecosystem.config.js',
         },
-        ci: {
+        production: {
             'user': 'ubuntu',
             'host': 'spina.me',
             'ref': 'origin/master',
