@@ -1,17 +1,27 @@
-stages:
-  - test
-  - deploy
 cache:
+  untracked: true
+  key: "$CI_BUILD_REF_NAME"
   paths:
     - node_modules/
-run_tests:
-  stage: test
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
   script:
     - npm install --silent -q
     - npm run lint
+
+
+test:
+  stage: test
+  script:
     - npm test
 
-deploy_project:
+deploy:
   stage: deploy
   script:
     - pm2 deploy ecosystem.config.js production
