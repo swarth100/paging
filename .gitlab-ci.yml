@@ -17,4 +17,4 @@ deploy_project:
     - hostname
     - pm2 deploy ecosystem.config.js ci
   only:
-    - dev
+    - master
