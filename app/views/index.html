@@ -1,75 +1,63 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <!--PLEASE DONT TOUCH THIS -->
-        <!-- Hotjar Tracking Code for https://webapps-paging.herokuapp.com -->
-        <script>
-            (function(h,o,t,j,a,r){
-                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                h._hjSettings={hjid:539392,hjsv:5};
-                a=o.getElementsByTagName('head')[0];
-                r=o.createElement('script');r.async=1;
-                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                a.appendChild(r);
-            })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
-        </script>
-
         <meta charset="utf-8" />
         <title>Paging</title>
 
-        <!-- Bootstrap
-            Please DO NOT MODIFY. This is utter magic and must remain as such -->
-            <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-            <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-            <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
-            <!-- Font -->
-            <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-            <!-- Animation -->
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+        <link rel="icon" type="image/x-icon" href="assets/images/logo.ico">
 
-            <!-- Include AngularJS from Google's CDN -->
-            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-route.min.js"></script>
-            <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.5.0.js"></script>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <!-- Bootstrap. Please DO NOT MODIFY. This is utter magic and must remain as such -->
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/custom.css">
+        <!-- Font -->
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <!-- Animation -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 
-            <!-- Angular filter for creating dropdown grid -->
-            <script src="//cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.16/angular-filter.min.js"></script>
+        <!-- Include AngularJS from Google's CDN -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-route.min.js"></script>
+        <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.5.0.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-            <!-- Angular Animate -->
-            <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
+        <!-- Angular filter for creating dropdown grid -->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.16/angular-filter.min.js"></script>
 
-            <!-- ngStorage for local storage -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+        <!-- Angular Animate -->
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
 
-            <!-- socket io for multi-user -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
-            <!-- keep the messages glued to the bottom -->
-            <script src="https://cdn.rawgit.com/Luegg/angularjs-scroll-glue/master/src/scrollglue.js"></script>
+        <!-- ngStorage for local storage -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
 
-            <!-- Include our own Angular script -->
-            <script src="/script.js"></script>
-            <script src="/components/shared/layout.js"></script>
-            <script src="/components/index/index.js"></script>
-            <script src="/components/app/app.js"></script>
-            <script src="/components/home/home.js"></script>
-            <script src="/components/error/error.js"></script>
-            <script src="/components/login/login.js"></script>
-            <script src="/components/register/register.js"></script>
-            <script src="/components/socket-io/socket-io.js"></script>
+        <!-- socket io for multi-user -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+        <!-- keep the messages glued to the bottom -->
+        <script src="https://cdn.rawgit.com/Luegg/angularjs-scroll-glue/master/src/scrollglue.js"></script>
 
-            <!-- Google script. Might have been a problem with asynchroniousity -->
-            <script
-                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_UOu_gSsRAFFSmEEKmR7fZqgDmvmMJIg&libraries=places">
-            </script>
+        <!-- Include our own Angular script -->
+        <script src="/script.js"></script>
+        <script src="/components/shared/layout.js"></script>
+        <script src="/components/index/index.js"></script>
+        <script src="/components/app/app.js"></script>
+        <script src="/components/home/home.js"></script>
+        <script src="/components/error/error.js"></script>
+        <script src="/components/login/login.js"></script>
+        <script src="/components/register/register.js"></script>
+        <script src="/components/socket-io/socket-io.js"></script>
 
-            <!-- InfoBubble -->
-            <script src="https://cdn.rawgit.com/googlemaps/js-info-bubble/gh-pages/src/infobubble.js"></script>
+        <!-- Google script. Might have been a problem with asynchroniousity -->
+        <script
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZfSnQBIu3V5N9GWbpKGtAUYmDDyxPonU&libraries=places">
+        </script>
 
-            <!-- Load ngMap. I believe this must be loaded after the above line to
-                work correctly. -->
-            <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js"></script>
+        <!-- InfoBubble -->
+        <script src="https://cdn.rawgit.com/googlemaps/js-info-bubble/gh-pages/src/infobubble.js"></script>
+
+        <!-- Load ngMap. I believe this must be loaded after the above line to
+            work correctly. -->
+        <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js"></script>
 
     </head>
     <!-- Bind the following body to the googleMaps model -->
