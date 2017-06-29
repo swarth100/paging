@@ -1,6 +1,6 @@
 const userDB = require('../mongoose/user');
 const bodyParser = require('body-parser');
-const bcyrpt = require('bcrypt');
+const bcyrpt = require('bcryptjs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const expressValidator = require('express-validator');
