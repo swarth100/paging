@@ -28,13 +28,19 @@ Access to the database requires authentication both mongo and bcrypt.
 
 The backend runs a `NodeJS` server. <br>
 Routing is handled via `ExpressJS` for HTTP requests, and `Socket.io` for socket communication. <br>
-The website is currently hosted on a `AWS` Server <br>
+The website is currently hosted on a `AWS` Server. <br>
 Other npm packages used:
 - `bcryptjs`: Used to securely authenticate users storing encrypted passwords.
 - `passport`: Used together with bcrypt for authentication.
 - `geolib`: Used to perform geo-coordinate mathematical manipulations.
 - `mongoose`: Used together with mongoDB.
 - `chai`: Used as a testing framework
+
+## Gitlab CI/CD
+
+`CI` is set up to run on a gitlab runner following the `.gitlab-ci.yml` script. <br>
+Once `build` and `test` phases pass, `CD` kicks in deploying to the `AWS` VM via `pm2`. <br>
+Mater branch is automatically deployed.
 
 ## Back End Routing
 
