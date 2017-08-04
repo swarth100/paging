@@ -12,9 +12,8 @@ The `googleMaps` API is queried to handle the map. We use the following APIs:
 - `Places API`: To retrieve data about places near the user's location.
 - `Distance Matrix API`: To determine distances between users and places nearby.
 - `Directions API`: To obtain directions by means of transport given a destination place.
-</ul>
+
 Routing:
-<ul>
 - `/`, `/home`: Webapp entry point with search screen.
 - `/app/:room`: Main webapp page, displays the googlemap and allows interaction inbetween users.
 - `/login`, `/register`: Basic authentication functionality.
@@ -50,9 +49,8 @@ HTTP/HTTPS:
 - `/users/login`, `/users/logout`: Handles user authentication.
 - `/users/register`: Handles user registration.
 - `/users/friends`: Returns a user's friendlist [UNUSED].
-</ul>
+
 Socket.io:
-<ul>
 - `join [roomID]`: Joins a designated room's socket.io channel.
 - `leave`: Exits the current socket.io room.
 - `location [locData]`: Broadcasts an update to the given user's location.
